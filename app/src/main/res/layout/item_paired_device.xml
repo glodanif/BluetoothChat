@@ -22,11 +22,13 @@
         android:orientation="vertical">
 
         <TextView
+            android:id="@+id/tv_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             tools:text="Android Devise HTC G1"/>
 
         <TextView
+            android:id="@+id/tv_mac_address"
             tools:text="43:F5:1A:77"
             android:textSize="12sp"
             android:layout_width="wrap_content"

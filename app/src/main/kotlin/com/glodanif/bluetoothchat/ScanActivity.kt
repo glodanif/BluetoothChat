@@ -8,9 +8,11 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.Toolbar
-import android.util.Log
 import android.view.View
+import com.glodanif.bluetoothchat.adapter.PairedDevicesAdapter
 import com.glodanif.bluetoothchat.presenter.ScanPresenter
 import com.glodanif.bluetoothchat.view.ScanView
 
@@ -19,6 +21,11 @@ class ScanActivity : AppCompatActivity(), ScanView {
     private val REQUEST_ENABLE_BT = 101
 
     private var container: View? = null
+    private var turnOnHolder: View? = null
+    private var listHolder: View? = null
+
+    private var pairedDevicesList: RecyclerView? = null
+    private val adapter: PairedDevicesAdapter = PairedDevicesAdapter()
 
     private val presenter: ScanPresenter = ScanPresenter(this)
 
@@ -30,7 +37,13 @@ class ScanActivity : AppCompatActivity(), ScanView {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
 
-        container = findViewById(R.id.cl_container)
+        container = findViewById(R.id.fl_container)
+        turnOnHolder = findViewById(R.id.cl_turn_on)
+        listHolder = findViewById(R.id.cl_list)
+
+        pairedDevicesList = findViewById(R.id.rv_paired_devices) as RecyclerView
+        (pairedDevicesList as RecyclerView).layoutManager = LinearLayoutManager(this)
+        (pairedDevicesList as RecyclerView).adapter = adapter
 
         presenter.checkBluetoothAvailability()
 
@@ -39,15 +52,23 @@ class ScanActivity : AppCompatActivity(), ScanView {
 
     override fun showPairedDevices(pairedDevices: Set<BluetoothDevice>) {
 
+        turnOnHolder?.visibility = View.GONE
+        listHolder?.visibility = View.VISIBLE
+
         if (pairedDevices.isNotEmpty()) {
-            for (device in pairedDevices) {
-                Log.e("TAG13", device.name + " " + device.address)
-            }
+            adapter.devicesList = ArrayList(pairedDevices)
+            adapter.notifyDataSetChanged()
         }
     }
 
     override fun showBluetoothFunctionality() {
         container?.visibility = View.VISIBLE
+        presenter.checkBluetoothEnabling()
+    }
+
+    override fun showBluetoothEnablingRequest() {
+        turnOnHolder?.visibility = View.VISIBLE
+        listHolder?.visibility = View.GONE
     }
 
     override fun enableBluetooth() {
@@ -58,7 +79,6 @@ class ScanActivity : AppCompatActivity(), ScanView {
     override fun handleBluetoothEnablingResponse(resultCode: Int) {
 
         if (resultCode == Activity.RESULT_OK) {
-            container?.visibility = View.GONE
             presenter.getPairedDevices()
         } else {
             AlertDialog.Builder(this)

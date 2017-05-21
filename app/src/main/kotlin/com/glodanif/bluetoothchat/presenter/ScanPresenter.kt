@@ -16,23 +16,29 @@ class ScanPresenter(private val view: ScanView) {
         }
     }
 
-    fun turnOnBluetooth() {
+    fun checkBluetoothEnabling() {
 
         if (adapter == null) {
             return
         }
 
-        if (!adapter.isEnabled) {
+        if (adapter.isEnabled) {
+            getPairedDevices()
+        } else {
+            view.showBluetoothEnablingRequest()
+        }
+    }
+
+    fun turnOnBluetooth() {
+        if (adapter != null && !adapter.isEnabled) {
             view.enableBluetooth()
         }
     }
 
     fun getPairedDevices() {
 
-        if (adapter == null) {
-            return
+        if (adapter != null) {
+            view.showPairedDevices(adapter.bondedDevices)
         }
-
-        view.showPairedDevices(adapter.bondedDevices)
     }
 }
