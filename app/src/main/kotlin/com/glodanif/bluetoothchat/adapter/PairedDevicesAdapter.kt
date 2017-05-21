@@ -8,34 +8,73 @@ import android.view.ViewGroup
 import android.widget.TextView
 import com.glodanif.bluetoothchat.R
 
-class PairedDevicesAdapter : RecyclerView.Adapter<PairedDevicesAdapter.DeviceViewHolder>() {
+class PairedDevicesAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    var devicesList = ArrayList<BluetoothDevice>()
+    private val TYPE_ITEM = 0
+    private val TYPE_HEADER = 1
 
-    override fun onBindViewHolder(holder: DeviceViewHolder?, position: Int) {
-        val device = devicesList[position]
-        holder?.name?.text = device.name
-        holder?.macAddress?.text = device.address
+    var pairedList = ArrayList<BluetoothDevice>()
+    var availableList = ArrayList<BluetoothDevice>()
+
+    override fun onBindViewHolder(viewHolder: RecyclerView.ViewHolder?, position: Int) {
+
+        if (viewHolder is HeaderViewHolder) {
+
+            val holder: HeaderViewHolder = viewHolder
+
+            if (position == 0) {
+                holder.header.text = "Paired devices"
+                holder.emptyMessage.visibility =
+                        if (pairedList.isEmpty()) View.VISIBLE else View.GONE
+            } else {
+                holder.header.text = "Available devices"
+                holder.emptyMessage.visibility =
+                        if (availableList.isEmpty()) View.VISIBLE else View.GONE
+            }
+
+        } else if (viewHolder is DeviceViewHolder) {
+
+            val holder: DeviceViewHolder = viewHolder
+
+            val device = if (position >= 1 && position < pairedList.size + 1)
+                pairedList[position - 1] else availableList[position - pairedList.size]
+            holder.name.text = device.name
+            holder.macAddress.text = device.address
+        }
+    }
+
+    override fun getItemViewType(position: Int): Int {
+        when (position) {
+            0 -> return TYPE_HEADER
+            pairedList.size + 1 -> return TYPE_HEADER
+            else -> return TYPE_ITEM
+        }
     }
 
     override fun getItemCount(): Int {
-        return devicesList.size
+        return pairedList.size + availableList.size + 2
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): DeviceViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): RecyclerView.ViewHolder {
+
+        if (viewType == TYPE_ITEM) {
+            val view = LayoutInflater.from(parent?.context)
+                    .inflate(R.layout.item_paired_device, parent, false)
+            return DeviceViewHolder(view)
+        }
+
         val view = LayoutInflater.from(parent?.context)
-                .inflate(R.layout.item_paired_device, parent, false)
-        return DeviceViewHolder(view)
+                .inflate(R.layout.item_header, parent, false)
+        return HeaderViewHolder(view)
+    }
+
+    class HeaderViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        var header: TextView = itemView.findViewById(R.id.tv_header) as TextView
+        var emptyMessage: TextView = itemView.findViewById(R.id.tv_empty_message) as TextView
     }
 
     class DeviceViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-
-        var name: TextView? = null
-        var macAddress: TextView? = null
-
-        init {
-            name = itemView.findViewById(R.id.tv_name) as TextView
-            macAddress = itemView.findViewById(R.id.tv_mac_address) as TextView
-        }
+        var name: TextView = itemView.findViewById(R.id.tv_name) as TextView
+        var macAddress: TextView = itemView.findViewById(R.id.tv_mac_address) as TextView
     }
 }

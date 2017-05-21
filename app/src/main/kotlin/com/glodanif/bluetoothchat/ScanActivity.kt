@@ -20,11 +20,11 @@ class ScanActivity : AppCompatActivity(), ScanView {
 
     private val REQUEST_ENABLE_BT = 101
 
-    private var container: View? = null
-    private var turnOnHolder: View? = null
-    private var listHolder: View? = null
+    private lateinit var container: View
+    private lateinit var turnOnHolder: View
+    private lateinit var listHolder: View
 
-    private var pairedDevicesList: RecyclerView? = null
+    private lateinit var pairedDevicesList: RecyclerView
     private val adapter: PairedDevicesAdapter = PairedDevicesAdapter()
 
     private val presenter: ScanPresenter = ScanPresenter(this)
@@ -42,8 +42,8 @@ class ScanActivity : AppCompatActivity(), ScanView {
         listHolder = findViewById(R.id.cl_list)
 
         pairedDevicesList = findViewById(R.id.rv_paired_devices) as RecyclerView
-        (pairedDevicesList as RecyclerView).layoutManager = LinearLayoutManager(this)
-        (pairedDevicesList as RecyclerView).adapter = adapter
+        pairedDevicesList.layoutManager = LinearLayoutManager(this)
+        pairedDevicesList.adapter = adapter
 
         presenter.checkBluetoothAvailability()
 
@@ -52,23 +52,23 @@ class ScanActivity : AppCompatActivity(), ScanView {
 
     override fun showPairedDevices(pairedDevices: Set<BluetoothDevice>) {
 
-        turnOnHolder?.visibility = View.GONE
-        listHolder?.visibility = View.VISIBLE
+        turnOnHolder.visibility = View.GONE
+        listHolder.visibility = View.VISIBLE
 
         if (pairedDevices.isNotEmpty()) {
-            adapter.devicesList = ArrayList(pairedDevices)
+            adapter.pairedList = ArrayList(pairedDevices)
             adapter.notifyDataSetChanged()
         }
     }
 
     override fun showBluetoothFunctionality() {
-        container?.visibility = View.VISIBLE
+        container.visibility = View.VISIBLE
         presenter.checkBluetoothEnabling()
     }
 
     override fun showBluetoothEnablingRequest() {
-        turnOnHolder?.visibility = View.VISIBLE
-        listHolder?.visibility = View.GONE
+        turnOnHolder.visibility = View.VISIBLE
+        listHolder.visibility = View.GONE
     }
 
     override fun enableBluetooth() {
