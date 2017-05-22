@@ -10,9 +10,11 @@ interface ScanView {
 
     fun showBluetoothEnablingRequest()
 
-    fun showPairedDevices(pairedDevices: Set<BluetoothDevice>)
+    fun showPairedDevices(pairedDevices: List<BluetoothDevice>)
 
     fun enableBluetooth()
 
-    fun handleBluetoothEnablingResponse(resultCode: Int)
+    fun requestMakingDiscoverable()
+
+    fun showBluetoothEnablingFailed()
 }

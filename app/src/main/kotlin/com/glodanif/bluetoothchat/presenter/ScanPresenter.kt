@@ -1,44 +1,77 @@
 package com.glodanif.bluetoothchat.presenter
 
-import android.bluetooth.BluetoothAdapter
+import android.bluetooth.BluetoothDevice
+import com.glodanif.bluetoothchat.model.BluetoothScanner
 import com.glodanif.bluetoothchat.view.ScanView
 
-class ScanPresenter(private val view: ScanView) {
+class ScanPresenter(private val view: ScanView, private val scanner: BluetoothScanner) {
 
-    private val adapter: BluetoothAdapter? = BluetoothAdapter.getDefaultAdapter()
+    init {
+        scanner.listener = object : BluetoothScanner.ScanningListener {
+
+            override fun onDiscoveryStart() {
+                TODO("not implemented")
+            }
+
+            override fun onDiscoveryFinish() {
+                TODO("not implemented")
+            }
+
+            override fun onDeviceFind(device: BluetoothDevice) {
+                TODO("not implemented")
+            }
+
+            override fun onAvailableDiscoverChange(enabled: Boolean) {
+                TODO("not implemented")
+            }
+        }
+    }
 
     fun checkBluetoothAvailability() {
 
-        if (adapter == null) {
-            view.showBluetoothIsNotAvailableMessage()
-        } else {
+        if (scanner.isBluetoothAvailable()) {
             view.showBluetoothFunctionality()
+        } else {
+            view.showBluetoothIsNotAvailableMessage()
         }
     }
 
     fun checkBluetoothEnabling() {
 
-        if (adapter == null) {
-            return
-        }
-
-        if (adapter.isEnabled) {
-            getPairedDevices()
+        if (scanner.isBluetoothEnabled()) {
+            onPairedDevicesReady()
         } else {
             view.showBluetoothEnablingRequest()
         }
     }
 
     fun turnOnBluetooth() {
-        if (adapter != null && !adapter.isEnabled) {
+        if (!scanner.isBluetoothEnabled()) {
             view.enableBluetooth()
         }
     }
 
-    fun getPairedDevices() {
+    fun onPairedDevicesReady() {
+        view.showPairedDevices(scanner.getBondedDevices())
+    }
 
-        if (adapter != null) {
-            view.showPairedDevices(adapter.bondedDevices)
-        }
+    fun onBluetoothEnablingFailed() {
+        view.showBluetoothEnablingFailed()
+    }
+
+    fun onMadeDiscoverable(seconds: Int) {
+
+    }
+
+    fun onMakeDiscoverableFailed() {
+
+    }
+
+    fun makeDiscoverable() {
+        view.requestMakingDiscoverable()
+    }
+
+    fun scanForDevices() {
+        scanner.scanForDevices()
     }
 }
