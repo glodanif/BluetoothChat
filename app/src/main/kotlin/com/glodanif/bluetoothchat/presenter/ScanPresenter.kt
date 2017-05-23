@@ -6,23 +6,29 @@ import com.glodanif.bluetoothchat.view.ScanView
 
 class ScanPresenter(private val view: ScanView, private val scanner: BluetoothScanner) {
 
+    private val SCAN_DURATION_SECONDS = 30
+
     init {
         scanner.listener = object : BluetoothScanner.ScanningListener {
 
-            override fun onDiscoveryStart() {
-                TODO("not implemented")
+            override fun onDiscoverableFinish() {
+                view.discoverableFinished()
+            }
+
+            override fun onDiscoverableStart() {
+                view.discoverableInProcess()
+            }
+
+            override fun onDiscoveryStart(seconds: Int) {
+                view.scanningStarted(seconds)
             }
 
             override fun onDiscoveryFinish() {
-                TODO("not implemented")
+                view.scanningStopped()
             }
 
             override fun onDeviceFind(device: BluetoothDevice) {
-                TODO("not implemented")
-            }
-
-            override fun onAvailableDiscoverChange(enabled: Boolean) {
-                TODO("not implemented")
+                view.addFoundDevice(device)
             }
         }
     }
@@ -40,6 +46,12 @@ class ScanPresenter(private val view: ScanView, private val scanner: BluetoothSc
 
         if (scanner.isBluetoothEnabled()) {
             onPairedDevicesReady()
+            if (scanner.isDiscoverable()) {
+                scanner.startDiscoverable()
+                view.discoverableInProcess()
+            } else {
+                view.discoverableFinished()
+            }
         } else {
             view.showBluetoothEnablingRequest()
         }
@@ -59,19 +71,27 @@ class ScanPresenter(private val view: ScanView, private val scanner: BluetoothSc
         view.showBluetoothEnablingFailed()
     }
 
-    fun onMadeDiscoverable(seconds: Int) {
-
-    }
-
-    fun onMakeDiscoverableFailed() {
-
+    fun onMadeDiscoverable() {
+        scanner.startDiscoverable()
+        view.discoverableInProcess()
     }
 
     fun makeDiscoverable() {
-        view.requestMakingDiscoverable()
+        if (!scanner.isDiscoverable()) {
+            view.requestMakingDiscoverable()
+        }
+    }
+
+    fun onMakeDiscoverableFailed() {
+        view.showBluetoothDiscoverableFailure()
     }
 
     fun scanForDevices() {
-        scanner.scanForDevices()
+        scanner.scanForDevices(SCAN_DURATION_SECONDS)
+    }
+
+    fun cancelScanning() {
+        view.scanningStopped()
+        scanner.stopScanning()
     }
 }

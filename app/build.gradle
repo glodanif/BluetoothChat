@@ -36,8 +36,9 @@ dependencies {
     compile "com.android.support:appcompat-v7:$SUPPORT_VERSION"
     compile "com.android.support:design:$SUPPORT_VERSION"
     compile "com.android.support:recyclerview-v7:$SUPPORT_VERSION"
-
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
+
+    compile 'com.akexorcist:RoundCornerProgressBar:2.0.3'
 
     compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$KOTLIN_VERSION"
 

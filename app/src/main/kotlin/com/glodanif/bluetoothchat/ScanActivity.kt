@@ -12,10 +12,13 @@ import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.Toolbar
 import android.view.View
-import com.glodanif.bluetoothchat.adapter.PairedDevicesAdapter
+import android.widget.Button
+import android.widget.TextView
+import com.glodanif.bluetoothchat.adapter.DevicesAdapter
 import com.glodanif.bluetoothchat.model.BluetoothScanner
 import com.glodanif.bluetoothchat.presenter.ScanPresenter
 import com.glodanif.bluetoothchat.view.ScanView
+import com.glodanif.bluetoothchat.view.custom.ExpiringProgressBar
 
 class ScanActivity : AppCompatActivity(), ScanView {
 
@@ -26,8 +29,15 @@ class ScanActivity : AppCompatActivity(), ScanView {
     private lateinit var turnOnHolder: View
     private lateinit var listHolder: View
 
+    private lateinit var infoLabel: TextView
+    private lateinit var discoveryLabel: TextView
+    private lateinit var progressBar: ExpiringProgressBar
+    private lateinit var makeDiscoverableButton: Button
+    private lateinit var scanForDevicesButton: Button
+
     private lateinit var pairedDevicesList: RecyclerView
-    private val adapter: PairedDevicesAdapter = PairedDevicesAdapter()
+
+    private val adapter: DevicesAdapter = DevicesAdapter()
 
     private lateinit var presenter: ScanPresenter
 
@@ -45,6 +55,13 @@ class ScanActivity : AppCompatActivity(), ScanView {
         turnOnHolder = findViewById(R.id.cl_turn_on)
         listHolder = findViewById(R.id.cl_list)
 
+        infoLabel = findViewById(R.id.tv_info) as TextView
+        discoveryLabel = findViewById(R.id.tv_discovery_label) as TextView
+        progressBar = findViewById(R.id.epb_progress) as ExpiringProgressBar
+
+        makeDiscoverableButton = findViewById(R.id.btn_make_discoverable) as Button
+        scanForDevicesButton = findViewById(R.id.btn_scan) as Button
+
         pairedDevicesList = findViewById(R.id.rv_paired_devices) as RecyclerView
         pairedDevicesList.layoutManager = LinearLayoutManager(this)
         pairedDevicesList.adapter = adapter
@@ -52,7 +69,8 @@ class ScanActivity : AppCompatActivity(), ScanView {
         presenter.checkBluetoothAvailability()
 
         findViewById(R.id.btn_turn_on).setOnClickListener { presenter.turnOnBluetooth() }
-        findViewById(R.id.btn_make_discoverable).setOnClickListener { presenter.makeDiscoverable() }
+        makeDiscoverableButton.setOnClickListener { presenter.makeDiscoverable() }
+        scanForDevicesButton.setOnClickListener { presenter.scanForDevices() }
     }
 
     override fun showPairedDevices(pairedDevices: List<BluetoothDevice>) {
@@ -101,6 +119,42 @@ class ScanActivity : AppCompatActivity(), ScanView {
         startActivityForResult(discoverableIntent, REQUEST_MAKE_DISCOVERABLE)
     }
 
+    override fun discoverableInProcess() {
+        makeDiscoverableButton.text = "Discoverable"
+        makeDiscoverableButton.isEnabled = false
+    }
+
+    override fun discoverableFinished() {
+        makeDiscoverableButton.text = "Make discoverable"
+        makeDiscoverableButton.isEnabled = true
+    }
+
+    override fun scanningStarted(seconds: Int) {
+        progressBar.runExpiring(seconds)
+        progressBar.visibility = View.VISIBLE
+        discoveryLabel.visibility = View.VISIBLE
+        scanForDevicesButton.isEnabled = false
+    }
+
+    override fun scanningStopped() {
+        progressBar.cancel()
+        progressBar.visibility = View.GONE
+        discoveryLabel.visibility = View.GONE
+        scanForDevicesButton.isEnabled = true
+    }
+
+    override fun showBluetoothDiscoverableFailure() {
+        AlertDialog.Builder(this)
+                .setMessage("Unable to make your device discoverable")
+                .setPositiveButton("OK", null)
+                .show()
+    }
+
+    override fun addFoundDevice(device: BluetoothDevice) {
+        adapter.addNewFoundDevice(device)
+        adapter.notifyDataSetChanged()
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
@@ -112,11 +166,16 @@ class ScanActivity : AppCompatActivity(), ScanView {
             }
         } else if (requestCode == REQUEST_MAKE_DISCOVERABLE) {
             if (resultCode > 0) {
-                presenter.onMadeDiscoverable(resultCode)
+                presenter.onMadeDiscoverable()
             } else {
                 presenter.onMakeDiscoverableFailed()
             }
         }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        presenter.cancelScanning()
     }
 
     override fun onSupportNavigateUp(): Boolean {

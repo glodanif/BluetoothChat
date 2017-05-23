@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import com.glodanif.bluetoothchat.R
 
-class PairedDevicesAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class DevicesAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private val TYPE_ITEM = 0
     private val TYPE_HEADER = 1
@@ -37,7 +37,7 @@ class PairedDevicesAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             val holder: DeviceViewHolder = viewHolder
 
             val device = if (position >= 1 && position < pairedList.size + 1)
-                pairedList[position - 1] else availableList[position - pairedList.size]
+                pairedList[position - 1] else availableList[position - pairedList.size - 2]
             holder.name.text = device.name
             holder.macAddress.text = device.address
         }
@@ -66,6 +66,13 @@ class PairedDevicesAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         val view = LayoutInflater.from(parent?.context)
                 .inflate(R.layout.item_header, parent, false)
         return HeaderViewHolder(view)
+    }
+
+    fun addNewFoundDevice(device: BluetoothDevice) {
+        val exists = availableList.filter { it.address == device.address }.any()
+        if (!exists) {
+            availableList.add(device)
+        }
     }
 
     class HeaderViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
