@@ -1,4 +1,4 @@
-package com.glodanif.bluetoothchat
+package com.glodanif.bluetoothchat.activity
 
 import android.Manifest
 import android.app.Activity
@@ -18,11 +18,12 @@ import android.support.v7.widget.Toolbar
 import android.view.View
 import android.widget.Button
 import android.widget.TextView
+import com.glodanif.bluetoothchat.R
 import com.glodanif.bluetoothchat.adapter.DevicesAdapter
 import com.glodanif.bluetoothchat.model.BluetoothScannerImpl
 import com.glodanif.bluetoothchat.presenter.ScanPresenter
 import com.glodanif.bluetoothchat.view.ScanView
-import com.glodanif.bluetoothchat.view.custom.ExpiringProgressBar
+import com.glodanif.bluetoothchat.widget.ExpiringProgressBar
 
 class ScanActivity : AppCompatActivity(), ScanView {
 
@@ -71,9 +72,16 @@ class ScanActivity : AppCompatActivity(), ScanView {
         pairedDevicesList.layoutManager = LinearLayoutManager(this)
         pairedDevicesList.adapter = adapter
 
+        adapter.listener = {
+            val intent: Intent = Intent().putExtra(EXTRA_BLUETOOTH_DEVICE, it)
+            setResult(Activity.RESULT_OK, intent)
+            finish()
+        }
+
         presenter.checkBluetoothAvailability()
 
         findViewById(R.id.btn_turn_on).setOnClickListener { presenter.turnOnBluetooth() }
+
         makeDiscoverableButton.setOnClickListener { presenter.makeDiscoverable() }
         scanForDevicesButton.setOnClickListener {
 
@@ -151,14 +159,14 @@ class ScanActivity : AppCompatActivity(), ScanView {
         progressBar.runExpiring(seconds)
         progressBar.visibility = View.VISIBLE
         discoveryLabel.visibility = View.VISIBLE
-        scanForDevicesButton.isEnabled = false
+        scanForDevicesButton.text = "Stop scanning"
     }
 
     override fun scanningStopped() {
         progressBar.cancel()
         progressBar.visibility = View.GONE
         discoveryLabel.visibility = View.GONE
-        scanForDevicesButton.isEnabled = true
+        scanForDevicesButton.text = "Scan for devices"
     }
 
     override fun showBluetoothDiscoverableFailure() {
@@ -221,7 +229,14 @@ class ScanActivity : AppCompatActivity(), ScanView {
     }
 
     companion object {
+
+        val EXTRA_BLUETOOTH_DEVICE = "extra.bluetooth_device"
+
         fun start(context: Context) =
                 context.startActivity(Intent(context, ScanActivity::class.java))
+
+        fun startForResult(context: Activity, requestCode: Int) =
+                context.startActivityForResult(
+                        Intent(context, ScanActivity::class.java), requestCode)
     }
 }

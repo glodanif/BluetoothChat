@@ -1,5 +1,6 @@
 package com.glodanif.bluetoothchat
 
+import android.bluetooth.BluetoothDevice
 import com.glodanif.bluetoothchat.model.BluetoothScanner
 import com.glodanif.bluetoothchat.presenter.ScanPresenter
 import com.glodanif.bluetoothchat.view.ScanView
@@ -7,7 +8,6 @@ import org.junit.Before
 import org.junit.Test
 import org.mockito.Mock
 import org.mockito.Mockito
-import org.mockito.Mockito.atLeastOnce
 import org.mockito.MockitoAnnotations
 
 class ScanningPresenterUnitTest {
@@ -29,13 +29,38 @@ class ScanningPresenterUnitTest {
     fun availability_isAvailable() {
         Mockito.`when`(model.isBluetoothAvailable()).thenReturn(true)
         presenter.checkBluetoothAvailability()
-        Mockito.verify(view, atLeastOnce())?.showBluetoothFunctionality()
+        Mockito.verify(view)?.showBluetoothFunctionality()
     }
 
     @Test
     fun availability_isNotAvailable() {
         Mockito.`when`(model.isBluetoothAvailable()).thenReturn(false)
         presenter.checkBluetoothAvailability()
-        Mockito.verify(view, atLeastOnce())?.showBluetoothIsNotAvailableMessage()
+        Mockito.verify(view)?.showBluetoothIsNotAvailableMessage()
+    }
+
+    @Test
+    fun enabling_isEnabled_isDiscoverable() {
+        Mockito.`when`(model.isBluetoothEnabled()).thenReturn(true)
+        Mockito.`when`(model.isDiscoverable()).thenReturn(true)
+        presenter.checkBluetoothEnabling()
+        Mockito.verify(view)?.showPairedDevices(ArrayList<BluetoothDevice>())
+        Mockito.verify(view)?.discoverableInProcess()
+    }
+
+    @Test
+    fun enabling_isEnabled_isNotDiscoverable() {
+        Mockito.`when`(model.isBluetoothEnabled()).thenReturn(true)
+        Mockito.`when`(model.isDiscoverable()).thenReturn(false)
+        presenter.checkBluetoothEnabling()
+        Mockito.verify(view)?.showPairedDevices(ArrayList<BluetoothDevice>())
+        Mockito.verify(view)?.discoverableFinished()
+    }
+
+    @Test
+    fun enabling_isDisabled() {
+        Mockito.`when`(model.isBluetoothEnabled()).thenReturn(false)
+        presenter.checkBluetoothEnabling()
+        Mockito.verify(view)?.showBluetoothEnablingRequest()
     }
 }

@@ -83,7 +83,11 @@ class ScanPresenter(private val view: ScanView, private val scanner: BluetoothSc
     }
 
     fun scanForDevices() {
-        scanner.scanForDevices(SCAN_DURATION_SECONDS)
+        if (!scanner.isDiscovering()) {
+            scanner.scanForDevices(SCAN_DURATION_SECONDS)
+        } else {
+            cancelScanning()
+        }
     }
 
     fun cancelScanning() {

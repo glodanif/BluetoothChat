@@ -13,6 +13,8 @@ class BluetoothScannerImpl(val context: Context) : BluetoothScanner {
 
     private var listener: ScanningListener? = null
 
+    private var isDiscovering: Boolean = false
+
     private val handler: Handler = Handler()
 
     private val adapter: BluetoothAdapter? = BluetoothAdapter.getDefaultAdapter()
@@ -40,8 +42,7 @@ class BluetoothScannerImpl(val context: Context) : BluetoothScanner {
             if (scanMode == BluetoothAdapter.SCAN_MODE_CONNECTABLE_DISCOVERABLE) {
                 listener?.onDiscoverableStart()
             } else {
-                listener?.onDiscoverableFinish()
-                context.unregisterReceiver(this)
+                scanningFinishedTask.run()
             }
         }
     }
@@ -49,8 +50,13 @@ class BluetoothScannerImpl(val context: Context) : BluetoothScanner {
     private val scanningFinishedTask = Runnable {
 
         listener?.onDiscoveryFinish()
+        isDiscovering = false
 
-        context.unregisterReceiver(foundDeviceReceiver)
+        try {
+            context.unregisterReceiver(foundDeviceReceiver)
+        } catch (e: IllegalArgumentException) {
+            e.printStackTrace()
+        }
         if (adapter != null && adapter.isDiscovering) {
             adapter.cancelDiscovery();
         }
@@ -60,6 +66,7 @@ class BluetoothScannerImpl(val context: Context) : BluetoothScanner {
 
         adapter?.startDiscovery()
         listener?.onDiscoveryStart(seconds)
+        isDiscovering = true
 
         handler.postDelayed(scanningFinishedTask, seconds.toLong() * 1000)
         context.registerReceiver(foundDeviceReceiver, foundDeviceFilter)
@@ -67,14 +74,7 @@ class BluetoothScannerImpl(val context: Context) : BluetoothScanner {
 
     override fun stopScanning() {
         handler.removeCallbacks(scanningFinishedTask)
-        try {
-            context.unregisterReceiver(foundDeviceReceiver)
-        } catch (e: IllegalArgumentException) {
-            e.printStackTrace()
-        }
-        if (adapter != null && adapter.isDiscovering) {
-            adapter.cancelDiscovery()
-        }
+        scanningFinishedTask.run()
     }
 
     override fun getBondedDevices(): List<BluetoothDevice> {
@@ -91,6 +91,10 @@ class BluetoothScannerImpl(val context: Context) : BluetoothScanner {
 
     override fun isDiscoverable(): Boolean {
         return adapter?.scanMode == BluetoothAdapter.SCAN_MODE_CONNECTABLE_DISCOVERABLE
+    }
+
+    override fun isDiscovering(): Boolean {
+        return isDiscovering
     }
 
     override fun startDiscoverable() {

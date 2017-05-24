@@ -1,4 +1,4 @@
-package com.glodanif.bluetoothchat.view.custom
+package com.glodanif.bluetoothchat.widget
 
 import android.content.Context
 import android.os.Handler

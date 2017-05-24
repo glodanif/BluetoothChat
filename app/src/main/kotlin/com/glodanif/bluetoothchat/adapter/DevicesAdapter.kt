@@ -13,6 +13,8 @@ class DevicesAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private val TYPE_ITEM = 0
     private val TYPE_HEADER = 1
 
+    var listener: ((BluetoothDevice) -> Unit)? = null
+
     var pairedList = ArrayList<BluetoothDevice>()
     var availableList = ArrayList<BluetoothDevice>()
 
@@ -40,6 +42,7 @@ class DevicesAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                 pairedList[position - 1] else availableList[position - pairedList.size - 2]
             holder.name.text = device.name
             holder.macAddress.text = device.address
+            holder.itemView.setOnClickListener { listener?.invoke(device) }
         }
     }
 
