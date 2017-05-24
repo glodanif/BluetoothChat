@@ -82,10 +82,6 @@ class ScanPresenter(private val view: ScanView, private val scanner: BluetoothSc
         }
     }
 
-    fun onMakeDiscoverableFailed() {
-        view.showBluetoothDiscoverableFailure()
-    }
-
     fun scanForDevices() {
         scanner.scanForDevices(SCAN_DURATION_SECONDS)
     }

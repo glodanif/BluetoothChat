@@ -1,12 +1,16 @@
 package com.glodanif.bluetoothchat
 
+import android.Manifest
 import android.app.Activity
 import android.app.AlertDialog
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Bundle
+import android.support.v4.app.ActivityCompat
+import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
@@ -24,6 +28,7 @@ class ScanActivity : AppCompatActivity(), ScanView {
 
     private val REQUEST_ENABLE_BLUETOOTH = 101
     private val REQUEST_MAKE_DISCOVERABLE = 102
+    private val REQUEST_LOCATION_PERMISSION = 103
 
     private lateinit var container: View
     private lateinit var turnOnHolder: View
@@ -70,7 +75,20 @@ class ScanActivity : AppCompatActivity(), ScanView {
 
         findViewById(R.id.btn_turn_on).setOnClickListener { presenter.turnOnBluetooth() }
         makeDiscoverableButton.setOnClickListener { presenter.makeDiscoverable() }
-        scanForDevicesButton.setOnClickListener { presenter.scanForDevices() }
+        scanForDevicesButton.setOnClickListener {
+
+            if (ContextCompat.checkSelfPermission(this,
+                    Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                presenter.scanForDevices()
+            } else {
+                if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_COARSE_LOCATION)) {
+                    explainAskingPermission()
+                } else {
+                    ActivityCompat.requestPermissions(this,
+                            arrayOf(Manifest.permission.ACCESS_COARSE_LOCATION), REQUEST_LOCATION_PERMISSION)
+                }
+            }
+        }
     }
 
     override fun showPairedDevices(pairedDevices: List<BluetoothDevice>) {
@@ -120,12 +138,12 @@ class ScanActivity : AppCompatActivity(), ScanView {
     }
 
     override fun discoverableInProcess() {
-        makeDiscoverableButton.text = "Discoverable"
+        makeDiscoverableButton.text = getString(R.string.discoverable)
         makeDiscoverableButton.isEnabled = false
     }
 
     override fun discoverableFinished() {
-        makeDiscoverableButton.text = "Make discoverable"
+        makeDiscoverableButton.text = getString(R.string.make_discoverable)
         makeDiscoverableButton.isEnabled = true
     }
 
@@ -167,10 +185,29 @@ class ScanActivity : AppCompatActivity(), ScanView {
         } else if (requestCode == REQUEST_MAKE_DISCOVERABLE) {
             if (resultCode > 0) {
                 presenter.onMadeDiscoverable()
-            } else {
-                presenter.onMakeDiscoverableFailed()
             }
         }
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+
+        if (requestCode == REQUEST_LOCATION_PERMISSION) {
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                presenter.scanForDevices()
+            } else {
+                explainAskingPermission()
+            }
+        }
+    }
+
+    private fun explainAskingPermission() {
+        AlertDialog.Builder(this)
+                .setMessage("To be able to find other devices this app requires LOCATION permission")
+                .setPositiveButton("OK", { _, _ ->
+                    ActivityCompat.requestPermissions(this,
+                            arrayOf(Manifest.permission.ACCESS_COARSE_LOCATION), REQUEST_LOCATION_PERMISSION)
+                })
+                .show()
     }
 
     override fun onStop() {
