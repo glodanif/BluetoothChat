@@ -40,6 +40,9 @@ dependencies {
     compile "com.android.support:recyclerview-v7:$SUPPORT_VERSION"
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
 
+    compile "android.arch.persistence.room:runtime:1.0.0-alpha1"
+    annotationProcessor "android.arch.persistence.room:compiler:1.0.0-alpha1"
+
     compile 'com.akexorcist:RoundCornerProgressBar:2.0.3'
 
     compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$KOTLIN_VERSION"
