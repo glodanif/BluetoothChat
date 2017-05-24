@@ -9,7 +9,7 @@ class ScanPresenter(private val view: ScanView, private val scanner: BluetoothSc
     private val SCAN_DURATION_SECONDS = 30
 
     init {
-        scanner.listener = object : BluetoothScanner.ScanningListener {
+        scanner.setScanningListener(object : BluetoothScanner.ScanningListener {
 
             override fun onDiscoverableFinish() {
                 view.discoverableFinished()
@@ -30,7 +30,7 @@ class ScanPresenter(private val view: ScanView, private val scanner: BluetoothSc
             override fun onDeviceFind(device: BluetoothDevice) {
                 view.addFoundDevice(device)
             }
-        }
+        })
     }
 
     fun checkBluetoothAvailability() {

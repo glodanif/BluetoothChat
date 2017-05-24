@@ -19,7 +19,7 @@ import android.view.View
 import android.widget.Button
 import android.widget.TextView
 import com.glodanif.bluetoothchat.adapter.DevicesAdapter
-import com.glodanif.bluetoothchat.model.BluetoothScanner
+import com.glodanif.bluetoothchat.model.BluetoothScannerImpl
 import com.glodanif.bluetoothchat.presenter.ScanPresenter
 import com.glodanif.bluetoothchat.view.ScanView
 import com.glodanif.bluetoothchat.view.custom.ExpiringProgressBar
@@ -54,7 +54,7 @@ class ScanActivity : AppCompatActivity(), ScanView {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
 
-        presenter = ScanPresenter(this, BluetoothScanner(this))
+        presenter = ScanPresenter(this, BluetoothScannerImpl(this))
 
         container = findViewById(R.id.fl_container)
         turnOnHolder = findViewById(R.id.cl_turn_on)
