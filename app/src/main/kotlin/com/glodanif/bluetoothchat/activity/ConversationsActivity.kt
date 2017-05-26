@@ -8,26 +8,45 @@ import android.support.design.widget.FloatingActionButton
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import com.glodanif.bluetoothchat.R
+import com.glodanif.bluetoothchat.presenter.ConversationsPresenter
+import com.glodanif.bluetoothchat.view.ConversationsView
 
-class MainActivity : AppCompatActivity() {
+class ConversationsActivity : AppCompatActivity(), ConversationsView {
 
     private val REQUEST_SCAN = 101
 
+    private lateinit var presenter: ConversationsPresenter
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        setContentView(R.layout.activity_conversations)
         val toolbar = findViewById(R.id.toolbar) as Toolbar
         setSupportActionBar(toolbar)
 
+        presenter = ConversationsPresenter(this)
+
         val fab = findViewById(R.id.fab) as FloatingActionButton
-        fab.setOnClickListener { ScanActivity.startForResult(this@MainActivity, REQUEST_SCAN) }
+        fab.setOnClickListener {
+            ScanActivity.startForResult(this@ConversationsActivity, REQUEST_SCAN)
+        }
+    }
+
+    override fun onStart() {
+        super.onStart()
+    }
+
+    override fun onStop() {
+        super.onStop()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
         if (requestCode == REQUEST_SCAN && resultCode == Activity.RESULT_OK) {
-            val device = data?.getParcelableExtra<BluetoothDevice>(ScanActivity.EXTRA_BLUETOOTH_DEVICE)
+            val device = data
+                    ?.getParcelableExtra<BluetoothDevice>(ScanActivity.EXTRA_BLUETOOTH_DEVICE)
+
+            //ChatActivity.start(this, device)
         }
     }
 }
