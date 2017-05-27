@@ -3,14 +3,12 @@ package com.glodanif.bluetoothchat.model
 import android.bluetooth.BluetoothDevice
 import android.content.ComponentName
 import android.content.Context
-import android.content.Intent
 import android.content.ServiceConnection
 import android.os.IBinder
-import android.support.v7.app.AppCompatActivity
 import com.glodanif.bluetoothchat.service.BluetoothConnectionService
 import java.lang.IllegalStateException
 
-class BluetoothConnectorImpl(private val context: Context, private val device: BluetoothDevice) : BluetoothConnector {
+class BluetoothConnectorImpl(private val context: Context) : BluetoothConnector {
 
     private var prepareListener: BluetoothConnector.OnPrepareListener? = null
     private var connectListener: BluetoothConnector.OnConnectListener? = null
@@ -35,8 +33,7 @@ class BluetoothConnectorImpl(private val context: Context, private val device: B
     }
 
     override fun prepare() {
-        val intent = Intent(context, BluetoothConnectionService::class.java)
-        context.bindService(intent, connection, AppCompatActivity.BIND_AUTO_CREATE)
+        BluetoothConnectionService.bind(context, connection)
     }
 
     override fun release() {
@@ -66,12 +63,12 @@ class BluetoothConnectorImpl(private val context: Context, private val device: B
         service?.prepareForAccept()
     }
 
-    override fun connect() {
+    override fun connect(device: BluetoothDevice) {
         if (!bound) {
             throw IllegalStateException("Bluetooth connection service is not prepared yet")
         }
 
-        service?.connect()
+        service?.connect(device)
     }
 
     override fun stop() {

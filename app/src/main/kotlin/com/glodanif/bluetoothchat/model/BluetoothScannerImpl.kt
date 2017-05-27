@@ -7,6 +7,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.os.Handler
+import android.util.Log
 import com.glodanif.bluetoothchat.model.BluetoothScanner.ScanningListener
 
 class BluetoothScannerImpl(val context: Context) : BluetoothScanner {
@@ -55,7 +56,7 @@ class BluetoothScannerImpl(val context: Context) : BluetoothScanner {
         try {
             context.unregisterReceiver(foundDeviceReceiver)
         } catch (e: IllegalArgumentException) {
-            e.printStackTrace()
+            Log.e("TAG13", e.message)
         }
         if (adapter != null && adapter.isDiscovering) {
             adapter.cancelDiscovery();

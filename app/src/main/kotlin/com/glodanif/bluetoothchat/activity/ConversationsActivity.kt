@@ -8,6 +8,8 @@ import android.support.design.widget.FloatingActionButton
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import com.glodanif.bluetoothchat.R
+import com.glodanif.bluetoothchat.model.BluetoothConnector
+import com.glodanif.bluetoothchat.model.BluetoothConnectorImpl
 import com.glodanif.bluetoothchat.presenter.ConversationsPresenter
 import com.glodanif.bluetoothchat.view.ConversationsView
 
@@ -16,6 +18,7 @@ class ConversationsActivity : AppCompatActivity(), ConversationsView {
     private val REQUEST_SCAN = 101
 
     private lateinit var presenter: ConversationsPresenter
+    private val connection: BluetoothConnector = BluetoothConnectorImpl(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -23,7 +26,7 @@ class ConversationsActivity : AppCompatActivity(), ConversationsView {
         val toolbar = findViewById(R.id.toolbar) as Toolbar
         setSupportActionBar(toolbar)
 
-        presenter = ConversationsPresenter(this)
+        presenter = ConversationsPresenter(this, connection)
 
         val fab = findViewById(R.id.fab) as FloatingActionButton
         fab.setOnClickListener {
@@ -33,6 +36,7 @@ class ConversationsActivity : AppCompatActivity(), ConversationsView {
 
     override fun onStart() {
         super.onStart()
+        presenter.onStart()
     }
 
     override fun onStop() {
@@ -46,7 +50,9 @@ class ConversationsActivity : AppCompatActivity(), ConversationsView {
             val device = data
                     ?.getParcelableExtra<BluetoothDevice>(ScanActivity.EXTRA_BLUETOOTH_DEVICE)
 
-            //ChatActivity.start(this, device)
+            if (device != null) {
+                connection.connect(device)
+            }
         }
     }
 }
