@@ -1,6 +1,7 @@
 package com.glodanif.bluetoothchat.model
 
 import android.bluetooth.BluetoothDevice
+import com.glodanif.bluetoothchat.entity.ChatMessage
 
 interface BluetoothConnector {
 
@@ -13,18 +14,19 @@ interface BluetoothConnector {
     fun setOnMessageListener(listener: OnMessageListener)
     fun connect(device: BluetoothDevice)
     fun sendMessage(message: String)
+    fun isConnected(): Boolean
 
     interface OnConnectListener {
         fun onConnecting()
-        fun onConnected(name: String)
+        fun onConnected(device: BluetoothDevice)
         fun onConnectionLost()
         fun onConnectionFailed()
         fun onDisconnected()
     }
 
     interface OnMessageListener {
-        fun onMessageReceived(message: String)
-        fun onMessageSent(message: String, id: Int)
+        fun onMessageReceived(message: ChatMessage)
+        fun onMessageSent(message: ChatMessage)
     }
 
     interface OnPrepareListener {

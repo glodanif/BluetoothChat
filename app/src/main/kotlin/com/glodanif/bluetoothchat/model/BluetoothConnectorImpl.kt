@@ -5,6 +5,7 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.ServiceConnection
 import android.os.IBinder
+import com.glodanif.bluetoothchat.entity.ChatMessage
 import com.glodanif.bluetoothchat.service.BluetoothConnectionService
 import java.lang.IllegalStateException
 
@@ -26,20 +27,20 @@ class BluetoothConnectorImpl(private val context: Context) : BluetoothConnector 
 
             (service as BluetoothConnectionService).setConnectionListener(object : BluetoothConnectionService.ConnectionServiceListener {
 
-                override fun onMessageReceived(message: String) {
+                override fun onMessageReceived(message: ChatMessage) {
                     messageListener?.onMessageReceived(message)
                 }
 
-                override fun onMessageSent(message: String, id: Int) {
-                    messageListener?.onMessageSent(message, id)
+                override fun onMessageSent(message: ChatMessage) {
+                    messageListener?.onMessageSent(message)
                 }
 
                 override fun onConnecting() {
                     connectListener?.onConnecting()
                 }
 
-                override fun onConnected(name: String) {
-                    connectListener?.onConnected(name)
+                override fun onConnected(device: BluetoothDevice) {
+                    connectListener?.onConnected(device)
                 }
 
                 override fun onConnectionLost() {
@@ -119,5 +120,9 @@ class BluetoothConnectorImpl(private val context: Context) : BluetoothConnector 
         }
 
         service?.sendMessage(message)
+    }
+
+    override fun isConnected(): Boolean {
+        return if (service == null) false else service!!.isConnected()
     }
 }

@@ -1,7 +1,8 @@
 package com.glodanif.bluetoothchat.view
 
+import android.bluetooth.BluetoothDevice
+
 interface ConversationsView {
 
-    fun showReceivedMessage(message: String)
-    fun showSentMessage(message: String)
+    fun redirectToChat(device: BluetoothDevice)
 }

@@ -1,6 +1,7 @@
 package com.glodanif.bluetoothchat.presenter
 
 import android.bluetooth.BluetoothDevice
+import com.glodanif.bluetoothchat.entity.ChatMessage
 import com.glodanif.bluetoothchat.model.BluetoothConnector
 import com.glodanif.bluetoothchat.view.ConversationsView
 
@@ -24,8 +25,8 @@ class ConversationsPresenter(private val view: ConversationsView, private val co
 
             }
 
-            override fun onConnected(name: String) {
-
+            override fun onConnected(device: BluetoothDevice) {
+                view.redirectToChat(device)
             }
 
             override fun onConnectionLost() {
@@ -43,12 +44,12 @@ class ConversationsPresenter(private val view: ConversationsView, private val co
 
         connection.setOnMessageListener(object : BluetoothConnector.OnMessageListener {
 
-            override fun onMessageReceived(message: String) {
-                view.showReceivedMessage(message)
+            override fun onMessageReceived(message: ChatMessage) {
+
             }
 
-            override fun onMessageSent(message: String, id: Int) {
-                view.showSentMessage(message)
+            override fun onMessageSent(message: ChatMessage) {
+
             }
         })
     }

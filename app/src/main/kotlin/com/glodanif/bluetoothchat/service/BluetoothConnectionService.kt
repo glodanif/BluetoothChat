@@ -19,6 +19,7 @@ import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import com.glodanif.bluetoothchat.R
 import com.glodanif.bluetoothchat.activity.ConversationsActivity
+import com.glodanif.bluetoothchat.entity.ChatMessage
 import java.io.IOException
 import java.io.InputStream
 import java.io.OutputStream
@@ -148,7 +149,7 @@ class BluetoothConnectionService : Service() {
         connectedThread = ConnectedThread(socket)
         connectedThread!!.start()
 
-        handler.post { listener?.onConnected(device.name) }
+        handler.post { listener?.onConnected(device) }
     }
 
     @Synchronized fun stop() {
@@ -178,6 +179,10 @@ class BluetoothConnectionService : Service() {
         handler.post { listener?.onConnectionLost() }
         connectionState = ConnectionState.NOT_CONNECTED
         prepareForAccept()
+    }
+
+    fun isConnected(): Boolean {
+        return connectionState == ConnectionState.CONNECTED
     }
 
     fun sendMessage(message: String) {
@@ -330,10 +335,12 @@ class BluetoothConnectionService : Service() {
             while (connectionState == ConnectionState.CONNECTED) {
                 try {
                     bytes = inputStream?.read(buffer)
+
                     if (bytes != null) {
-                        val message: String = String(buffer, 0, bytes)
-                        Log.e(TAG, "<- $message")
-                        handler.post { listener?.onMessageReceived(message) }
+
+                        val receivedMessage: ChatMessage = ChatMessage(
+                                socket.remoteDevice.address, Date(), false, String(buffer, 0, bytes))
+                        handler.post { listener?.onMessageReceived(receivedMessage) }
                     }
                 } catch (e: IOException) {
                     Log.e(TAG, "disconnected", e)
@@ -346,8 +353,10 @@ class BluetoothConnectionService : Service() {
         fun write(message: String) {
             try {
                 outputStream?.write(message.toByteArray(Charsets.UTF_8))
-                Log.e(TAG, "-> $message")
-                handler.post { listener?.onMessageSent(message, -1) }
+
+                val sentMessage: ChatMessage = ChatMessage(
+                        socket.remoteDevice.address, Date(), true, message)
+                handler.post { listener?.onMessageSent(sentMessage) }
             } catch (e: IOException) {
                 Log.e(TAG, "Exception during write", e)
             }
@@ -369,10 +378,10 @@ class BluetoothConnectionService : Service() {
     }
 
     interface ConnectionServiceListener {
-        fun onMessageReceived(message: String)
-        fun onMessageSent(message: String, id: Int)
+        fun onMessageReceived(message: ChatMessage)
+        fun onMessageSent(message: ChatMessage)
         fun onConnecting()
-        fun onConnected(name: String)
+        fun onConnected(device: BluetoothDevice)
         fun onConnectionLost()
         fun onConnectionFailed()
         fun onDisconnected()
