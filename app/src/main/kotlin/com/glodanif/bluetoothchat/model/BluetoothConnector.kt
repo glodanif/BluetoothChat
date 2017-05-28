@@ -18,12 +18,13 @@ interface BluetoothConnector {
         fun onConnecting()
         fun onConnected(name: String)
         fun onConnectionLost()
+        fun onConnectionFailed()
         fun onDisconnected()
     }
 
     interface OnMessageListener {
         fun onMessageReceived(message: String)
-        fun onMessageSent(id: Int)
+        fun onMessageSent(message: String, id: Int)
     }
 
     interface OnPrepareListener {

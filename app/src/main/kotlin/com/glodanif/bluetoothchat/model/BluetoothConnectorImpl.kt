@@ -23,6 +23,37 @@ class BluetoothConnectorImpl(private val context: Context) : BluetoothConnector 
             service = (binder as BluetoothConnectionService.ConnectionBinder).getService()
             bound = true
             prepareListener?.onPrepared()
+
+            (service as BluetoothConnectionService).setConnectionListener(object : BluetoothConnectionService.ConnectionServiceListener {
+
+                override fun onMessageReceived(message: String) {
+                    messageListener?.onMessageReceived(message)
+                }
+
+                override fun onMessageSent(message: String, id: Int) {
+                    messageListener?.onMessageSent(message, id)
+                }
+
+                override fun onConnecting() {
+                    connectListener?.onConnecting()
+                }
+
+                override fun onConnected(name: String) {
+                    connectListener?.onConnected(name)
+                }
+
+                override fun onConnectionLost() {
+                    connectListener?.onConnectionLost()
+                }
+
+                override fun onConnectionFailed() {
+                    connectListener?.onConnectionFailed()
+                }
+
+                override fun onDisconnected() {
+                    connectListener?.onDisconnected()
+                }
+            })
         }
 
         override fun onServiceDisconnected(className: ComponentName) {
@@ -33,6 +64,9 @@ class BluetoothConnectorImpl(private val context: Context) : BluetoothConnector 
     }
 
     override fun prepare() {
+        if (!BluetoothConnectionService.isRunning) {
+            BluetoothConnectionService.start(context)
+        }
         BluetoothConnectionService.bind(context, connection)
     }
 
