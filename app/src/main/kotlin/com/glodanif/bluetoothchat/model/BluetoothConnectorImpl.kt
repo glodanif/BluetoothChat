@@ -90,14 +90,6 @@ class BluetoothConnectorImpl(private val context: Context) : BluetoothConnector 
         this.messageListener = listener
     }
 
-    override fun prepareForAccept() {
-        if (!bound) {
-            throw IllegalStateException("Bluetooth connection service is not prepared yet")
-        }
-
-        service?.prepareForAccept()
-    }
-
     override fun connect(device: BluetoothDevice) {
         if (!bound) {
             throw IllegalStateException("Bluetooth connection service is not prepared yet")

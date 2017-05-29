@@ -19,8 +19,6 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/toolbar"
-        app:reverseLayout="true"
-        app:stackFromEnd="true"
         tools:listitem="@layout/item_chat_message" />
 
     <android.support.v7.widget.Toolbar
@@ -38,7 +36,7 @@
     <LinearLayout
         android:id="@+id/linearLayout"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="48dp"
         android:background="@android:color/white"
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -57,16 +55,16 @@
             android:hint="Message"
             android:inputType="textPersonName"
             android:padding="8dp"
-            android:textSize="14sp" />
+            android:textSize="16sp" />
 
         <ImageButton
             android:id="@+id/ib_send"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_gravity="center_vertical"
             android:layout_weight="0"
-            android:background="@null"
-            android:padding="8dp"
             android:tint="@color/colorAccent"
+            android:background="?android:attr/selectableItemBackground"
             app:srcCompat="@drawable/ic_send_black_24dp" />
 
     </LinearLayout>

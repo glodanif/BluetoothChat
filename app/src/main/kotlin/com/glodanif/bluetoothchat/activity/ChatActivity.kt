@@ -42,7 +42,10 @@ class ChatActivity : AppCompatActivity(), ChatView {
         }
 
         chatList = findViewById(R.id.rv_chat) as RecyclerView
-        chatList.layoutManager = LinearLayoutManager(this)
+        val layoutManager = LinearLayoutManager(this)
+        layoutManager.reverseLayout = true
+        layoutManager.stackFromEnd = true
+        chatList.layoutManager = layoutManager
         chatList.adapter = adapter
 
         presenter = ChatPresenter(this, connectionModel)
@@ -57,6 +60,7 @@ class ChatActivity : AppCompatActivity(), ChatView {
 
     override fun onStop() {
         super.onStop()
+        presenter.onStop()
     }
 
     override fun showMessagesHistory() {

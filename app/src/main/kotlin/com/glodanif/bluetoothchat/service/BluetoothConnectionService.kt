@@ -69,9 +69,10 @@ class BluetoothConnectionService : Service() {
         if (intent.action == ACTION_STOP) {
             stopSelf()
             return START_NOT_STICKY
-        } else {
-            showNotification("Ready to connect")
         }
+
+        prepareForAccept()
+        showNotification("Ready to connect")
         return Service.START_STICKY
     }
 

@@ -11,7 +11,7 @@ class ConversationsPresenter(private val view: ConversationsView, private val co
         connection.setOnPrepareListener(object : BluetoothConnector.OnPrepareListener {
 
             override fun onPrepared() {
-                connection.prepareForAccept()
+                view.connectedToModel()
             }
 
             override fun onError() {
@@ -55,11 +55,15 @@ class ConversationsPresenter(private val view: ConversationsView, private val co
     }
 
     fun onStart() {
-        connection.prepare()
+        if (!connection.isConnected()) {
+            connection.prepare()
+        }
     }
 
     fun onStop() {
-        connection.stop()
+        if (!connection.isConnected()) {
+            connection.release()
+        }
     }
 
     fun sendMessage(message: String) {

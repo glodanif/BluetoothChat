@@ -20,6 +20,8 @@ class ConversationsActivity : AppCompatActivity(), ConversationsView {
     private lateinit var presenter: ConversationsPresenter
     private val connection: BluetoothConnector = BluetoothConnectorImpl(this)
 
+    private var connectAction: (() -> Unit)? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_conversations)
@@ -41,10 +43,16 @@ class ConversationsActivity : AppCompatActivity(), ConversationsView {
 
     override fun onStop() {
         super.onStop()
+        presenter.onStop()
     }
 
     override fun redirectToChat(device: BluetoothDevice) {
         ChatActivity.start(this, device)
+    }
+
+    override fun connectedToModel() {
+        connectAction?.invoke()
+        connectAction = null
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -55,8 +63,10 @@ class ConversationsActivity : AppCompatActivity(), ConversationsView {
                     ?.getParcelableExtra<BluetoothDevice>(ScanActivity.EXTRA_BLUETOOTH_DEVICE)
 
             if (device != null) {
-                connection.connect(device)
-                ChatActivity.start(this, device)
+                connectAction = {
+                    connection.connect(device)
+                    ChatActivity.start(this, device)
+                }
             }
         }
     }

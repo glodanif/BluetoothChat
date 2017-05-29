@@ -7,7 +7,6 @@ interface BluetoothConnector {
 
     fun prepare()
     fun release()
-    fun prepareForAccept()
     fun stop()
     fun setOnConnectListener(listener: OnConnectListener)
     fun setOnPrepareListener(listener: OnPrepareListener)
