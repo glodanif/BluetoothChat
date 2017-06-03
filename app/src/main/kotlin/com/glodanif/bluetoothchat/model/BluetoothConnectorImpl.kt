@@ -39,8 +39,12 @@ class BluetoothConnectorImpl(private val context: Context) : BluetoothConnector 
                     connectListener?.onConnecting()
                 }
 
-                override fun onConnected(device: BluetoothDevice) {
-                    connectListener?.onConnected(device)
+                override fun onConnectedIn(device: BluetoothDevice) {
+                    connectListener?.onConnectedIn(device)
+                }
+
+                override fun onConnectedOut(device: BluetoothDevice) {
+                    connectListener?.onConnectedOut(device)
                 }
 
                 override fun onConnectionLost() {
@@ -112,6 +116,14 @@ class BluetoothConnectorImpl(private val context: Context) : BluetoothConnector 
         }
 
         service?.sendMessage(message)
+    }
+
+    override fun restart() {
+        if (!bound) {
+            throw IllegalStateException("Bluetooth connection service is not prepared yet")
+        }
+
+        service?.prepareForAccept()
     }
 
     override fun isConnected(): Boolean {

@@ -31,7 +31,8 @@ class BluetoothConnectionService : Service() {
 
     private val TAG = "TAG13"
 
-    private enum class ConnectionState { CONNECTED, CONNECTING, NOT_CONNECTED, LISTENING }
+    enum class ConnectionState { CONNECTED, CONNECTING, NOT_CONNECTED, LISTENING }
+    enum class ConnectionType { INCOMING, OUTCOMING }
 
     private var listener: ConnectionServiceListener? = null
 
@@ -134,7 +135,7 @@ class BluetoothConnectionService : Service() {
         handler.post { listener?.onConnecting() }
     }
 
-    @Synchronized fun connected(socket: BluetoothSocket, device: BluetoothDevice) {
+    @Synchronized fun connected(socket: BluetoothSocket, device: BluetoothDevice, type: ConnectionType) {
 
         Log.d(TAG, "connected")
 
@@ -150,7 +151,13 @@ class BluetoothConnectionService : Service() {
         connectedThread = ConnectedThread(socket)
         connectedThread!!.start()
 
-        handler.post { listener?.onConnected(device) }
+        handler.post {
+            if (type == ConnectionType.INCOMING) {
+                listener?.onConnectedIn(device)
+            } else {
+                listener?.onConnectedOut(device)
+            }
+        }
     }
 
     @Synchronized fun stop() {
@@ -230,7 +237,7 @@ class BluetoothConnectionService : Service() {
                     when (connectionState) {
                         ConnectionState.LISTENING, ConnectionState.CONNECTING -> {
                             Log.e(TAG, "AcceptThread")
-                            connected(socket, socket.remoteDevice)
+                            connected(socket, socket.remoteDevice, ConnectionType.INCOMING)
                         }
                         ConnectionState.NOT_CONNECTED, ConnectionState.CONNECTED -> try {
                             socket.close()
@@ -294,7 +301,7 @@ class BluetoothConnectionService : Service() {
 
             if (socket != null) {
                 Log.e(TAG, "ConnectThread")
-                connected(socket!!, device)
+                connected(socket!!, device, ConnectionType.OUTCOMING)
             }
         }
 
@@ -382,7 +389,8 @@ class BluetoothConnectionService : Service() {
         fun onMessageReceived(message: ChatMessage)
         fun onMessageSent(message: ChatMessage)
         fun onConnecting()
-        fun onConnected(device: BluetoothDevice)
+        fun onConnectedIn(device: BluetoothDevice)
+        fun onConnectedOut(device: BluetoothDevice)
         fun onConnectionLost()
         fun onConnectionFailed()
         fun onDisconnected()

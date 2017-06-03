@@ -1,6 +1,7 @@
 package com.glodanif.bluetoothchat.activity
 
 import android.app.Activity
+import android.app.AlertDialog
 import android.bluetooth.BluetoothDevice
 import android.content.Intent
 import android.os.Bundle
@@ -44,6 +45,15 @@ class ConversationsActivity : AppCompatActivity(), ConversationsView {
     override fun onStop() {
         super.onStop()
         presenter.onStop()
+    }
+
+    override fun notifyAboutConnectedDevice(device: BluetoothDevice) {
+        AlertDialog.Builder(this)
+                .setMessage("${device.name} (${device.address}) has just connected to you")
+                .setPositiveButton("Start chat", { _, _ -> presenter.startChat(device) })
+                .setNegativeButton("Disconnect", { _, _ -> presenter.rejectConnection() })
+                .setCancelable(false)
+                .show()
     }
 
     override fun redirectToChat(device: BluetoothDevice) {

@@ -21,11 +21,15 @@ class ChatPresenter(private val view: ChatView, private val connectionModel: Blu
 
         connectionModel.setOnConnectListener(object : BluetoothConnector.OnConnectListener {
 
-            override fun onConnecting() {
+            override fun onConnectedIn(device: BluetoothDevice) {
 
             }
 
-            override fun onConnected(device: BluetoothDevice) {
+            override fun onConnectedOut(device: BluetoothDevice) {
+
+            }
+
+            override fun onConnecting() {
 
             }
 

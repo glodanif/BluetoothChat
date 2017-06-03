@@ -21,12 +21,16 @@ class ConversationsPresenter(private val view: ConversationsView, private val co
 
         connection.setOnConnectListener(object : BluetoothConnector.OnConnectListener {
 
-            override fun onConnecting() {
-
+            override fun onConnectedIn(device: BluetoothDevice) {
+                view.notifyAboutConnectedDevice(device)
             }
 
-            override fun onConnected(device: BluetoothDevice) {
+            override fun onConnectedOut(device: BluetoothDevice) {
                 view.redirectToChat(device)
+            }
+
+            override fun onConnecting() {
+
             }
 
             override fun onConnectionLost() {
@@ -64,6 +68,14 @@ class ConversationsPresenter(private val view: ConversationsView, private val co
         if (!connection.isConnected()) {
             connection.release()
         }
+    }
+
+    fun startChat(device: BluetoothDevice) {
+        view.redirectToChat(device)
+    }
+
+    fun rejectConnection() {
+        connection.restart()
     }
 
     fun sendMessage(message: String) {

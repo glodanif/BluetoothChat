@@ -19,7 +19,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/toolbar"
-        tools:listitem="@layout/item_chat_message" />
+        tools:listitem="@layout/item_chat_message_foreign" />
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"

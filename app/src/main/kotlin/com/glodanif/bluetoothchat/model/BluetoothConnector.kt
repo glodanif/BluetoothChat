@@ -8,6 +8,7 @@ interface BluetoothConnector {
     fun prepare()
     fun release()
     fun stop()
+    fun restart()
     fun setOnConnectListener(listener: OnConnectListener)
     fun setOnPrepareListener(listener: OnPrepareListener)
     fun setOnMessageListener(listener: OnMessageListener)
@@ -17,7 +18,8 @@ interface BluetoothConnector {
 
     interface OnConnectListener {
         fun onConnecting()
-        fun onConnected(device: BluetoothDevice)
+        fun onConnectedIn(device: BluetoothDevice)
+        fun onConnectedOut(device: BluetoothDevice)
         fun onConnectionLost()
         fun onConnectionFailed()
         fun onDisconnected()

@@ -42,7 +42,7 @@ class ChatActivity : AppCompatActivity(), ChatView {
         }
 
         chatList = findViewById(R.id.rv_chat) as RecyclerView
-        val layoutManager = LinearLayoutManager(this)
+        val layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, true)
         layoutManager.reverseLayout = true
         layoutManager.stackFromEnd = true
         chatList.layoutManager = layoutManager
@@ -51,6 +51,8 @@ class ChatActivity : AppCompatActivity(), ChatView {
         presenter = ChatPresenter(this, connectionModel)
 
         val device: BluetoothDevice = intent.getParcelableExtra(EXTRA_BLUETOOTH_DEVICE)
+        toolbar.title = device.name
+        toolbar.subtitle = "Waiting for opponent"
     }
 
     override fun onStart() {
@@ -64,16 +66,16 @@ class ChatActivity : AppCompatActivity(), ChatView {
     }
 
     override fun showMessagesHistory() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        TODO("not implemented")
     }
 
     override fun showReceivedMessage(message: ChatMessage) {
-        adapter.messages.add(message)
+        adapter.messages.addFirst(message)
         adapter.notifyDataSetChanged()
     }
 
     override fun showSentMessage(message: ChatMessage) {
-        adapter.messages.add(message)
+        adapter.messages.addFirst(message)
         adapter.notifyDataSetChanged()
     }
 
