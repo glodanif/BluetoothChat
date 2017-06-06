@@ -4,7 +4,7 @@ import com.glodanif.bluetoothchat.entity.ChatMessage
 
 interface ChatView {
 
-    fun showMessagesHistory()
+    fun showMessagesHistory(messages: List<ChatMessage>)
     fun showReceivedMessage(message: ChatMessage)
     fun showSentMessage(message: ChatMessage)
 }

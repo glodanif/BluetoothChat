@@ -1,7 +1,12 @@
 package com.glodanif.bluetoothchat.entity
 
-class Conversation {
+import android.arch.persistence.room.ColumnInfo
+import android.arch.persistence.room.Entity
+import android.arch.persistence.room.PrimaryKey
 
-    private var deviceName: String? = null
-    private var messages: List<ChatMessage> = ArrayList()
-}
+@Entity(tableName = "conversation")
+data class Conversation(
+        @PrimaryKey
+        @ColumnInfo(name = "address") var deviceAddress: String,
+        var deviceName: String
+)

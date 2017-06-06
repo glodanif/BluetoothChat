@@ -1,20 +1,19 @@
 package com.glodanif.bluetoothchat.entity
 
+import android.arch.persistence.room.ColumnInfo
+import android.arch.persistence.room.Entity
+import android.arch.persistence.room.PrimaryKey
 import java.util.*
 
-class ChatMessage {
+@Entity(tableName = "message")
+data class ChatMessage(
+        @ColumnInfo(name = "address") var deviceAddress: String,
+        var date: Date,
+        var own: Boolean,
+        var text: String,
+        var seen: Boolean
+) {
 
-    constructor(deviceAddress: String, date: Date, own: Boolean, text: String) {
-        this.deviceAddress = deviceAddress
-        this.date = date
-        this.seen = seen
-        this.own = own
-        this.text = text
-    }
-
-    var deviceAddress: String? = null
-    var date: Date? = null
-    var seen: Boolean = false
-    var own: Boolean = false
-    var text: String? = null
+    @PrimaryKey(autoGenerate = true)
+    var uid: Long = 0
 }

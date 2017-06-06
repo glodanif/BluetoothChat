@@ -14,13 +14,17 @@ import com.glodanif.bluetoothchat.adapter.ChatAdapter
 import com.glodanif.bluetoothchat.entity.ChatMessage
 import com.glodanif.bluetoothchat.model.BluetoothConnector
 import com.glodanif.bluetoothchat.model.BluetoothConnectorImpl
+import com.glodanif.bluetoothchat.model.MessagesStorage
+import com.glodanif.bluetoothchat.model.MessagesStorageImpl
 import com.glodanif.bluetoothchat.presenter.ChatPresenter
 import com.glodanif.bluetoothchat.view.ChatView
+import java.util.*
 
 class ChatActivity : AppCompatActivity(), ChatView {
 
     private lateinit var presenter: ChatPresenter
     private val connectionModel: BluetoothConnector = BluetoothConnectorImpl(this)
+    private val storageModel: MessagesStorage = MessagesStorageImpl(this)
 
     private lateinit var chatList: RecyclerView
     private lateinit var messageField: EditText
@@ -48,11 +52,11 @@ class ChatActivity : AppCompatActivity(), ChatView {
         chatList.layoutManager = layoutManager
         chatList.adapter = adapter
 
-        presenter = ChatPresenter(this, connectionModel)
-
         val device: BluetoothDevice = intent.getParcelableExtra(EXTRA_BLUETOOTH_DEVICE)
         toolbar.title = device.name
         toolbar.subtitle = "Waiting for opponent"
+
+        presenter = ChatPresenter(device.address, this, connectionModel, storageModel)
     }
 
     override fun onStart() {
@@ -65,8 +69,9 @@ class ChatActivity : AppCompatActivity(), ChatView {
         presenter.onStop()
     }
 
-    override fun showMessagesHistory() {
-        TODO("not implemented")
+    override fun showMessagesHistory(messages: List<ChatMessage>) {
+        adapter.messages = LinkedList(messages)
+        adapter.notifyDataSetChanged()
     }
 
     override fun showReceivedMessage(message: ChatMessage) {

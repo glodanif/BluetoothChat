@@ -2,13 +2,14 @@ package com.glodanif.bluetoothchat.presenter
 
 import android.bluetooth.BluetoothDevice
 import com.glodanif.bluetoothchat.entity.ChatMessage
-import com.glodanif.bluetoothchat.model.BluetoothConnector
+import com.glodanif.bluetoothchat.model.*
 import com.glodanif.bluetoothchat.view.ChatView
 
-class ChatPresenter(private val view: ChatView, private val connectionModel: BluetoothConnector) {
+class ChatPresenter(private val deviceAddress: String, private val view: ChatView,
+                    private val connectionModel: BluetoothConnector, private val storage: MessagesStorage) {
 
     init {
-        connectionModel.setOnPrepareListener(object : BluetoothConnector.OnPrepareListener {
+        connectionModel.setOnPrepareListener(object : OnPrepareListener {
 
             override fun onPrepared() {
 
@@ -19,7 +20,7 @@ class ChatPresenter(private val view: ChatView, private val connectionModel: Blu
             }
         })
 
-        connectionModel.setOnConnectListener(object : BluetoothConnector.OnConnectListener {
+        connectionModel.setOnConnectListener(object : OnConnectionListener {
 
             override fun onConnectedIn(device: BluetoothDevice) {
 
@@ -46,22 +47,27 @@ class ChatPresenter(private val view: ChatView, private val connectionModel: Blu
             }
         })
 
-        connectionModel.setOnMessageListener(object : BluetoothConnector.OnMessageListener {
+        connectionModel.setOnMessageListener(object : OnMessageListener {
 
             override fun onMessageReceived(message: ChatMessage) {
                 view.showReceivedMessage(message)
+                storage.insertMessage(message)
             }
 
             override fun onMessageSent(message: ChatMessage) {
                 view.showSentMessage(message)
+                storage.insertMessage(message)
             }
         })
+
+        storage.setListener { view.showMessagesHistory(it) }
     }
 
     fun onStart() {
         if (!connectionModel.isConnected()) {
             connectionModel.prepare()
         }
+        storage.getMessagesByDevice(deviceAddress)
     }
 
     fun onStop() {

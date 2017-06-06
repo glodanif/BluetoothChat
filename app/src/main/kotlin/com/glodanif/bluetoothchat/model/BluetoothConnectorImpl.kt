@@ -11,9 +11,9 @@ import java.lang.IllegalStateException
 
 class BluetoothConnectorImpl(private val context: Context) : BluetoothConnector {
 
-    private var prepareListener: BluetoothConnector.OnPrepareListener? = null
-    private var connectListener: BluetoothConnector.OnConnectListener? = null
-    private var messageListener: BluetoothConnector.OnMessageListener? = null
+    private var prepareListener: OnPrepareListener? = null
+    private var connectListener: OnConnectionListener? = null
+    private var messageListener: OnMessageListener? = null
 
     private var service: BluetoothConnectionService? = null
     private var bound = false
@@ -25,15 +25,7 @@ class BluetoothConnectorImpl(private val context: Context) : BluetoothConnector 
             bound = true
             prepareListener?.onPrepared()
 
-            (service as BluetoothConnectionService).setConnectionListener(object : BluetoothConnectionService.ConnectionServiceListener {
-
-                override fun onMessageReceived(message: ChatMessage) {
-                    messageListener?.onMessageReceived(message)
-                }
-
-                override fun onMessageSent(message: ChatMessage) {
-                    messageListener?.onMessageSent(message)
-                }
+            (service as BluetoothConnectionService).setConnectionListener(object : OnConnectionListener {
 
                 override fun onConnecting() {
                     connectListener?.onConnecting()
@@ -59,6 +51,17 @@ class BluetoothConnectorImpl(private val context: Context) : BluetoothConnector 
                     connectListener?.onDisconnected()
                 }
             })
+
+            (service as BluetoothConnectionService).setMessageListener(object : OnMessageListener {
+
+                override fun onMessageReceived(message: ChatMessage) {
+                    messageListener?.onMessageReceived(message)
+                }
+
+                override fun onMessageSent(message: ChatMessage) {
+                    messageListener?.onMessageSent(message)
+                }
+            })
         }
 
         override fun onServiceDisconnected(className: ComponentName) {
@@ -82,15 +85,15 @@ class BluetoothConnectorImpl(private val context: Context) : BluetoothConnector 
         }
     }
 
-    override fun setOnConnectListener(listener: BluetoothConnector.OnConnectListener) {
+    override fun setOnConnectListener(listener: OnConnectionListener) {
         this.connectListener = listener
     }
 
-    override fun setOnPrepareListener(listener: BluetoothConnector.OnPrepareListener) {
+    override fun setOnPrepareListener(listener: OnPrepareListener) {
         this.prepareListener = listener
     }
 
-    override fun setOnMessageListener(listener: BluetoothConnector.OnMessageListener) {
+    override fun setOnMessageListener(listener: OnMessageListener) {
         this.messageListener = listener
     }
 

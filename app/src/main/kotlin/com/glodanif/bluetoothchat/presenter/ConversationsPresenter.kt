@@ -3,12 +3,15 @@ package com.glodanif.bluetoothchat.presenter
 import android.bluetooth.BluetoothDevice
 import com.glodanif.bluetoothchat.entity.ChatMessage
 import com.glodanif.bluetoothchat.model.BluetoothConnector
+import com.glodanif.bluetoothchat.model.OnConnectionListener
+import com.glodanif.bluetoothchat.model.OnMessageListener
+import com.glodanif.bluetoothchat.model.OnPrepareListener
 import com.glodanif.bluetoothchat.view.ConversationsView
 
 class ConversationsPresenter(private val view: ConversationsView, private val connection: BluetoothConnector) {
 
     init {
-        connection.setOnPrepareListener(object : BluetoothConnector.OnPrepareListener {
+        connection.setOnPrepareListener(object : OnPrepareListener {
 
             override fun onPrepared() {
                 view.connectedToModel()
@@ -19,7 +22,7 @@ class ConversationsPresenter(private val view: ConversationsView, private val co
             }
         })
 
-        connection.setOnConnectListener(object : BluetoothConnector.OnConnectListener {
+        connection.setOnConnectListener(object : OnConnectionListener {
 
             override fun onConnectedIn(device: BluetoothDevice) {
                 view.notifyAboutConnectedDevice(device)
@@ -46,7 +49,7 @@ class ConversationsPresenter(private val view: ConversationsView, private val co
             }
         })
 
-        connection.setOnMessageListener(object : BluetoothConnector.OnMessageListener {
+        connection.setOnMessageListener(object : OnMessageListener {
 
             override fun onMessageReceived(message: ChatMessage) {
 

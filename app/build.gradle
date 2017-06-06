@@ -1,5 +1,6 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-kapt'
 
 android {
     compileSdkVersion 25
@@ -32,6 +33,8 @@ android {
 dependencies {
 
     def final SUPPORT_VERSION = '25.3.1'
+    def final ROOM_VERSION = '1.0.0-alpha1'
+    def final DAGGER_VERSION = '2.4'
 
     compile fileTree(dir: 'libs', include: ['*.jar'])
 
@@ -41,8 +44,11 @@ dependencies {
     compile "com.android.support:cardview-v7:$SUPPORT_VERSION"
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
 
-    compile "android.arch.persistence.room:runtime:1.0.0-alpha1"
-    annotationProcessor "android.arch.persistence.room:compiler:1.0.0-alpha1"
+    compile "android.arch.persistence.room:runtime:$ROOM_VERSION"
+    kapt "android.arch.persistence.room:compiler:$ROOM_VERSION"
+
+    compile "com.google.dagger:dagger:$DAGGER_VERSION"
+    kapt "com.google.dagger:dagger-compiler:$DAGGER_VERSION"
 
     compile 'com.akexorcist:RoundCornerProgressBar:2.0.3'
 
