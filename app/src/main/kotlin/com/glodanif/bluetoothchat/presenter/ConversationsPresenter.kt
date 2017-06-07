@@ -65,12 +65,14 @@ class ConversationsPresenter(private val view: ConversationsView, private val co
         if (!connection.isConnected()) {
             connection.prepare()
         }
+        connection.setConnectedToUI(true)
     }
 
     fun onStop() {
         if (!connection.isConnected()) {
             connection.release()
         }
+        connection.setConnectedToUI(false)
     }
 
     fun startChat(device: BluetoothDevice) {

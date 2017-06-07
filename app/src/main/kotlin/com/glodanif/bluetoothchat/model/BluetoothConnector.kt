@@ -14,4 +14,7 @@ interface BluetoothConnector {
     fun connect(device: BluetoothDevice)
     fun sendMessage(message: String)
     fun isConnected(): Boolean
+
+    fun isConnectedToUI(): Boolean
+    fun setConnectedToUI(connected: Boolean)
 }

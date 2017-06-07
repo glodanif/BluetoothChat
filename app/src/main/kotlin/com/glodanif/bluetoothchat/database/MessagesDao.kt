@@ -9,7 +9,7 @@ import com.glodanif.bluetoothchat.entity.ChatMessage
 @Dao
 interface MessagesDao {
 
-    @Query("SELECT * FROM message WHERE address = :p0")
+    @Query("SELECT * FROM message WHERE address = :p0 ORDER BY date DESC")
     fun getMessagesByDevice(address: String): List<ChatMessage>
 
     @Insert

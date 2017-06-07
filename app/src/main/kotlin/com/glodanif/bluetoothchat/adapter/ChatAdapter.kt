@@ -22,7 +22,7 @@ class ChatAdapter : RecyclerView.Adapter<ChatAdapter.MessageViewHolder>() {
         val holder: MessageViewHolder? = viewHolder
         val message = messages[position]
 
-        holder?.date?.text = message.date?.getRelativeTime()
+        holder?.date?.text = message.date.getRelativeTime()
         holder?.text?.text = message.text
     }
 

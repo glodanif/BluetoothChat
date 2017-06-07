@@ -51,12 +51,10 @@ class ChatPresenter(private val deviceAddress: String, private val view: ChatVie
 
             override fun onMessageReceived(message: ChatMessage) {
                 view.showReceivedMessage(message)
-                storage.insertMessage(message)
             }
 
             override fun onMessageSent(message: ChatMessage) {
                 view.showSentMessage(message)
-                storage.insertMessage(message)
             }
         })
 
@@ -67,6 +65,7 @@ class ChatPresenter(private val deviceAddress: String, private val view: ChatVie
         if (!connectionModel.isConnected()) {
             connectionModel.prepare()
         }
+        connectionModel.setConnectedToUI(true)
         storage.getMessagesByDevice(deviceAddress)
     }
 
@@ -74,6 +73,7 @@ class ChatPresenter(private val deviceAddress: String, private val view: ChatVie
         if (!connectionModel.isConnected()) {
             connectionModel.release()
         }
+        connectionModel.setConnectedToUI(false)
     }
 
     fun sendMessage(message: String) {

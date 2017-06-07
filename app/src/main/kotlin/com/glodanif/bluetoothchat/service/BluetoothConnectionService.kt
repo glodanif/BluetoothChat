@@ -51,6 +51,8 @@ class BluetoothConnectionService : Service() {
 
     private var connectionState: ConnectionState = ConnectionState.NOT_CONNECTED
 
+    var isBound = false
+
     override fun onBind(intent: Intent): IBinder? {
         return binder
     }

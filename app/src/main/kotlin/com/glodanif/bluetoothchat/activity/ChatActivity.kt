@@ -26,6 +26,7 @@ class ChatActivity : AppCompatActivity(), ChatView {
     private val connectionModel: BluetoothConnector = BluetoothConnectorImpl(this)
     private val storageModel: MessagesStorage = MessagesStorageImpl(this)
 
+    private val layoutManager = LinearLayoutManager(this)
     private lateinit var chatList: RecyclerView
     private lateinit var messageField: EditText
 
@@ -46,9 +47,7 @@ class ChatActivity : AppCompatActivity(), ChatView {
         }
 
         chatList = findViewById(R.id.rv_chat) as RecyclerView
-        val layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, true)
         layoutManager.reverseLayout = true
-        layoutManager.stackFromEnd = true
         chatList.layoutManager = layoutManager
         chatList.adapter = adapter
 
@@ -76,12 +75,14 @@ class ChatActivity : AppCompatActivity(), ChatView {
 
     override fun showReceivedMessage(message: ChatMessage) {
         adapter.messages.addFirst(message)
-        adapter.notifyDataSetChanged()
+        adapter.notifyItemInserted(0)
+        layoutManager.scrollToPosition(0)
     }
 
     override fun showSentMessage(message: ChatMessage) {
         adapter.messages.addFirst(message)
-        adapter.notifyDataSetChanged()
+        adapter.notifyItemInserted(0)
+        layoutManager.scrollToPosition(0)
     }
 
     companion object {
