@@ -18,14 +18,18 @@ import android.os.IBinder
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import com.glodanif.bluetoothchat.R
+import com.glodanif.bluetoothchat.Storage
 import com.glodanif.bluetoothchat.activity.ConversationsActivity
+import com.glodanif.bluetoothchat.database.ChatDatabase
 import com.glodanif.bluetoothchat.entity.ChatMessage
+import com.glodanif.bluetoothchat.entity.Conversation
 import com.glodanif.bluetoothchat.model.OnConnectionListener
 import com.glodanif.bluetoothchat.model.OnMessageListener
 import java.io.IOException
 import java.io.InputStream
 import java.io.OutputStream
 import java.util.*
+import kotlin.concurrent.thread
 
 class BluetoothConnectionService : Service() {
 
@@ -52,6 +56,10 @@ class BluetoothConnectionService : Service() {
     private var connectionState: ConnectionState = ConnectionState.NOT_CONNECTED
 
     var isBound = false
+
+    private var currentSocket: BluetoothSocket? = null
+
+    private val db: ChatDatabase = Storage.getInstance(this).db
 
     override fun onBind(intent: Intent): IBinder? {
         return binder
@@ -112,10 +120,7 @@ class BluetoothConnectionService : Service() {
 
         Log.d(TAG, "start")
 
-        connectThread?.cancel()
-        connectThread = null
-        connectedThread?.cancel()
-        connectedThread = null
+        cancelConnections()
 
         if (acceptThread == null) {
             acceptThread = AcceptThread()
@@ -144,11 +149,9 @@ class BluetoothConnectionService : Service() {
 
         Log.d(TAG, "connected")
 
-        connectThread?.cancel()
-        connectThread = null
+        currentSocket = socket
 
-        connectedThread?.cancel()
-        connectedThread = null
+        cancelConnections()
 
         acceptThread?.cancel()
         acceptThread = null
@@ -163,23 +166,58 @@ class BluetoothConnectionService : Service() {
                 connectionListener?.onConnectedOut(device)
             }
         }
+
+        val conversation = Conversation(device.address, device.name)
+        thread { db.conversationsDao().insert(conversation) }
     }
 
     @Synchronized fun stop() {
 
         Log.d(TAG, "stop")
 
-        connectThread?.cancel()
-        connectThread = null
-
-        connectedThread?.cancel()
-        connectedThread = null
+        cancelConnections()
 
         acceptThread?.cancel()
         acceptThread = null
 
         connectionState = ConnectionState.NOT_CONNECTED
         handler.post { connectionListener?.onDisconnected() }
+    }
+
+    private fun cancelConnections() {
+        connectThread?.cancel()
+        connectThread = null
+        connectedThread?.cancel()
+        connectedThread = null
+    }
+
+    fun sendMessage(message: String) {
+
+        if (connectionState == ConnectionState.CONNECTED) {
+            connectedThread?.write(message)
+        }
+    }
+
+    private fun onMessageSent(message: String) {
+
+        if (currentSocket == null) return
+
+        val sentMessage: ChatMessage = ChatMessage(
+                currentSocket!!.remoteDevice.address, Date(), true, message, false)
+
+        thread { db.messagesDao().insert(sentMessage) }
+        handler.post { messageListener?.onMessageSent(sentMessage) }
+    }
+
+    private fun onMessageReceived(message: String) {
+
+        if (currentSocket == null) return
+
+        val receivedMessage: ChatMessage = ChatMessage(
+                currentSocket!!.remoteDevice.address, Date(), false, message, false)
+
+        thread { db.messagesDao().insert(receivedMessage) }
+        handler.post { messageListener?.onMessageReceived(receivedMessage) }
     }
 
     private fun connectionFailed() {
@@ -196,13 +234,6 @@ class BluetoothConnectionService : Service() {
 
     fun isConnected(): Boolean {
         return connectionState == ConnectionState.CONNECTED
-    }
-
-    fun sendMessage(message: String) {
-
-        if (connectionState == ConnectionState.CONNECTED) {
-            connectedThread?.write(message)
-        }
     }
 
     fun setConnectionListener(listener: OnConnectionListener) {
@@ -354,10 +385,7 @@ class BluetoothConnectionService : Service() {
                     bytes = inputStream?.read(buffer)
 
                     if (bytes != null) {
-
-                        val receivedMessage: ChatMessage = ChatMessage(
-                                socket.remoteDevice.address, Date(), false, String(buffer, 0, bytes), false)
-                        handler.post { messageListener?.onMessageReceived(receivedMessage) }
+                        handler.post { onMessageReceived(String(buffer, 0, bytes!!)) }
                     }
                 } catch (e: IOException) {
                     Log.e(TAG, "disconnected", e)
@@ -370,10 +398,7 @@ class BluetoothConnectionService : Service() {
         fun write(message: String) {
             try {
                 outputStream?.write(message.toByteArray(Charsets.UTF_8))
-
-                val sentMessage: ChatMessage = ChatMessage(
-                        socket.remoteDevice.address, Date(), true, message, false)
-                handler.post { messageListener?.onMessageSent(sentMessage) }
+                onMessageSent(message)
             } catch (e: IOException) {
                 Log.e(TAG, "Exception during write", e)
             }
@@ -382,6 +407,7 @@ class BluetoothConnectionService : Service() {
         fun cancel() {
             try {
                 socket.close()
+                currentSocket = null
             } catch (e: IOException) {
                 Log.e(TAG, "close() of connect socket failed", e)
             }

@@ -7,8 +7,12 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.FloatingActionButton
 import android.support.v7.app.AppCompatActivity
+import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.Toolbar
+import android.view.View
 import com.glodanif.bluetoothchat.R
+import com.glodanif.bluetoothchat.adapter.ConversationsAdapter
+import com.glodanif.bluetoothchat.entity.Conversation
 import com.glodanif.bluetoothchat.model.BluetoothConnector
 import com.glodanif.bluetoothchat.model.BluetoothConnectorImpl
 import com.glodanif.bluetoothchat.presenter.ConversationsPresenter
@@ -23,6 +27,12 @@ class ConversationsActivity : AppCompatActivity(), ConversationsView {
 
     private var connectAction: (() -> Unit)? = null
 
+    private lateinit var conversationsList: RecyclerView
+    private lateinit var noConversations: View
+    private lateinit var addButton: FloatingActionButton
+
+    private val adapter: ConversationsAdapter = ConversationsAdapter()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_conversations)
@@ -31,8 +41,13 @@ class ConversationsActivity : AppCompatActivity(), ConversationsView {
 
         presenter = ConversationsPresenter(this, connection)
 
-        val fab = findViewById(R.id.fab) as FloatingActionButton
-        fab.setOnClickListener {
+        conversationsList = findViewById(R.id.rv_conversations) as RecyclerView
+        noConversations = findViewById(R.id.ll_empty_holder)
+
+        conversationsList.adapter = adapter
+
+        addButton = findViewById(R.id.fab_new_conversation) as FloatingActionButton
+        addButton.setOnClickListener {
             ScanActivity.startForResult(this@ConversationsActivity, REQUEST_SCAN)
         }
     }
@@ -45,6 +60,21 @@ class ConversationsActivity : AppCompatActivity(), ConversationsView {
     override fun onStop() {
         super.onStop()
         presenter.onStop()
+    }
+
+    override fun showNoConversations() {
+        conversationsList.visibility = View.GONE
+        addButton.visibility = View.GONE
+        noConversations.visibility = View.VISIBLE
+    }
+
+    override fun showConversations(conversations: List<Conversation>) {
+        conversationsList.visibility = View.VISIBLE
+        addButton.visibility = View.VISIBLE
+        noConversations.visibility = View.GONE
+
+        adapter.conversations = ArrayList(conversations)
+        adapter.notifyDataSetChanged()
     }
 
     override fun notifyAboutConnectedDevice(device: BluetoothDevice) {

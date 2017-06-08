@@ -13,7 +13,7 @@ interface ConversationsDao {
     fun getAllConversations(): List<Conversation>
 
     @Insert
-    fun insertAll(conversations: Conversation)
+    fun insert(conversations: Conversation)
 
     @Delete
     fun delete(conversations: Conversation)

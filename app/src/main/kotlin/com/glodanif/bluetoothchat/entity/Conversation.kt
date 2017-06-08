@@ -7,6 +7,7 @@ import android.arch.persistence.room.PrimaryKey
 @Entity(tableName = "conversation")
 data class Conversation(
         @PrimaryKey
-        @ColumnInfo(name = "address") var deviceAddress: String,
+        @ColumnInfo(name = "address")
+        var deviceAddress: String,
         var deviceName: String
 )

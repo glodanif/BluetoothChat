@@ -67,7 +67,7 @@ class DevicesAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         }
 
         val view = LayoutInflater.from(parent?.context)
-                .inflate(R.layout.item_header, parent, false)
+                .inflate(R.layout.item_header_devices, parent, false)
         return HeaderViewHolder(view)
     }
 
