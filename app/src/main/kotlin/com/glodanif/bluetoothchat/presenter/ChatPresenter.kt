@@ -57,8 +57,6 @@ class ChatPresenter(private val deviceAddress: String, private val view: ChatVie
                 view.showSentMessage(message)
             }
         })
-
-        storage.setListener { view.showMessagesHistory(it) }
     }
 
     fun onStart() {
@@ -66,7 +64,7 @@ class ChatPresenter(private val deviceAddress: String, private val view: ChatVie
             connectionModel.prepare()
         }
         connectionModel.setConnectedToUI(true)
-        storage.getMessagesByDevice(deviceAddress)
+        storage.getMessagesByDevice(deviceAddress) { view.showMessagesHistory(it) }
     }
 
     fun onStop() {

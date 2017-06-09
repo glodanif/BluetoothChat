@@ -4,7 +4,6 @@ import com.glodanif.bluetoothchat.entity.ChatMessage
 
 interface MessagesStorage {
 
-    fun setListener(listener: (List<ChatMessage>) -> Unit)
-    fun getMessagesByDevice(address: String)
+    fun getMessagesByDevice(address: String, listener: (List<ChatMessage>) -> Unit)
     fun insertMessage(message: ChatMessage)
 }

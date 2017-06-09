@@ -2,13 +2,11 @@ package com.glodanif.bluetoothchat.presenter
 
 import android.bluetooth.BluetoothDevice
 import com.glodanif.bluetoothchat.entity.ChatMessage
-import com.glodanif.bluetoothchat.model.BluetoothConnector
-import com.glodanif.bluetoothchat.model.OnConnectionListener
-import com.glodanif.bluetoothchat.model.OnMessageListener
-import com.glodanif.bluetoothchat.model.OnPrepareListener
+import com.glodanif.bluetoothchat.model.*
 import com.glodanif.bluetoothchat.view.ConversationsView
 
-class ConversationsPresenter(private val view: ConversationsView, private val connection: BluetoothConnector) {
+class ConversationsPresenter(private val view: ConversationsView, private val connection: BluetoothConnector,
+                             private val storage: ConversationsStorage) {
 
     init {
         connection.setOnPrepareListener(object : OnPrepareListener {
@@ -66,6 +64,9 @@ class ConversationsPresenter(private val view: ConversationsView, private val co
             connection.prepare()
         }
         connection.setConnectedToUI(true)
+        storage.getConversations {
+            if (it.isEmpty()) view.showNoConversations() else view.showConversations(it)
+        }
     }
 
     fun onStop() {

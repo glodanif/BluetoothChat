@@ -51,6 +51,7 @@ dependencies {
     kapt "com.google.dagger:dagger-compiler:$DAGGER_VERSION"
 
     compile 'com.akexorcist:RoundCornerProgressBar:2.0.3'
+    compile 'com.squareup.picasso:picasso:2.5.2'
 
     compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$KOTLIN_VERSION"
 

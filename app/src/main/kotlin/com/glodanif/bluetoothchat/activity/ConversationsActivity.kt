@@ -7,6 +7,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.FloatingActionButton
 import android.support.v7.app.AppCompatActivity
+import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.Toolbar
 import android.view.View
@@ -15,6 +16,8 @@ import com.glodanif.bluetoothchat.adapter.ConversationsAdapter
 import com.glodanif.bluetoothchat.entity.Conversation
 import com.glodanif.bluetoothchat.model.BluetoothConnector
 import com.glodanif.bluetoothchat.model.BluetoothConnectorImpl
+import com.glodanif.bluetoothchat.model.ConversationsStorage
+import com.glodanif.bluetoothchat.model.ConversationsStorageImpl
 import com.glodanif.bluetoothchat.presenter.ConversationsPresenter
 import com.glodanif.bluetoothchat.view.ConversationsView
 
@@ -24,6 +27,7 @@ class ConversationsActivity : AppCompatActivity(), ConversationsView {
 
     private lateinit var presenter: ConversationsPresenter
     private val connection: BluetoothConnector = BluetoothConnectorImpl(this)
+    private val storage: ConversationsStorage = ConversationsStorageImpl(this)
 
     private var connectAction: (() -> Unit)? = null
 
@@ -39,15 +43,18 @@ class ConversationsActivity : AppCompatActivity(), ConversationsView {
         val toolbar = findViewById(R.id.toolbar) as Toolbar
         setSupportActionBar(toolbar)
 
-        presenter = ConversationsPresenter(this, connection)
+        presenter = ConversationsPresenter(this, connection, storage)
 
         conversationsList = findViewById(R.id.rv_conversations) as RecyclerView
         noConversations = findViewById(R.id.ll_empty_holder)
-
+        conversationsList.layoutManager = LinearLayoutManager(this)
         conversationsList.adapter = adapter
 
         addButton = findViewById(R.id.fab_new_conversation) as FloatingActionButton
         addButton.setOnClickListener {
+            ScanActivity.startForResult(this@ConversationsActivity, REQUEST_SCAN)
+        }
+        findViewById(R.id.btn_scan).setOnClickListener {
             ScanActivity.startForResult(this@ConversationsActivity, REQUEST_SCAN)
         }
     }

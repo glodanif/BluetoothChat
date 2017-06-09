@@ -9,6 +9,9 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.glodanif.bluetoothchat.R
 import com.glodanif.bluetoothchat.entity.Conversation
+import com.glodanif.bluetoothchat.util.CircleTransformation
+import com.glodanif.bluetoothchat.util.GrayscaleTransformation
+import com.squareup.picasso.Picasso
 
 class ConversationsAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
@@ -17,16 +20,52 @@ class ConversationsAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     var listener: ((Conversation) -> Unit)? = null
 
+    var current: Conversation? = null
     var conversations = ArrayList<Conversation>()
+        set(value) {
+            current = value.findLast { it.deviceAddress == currentlyConnected?.address }
+            value.remove(current)
+            field = value
+        }
 
     var currentlyConnected: BluetoothDevice? = null
 
-    override fun onBindViewHolder(holder: RecyclerView.ViewHolder?, position: Int) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun onBindViewHolder(viewHolder: RecyclerView.ViewHolder?, position: Int) {
+
+        if (viewHolder is HeaderViewHolder) {
+
+            val holder: HeaderViewHolder = viewHolder
+
+            if (position == 0) {
+                holder.header.text = "Connected"
+            } else {
+                holder.header.text = "History"
+            }
+
+        } else if (viewHolder is ConversationViewHolder) {
+
+            val holder: ConversationViewHolder = viewHolder
+
+            if (currentlyConnected == null) {
+                val conversation = conversations[position - 1]
+                holder.name.text = conversation.deviceName
+                holder.itemView.setOnClickListener { listener?.invoke(conversation) }
+                Picasso.with(holder.itemView.context).load(R.drawable.empty_avatar)
+                        .transform(CircleTransformation())
+                        .transform(GrayscaleTransformation()).into(holder.avatar)
+            } else {
+                val conversation = conversations[position - 3]
+                holder.name.text = conversation.deviceName
+                holder.itemView.setOnClickListener { listener?.invoke(conversation) }
+                Picasso.with(holder.itemView.context).load(R.drawable.empty_avatar)
+                        .transform(CircleTransformation())
+                        .into(holder.avatar)
+            }
+        }
     }
 
     override fun getItemCount(): Int {
-        return conversations.size + (if (currentlyConnected == null) 0 else 2)
+        return conversations.size + (if (currentlyConnected == null) 1 else 2)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): RecyclerView.ViewHolder {
@@ -40,6 +79,15 @@ class ConversationsAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         val view = LayoutInflater.from(parent?.context)
                 .inflate(R.layout.item_header_conversations, parent, false)
         return HeaderViewHolder(view)
+    }
+
+    override fun getItemViewType(position: Int): Int {
+
+        if (currentlyConnected == null) {
+            return if (position == 0) TYPE_HEADER else TYPE_ITEM
+        } else {
+            return if (position == 0 || position == 2) TYPE_HEADER else TYPE_ITEM
+        }
     }
 
     class HeaderViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {

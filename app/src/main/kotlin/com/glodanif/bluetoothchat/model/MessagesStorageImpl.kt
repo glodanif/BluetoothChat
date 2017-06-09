@@ -10,21 +10,16 @@ import kotlin.concurrent.thread
 class MessagesStorageImpl(val context: Context) : MessagesStorage {
 
     private val handler: Handler = Handler()
-    private var listener: ((List<ChatMessage>) -> Unit)? = null
-    val messagesDao: MessagesDao = Storage.getInstance(context).db.messagesDao()
-
-    override fun setListener(listener: (List<ChatMessage>) -> Unit) {
-        this.listener = listener
-    }
+    val dao: MessagesDao = Storage.getInstance(context).db.messagesDao()
 
     override fun insertMessage(message: ChatMessage) {
-        thread { messagesDao.insert(message) }
+        thread { dao.insert(message) }
     }
 
-    override fun getMessagesByDevice(address: String) {
+    override fun getMessagesByDevice(address: String, listener: (List<ChatMessage>) -> Unit) {
         thread {
-            val messages: List<ChatMessage> = messagesDao.getMessagesByDevice(address)
-            handler.post { listener?.invoke(messages) }
+            val messages: List<ChatMessage> = dao.getMessagesByDevice(address)
+            handler.post { listener.invoke(messages) }
         }
     }
 }
