@@ -75,12 +75,12 @@ class ConversationsActivity : AppCompatActivity(), ConversationsView {
         noConversations.visibility = View.VISIBLE
     }
 
-    override fun showConversations(conversations: List<Conversation>) {
+    override fun showConversations(conversations: List<Conversation>, connected: String?) {
         conversationsList.visibility = View.VISIBLE
         addButton.visibility = View.VISIBLE
         noConversations.visibility = View.GONE
 
-        adapter.conversations = ArrayList(conversations)
+        adapter.setData(ArrayList(conversations), connected)
         adapter.notifyDataSetChanged()
     }
 

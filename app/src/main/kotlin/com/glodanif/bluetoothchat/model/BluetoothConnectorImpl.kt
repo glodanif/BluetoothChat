@@ -140,4 +140,12 @@ class BluetoothConnectorImpl(private val context: Context) : BluetoothConnector 
     override fun isConnectedToUI(): Boolean {
         return service?.isBound as Boolean
     }
+
+    override fun getCurrentlyConnectedDevice(): BluetoothDevice? {
+        if (!bound) {
+            throw IllegalStateException("Bluetooth connection service is not prepared yet")
+        }
+
+        return service?.getCurrentDevice()
+    }
 }

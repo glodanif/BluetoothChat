@@ -90,6 +90,10 @@ class BluetoothConnectionService : Service() {
         return Service.START_STICKY
     }
 
+    fun getCurrentDevice(): BluetoothDevice? {
+        return currentSocket?.remoteDevice
+    }
+
     private fun showNotification(message: String) {
 
         val notificationIntent = Intent(this, ConversationsActivity::class.java)
@@ -223,12 +227,14 @@ class BluetoothConnectionService : Service() {
     private fun connectionFailed() {
         handler.post { connectionListener?.onConnectionFailed() }
         connectionState = ConnectionState.NOT_CONNECTED
+        currentSocket = null
         prepareForAccept()
     }
 
     private fun connectionLost() {
         handler.post { connectionListener?.onConnectionLost() }
         connectionState = ConnectionState.NOT_CONNECTED
+        currentSocket = null
         prepareForAccept()
     }
 
@@ -417,6 +423,7 @@ class BluetoothConnectionService : Service() {
     override fun onDestroy() {
         super.onDestroy()
         isRunning = false
+        currentSocket = null
         Log.e(TAG, "DESTROYED")
     }
 

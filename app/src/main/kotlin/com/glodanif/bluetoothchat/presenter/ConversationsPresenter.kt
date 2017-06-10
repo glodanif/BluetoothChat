@@ -13,6 +13,11 @@ class ConversationsPresenter(private val view: ConversationsView, private val co
 
             override fun onPrepared() {
                 view.connectedToModel()
+                connection.setConnectedToUI(true)
+                storage.getConversations {
+                    if (it.isEmpty()) view.showNoConversations() else
+                        view.showConversations(it, connection.getCurrentlyConnectedDevice()?.address)
+                }
             }
 
             override fun onError() {
@@ -60,19 +65,11 @@ class ConversationsPresenter(private val view: ConversationsView, private val co
     }
 
     fun onStart() {
-        if (!connection.isConnected()) {
-            connection.prepare()
-        }
-        connection.setConnectedToUI(true)
-        storage.getConversations {
-            if (it.isEmpty()) view.showNoConversations() else view.showConversations(it)
-        }
+        connection.prepare()
     }
 
     fun onStop() {
-        if (!connection.isConnected()) {
-            connection.release()
-        }
+        connection.release()
         connection.setConnectedToUI(false)
     }
 

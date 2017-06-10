@@ -10,5 +10,5 @@ interface ConversationsView {
     fun connectedToModel()
 
     fun showNoConversations()
-    fun showConversations(conversations: List<Conversation>)
+    fun showConversations(conversations: List<Conversation>, connected: String?)
 }
