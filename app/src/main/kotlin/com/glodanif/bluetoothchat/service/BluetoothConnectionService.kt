@@ -227,7 +227,7 @@ class BluetoothConnectionService : Service() {
 
     private fun onMessageReceived(messageBody: String) {
 
-        Log.e(TAG, messageBody)
+        Log.e(TAG, "MessageReceived :$messageBody")
 
         val message = Message(messageBody)
 

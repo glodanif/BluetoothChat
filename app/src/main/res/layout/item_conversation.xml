@@ -55,6 +55,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="0"
                 android:textSize="12sp"
+                android:textColor="#aaa"
                 android:visibility="gone"
                 tools:text="11:21"
                 tools:visibility="visible" />
@@ -67,6 +68,7 @@
             android:ellipsize="end"
             android:lines="1"
             android:textSize="12sp"
+            android:textColor="#aaa"
             android:visibility="gone"
             tools:text="Lorem Ipsum is simply dummy text of the printing and typesetting industry."
             tools:visibility="visible" />

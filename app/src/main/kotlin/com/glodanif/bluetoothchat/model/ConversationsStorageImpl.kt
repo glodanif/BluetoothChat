@@ -14,7 +14,7 @@ class ConversationsStorageImpl(context: Context) : ConversationsStorage {
 
     override fun getConversations(listener: (List<Conversation>) -> Unit) {
         thread {
-            val conversations: List<Conversation> = dao.getAllConversations()
+            val conversations: List<Conversation> = dao.getAllConversationsWithMessages()
             handler.post { listener.invoke(conversations) }
         }
     }

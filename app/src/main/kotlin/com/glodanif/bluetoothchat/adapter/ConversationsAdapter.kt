@@ -8,6 +8,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.glodanif.bluetoothchat.R
 import com.glodanif.bluetoothchat.entity.Conversation
+import com.glodanif.bluetoothchat.extension.getRelativeTime
 import com.glodanif.bluetoothchat.util.CircleTransformation
 import com.glodanif.bluetoothchat.util.GrayscaleTransformation
 import com.squareup.picasso.Picasso
@@ -21,19 +22,31 @@ class ConversationsAdapter : RecyclerView.Adapter<ConversationsAdapter.Conversat
 
     override fun onBindViewHolder(holder: ConversationViewHolder?, position: Int) {
 
-        val conversation = conversations[position]
-        holder?.name?.text = conversation.deviceName
-        holder?.itemView?.setOnClickListener { listener?.invoke(conversation) }
-        holder?.connected?.visibility = View.VISIBLE
+        if (holder == null) return
 
-        val creator = Picasso.with(holder?.itemView?.context).load(R.drawable.empty_avatar)
+        val conversation = conversations[position]
+        holder.name.text = conversation.deviceName
+        holder.itemView?.setOnClickListener { listener?.invoke(conversation) }
+        holder.connected.visibility = View.VISIBLE
+
+        if (!conversation.lastMessage.isNullOrEmpty()) {
+            holder.lastMessage.visibility = View.VISIBLE
+            holder.time.visibility = View.VISIBLE
+            holder.lastMessage.text = conversation.lastMessage
+            holder.time.text = conversation.lastActivity?.getRelativeTime()
+        } else {
+            holder.lastMessage.visibility = View.GONE
+            holder.time.visibility = View.GONE
+        }
+
+        val creator = Picasso.with(holder.itemView?.context).load(R.drawable.empty_avatar)
                 .transform(CircleTransformation())
 
         if (!isConnected || position > 0) {
-            holder?.connected?.visibility = View.GONE
+            holder.connected.visibility = View.GONE
             creator.transform(GrayscaleTransformation())
         }
-        creator.into(holder?.avatar)
+        creator.into(holder.avatar)
     }
 
     override fun getItemCount(): Int {

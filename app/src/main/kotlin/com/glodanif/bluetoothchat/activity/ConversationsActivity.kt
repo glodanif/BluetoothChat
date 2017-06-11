@@ -49,6 +49,9 @@ class ConversationsActivity : AppCompatActivity(), ConversationsView {
         noConversations = findViewById(R.id.ll_empty_holder)
         conversationsList.layoutManager = LinearLayoutManager(this)
         conversationsList.adapter = adapter
+        adapter.listener = {
+            ChatActivity.start(this, it.deviceName, it.deviceAddress)
+        }
 
         addButton = findViewById(R.id.fab_new_conversation) as FloatingActionButton
         addButton.setOnClickListener {
@@ -94,7 +97,7 @@ class ConversationsActivity : AppCompatActivity(), ConversationsView {
     }
 
     override fun redirectToChat(device: BluetoothDevice) {
-        ChatActivity.start(this, device)
+        ChatActivity.start(this, device.name, device.address)
     }
 
     override fun connectedToModel() {
@@ -112,7 +115,7 @@ class ConversationsActivity : AppCompatActivity(), ConversationsView {
             if (device != null) {
                 connectAction = {
                     connection.connect(device)
-                    ChatActivity.start(this, device)
+                    ChatActivity.start(this, device.name, device.address)
                 }
             }
         }

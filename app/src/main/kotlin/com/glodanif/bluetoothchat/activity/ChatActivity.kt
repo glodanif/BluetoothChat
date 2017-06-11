@@ -1,6 +1,5 @@
 package com.glodanif.bluetoothchat.activity
 
-import android.bluetooth.BluetoothDevice
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -53,11 +52,12 @@ class ChatActivity : AppCompatActivity(), ChatView {
         chatList.layoutManager = layoutManager
         chatList.adapter = adapter
 
-        val device: BluetoothDevice = intent.getParcelableExtra(EXTRA_BLUETOOTH_DEVICE)
-        toolbar.title = device.name
+        val deviceName: String = intent.getStringExtra(EXTRA_NAME)
+        val deviceAddress: String = intent.getStringExtra(EXTRA_ADDRESS)
+        toolbar.title = deviceName
         toolbar.subtitle = "Waiting for opponent"
 
-        presenter = ChatPresenter(device.address, this, connectionModel, storageModel)
+        presenter = ChatPresenter(deviceAddress, this, connectionModel, storageModel)
     }
 
     override fun onStart() {
@@ -105,11 +105,13 @@ class ChatActivity : AppCompatActivity(), ChatView {
 
     companion object {
 
-        val EXTRA_BLUETOOTH_DEVICE = "extra.bluetooth_device"
+        val EXTRA_NAME = "extra.name"
+        val EXTRA_ADDRESS = "extra.address"
 
-        fun start(context: Context, device: BluetoothDevice?) {
+        fun start(context: Context, name: String, address: String) {
             val intent: Intent = Intent(context, ChatActivity::class.java)
-                    .putExtra(EXTRA_BLUETOOTH_DEVICE, device)
+                    .putExtra(EXTRA_NAME, name)
+                    .putExtra(EXTRA_ADDRESS, address)
             context.startActivity(intent)
         }
     }
