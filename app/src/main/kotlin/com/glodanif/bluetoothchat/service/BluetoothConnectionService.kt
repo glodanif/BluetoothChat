@@ -221,8 +221,10 @@ class BluetoothConnectionService : Service() {
         val sentMessage: ChatMessage = ChatMessage(
                 currentSocket!!.remoteDevice.address, Date(), true, message.body, false)
 
-        thread { db.messagesDao().insert(sentMessage) }
-        handler.post { messageListener?.onMessageSent(sentMessage) }
+        if (message.type == Message.Type.MESSAGE) {
+            thread { db.messagesDao().insert(sentMessage) }
+            handler.post { messageListener?.onMessageSent(sentMessage) }
+        }
     }
 
     private fun onMessageReceived(messageBody: String) {
