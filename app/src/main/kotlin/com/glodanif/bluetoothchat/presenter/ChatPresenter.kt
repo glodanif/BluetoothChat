@@ -22,6 +22,14 @@ class ChatPresenter(private val deviceAddress: String, private val view: ChatVie
 
         connectionModel.setOnConnectListener(object : OnConnectionListener {
 
+            override fun onConnectionAccepted() {
+                view.showAcceptedConnection()
+            }
+
+            override fun onConnectionRejected() {
+                view.showRejectedConnection()
+            }
+
             override fun onConnectedIn(device: BluetoothDevice) {
 
             }
@@ -35,7 +43,7 @@ class ChatPresenter(private val deviceAddress: String, private val view: ChatVie
             }
 
             override fun onConnectionLost() {
-
+                view.showLostConnection()
             }
 
             override fun onConnectionFailed() {
@@ -43,7 +51,7 @@ class ChatPresenter(private val deviceAddress: String, private val view: ChatVie
             }
 
             override fun onDisconnected() {
-
+                view.showDisconnected()
             }
         })
 
@@ -55,6 +63,18 @@ class ChatPresenter(private val deviceAddress: String, private val view: ChatVie
 
             override fun onMessageSent(message: ChatMessage) {
                 view.showSentMessage(message)
+            }
+
+            override fun onMessageDelivered(id: String) {
+
+            }
+
+            override fun onMessageNotDelivered(id: String) {
+
+            }
+
+            override fun onMessageSeen(id: String) {
+
             }
         })
     }

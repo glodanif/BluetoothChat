@@ -23,6 +23,7 @@ import com.glodanif.bluetoothchat.activity.ConversationsActivity
 import com.glodanif.bluetoothchat.database.ChatDatabase
 import com.glodanif.bluetoothchat.entity.ChatMessage
 import com.glodanif.bluetoothchat.entity.Conversation
+import com.glodanif.bluetoothchat.entity.Message
 import com.glodanif.bluetoothchat.model.OnConnectionListener
 import com.glodanif.bluetoothchat.model.OnMessageListener
 import java.io.IOException
@@ -35,9 +36,9 @@ class BluetoothConnectionService : Service() {
 
     private val binder = ConnectionBinder()
 
-    private val TAG = "TAG13"
+    private val TAG = "BCS"
 
-    enum class ConnectionState { CONNECTED, CONNECTING, NOT_CONNECTED, LISTENING }
+    enum class ConnectionState { CONNECTED, CONNECTING, NOT_CONNECTED, REJECTED, LISTENING }
     enum class ConnectionType { INCOMING, OUTCOMING }
 
     private var connectionListener: OnConnectionListener? = null
@@ -81,6 +82,13 @@ class BluetoothConnectionService : Service() {
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
 
         if (intent.action == ACTION_STOP) {
+
+            connectionState = ConnectionState.NOT_CONNECTED
+            cancelConnections()
+            acceptThread?.cancel()
+
+            connectionListener?.onDisconnected()
+
             stopSelf()
             return START_NOT_STICKY
         }
@@ -143,6 +151,7 @@ class BluetoothConnectionService : Service() {
 
         connectedThread?.cancel()
         connectedThread = null
+        currentSocket = null
 
         connectThread = ConnectThread(device)
         connectThread!!.start()
@@ -153,9 +162,9 @@ class BluetoothConnectionService : Service() {
 
         Log.d(TAG, "connected")
 
-        currentSocket = socket
-
         cancelConnections()
+
+        currentSocket = socket
 
         acceptThread?.cancel()
         acceptThread = null
@@ -193,48 +202,74 @@ class BluetoothConnectionService : Service() {
         connectThread = null
         connectedThread?.cancel()
         connectedThread = null
+        currentSocket = null
     }
 
-    fun sendMessage(message: String) {
+    fun sendMessage(message: Message) {
 
         if (connectionState == ConnectionState.CONNECTED) {
-            connectedThread?.write(message)
+            connectedThread?.write(message.getDecodedMessage())
         }
     }
 
-    private fun onMessageSent(message: String) {
+    private fun onMessageSent(messageBody: String) {
 
         if (currentSocket == null) return
 
+        val message = Message(messageBody)
+
         val sentMessage: ChatMessage = ChatMessage(
-                currentSocket!!.remoteDevice.address, Date(), true, message, false)
+                currentSocket!!.remoteDevice.address, Date(), true, message.body, false)
 
         thread { db.messagesDao().insert(sentMessage) }
         handler.post { messageListener?.onMessageSent(sentMessage) }
     }
 
-    private fun onMessageReceived(message: String) {
+    private fun onMessageReceived(messageBody: String) {
 
-        if (currentSocket == null) return
+        Log.e(TAG, messageBody)
 
-        val receivedMessage: ChatMessage = ChatMessage(
-                currentSocket!!.remoteDevice.address, Date(), false, message, false)
+        val message = Message(messageBody)
 
-        thread { db.messagesDao().insert(receivedMessage) }
-        handler.post { messageListener?.onMessageReceived(receivedMessage) }
+        if (message.type == Message.Type.MESSAGE && currentSocket != null) {
+            val receivedMessage: ChatMessage = ChatMessage(
+                    currentSocket!!.remoteDevice.address, Date(), false, message.body, false)
+            thread { db.messagesDao().insert(receivedMessage) }
+            messageListener?.onMessageReceived(receivedMessage)
+        } else if (message.type == Message.Type.DELIVERY) {
+            if (message.flag) {
+                messageListener?.onMessageDelivered(message.uid)
+            } else {
+                messageListener?.onMessageNotDelivered(message.uid)
+            }
+        } else if (message.type == Message.Type.SEEING) {
+            if (message.flag) {
+                messageListener?.onMessageSeen(message.uid)
+            }
+        } else if (message.type == Message.Type.CONNECTION) {
+            if (message.flag) {
+                connectionListener?.onConnectionAccepted()
+            } else {
+                connectionState = ConnectionState.REJECTED
+                prepareForAccept()
+                connectionListener?.onConnectionRejected()
+            }
+        }
     }
 
     private fun connectionFailed() {
+        currentSocket = null
         handler.post { connectionListener?.onConnectionFailed() }
         connectionState = ConnectionState.NOT_CONNECTED
-        currentSocket = null
         prepareForAccept()
     }
 
     private fun connectionLost() {
-        handler.post { connectionListener?.onConnectionLost() }
-        connectionState = ConnectionState.NOT_CONNECTED
         currentSocket = null
+        if (connectionState == ConnectionState.CONNECTED) {
+            handler.post { connectionListener?.onConnectionLost() }
+        }
+        connectionState = ConnectionState.NOT_CONNECTED
         prepareForAccept()
     }
 
@@ -285,7 +320,7 @@ class BluetoothConnectionService : Service() {
                             Log.e(TAG, "AcceptThread")
                             connected(socket, socket.remoteDevice, ConnectionType.INCOMING)
                         }
-                        ConnectionState.NOT_CONNECTED, ConnectionState.CONNECTED -> try {
+                        ConnectionState.NOT_CONNECTED, ConnectionState.CONNECTED, ConnectionState.REJECTED -> try {
                             socket.close()
                         } catch (e: IOException) {
                             Log.e(TAG, "Could not close unwanted socket", e)

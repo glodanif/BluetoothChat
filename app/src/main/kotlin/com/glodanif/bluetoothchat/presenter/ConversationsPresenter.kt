@@ -27,6 +27,14 @@ class ConversationsPresenter(private val view: ConversationsView, private val co
 
         connection.setOnConnectListener(object : OnConnectionListener {
 
+            override fun onConnectionAccepted() {
+
+            }
+
+            override fun onConnectionRejected() {
+
+            }
+
             override fun onConnectedIn(device: BluetoothDevice) {
                 view.notifyAboutConnectedDevice(device)
             }
@@ -61,6 +69,18 @@ class ConversationsPresenter(private val view: ConversationsView, private val co
             override fun onMessageSent(message: ChatMessage) {
 
             }
+
+            override fun onMessageDelivered(id: String) {
+
+            }
+
+            override fun onMessageNotDelivered(id: String) {
+
+            }
+
+            override fun onMessageSeen(id: String) {
+
+            }
         })
     }
 
@@ -74,11 +94,12 @@ class ConversationsPresenter(private val view: ConversationsView, private val co
     }
 
     fun startChat(device: BluetoothDevice) {
+        connection.acceptConnection()
         view.redirectToChat(device)
     }
 
     fun rejectConnection() {
-        connection.restart()
+        connection.rejectConnection()
     }
 
     fun sendMessage(message: String) {

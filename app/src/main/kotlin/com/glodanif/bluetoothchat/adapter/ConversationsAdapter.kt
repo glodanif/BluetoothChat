@@ -24,11 +24,13 @@ class ConversationsAdapter : RecyclerView.Adapter<ConversationsAdapter.Conversat
         val conversation = conversations[position]
         holder?.name?.text = conversation.deviceName
         holder?.itemView?.setOnClickListener { listener?.invoke(conversation) }
+        holder?.connected?.visibility = View.VISIBLE
 
         val creator = Picasso.with(holder?.itemView?.context).load(R.drawable.empty_avatar)
                 .transform(CircleTransformation())
 
         if (!isConnected || position > 0) {
+            holder?.connected?.visibility = View.GONE
             creator.transform(GrayscaleTransformation())
         }
         creator.into(holder?.avatar)
@@ -60,6 +62,7 @@ class ConversationsAdapter : RecyclerView.Adapter<ConversationsAdapter.Conversat
     class ConversationViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val avatar: ImageView = itemView.findViewById(R.id.iv_avatar) as ImageView
         val name: TextView = itemView.findViewById(R.id.tv_name) as TextView
+        val connected: View = itemView.findViewById(R.id.iv_connected)
         val lastMessage: TextView = itemView.findViewById(R.id.tv_last_message) as TextView
         val time: TextView = itemView.findViewById(R.id.tv_time) as TextView
     }

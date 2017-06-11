@@ -29,13 +29,14 @@ class ChatActivity : AppCompatActivity(), ChatView {
     private val layoutManager = LinearLayoutManager(this)
     private lateinit var chatList: RecyclerView
     private lateinit var messageField: EditText
+    private lateinit var toolbar: Toolbar
 
     private val adapter: ChatAdapter = ChatAdapter()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_chat)
-        val toolbar = findViewById(R.id.toolbar) as Toolbar
+        toolbar = findViewById(R.id.toolbar) as Toolbar
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
@@ -44,6 +45,7 @@ class ChatActivity : AppCompatActivity(), ChatView {
 
         findViewById(R.id.ib_send).setOnClickListener {
             presenter.sendMessage(messageField.text.toString().trim())
+            messageField.text = null
         }
 
         chatList = findViewById(R.id.rv_chat) as RecyclerView
@@ -83,6 +85,22 @@ class ChatActivity : AppCompatActivity(), ChatView {
         adapter.messages.addFirst(message)
         adapter.notifyItemInserted(0)
         layoutManager.scrollToPosition(0)
+    }
+
+    override fun showAcceptedConnection() {
+        toolbar.subtitle = "Connected"
+    }
+
+    override fun showRejectedConnection() {
+        toolbar.subtitle = "Connection rejected"
+    }
+
+    override fun showLostConnection() {
+        toolbar.subtitle = "Connection lost"
+    }
+
+    override fun showDisconnected() {
+        toolbar.subtitle = "Disconnected"
     }
 
     companion object {

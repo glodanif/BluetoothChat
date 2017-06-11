@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.ServiceConnection
 import android.os.IBinder
 import com.glodanif.bluetoothchat.entity.ChatMessage
+import com.glodanif.bluetoothchat.entity.Message
 import com.glodanif.bluetoothchat.service.BluetoothConnectionService
 import java.lang.IllegalStateException
 
@@ -26,6 +27,14 @@ class BluetoothConnectorImpl(private val context: Context) : BluetoothConnector 
             prepareListener?.onPrepared()
 
             (service as BluetoothConnectionService).setConnectionListener(object : OnConnectionListener {
+
+                override fun onConnectionAccepted() {
+                    connectListener?.onConnectionAccepted()
+                }
+
+                override fun onConnectionRejected() {
+                    connectListener?.onConnectionRejected()
+                }
 
                 override fun onConnecting() {
                     connectListener?.onConnecting()
@@ -60,6 +69,18 @@ class BluetoothConnectorImpl(private val context: Context) : BluetoothConnector 
 
                 override fun onMessageSent(message: ChatMessage) {
                     messageListener?.onMessageSent(message)
+                }
+
+                override fun onMessageDelivered(id: String) {
+                    messageListener?.onMessageDelivered(id)
+                }
+
+                override fun onMessageNotDelivered(id: String) {
+                    messageListener?.onMessageNotDelivered(id)
+                }
+
+                override fun onMessageSeen(id: String) {
+                    messageListener?.onMessageSeen(id)
                 }
             })
         }
@@ -118,7 +139,8 @@ class BluetoothConnectorImpl(private val context: Context) : BluetoothConnector 
             throw IllegalStateException("Bluetooth connection service is not prepared yet")
         }
 
-        service?.sendMessage(message)
+        val chatMessage = Message(System.nanoTime().toString(), message, Message.Type.MESSAGE)
+        service?.sendMessage(chatMessage)
     }
 
     override fun restart() {
@@ -147,5 +169,24 @@ class BluetoothConnectorImpl(private val context: Context) : BluetoothConnector 
         }
 
         return service?.getCurrentDevice()
+    }
+
+    override fun acceptConnection() {
+        if (!bound) {
+            throw IllegalStateException("Bluetooth connection service is not prepared yet")
+        }
+
+        val message = Message(true, Message.Type.CONNECTION)
+        service?.sendMessage(message)
+    }
+
+    override fun rejectConnection() {
+
+        if (!bound) {
+            throw IllegalStateException("Bluetooth connection service is not prepared yet")
+        }
+
+        val message = Message(false, Message.Type.CONNECTION)
+        service?.sendMessage(message)
     }
 }
