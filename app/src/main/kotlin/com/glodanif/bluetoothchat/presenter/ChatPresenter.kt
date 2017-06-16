@@ -12,7 +12,9 @@ class ChatPresenter(private val deviceAddress: String, private val view: ChatVie
         connectionModel.setOnPrepareListener(object : OnPrepareListener {
 
             override fun onPrepared() {
-
+                if (connectionModel.getCurrentlyConnectedDevice() != null) {
+                    view.showConnected()
+                }
             }
 
             override fun onError() {

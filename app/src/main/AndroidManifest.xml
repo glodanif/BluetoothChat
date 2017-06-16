@@ -22,8 +22,7 @@
         <activity
             android:name=".activity.ConversationsActivity"
             android:label="@string/app_name"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -34,15 +33,14 @@
         <activity
             android:name=".activity.ScanActivity"
             android:label="@string/scan"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:screenOrientation="portrait" />
 
         <activity
             android:name=".activity.ChatActivity"
             android:label="Chat"
-            android:windowSoftInputMode="adjustResize|stateHidden"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme"
+            android:windowSoftInputMode="adjustResize|stateHidden" />
 
         <service android:name=".service.BluetoothConnectionService" />
     </application>

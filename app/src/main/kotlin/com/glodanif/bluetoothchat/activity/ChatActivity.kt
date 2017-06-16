@@ -54,7 +54,7 @@ class ChatActivity : AppCompatActivity(), ChatView {
 
         val deviceName: String = intent.getStringExtra(EXTRA_NAME)
         val deviceAddress: String = intent.getStringExtra(EXTRA_ADDRESS)
-        toolbar.title = deviceName
+        title = deviceName
         toolbar.subtitle = "Waiting for opponent"
 
         presenter = ChatPresenter(deviceAddress, this, connectionModel, storageModel)
@@ -87,6 +87,10 @@ class ChatActivity : AppCompatActivity(), ChatView {
         layoutManager.scrollToPosition(0)
     }
 
+    override fun showConnected() {
+        toolbar.subtitle = "Connected"
+    }
+
     override fun showAcceptedConnection() {
         toolbar.subtitle = "Connected"
     }
@@ -101,6 +105,11 @@ class ChatActivity : AppCompatActivity(), ChatView {
 
     override fun showDisconnected() {
         toolbar.subtitle = "Disconnected"
+    }
+
+    override fun onSupportNavigateUp(): Boolean {
+        onBackPressed()
+        return true
     }
 
     companion object {

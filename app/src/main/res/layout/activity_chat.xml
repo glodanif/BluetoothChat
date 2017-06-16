@@ -7,26 +7,28 @@
     android:background="#bbffff"
     tools:context="com.glodanif.bluetoothchat.activity.ChatActivity">
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/rv_chat"
+    <LinearLayout
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginBottom="0dp"
-        android:layout_marginLeft="0dp"
-        android:layout_marginRight="0dp"
+        android:orientation="horizontal"
+        android:id="@+id/ll_info_holder"
         android:layout_marginTop="0dp"
-        app:stackFromEnd="true"
-        app:layout_constraintBottom_toTopOf="@+id/linearLayout"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/toolbar"
-        tools:listitem="@layout/item_chat_message_foreign" />
+        android:layout_marginRight="0dp"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginLeft="0dp"
+        app:layout_constraintLeft_toLeftOf="parent">
+
+
+    </LinearLayout>
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="0dp"
         android:layout_height="56dp"
         android:background="?attr/colorPrimary"
+        app:subtitleTextAppearance="@style/ActionBar.SubTitleTextStyle"
+        app:titleTextAppearance="@style/ActionBar.TitleTextStyle"
         android:theme="@style/AppTheme.AppBarOverlay"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -54,7 +56,7 @@
             android:background="@null"
             android:ems="10"
             android:hint="Message"
-            android:inputType="textPersonName"
+            android:inputType="textShortMessage"
             android:padding="8dp"
             android:textSize="16sp" />
 
@@ -69,5 +71,19 @@
             app:srcCompat="@drawable/ic_send_black_24dp" />
 
     </LinearLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_chat"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ll_info_holder"
+        app:layout_constraintVertical_bias="1.0"
+        app:stackFromEnd="true"
+        tools:listitem="@layout/item_chat_message_foreign" />
 
 </android.support.constraint.ConstraintLayout>
