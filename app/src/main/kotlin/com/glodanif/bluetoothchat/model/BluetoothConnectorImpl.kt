@@ -5,6 +5,7 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.ServiceConnection
 import android.os.IBinder
+import android.util.Log
 import com.glodanif.bluetoothchat.entity.ChatMessage
 import com.glodanif.bluetoothchat.entity.Message
 import com.glodanif.bluetoothchat.service.BluetoothConnectionService
@@ -156,6 +157,7 @@ class BluetoothConnectorImpl(private val context: Context) : BluetoothConnector 
     }
 
     override fun setConnectedToUI(connected: Boolean) {
+        Log.e("TAG13", "Bound: $connected")
         service?.isBound = connected
     }
 

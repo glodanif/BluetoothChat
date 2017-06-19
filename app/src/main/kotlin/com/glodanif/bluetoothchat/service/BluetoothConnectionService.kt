@@ -1,6 +1,7 @@
 package com.glodanif.bluetoothchat.service
 
 import android.app.Notification
+import android.app.NotificationManager
 import android.app.PendingIntent
 import android.app.Service
 import android.bluetooth.BluetoothAdapter
@@ -19,6 +20,7 @@ import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import com.glodanif.bluetoothchat.R
 import com.glodanif.bluetoothchat.Storage
+import com.glodanif.bluetoothchat.activity.ChatActivity
 import com.glodanif.bluetoothchat.activity.ConversationsActivity
 import com.glodanif.bluetoothchat.database.ChatDatabase
 import com.glodanif.bluetoothchat.entity.ChatMessage
@@ -128,6 +130,30 @@ class BluetoothConnectionService : Service() {
         startForeground(FOREGROUND_SERVICE, notification)
     }
 
+    private fun showNewMessageNotification(message: String, deviceName: String, address: String) {
+
+        val notificationIntent = Intent(this, ChatActivity::class.java)
+                .putExtra(ChatActivity.EXTRA_ADDRESS, address)
+                .putExtra(ChatActivity.EXTRA_NAME, deviceName)
+        notificationIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        val pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0)
+
+        val icon = BitmapFactory.decodeResource(resources, R.mipmap.ic_launcher)
+
+        val notification = Notification.Builder(this)
+                .setContentTitle(deviceName)
+                .setContentText(message)
+                .setSmallIcon(R.drawable.ic_new_message)
+                .setLargeIcon(Bitmap.createScaledBitmap(icon, 128, 128, false))
+                .setContentIntent(pendingIntent)
+                .setAutoCancel(true)
+                .setPriority(Notification.PRIORITY_MAX)
+                .build()
+
+        val manager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+        manager.notify(0, notification);
+    }
+
     @Synchronized fun prepareForAccept() {
 
         Log.d(TAG, "start")
@@ -234,10 +260,19 @@ class BluetoothConnectionService : Service() {
         val message = Message(messageBody)
 
         if (message.type == Message.Type.MESSAGE && currentSocket != null) {
-            val receivedMessage: ChatMessage = ChatMessage(
-                    currentSocket!!.remoteDevice.address, Date(), false, message.body, false)
+
+            val device: BluetoothDevice = currentSocket!!.remoteDevice
+
+            val receivedMessage: ChatMessage =
+                    ChatMessage(device.address, Date(), false, message.body, false)
             thread { db.messagesDao().insert(receivedMessage) }
-            messageListener?.onMessageReceived(receivedMessage)
+
+            if (messageListener != null && isBound) {
+                messageListener!!.onMessageReceived(receivedMessage)
+            } else {
+                showNewMessageNotification(message.body, device.name, device.address)
+            }
+
         } else if (message.type == Message.Type.DELIVERY) {
             if (message.flag) {
                 messageListener?.onMessageDelivered(message.uid)

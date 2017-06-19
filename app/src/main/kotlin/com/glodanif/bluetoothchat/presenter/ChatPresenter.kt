@@ -15,10 +15,11 @@ class ChatPresenter(private val deviceAddress: String, private val view: ChatVie
                 if (connectionModel.getCurrentlyConnectedDevice() != null) {
                     view.showConnected()
                 }
+                connectionModel.setConnectedToUI(true)
             }
 
             override fun onError() {
-
+                connectionModel.setConnectedToUI(false)
             }
         })
 
@@ -85,7 +86,6 @@ class ChatPresenter(private val deviceAddress: String, private val view: ChatVie
         if (!connectionModel.isConnected()) {
             connectionModel.prepare()
         }
-        connectionModel.setConnectedToUI(true)
         storage.getMessagesByDevice(deviceAddress) { view.showMessagesHistory(it) }
     }
 

@@ -21,7 +21,7 @@ class ConversationsPresenter(private val view: ConversationsView, private val co
             }
 
             override fun onError() {
-
+                connection.setConnectedToUI(false)
             }
         })
 

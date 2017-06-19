@@ -9,7 +9,7 @@ interface ConversationsDao {
     @Query("SELECT * FROM conversation")
     fun getAllConversations(): List<Conversation>
 
-    @Query("SELECT * FROM conversation LEFT JOIN message ON conversation.address = message.address AND message.date = (SELECT MAX(message.date) FROM message WHERE conversation.address = message.address) GROUP BY message.date")
+    @Query("SELECT * FROM conversation LEFT JOIN message ON conversation.address = message.address AND message.date = (SELECT MAX(message.date) FROM message WHERE conversation.address = message.address) GROUP BY message.date ORDER BY message.date DESC")
     fun getAllConversationsWithMessages(): List<Conversation>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
