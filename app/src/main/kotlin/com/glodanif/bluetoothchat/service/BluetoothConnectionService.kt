@@ -13,9 +13,11 @@ import android.content.Intent
 import android.content.ServiceConnection
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.Color
 import android.os.Binder
 import android.os.Handler
 import android.os.IBinder
+import android.provider.Settings
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import com.glodanif.bluetoothchat.R
@@ -58,7 +60,7 @@ class BluetoothConnectionService : Service() {
 
     private var connectionState: ConnectionState = ConnectionState.NOT_CONNECTED
 
-    var isBound = false
+    var isBound: Int = 0
 
     private var currentSocket: BluetoothSocket? = null
 
@@ -143,6 +145,7 @@ class BluetoothConnectionService : Service() {
         val notification = Notification.Builder(this)
                 .setContentTitle(deviceName)
                 .setContentText(message)
+                .setLights(Color.BLUE, 3000, 3000)
                 .setSmallIcon(R.drawable.ic_new_message)
                 .setLargeIcon(Bitmap.createScaledBitmap(icon, 128, 128, false))
                 .setContentIntent(pendingIntent)
@@ -150,8 +153,11 @@ class BluetoothConnectionService : Service() {
                 .setPriority(Notification.PRIORITY_MAX)
                 .build()
 
+        notification.defaults = notification.defaults or Notification.DEFAULT_SOUND
+        notification.defaults = notification.defaults or Notification.DEFAULT_VIBRATE
+
         val manager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
-        manager.notify(0, notification);
+        manager.notify(0, notification)
     }
 
     @Synchronized fun prepareForAccept() {
@@ -267,7 +273,7 @@ class BluetoothConnectionService : Service() {
                     ChatMessage(device.address, Date(), false, message.body, false)
             thread { db.messagesDao().insert(receivedMessage) }
 
-            if (messageListener != null && isBound) {
+            if (messageListener != null && isBound > 0) {
                 messageListener!!.onMessageReceived(receivedMessage)
             } else {
                 showNewMessageNotification(message.body, device.name, device.address)

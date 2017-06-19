@@ -157,12 +157,13 @@ class BluetoothConnectorImpl(private val context: Context) : BluetoothConnector 
     }
 
     override fun setConnectedToUI(connected: Boolean) {
-        Log.e("TAG13", "Bound: $connected")
-        service?.isBound = connected
+        if (service != null) {
+            service!!.isBound += if (connected) +1 else -1
+        }
     }
 
     override fun isConnectedToUI(): Boolean {
-        return service?.isBound as Boolean
+        return if (service == null) false else service!!.isBound > 0
     }
 
     override fun getCurrentlyConnectedDevice(): BluetoothDevice? {
