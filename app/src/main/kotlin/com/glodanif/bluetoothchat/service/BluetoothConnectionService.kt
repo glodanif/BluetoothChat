@@ -42,6 +42,11 @@ class BluetoothConnectionService : Service() {
 
     private val TAG = "BCS"
 
+    private val NOTIFICATION_ID_MESSAGE = 0
+    private val NOTIFICATION_ID_CONNECTION = 1
+
+    private lateinit var notificationManager: NotificationManager
+
     enum class ConnectionState { CONNECTED, CONNECTING, NOT_CONNECTED, REJECTED, LISTENING }
     enum class ConnectionType { INCOMING, OUTCOMING }
 
@@ -80,6 +85,7 @@ class BluetoothConnectionService : Service() {
     override fun onCreate() {
         super.onCreate()
         Log.e(TAG, "CREATED")
+        notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
         isRunning = true
     }
 
@@ -156,8 +162,32 @@ class BluetoothConnectionService : Service() {
         notification.defaults = notification.defaults or Notification.DEFAULT_SOUND
         notification.defaults = notification.defaults or Notification.DEFAULT_VIBRATE
 
-        val manager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
-        manager.notify(0, notification)
+        notificationManager.notify(NOTIFICATION_ID_MESSAGE, notification)
+    }
+
+    private fun showConnectionRequestNotification(deviceName: String) {
+
+        val notificationIntent = Intent(this, ConversationsActivity::class.java)
+        notificationIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        val pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0)
+
+        val icon = BitmapFactory.decodeResource(resources, R.mipmap.ic_launcher)
+
+        val notification = Notification.Builder(this)
+                .setContentTitle("Connection request")
+                .setContentText("$deviceName wants to connect to you")
+                .setLights(Color.BLUE, 3000, 3000)
+                .setSmallIcon(R.drawable.ic_connection_request)
+                .setLargeIcon(Bitmap.createScaledBitmap(icon, 128, 128, false))
+                .setContentIntent(pendingIntent)
+                .setAutoCancel(true)
+                .setPriority(Notification.PRIORITY_MAX)
+                .build()
+
+        notification.defaults = notification.defaults or Notification.DEFAULT_SOUND
+        notification.defaults = notification.defaults or Notification.DEFAULT_VIBRATE
+
+        notificationManager.notify(NOTIFICATION_ID_CONNECTION, notification)
     }
 
     @Synchronized fun prepareForAccept() {
@@ -207,6 +237,7 @@ class BluetoothConnectionService : Service() {
         handler.post {
             if (type == ConnectionType.INCOMING) {
                 connectionListener?.onConnectedIn(device)
+                showConnectionRequestNotification(device.name)
             } else {
                 connectionListener?.onConnectedOut(device)
             }
@@ -238,6 +269,10 @@ class BluetoothConnectionService : Service() {
     }
 
     fun sendMessage(message: Message) {
+
+        if (message.type == Message.Type.CONNECTION) {
+            notificationManager.cancel(NOTIFICATION_ID_CONNECTION)
+        }
 
         if (connectionState == ConnectionState.CONNECTED) {
             connectedThread?.write(message.getDecodedMessage())

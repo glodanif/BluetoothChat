@@ -8,6 +8,8 @@ import com.glodanif.bluetoothchat.view.ConversationsView
 class ConversationsPresenter(private val view: ConversationsView, private val connection: BluetoothConnector,
                              private val storage: ConversationsStorage) {
 
+    private var isRunning = false
+
     init {
         connection.setOnPrepareListener(object : OnPrepareListener {
 
@@ -36,7 +38,9 @@ class ConversationsPresenter(private val view: ConversationsView, private val co
             }
 
             override fun onConnectedIn(device: BluetoothDevice) {
-                view.notifyAboutConnectedDevice(device)
+                if (isRunning) {
+                    view.notifyAboutConnectedDevice(device)
+                }
             }
 
             override fun onConnectedOut(device: BluetoothDevice) {
@@ -85,10 +89,12 @@ class ConversationsPresenter(private val view: ConversationsView, private val co
     }
 
     fun onStart() {
+        isRunning = true
         connection.prepare()
     }
 
     fun onStop() {
+        isRunning = false
         connection.release()
         connection.setConnectedToUI(false)
     }

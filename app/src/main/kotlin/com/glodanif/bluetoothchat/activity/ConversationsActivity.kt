@@ -88,6 +88,7 @@ class ConversationsActivity : AppCompatActivity(), ConversationsView {
     }
 
     override fun notifyAboutConnectedDevice(device: BluetoothDevice) {
+
         AlertDialog.Builder(this)
                 .setMessage("${device.name} (${device.address}) has just connected to you")
                 .setPositiveButton("Start chat", { _, _ -> presenter.startChat(device) })

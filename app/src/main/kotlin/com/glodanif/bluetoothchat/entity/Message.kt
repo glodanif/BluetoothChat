@@ -46,7 +46,8 @@ class Message() {
         MESSAGE(0),
         DELIVERY(1),
         CONNECTION(2),
-        SEEING(3);
+        SEEING(3),
+        EDITING(4);
 
         companion object {
             fun from(findValue: Int): Type = Type.values().first { it.value == findValue }
