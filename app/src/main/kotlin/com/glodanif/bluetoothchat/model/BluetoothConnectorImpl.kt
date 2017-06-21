@@ -24,72 +24,78 @@ class BluetoothConnectorImpl(private val context: Context) : BluetoothConnector 
 
         override fun onServiceConnected(className: ComponentName, binder: IBinder) {
             service = (binder as BluetoothConnectionService.ConnectionBinder).getService()
+            service?.setConnectionListener(connectionListenerInner)
+            service?.setMessageListener(messageListenerInner)
+
             bound = true
             prepareListener?.onPrepared()
-
-            (service as BluetoothConnectionService).setConnectionListener(object : OnConnectionListener {
-
-                override fun onConnectionAccepted() {
-                    connectListener?.onConnectionAccepted()
-                }
-
-                override fun onConnectionRejected() {
-                    connectListener?.onConnectionRejected()
-                }
-
-                override fun onConnecting() {
-                    connectListener?.onConnecting()
-                }
-
-                override fun onConnectedIn(device: BluetoothDevice) {
-                    connectListener?.onConnectedIn(device)
-                }
-
-                override fun onConnectedOut(device: BluetoothDevice) {
-                    connectListener?.onConnectedOut(device)
-                }
-
-                override fun onConnectionLost() {
-                    connectListener?.onConnectionLost()
-                }
-
-                override fun onConnectionFailed() {
-                    connectListener?.onConnectionFailed()
-                }
-
-                override fun onDisconnected() {
-                    connectListener?.onDisconnected()
-                }
-            })
-
-            (service as BluetoothConnectionService).setMessageListener(object : OnMessageListener {
-
-                override fun onMessageReceived(message: ChatMessage) {
-                    messageListener?.onMessageReceived(message)
-                }
-
-                override fun onMessageSent(message: ChatMessage) {
-                    messageListener?.onMessageSent(message)
-                }
-
-                override fun onMessageDelivered(id: String) {
-                    messageListener?.onMessageDelivered(id)
-                }
-
-                override fun onMessageNotDelivered(id: String) {
-                    messageListener?.onMessageNotDelivered(id)
-                }
-
-                override fun onMessageSeen(id: String) {
-                    messageListener?.onMessageSeen(id)
-                }
-            })
         }
 
         override fun onServiceDisconnected(className: ComponentName) {
+            service?.setConnectionListener(null)
+            service?.setMessageListener(null)
             service = null
+
             bound = false
             prepareListener?.onError()
+        }
+    }
+
+    private val connectionListenerInner = object : OnConnectionListener {
+
+        override fun onConnectionAccepted() {
+            connectListener?.onConnectionAccepted()
+        }
+
+        override fun onConnectionRejected() {
+            connectListener?.onConnectionRejected()
+        }
+
+        override fun onConnecting() {
+            connectListener?.onConnecting()
+        }
+
+        override fun onConnectedIn(device: BluetoothDevice) {
+            connectListener?.onConnectedIn(device)
+        }
+
+        override fun onConnectedOut(device: BluetoothDevice) {
+            connectListener?.onConnectedOut(device)
+        }
+
+        override fun onConnectionLost() {
+            connectListener?.onConnectionLost()
+        }
+
+        override fun onConnectionFailed() {
+            connectListener?.onConnectionFailed()
+        }
+
+        override fun onDisconnected() {
+            connectListener?.onDisconnected()
+        }
+    }
+
+    private val messageListenerInner = object : OnMessageListener {
+
+        override fun onMessageReceived(message: ChatMessage) {
+            messageListener?.onMessageReceived(message)
+        }
+
+        override fun onMessageSent(message: ChatMessage) {
+            messageListener?.onMessageSent(message)
+        }
+
+        override fun onMessageDelivered(id: String) {
+            messageListener?.onMessageDelivered(id)
+        }
+
+        override fun onMessageNotDelivered(id: String) {
+            messageListener?.onMessageNotDelivered(id)
+        }
+
+        override fun onMessageSeen(id: String) {
+            messageListener?.onMessageSeen(id)
         }
     }
 
@@ -107,15 +113,15 @@ class BluetoothConnectorImpl(private val context: Context) : BluetoothConnector 
         }
     }
 
-    override fun setOnConnectListener(listener: OnConnectionListener) {
+    override fun setOnConnectListener(listener: OnConnectionListener?) {
         this.connectListener = listener
     }
 
-    override fun setOnPrepareListener(listener: OnPrepareListener) {
+    override fun setOnPrepareListener(listener: OnPrepareListener?) {
         this.prepareListener = listener
     }
 
-    override fun setOnMessageListener(listener: OnMessageListener) {
+    override fun setOnMessageListener(listener: OnMessageListener?) {
         this.messageListener = listener
     }
 
@@ -154,16 +160,6 @@ class BluetoothConnectorImpl(private val context: Context) : BluetoothConnector 
 
     override fun isConnected(): Boolean {
         return if (service == null) false else service!!.isConnected()
-    }
-
-    override fun setConnectedToUI(connected: Boolean) {
-        if (service != null) {
-            service!!.isBound += if (connected) +1 else -1
-        }
-    }
-
-    override fun isConnectedToUI(): Boolean {
-        return if (service == null) false else service!!.isBound > 0
     }
 
     override fun getCurrentlyConnectedDevice(): BluetoothDevice? {

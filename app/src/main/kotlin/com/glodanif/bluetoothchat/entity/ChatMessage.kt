@@ -10,10 +10,11 @@ data class ChatMessage(
         @ColumnInfo(name = "address") var deviceAddress: String,
         var date: Date,
         var own: Boolean,
-        var text: String,
-        var seen: Boolean
+        var text: String
 ) {
 
     @PrimaryKey(autoGenerate = true)
     var uid: Long = 0
+    var seen: Boolean = false
+    var edited: Boolean = false
 }

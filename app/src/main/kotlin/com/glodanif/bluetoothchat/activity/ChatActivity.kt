@@ -8,6 +8,7 @@ import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.Toolbar
 import android.widget.EditText
+import android.widget.Toast
 import com.glodanif.bluetoothchat.R
 import com.glodanif.bluetoothchat.adapter.ChatAdapter
 import com.glodanif.bluetoothchat.entity.ChatMessage
@@ -105,6 +106,10 @@ class ChatActivity : AppCompatActivity(), ChatView {
 
     override fun showDisconnected() {
         toolbar.subtitle = "Disconnected"
+    }
+
+    override fun showNotValidMessage() {
+        Toast.makeText(this, "Message cannot be empty", Toast.LENGTH_SHORT).show()
     }
 
     override fun onSupportNavigateUp(): Boolean {

@@ -20,6 +20,7 @@ import android.os.IBinder
 import android.provider.Settings
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
+import com.glodanif.bluetoothchat.ChatApplication
 import com.glodanif.bluetoothchat.R
 import com.glodanif.bluetoothchat.Storage
 import com.glodanif.bluetoothchat.activity.ChatActivity
@@ -65,11 +66,11 @@ class BluetoothConnectionService : Service() {
 
     private var connectionState: ConnectionState = ConnectionState.NOT_CONNECTED
 
-    var isBound: Int = 0
-
     private var currentSocket: BluetoothSocket? = null
 
     private val db: ChatDatabase = Storage.getInstance(this).db
+
+    private lateinit var application: ChatApplication
 
     override fun onBind(intent: Intent): IBinder? {
         return binder
@@ -85,6 +86,7 @@ class BluetoothConnectionService : Service() {
     override fun onCreate() {
         super.onCreate()
         Log.e(TAG, "CREATED")
+        application = getApplication() as ChatApplication
         notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
         isRunning = true
     }
@@ -200,6 +202,7 @@ class BluetoothConnectionService : Service() {
             acceptThread = AcceptThread()
             acceptThread!!.start()
         }
+        showNotification("Ready to connect")
     }
 
     @Synchronized fun connect(device: BluetoothDevice) {
@@ -286,7 +289,7 @@ class BluetoothConnectionService : Service() {
         val message = Message(messageBody)
 
         val sentMessage: ChatMessage = ChatMessage(
-                currentSocket!!.remoteDevice.address, Date(), true, message.body, false)
+                currentSocket!!.remoteDevice.address, Date(), true, message.body)
 
         if (message.type == Message.Type.MESSAGE) {
             thread { db.messagesDao().insert(sentMessage) }
@@ -305,10 +308,10 @@ class BluetoothConnectionService : Service() {
             val device: BluetoothDevice = currentSocket!!.remoteDevice
 
             val receivedMessage: ChatMessage =
-                    ChatMessage(device.address, Date(), false, message.body, false)
+                    ChatMessage(device.address, Date(), false, message.body)
             thread { db.messagesDao().insert(receivedMessage) }
 
-            if (messageListener != null && isBound > 0) {
+            if (messageListener != null && application.isInForeground()) {
                 messageListener!!.onMessageReceived(receivedMessage)
             } else {
                 showNewMessageNotification(message.body, device.name, device.address)
@@ -355,11 +358,11 @@ class BluetoothConnectionService : Service() {
         return connectionState == ConnectionState.CONNECTED
     }
 
-    fun setConnectionListener(listener: OnConnectionListener) {
+    fun setConnectionListener(listener: OnConnectionListener?) {
         this.connectionListener = listener
     }
 
-    fun setMessageListener(listener: OnMessageListener) {
+    fun setMessageListener(listener: OnMessageListener?) {
         this.messageListener = listener
     }
 

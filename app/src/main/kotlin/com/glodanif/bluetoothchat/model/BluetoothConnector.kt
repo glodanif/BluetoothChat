@@ -8,16 +8,13 @@ interface BluetoothConnector {
     fun release()
     fun stop()
     fun restart()
-    fun setOnConnectListener(listener: OnConnectionListener)
-    fun setOnPrepareListener(listener: OnPrepareListener)
-    fun setOnMessageListener(listener: OnMessageListener)
+    fun setOnConnectListener(listener: OnConnectionListener?)
+    fun setOnPrepareListener(listener: OnPrepareListener?)
+    fun setOnMessageListener(listener: OnMessageListener?)
     fun connect(device: BluetoothDevice)
     fun sendMessage(message: String)
     fun isConnected(): Boolean
     fun getCurrentlyConnectedDevice(): BluetoothDevice?
     fun acceptConnection()
     fun rejectConnection()
-
-    fun isConnectedToUI(): Boolean
-    fun setConnectedToUI(connected: Boolean)
 }

@@ -8,81 +8,81 @@ import com.glodanif.bluetoothchat.view.ChatView
 class ChatPresenter(private val deviceAddress: String, private val view: ChatView,
                     private val connectionModel: BluetoothConnector, private val storage: MessagesStorage) {
 
-    init {
-        connectionModel.setOnPrepareListener(object : OnPrepareListener {
+    private val prepareListener = object : OnPrepareListener {
 
-            override fun onPrepared() {
-                if (connectionModel.getCurrentlyConnectedDevice() != null) {
-                    view.showConnected()
-                }
-                connectionModel.setConnectedToUI(true)
+        override fun onPrepared() {
+            if (connectionModel.getCurrentlyConnectedDevice() != null) {
+                view.showConnected()
             }
+            connectionModel.setOnConnectListener(connectionListener)
+            connectionModel.setOnMessageListener(messageListener)
+        }
 
-            override fun onError() {
-                connectionModel.setConnectedToUI(false)
-            }
-        })
+        override fun onError() {
+            onStop()
+        }
+    }
 
-        connectionModel.setOnConnectListener(object : OnConnectionListener {
+    private val connectionListener = object : OnConnectionListener {
 
-            override fun onConnectionAccepted() {
-                view.showAcceptedConnection()
-            }
+        override fun onConnectionAccepted() {
+            view.showAcceptedConnection()
+        }
 
-            override fun onConnectionRejected() {
-                view.showRejectedConnection()
-            }
+        override fun onConnectionRejected() {
+            view.showRejectedConnection()
+        }
 
-            override fun onConnectedIn(device: BluetoothDevice) {
+        override fun onConnectedIn(device: BluetoothDevice) {
 
-            }
+        }
 
-            override fun onConnectedOut(device: BluetoothDevice) {
+        override fun onConnectedOut(device: BluetoothDevice) {
 
-            }
+        }
 
-            override fun onConnecting() {
+        override fun onConnecting() {
 
-            }
+        }
 
-            override fun onConnectionLost() {
-                view.showLostConnection()
-            }
+        override fun onConnectionLost() {
+            view.showLostConnection()
+        }
 
-            override fun onConnectionFailed() {
+        override fun onConnectionFailed() {
 
-            }
+        }
 
-            override fun onDisconnected() {
-                view.showDisconnected()
-            }
-        })
+        override fun onDisconnected() {
+            view.showDisconnected()
+        }
+    }
 
-        connectionModel.setOnMessageListener(object : OnMessageListener {
+    private val messageListener = object : OnMessageListener {
 
-            override fun onMessageReceived(message: ChatMessage) {
-                view.showReceivedMessage(message)
-            }
+        override fun onMessageReceived(message: ChatMessage) {
+            view.showReceivedMessage(message)
+        }
 
-            override fun onMessageSent(message: ChatMessage) {
-                view.showSentMessage(message)
-            }
+        override fun onMessageSent(message: ChatMessage) {
+            view.showSentMessage(message)
+        }
 
-            override fun onMessageDelivered(id: String) {
+        override fun onMessageDelivered(id: String) {
 
-            }
+        }
 
-            override fun onMessageNotDelivered(id: String) {
+        override fun onMessageNotDelivered(id: String) {
 
-            }
+        }
 
-            override fun onMessageSeen(id: String) {
+        override fun onMessageSeen(id: String) {
 
-            }
-        })
+        }
     }
 
     fun onStart() {
+        connectionModel.setOnPrepareListener(prepareListener)
         if (!connectionModel.isConnected()) {
             connectionModel.prepare()
         }
@@ -90,14 +90,22 @@ class ChatPresenter(private val deviceAddress: String, private val view: ChatVie
     }
 
     fun onStop() {
+
+        connectionModel.setOnPrepareListener(null)
+        connectionModel.setOnConnectListener(null)
+        connectionModel.setOnMessageListener(null)
+
         if (!connectionModel.isConnected()) {
             connectionModel.release()
         }
-        connectionModel.setConnectedToUI(false)
     }
 
     fun sendMessage(message: String) {
-        connectionModel.sendMessage(message)
+        if (message.isNullOrEmpty()) {
+            view.showNotValidMessage()
+        } else {
+            connectionModel.sendMessage(message)
+        }
     }
 
     fun onConnect(device: BluetoothDevice) {
