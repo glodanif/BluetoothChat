@@ -98,10 +98,12 @@ class ConversationsPresenter(private val view: ConversationsView, private val co
 
     fun startChat(device: BluetoothDevice) {
         connection.acceptConnection()
+        view.hideActions()
         view.redirectToChat(device)
     }
 
     fun rejectConnection() {
+        view.hideActions()
         connection.rejectConnection()
     }
 

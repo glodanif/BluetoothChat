@@ -20,6 +20,7 @@ import com.glodanif.bluetoothchat.model.ConversationsStorage
 import com.glodanif.bluetoothchat.model.ConversationsStorageImpl
 import com.glodanif.bluetoothchat.presenter.ConversationsPresenter
 import com.glodanif.bluetoothchat.view.ConversationsView
+import com.glodanif.bluetoothchat.widget.ActionView
 
 class ConversationsActivity : AppCompatActivity(), ConversationsView {
 
@@ -34,6 +35,7 @@ class ConversationsActivity : AppCompatActivity(), ConversationsView {
     private lateinit var conversationsList: RecyclerView
     private lateinit var noConversations: View
     private lateinit var addButton: FloatingActionButton
+    private lateinit var actions: ActionView
 
     private val adapter: ConversationsAdapter = ConversationsAdapter()
 
@@ -44,6 +46,8 @@ class ConversationsActivity : AppCompatActivity(), ConversationsView {
         setSupportActionBar(toolbar)
 
         presenter = ConversationsPresenter(this, connection, storage)
+
+        actions = findViewById(R.id.av_actions) as ActionView
 
         conversationsList = findViewById(R.id.rv_conversations) as RecyclerView
         noConversations = findViewById(R.id.ll_empty_holder)
@@ -72,6 +76,10 @@ class ConversationsActivity : AppCompatActivity(), ConversationsView {
         presenter.onStop()
     }
 
+    override fun hideActions() {
+        actions.visibility = View.GONE
+    }
+
     override fun showNoConversations() {
         conversationsList.visibility = View.GONE
         addButton.visibility = View.GONE
@@ -89,12 +97,10 @@ class ConversationsActivity : AppCompatActivity(), ConversationsView {
 
     override fun notifyAboutConnectedDevice(device: BluetoothDevice) {
 
-        AlertDialog.Builder(this)
-                .setMessage("${device.name} (${device.address}) has just connected to you")
-                .setPositiveButton("Start chat", { _, _ -> presenter.startChat(device) })
-                .setNegativeButton("Disconnect", { _, _ -> presenter.rejectConnection() })
-                .setCancelable(false)
-                .show()
+        actions.visibility = View.VISIBLE
+        actions.setActions("${device.name} (${device.address}) has just connected to you",
+                ActionView.Action("Start chat") { presenter.startChat(device) },
+                ActionView.Action("Disconnect") { presenter.rejectConnection() })
     }
 
     override fun redirectToChat(device: BluetoothDevice) {

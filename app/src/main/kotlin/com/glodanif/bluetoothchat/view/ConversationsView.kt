@@ -9,6 +9,7 @@ interface ConversationsView {
     fun notifyAboutConnectedDevice(device: BluetoothDevice)
     fun connectedToModel()
 
+    fun hideActions()
     fun showNoConversations()
     fun showConversations(conversations: List<Conversation>, connected: String?)
 }
