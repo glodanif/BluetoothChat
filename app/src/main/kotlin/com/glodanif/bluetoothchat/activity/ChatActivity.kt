@@ -2,11 +2,14 @@ package com.glodanif.bluetoothchat.activity
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.Shader
+import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.Toolbar
+import android.view.View
 import android.widget.EditText
 import android.widget.Toast
 import com.glodanif.bluetoothchat.R
@@ -18,6 +21,7 @@ import com.glodanif.bluetoothchat.model.MessagesStorage
 import com.glodanif.bluetoothchat.model.MessagesStorageImpl
 import com.glodanif.bluetoothchat.presenter.ChatPresenter
 import com.glodanif.bluetoothchat.view.ChatView
+import com.glodanif.bluetoothchat.widget.ActionView
 import java.util.*
 
 class ChatActivity : AppCompatActivity(), ChatView {
@@ -27,6 +31,7 @@ class ChatActivity : AppCompatActivity(), ChatView {
     private val storageModel: MessagesStorage = MessagesStorageImpl(this)
 
     private val layoutManager = LinearLayoutManager(this)
+    private lateinit var actions: ActionView
     private lateinit var chatList: RecyclerView
     private lateinit var messageField: EditText
     private lateinit var toolbar: Toolbar
@@ -41,6 +46,7 @@ class ChatActivity : AppCompatActivity(), ChatView {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
 
+        actions = findViewById(R.id.av_actions) as ActionView
         messageField = findViewById(R.id.et_message) as EditText
 
         findViewById(R.id.ib_send).setOnClickListener {
@@ -69,6 +75,26 @@ class ChatActivity : AppCompatActivity(), ChatView {
     override fun onStop() {
         super.onStop()
         presenter.onStop()
+    }
+
+    override fun showNotConnectedToThisDevice(currentDevice: String) {
+        actions.visibility = View.VISIBLE
+        actions.setActions("You are currently connected to $currentDevice. Do you want to disconnect from it?",
+                ActionView.Action("Connect") { presenter.connectToDevice() },
+                ActionView.Action("Dismiss") { hideActions() }
+        )
+    }
+
+    override fun showNotConnectedToAnyDevice() {
+        actions.visibility = View.VISIBLE
+        actions.setActions("You are not connected to this device right now. Do you want to connect to it?",
+                ActionView.Action("Connect") { presenter.connectToDevice() },
+                ActionView.Action("Dismiss") { hideActions() }
+        )
+    }
+
+    override fun hideActions() {
+        actions.visibility = View.GONE
     }
 
     override fun showMessagesHistory(messages: List<ChatMessage>) {
@@ -110,6 +136,10 @@ class ChatActivity : AppCompatActivity(), ChatView {
 
     override fun showNotValidMessage() {
         Toast.makeText(this, "Message cannot be empty", Toast.LENGTH_SHORT).show()
+    }
+
+    override fun showDeviceIsNotAvailable() {
+        Toast.makeText(this, "This device is not available right now, make sure it's paired", Toast.LENGTH_LONG).show()
     }
 
     override fun onSupportNavigateUp(): Boolean {

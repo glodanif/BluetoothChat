@@ -12,5 +12,9 @@ interface ChatView {
     fun showRejectedConnection()
     fun showLostConnection()
     fun showDisconnected()
+    fun showNotConnectedToAnyDevice()
+    fun showNotConnectedToThisDevice(currentDevice: String)
     fun showNotValidMessage()
+    fun showDeviceIsNotAvailable()
+    fun hideActions()
 }

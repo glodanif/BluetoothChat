@@ -15,6 +15,7 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.os.Binder
+import android.os.Build
 import android.os.Handler
 import android.os.IBinder
 import android.provider.Settings
@@ -126,7 +127,7 @@ class BluetoothConnectionService : Service() {
 
         val icon = BitmapFactory.decodeResource(resources, R.mipmap.ic_launcher)
 
-        val notification = Notification.Builder(this)
+        val builder = Notification.Builder(this)
                 .setContentTitle("Bluetooth Chat")
                 .setContentText(message)
                 .setSmallIcon(R.drawable.ic_notification)
@@ -135,9 +136,12 @@ class BluetoothConnectionService : Service() {
                 .setOngoing(true)
                 .setPriority(Notification.PRIORITY_LOW)
                 .addAction(0, "STOP", stopPendingIntent)
-                .build()
 
-        startForeground(FOREGROUND_SERVICE, notification)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            builder.setColor(resources.getColor(R.color.colorPrimary))
+        }
+
+        startForeground(FOREGROUND_SERVICE, builder.build())
     }
 
     private fun showNewMessageNotification(message: String, deviceName: String, address: String) {
@@ -150,7 +154,7 @@ class BluetoothConnectionService : Service() {
 
         val icon = BitmapFactory.decodeResource(resources, R.mipmap.ic_launcher)
 
-        val notification = Notification.Builder(this)
+        val builder = Notification.Builder(this)
                 .setContentTitle(deviceName)
                 .setContentText(message)
                 .setLights(Color.BLUE, 3000, 3000)
@@ -159,7 +163,12 @@ class BluetoothConnectionService : Service() {
                 .setContentIntent(pendingIntent)
                 .setAutoCancel(true)
                 .setPriority(Notification.PRIORITY_MAX)
-                .build()
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            builder.setColor(resources.getColor(R.color.colorPrimary))
+        }
+
+        val notification = builder.build()
 
         notification.defaults = notification.defaults or Notification.DEFAULT_SOUND
         notification.defaults = notification.defaults or Notification.DEFAULT_VIBRATE
@@ -175,7 +184,7 @@ class BluetoothConnectionService : Service() {
 
         val icon = BitmapFactory.decodeResource(resources, R.mipmap.ic_launcher)
 
-        val notification = Notification.Builder(this)
+        val builder = Notification.Builder(this)
                 .setContentTitle("Connection request")
                 .setContentText("$deviceName wants to connect to you")
                 .setLights(Color.BLUE, 3000, 3000)
@@ -184,7 +193,12 @@ class BluetoothConnectionService : Service() {
                 .setContentIntent(pendingIntent)
                 .setAutoCancel(true)
                 .setPriority(Notification.PRIORITY_MAX)
-                .build()
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            builder.setColor(resources.getColor(R.color.colorPrimary))
+        }
+
+        val notification = builder.build()
 
         notification.defaults = notification.defaults or Notification.DEFAULT_SOUND
         notification.defaults = notification.defaults or Notification.DEFAULT_VIBRATE
@@ -424,7 +438,7 @@ class BluetoothConnectionService : Service() {
         }
     }
 
-    private inner class ConnectThread(bluetoothDevice: BluetoothDevice) : Thread() {
+    private inner class ConnectThread(bluetoothDevice: BluetoothDevice): Thread() {
 
         private var socket: BluetoothSocket? = null
         private val device = bluetoothDevice

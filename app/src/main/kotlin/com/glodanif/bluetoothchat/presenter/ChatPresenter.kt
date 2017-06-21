@@ -4,6 +4,7 @@ import android.bluetooth.BluetoothDevice
 import com.glodanif.bluetoothchat.entity.ChatMessage
 import com.glodanif.bluetoothchat.model.*
 import com.glodanif.bluetoothchat.view.ChatView
+import android.bluetooth.BluetoothAdapter
 
 class ChatPresenter(private val deviceAddress: String, private val view: ChatView,
                     private val connectionModel: BluetoothConnector, private val storage: MessagesStorage) {
@@ -16,6 +17,13 @@ class ChatPresenter(private val deviceAddress: String, private val view: ChatVie
             }
             connectionModel.setOnConnectListener(connectionListener)
             connectionModel.setOnMessageListener(messageListener)
+
+            val currentDevice: BluetoothDevice? = connectionModel.getCurrentlyConnectedDevice()
+            if (currentDevice == null) {
+                view.showNotConnectedToAnyDevice()
+            } else if (currentDevice.address != deviceAddress) {
+                view.showNotConnectedToThisDevice(currentDevice.address)
+            }
         }
 
         override fun onError() {
@@ -97,6 +105,21 @@ class ChatPresenter(private val deviceAddress: String, private val view: ChatVie
 
         if (!connectionModel.isConnected()) {
             connectionModel.release()
+        }
+    }
+
+    fun connectToDevice() {
+
+        val adapter = BluetoothAdapter.getDefaultAdapter()
+        val device = adapter.bondedDevices
+                .filter { it.address.equals(deviceAddress, ignoreCase = true) }
+                .first()
+
+        if (device != null) {
+            connectionModel.connect(device)
+            view.hideActions()
+        } else {
+            view.showDeviceIsNotAvailable()
         }
     }
 
