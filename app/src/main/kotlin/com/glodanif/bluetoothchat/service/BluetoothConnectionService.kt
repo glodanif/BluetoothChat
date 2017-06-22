@@ -49,7 +49,7 @@ class BluetoothConnectionService : Service() {
 
     private lateinit var notificationManager: NotificationManager
 
-    enum class ConnectionState { CONNECTED, CONNECTING, NOT_CONNECTED, REJECTED, LISTENING }
+    enum class ConnectionState { CONNECTED, CONNECTING, NOT_CONNECTED, REJECTED, PENDING, LISTENING }
     enum class ConnectionType { INCOMING, OUTCOMING }
 
     private var connectionListener: OnConnectionListener? = null
@@ -287,12 +287,17 @@ class BluetoothConnectionService : Service() {
 
     fun sendMessage(message: Message) {
 
-        if (message.type == Message.Type.CONNECTION) {
-            notificationManager.cancel(NOTIFICATION_ID_CONNECTION)
+        if (isConnected()) {
+            connectedThread?.write(message.getDecodedMessage())
         }
 
-        if (connectionState == ConnectionState.CONNECTED) {
-            connectedThread?.write(message.getDecodedMessage())
+        if (message.type == Message.Type.CONNECTION) {
+            if (message.flag) {
+                connectionState = ConnectionState.CONNECTED
+            } else {
+                prepareForAccept()
+            }
+            notificationManager.cancel(NOTIFICATION_ID_CONNECTION)
         }
     }
 
@@ -343,6 +348,7 @@ class BluetoothConnectionService : Service() {
             }
         } else if (message.type == Message.Type.CONNECTION) {
             if (message.flag) {
+                connectionState = ConnectionState.CONNECTED
                 connectionListener?.onConnectionAccepted()
             } else {
                 connectionState = ConnectionState.REJECTED
@@ -361,7 +367,7 @@ class BluetoothConnectionService : Service() {
 
     private fun connectionLost() {
         currentSocket = null
-        if (connectionState == ConnectionState.CONNECTED) {
+        if (isConnected()) {
             handler.post { connectionListener?.onConnectionLost() }
         }
         connectionState = ConnectionState.NOT_CONNECTED
@@ -369,7 +375,12 @@ class BluetoothConnectionService : Service() {
     }
 
     fun isConnected(): Boolean {
-        return connectionState == ConnectionState.CONNECTED
+        return connectionState == ConnectionState.CONNECTED ||
+                connectionState == ConnectionState.PENDING
+    }
+
+    fun isPending(): Boolean {
+        return connectionState == ConnectionState.PENDING
     }
 
     fun setConnectionListener(listener: OnConnectionListener?) {
@@ -401,7 +412,7 @@ class BluetoothConnectionService : Service() {
 
             var socket: BluetoothSocket?
 
-            while (connectionState != ConnectionState.CONNECTED) {
+            while (!isConnected()) {
                 try {
                     socket = serverSocket?.accept()
                 } catch (e: IOException) {
@@ -415,7 +426,7 @@ class BluetoothConnectionService : Service() {
                             Log.e(TAG, "AcceptThread")
                             connected(socket, socket.remoteDevice, ConnectionType.INCOMING)
                         }
-                        ConnectionState.NOT_CONNECTED, ConnectionState.CONNECTED, ConnectionState.REJECTED -> try {
+                        ConnectionState.NOT_CONNECTED, ConnectionState.CONNECTED, ConnectionState.PENDING, ConnectionState.REJECTED -> try {
                             socket.close()
                         } catch (e: IOException) {
                             Log.e(TAG, "Could not close unwanted socket", e)
@@ -508,7 +519,7 @@ class BluetoothConnectionService : Service() {
             }
 
             showNotification("Connected to ${socket.remoteDevice.name}")
-            connectionState = ConnectionState.CONNECTED
+            connectionState = ConnectionState.PENDING
         }
 
         override fun run() {
@@ -516,7 +527,7 @@ class BluetoothConnectionService : Service() {
             val buffer = ByteArray(1024)
             var bytes: Int?
 
-            while (connectionState == ConnectionState.CONNECTED) {
+            while (isConnected()) {
                 try {
                     bytes = inputStream?.read(buffer)
 

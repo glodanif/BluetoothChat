@@ -162,6 +162,10 @@ class BluetoothConnectorImpl(private val context: Context) : BluetoothConnector 
         return if (service == null) false else service!!.isConnected()
     }
 
+    override fun isPending(): Boolean {
+        return if (service == null) false else service!!.isPending()
+    }
+
     override fun getCurrentlyConnectedDevice(): BluetoothDevice? {
         if (!bound) {
             throw IllegalStateException("Bluetooth connection service is not prepared yet")

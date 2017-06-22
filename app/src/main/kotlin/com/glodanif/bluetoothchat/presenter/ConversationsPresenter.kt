@@ -14,11 +14,14 @@ class ConversationsPresenter(private val view: ConversationsView, private val co
 
             connection.setOnConnectListener(connectionListener)
             connection.setOnMessageListener(messageListener)
-
             view.connectedToModel()
-            storage.getConversations {
-                if (it.isEmpty()) view.showNoConversations() else
-                    view.showConversations(it, connection.getCurrentlyConnectedDevice()?.address)
+
+            loadConversations()
+
+            val device = connection.getCurrentlyConnectedDevice()
+
+            if (device != null && connection.isPending()) {
+                view.notifyAboutConnectedDevice(device)
             }
         }
 
@@ -84,6 +87,13 @@ class ConversationsPresenter(private val view: ConversationsView, private val co
 
         override fun onMessageSeen(id: String) {
 
+        }
+    }
+
+    fun loadConversations() {
+        storage.getConversations {
+            if (it.isEmpty()) view.showNoConversations() else
+                view.showConversations(it, connection.getCurrentlyConnectedDevice()?.address)
         }
     }
 

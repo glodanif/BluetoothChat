@@ -100,7 +100,8 @@ class ConversationsActivity : AppCompatActivity(), ConversationsView {
         actions.visibility = View.VISIBLE
         actions.setActions("${device.name} (${device.address}) has just connected to you",
                 ActionView.Action("Start chat") { presenter.startChat(device) },
-                ActionView.Action("Disconnect") { presenter.rejectConnection() })
+                ActionView.Action("Disconnect") { presenter.rejectConnection() }
+        )
     }
 
     override fun redirectToChat(device: BluetoothDevice) {

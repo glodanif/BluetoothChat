@@ -23,6 +23,8 @@ class ChatPresenter(private val deviceAddress: String, private val view: ChatVie
                 view.showNotConnectedToAnyDevice()
             } else if (currentDevice.address != deviceAddress) {
                 view.showNotConnectedToThisDevice(currentDevice.address)
+            } else if (connectionModel.isPending() && currentDevice.address == deviceAddress) {
+                view.showWainingForOpponent()
             }
         }
 
@@ -106,6 +108,11 @@ class ChatPresenter(private val deviceAddress: String, private val view: ChatVie
         if (!connectionModel.isConnected()) {
             connectionModel.release()
         }
+    }
+
+    fun disconnect() {
+        connectionModel.restart()
+        view.showNotConnectedToAnyDevice()
     }
 
     fun connectToDevice() {

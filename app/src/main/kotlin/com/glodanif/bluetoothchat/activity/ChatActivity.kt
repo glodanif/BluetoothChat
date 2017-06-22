@@ -2,13 +2,13 @@ package com.glodanif.bluetoothchat.activity
 
 import android.content.Context
 import android.content.Intent
-import android.graphics.Shader
-import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.Toolbar
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.widget.EditText
 import android.widget.Toast
@@ -62,7 +62,7 @@ class ChatActivity : AppCompatActivity(), ChatView {
         val deviceName: String = intent.getStringExtra(EXTRA_NAME)
         val deviceAddress: String = intent.getStringExtra(EXTRA_ADDRESS)
         title = deviceName
-        toolbar.subtitle = "Waiting for opponent"
+        toolbar.subtitle = "Not connected"
 
         presenter = ChatPresenter(deviceAddress, this, connectionModel, storageModel)
     }
@@ -90,6 +90,14 @@ class ChatActivity : AppCompatActivity(), ChatView {
         actions.setActions("You are not connected to this device right now. Do you want to connect to it?",
                 ActionView.Action("Connect") { presenter.connectToDevice() },
                 ActionView.Action("Dismiss") { hideActions() }
+        )
+    }
+
+    override fun showWainingForOpponent() {
+        actions.visibility = View.VISIBLE
+        actions.setActions("You are waiting for this device to approve a connection.",
+                ActionView.Action("Cancel") { presenter.disconnect() },
+                null
         )
     }
 
@@ -123,15 +131,28 @@ class ChatActivity : AppCompatActivity(), ChatView {
     }
 
     override fun showRejectedConnection() {
-        toolbar.subtitle = "Connection rejected"
+        toolbar.subtitle = "Not connected"
+        actions.visibility = View.VISIBLE
+        actions.setActions("Your connection was rejected. Do you want to try again?",
+                ActionView.Action("Try again") { presenter.connectToDevice() },
+                ActionView.Action("Dismiss") { hideActions() }
+        )
     }
 
     override fun showLostConnection() {
-        toolbar.subtitle = "Connection lost"
+        toolbar.subtitle = "Not connected"
+        actions.setActions("Connection with this device was lost. Do you want to reconnect?",
+                ActionView.Action("Reconnect") { presenter.connectToDevice() },
+                ActionView.Action("Dismiss") { hideActions() }
+        )
     }
 
     override fun showDisconnected() {
-        toolbar.subtitle = "Disconnected"
+        toolbar.subtitle = "Not connected"
+        actions.setActions("Your opponent disconnected from your device. Do you want to reconnect?",
+                ActionView.Action("Reconnect") { presenter.connectToDevice() },
+                ActionView.Action("Dismiss") { hideActions() }
+        )
     }
 
     override fun showNotValidMessage() {
@@ -142,9 +163,24 @@ class ChatActivity : AppCompatActivity(), ChatView {
         Toast.makeText(this, "This device is not available right now, make sure it's paired", Toast.LENGTH_LONG).show()
     }
 
-    override fun onSupportNavigateUp(): Boolean {
-        onBackPressed()
-        return true
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        val inflater = menuInflater
+        inflater.inflate(R.menu.menu_chat, menu)
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            android.R.id.home -> {
+                onBackPressed()
+                return true
+            }
+            R.id.action_disconnect -> {
+                presenter.disconnect()
+                return true
+            }
+            else -> return onOptionsItemSelected(item)
+        }
     }
 
     companion object {
