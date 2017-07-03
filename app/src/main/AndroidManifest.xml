@@ -38,6 +38,7 @@
             android:windowSoftInputMode="adjustResize|stateHidden" />
 
         <activity
+            android:theme="@style/AppTheme"
             android:name=".activity.ProfileActivity"
             android:label="Initial Setup"
             android:screenOrientation="portrait">

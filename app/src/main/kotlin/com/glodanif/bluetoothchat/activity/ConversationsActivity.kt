@@ -3,6 +3,7 @@ package com.glodanif.bluetoothchat.activity
 import android.app.Activity
 import android.app.AlertDialog
 import android.bluetooth.BluetoothDevice
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.FloatingActionButton
@@ -131,5 +132,11 @@ class ConversationsActivity : AppCompatActivity(), ConversationsView {
                 }
             }
         }
+    }
+
+    companion object {
+
+        fun start(context: Context) =
+                context.startActivity(Intent(context, ConversationsActivity::class.java))
     }
 }

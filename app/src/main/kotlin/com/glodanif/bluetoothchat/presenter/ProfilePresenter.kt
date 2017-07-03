@@ -6,22 +6,36 @@ import com.glodanif.bluetoothchat.view.ProfileView
 
 class ProfilePresenter(private val view: ProfileView, private val settings: SettingsManager) {
 
-    fun loadUser() {
+    @ColorInt
+    private var currentColor = settings.getUserColor()
+    private var currentName = settings.getUserName()
 
+    fun saveUser() {
+        settings.saveUserName(currentName)
+        settings.saveUserColor(currentColor)
     }
 
     fun prepareColorPicker() {
-        view.showColorPicker(settings.getUserColor())
+        view.showColorPicker(currentColor)
     }
 
     fun onColorPicked(@ColorInt color: Int) {
-        settings.saveUserColor(color)
-        val name = if (settings.getUserName() == null)  "Your Name" else settings.getUserName()
-        view.displayUserData(name!!, color)
+        currentColor = color
+        view.displayUserData(currentName, color)
     }
 
-    fun onStart() {
-        val name = if (settings.getUserName() == null)  "Your Name" else settings.getUserName()
-        view.displayUserData(name!!, settings.getUserColor())
+    fun onNameChanged(name: String) {
+        currentName = name
+        view.displayUserData(currentName, currentColor)
+    }
+
+    fun init() {
+        view.displayUserData(currentName, currentColor)
+    }
+
+    fun dispatch() {
+        if (!settings.getUserName().isNullOrEmpty()) {
+            view.redirectToConversations()
+        }
     }
 }

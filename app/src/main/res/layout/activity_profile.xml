@@ -24,7 +24,7 @@
         android:layout_marginStart="8dp"
         android:fontFamily="sans-serif-light"
         android:textColor="#444444"
-        android:textSize="18dp"
+        android:textSize="20sp"
         tools:text="Nexus 6P" />
 
     <TextView
@@ -32,8 +32,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="36dp"
         android:text="Edit"
+        android:textStyle="bold"
+        android:textColor="@drawable/button_text_color"
         android:textAllCaps="true" />
 
     <LinearLayout
@@ -50,7 +52,10 @@
         <EditText
             android:id="@+id/et_name"
             android:layout_width="match_parent"
-            android:layout_height="36dp" />
+            android:layout_height="48dp"
+            android:hint="Your Name"
+            android:textSize="14sp"
+            android:fontFamily="sans-serif-light" />
     </LinearLayout>
 
     <LinearLayout
@@ -68,7 +73,7 @@
         <View
             android:id="@+id/v_color"
             android:layout_width="match_parent"
-            android:layout_height="36dp"
+            android:layout_height="48dp"
             tools:background="@android:color/holo_green_light" />
 
     </LinearLayout>
