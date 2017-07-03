@@ -25,6 +25,6 @@ class SettingsManagerImpl(context: Context) : SettingsManager {
     }
 
     override fun getUserColor(): Int {
-        return preferences.getInt(KEY_USER_COLOR, Color.GREEN)
+        return preferences.getInt(KEY_USER_COLOR, Color.parseColor("#00E676"))
     }
 }

@@ -5,6 +5,7 @@ import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.annotation.ColorInt
+import android.support.v7.widget.Toolbar
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
@@ -40,6 +41,11 @@ class ProfileActivity : AppCompatActivity(), ProfileView {
 
         initMode = intent.getBooleanExtra(EXTRA_EDIT_MODE, false)
 
+        val toolbar = findViewById(R.id.tb_toolbar) as Toolbar
+        setSupportActionBar(toolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(!initMode)
+        supportActionBar?.setDisplayShowHomeEnabled(!initMode)
+
         settings = SettingsManagerImpl(this)
         presenter = ProfilePresenter(this, settings)
 
@@ -48,18 +54,6 @@ class ProfileActivity : AppCompatActivity(), ProfileView {
         nameLabel = findViewById(R.id.tv_name) as TextView
         avatar = findViewById(R.id.iv_avatar) as ImageView
 
-        presenter.init()
-
-        nameField.addTextChangedListener(object : TextWatcher {
-
-            override fun afterTextChanged(s: Editable?) {
-                presenter.onNameChanged(s.toString())
-            }
-
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
-        })
-
         colorPicker.setOnClickListener {
             presenter.prepareColorPicker()
         }
@@ -67,24 +61,27 @@ class ProfileActivity : AppCompatActivity(), ProfileView {
         findViewById(R.id.btn_save).setOnClickListener {
             presenter.saveUser()
         }
+    }
 
-        if (initMode) {
-            presenter.dispatch()
-        }
+    override fun onStart() {
+        super.onStart()
+        presenter.onStart()
+        nameField.addTextChangedListener(textWatcher)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        nameField.removeTextChangedListener(textWatcher)
     }
 
     override fun displayUserData(name: String, color: Int) {
-        val symbol = if (name.isEmpty()) "?" else name[0].toString()
+        val symbol = if (name.isEmpty()) "?" else name[0].toString().toUpperCase()
         nameLabel.text = if (name.isEmpty()) "Your name" else name
+        nameLabel.setTextColor(resources.getColor(
+                if (name.isEmpty()) R.color.text_light else R.color.text_dark))
         val drawable = TextDrawable.builder().buildRound(symbol, color)
         avatar.setImageDrawable(drawable)
         colorPicker.setBackgroundColor(color)
-    }
-
-    private val colorSelectListener = object : ColorSelectListener {
-        override fun onColorSelected(color: Int) {
-            presenter.onColorPicked(color)
-        }
     }
 
     override fun showColorPicker(@ColorInt color: Int) {
@@ -97,8 +94,26 @@ class ProfileActivity : AppCompatActivity(), ProfileView {
     }
 
     override fun redirectToConversations() {
-        ConversationsActivity.start(this)
+        if (initMode) {
+            ConversationsActivity.start(this)
+        }
         finish()
+    }
+
+    private val textWatcher = object : TextWatcher {
+
+        override fun afterTextChanged(s: Editable?) {
+            presenter.onNameChanged(s.toString())
+        }
+
+        override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+        override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+    }
+
+    private val colorSelectListener = object : ColorSelectListener {
+        override fun onColorSelected(color: Int) {
+            presenter.onColorPicked(color)
+        }
     }
 
     companion object {

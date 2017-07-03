@@ -38,10 +38,17 @@
             android:windowSoftInputMode="adjustResize|stateHidden" />
 
         <activity
-            android:theme="@style/AppTheme"
             android:name=".activity.ProfileActivity"
             android:label="Initial Setup"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme">
+
+        </activity>
+
+        <activity
+            android:name=".activity.SplashActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

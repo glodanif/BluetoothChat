@@ -13,6 +13,7 @@ class ProfilePresenter(private val view: ProfileView, private val settings: Sett
     fun saveUser() {
         settings.saveUserName(currentName)
         settings.saveUserColor(currentColor)
+        view.redirectToConversations()
     }
 
     fun prepareColorPicker() {
@@ -26,16 +27,10 @@ class ProfilePresenter(private val view: ProfileView, private val settings: Sett
 
     fun onNameChanged(name: String) {
         currentName = name
-        view.displayUserData(currentName, currentColor)
+        view.displayUserData(name, currentColor)
     }
 
-    fun init() {
+    fun onStart() {
         view.displayUserData(currentName, currentColor)
-    }
-
-    fun dispatch() {
-        if (!settings.getUserName().isNullOrEmpty()) {
-            view.redirectToConversations()
-        }
     }
 }
