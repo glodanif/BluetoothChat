@@ -113,6 +113,10 @@ class ConversationsActivity : AppCompatActivity(), ConversationsView {
         connectAction = null
     }
 
+    override fun setupUserProfile(name: String, color: Int) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
