@@ -35,6 +35,7 @@ class ProfilePresenter(private val view: ProfileView, private val settings: Sett
     }
 
     fun onStart() {
+        view.prefillUsername(currentName)
         view.displayUserData(currentName, currentColor)
     }
 }

@@ -53,6 +53,12 @@ class ProfilePresenterUnitTest {
     }
 
     @Test
+    fun input_typedText() {
+        presenter.onNameChanged("Test")
+        Mockito.verify(view)?.displayUserData("Test", 0)
+    }
+
+    @Test
     fun color_preparePicker() {
         presenter.prepareColorPicker()
         Mockito.verify(view)?.showColorPicker(0)
@@ -67,6 +73,7 @@ class ProfilePresenterUnitTest {
     @Test
     fun onStart_displayProfile() {
         presenter.onStart()
+        Mockito.verify(view)?.prefillUsername(uninitialized())
         Mockito.verify(view)?.displayUserData(uninitialized(), 0)
     }
 

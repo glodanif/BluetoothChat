@@ -8,6 +8,7 @@ import android.support.annotation.ColorInt
 import android.support.v7.widget.Toolbar
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.MenuItem
 import android.view.View
 import android.widget.EditText
 import android.widget.ImageView
@@ -22,9 +23,6 @@ import me.priyesh.chroma.ColorMode
 import me.priyesh.chroma.ColorSelectListener
 import com.amulyakhare.textdrawable.TextDrawable
 import com.glodanif.bluetoothchat.model.SettingsManager
-import android.text.Spanned
-import android.text.InputFilter
-
 
 class ProfileActivity : AppCompatActivity(), ProfileView {
 
@@ -36,18 +34,21 @@ class ProfileActivity : AppCompatActivity(), ProfileView {
     private lateinit var avatar: ImageView
     private lateinit var colorPicker: View
 
-    private var initMode = false
+    private var editMode = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_profile)
 
-        initMode = intent.getBooleanExtra(EXTRA_EDIT_MODE, false)
+        editMode = intent.getBooleanExtra(EXTRA_EDIT_MODE, false)
 
         val toolbar = findViewById(R.id.tb_toolbar) as Toolbar
         setSupportActionBar(toolbar)
-        supportActionBar?.setDisplayHomeAsUpEnabled(!initMode)
-        supportActionBar?.setDisplayShowHomeEnabled(!initMode)
+        supportActionBar?.setDisplayHomeAsUpEnabled(editMode)
+        supportActionBar?.setDisplayShowHomeEnabled(editMode)
+        if (editMode) {
+            title = "Profile"
+        }
 
         settings = SettingsManagerImpl(this)
         presenter = ProfilePresenter(this, settings)
@@ -97,10 +98,14 @@ class ProfileActivity : AppCompatActivity(), ProfileView {
     }
 
     override fun redirectToConversations() {
-        if (initMode) {
+        if (!editMode) {
             ConversationsActivity.start(this)
         }
         finish()
+    }
+
+    override fun prefillUsername(name: String) {
+        nameField.setText(name)
     }
 
     override fun showNotValidNameError() {
@@ -121,6 +126,16 @@ class ProfileActivity : AppCompatActivity(), ProfileView {
     private val colorSelectListener = object : ColorSelectListener {
         override fun onColorSelected(color: Int) {
             presenter.onColorPicked(color)
+        }
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            android.R.id.home -> {
+                onBackPressed()
+                return true
+            }
+            else -> return onOptionsItemSelected(item)
         }
     }
 

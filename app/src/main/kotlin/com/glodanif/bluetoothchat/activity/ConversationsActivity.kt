@@ -63,10 +63,13 @@ class ConversationsActivity : AppCompatActivity(), ConversationsView {
 
         addButton = findViewById(R.id.fab_new_conversation) as FloatingActionButton
         addButton.setOnClickListener {
-            ScanActivity.startForResult(this@ConversationsActivity, REQUEST_SCAN)
+            ScanActivity.startForResult(this, REQUEST_SCAN)
         }
         findViewById(R.id.btn_scan).setOnClickListener {
-            ScanActivity.startForResult(this@ConversationsActivity, REQUEST_SCAN)
+            ScanActivity.startForResult(this, REQUEST_SCAN)
+        }
+        userAvatar.setOnClickListener {
+            ProfileActivity.start(this, true)
         }
     }
 

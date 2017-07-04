@@ -15,11 +15,11 @@ class SplashActivity: AppCompatActivity() {
         Handler().postDelayed({
             val settings = SettingsManagerImpl(this)
             if (settings.getUserName().isEmpty()) {
-                ProfileActivity.start(this, true)
+                ProfileActivity.start(this, false)
             } else {
                 ConversationsActivity.start(this)
             }
             finish()
-        }, 1000)
+        }, 500)
     }
 }
