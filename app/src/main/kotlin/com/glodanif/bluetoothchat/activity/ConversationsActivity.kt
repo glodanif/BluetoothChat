@@ -102,17 +102,17 @@ class ConversationsActivity : AppCompatActivity(), ConversationsView {
         adapter.notifyDataSetChanged()
     }
 
-    override fun notifyAboutConnectedDevice(device: BluetoothDevice) {
+    override fun notifyAboutConnectedDevice(conversation: Conversation) {
 
         actions.visibility = View.VISIBLE
-        actions.setActions("${device.name} (${device.address}) has just connected to you",
-                ActionView.Action("Start chat") { presenter.startChat(device) },
+        actions.setActions("${conversation.displayName} (${conversation.deviceName}) has just connected to you",
+                ActionView.Action("Start chat") { presenter.startChat(conversation) },
                 ActionView.Action("Disconnect") { presenter.rejectConnection() }
         )
     }
 
-    override fun redirectToChat(device: BluetoothDevice) {
-        ChatActivity.start(this, device.name, device.address)
+    override fun redirectToChat(conversation: Conversation) {
+        ChatActivity.start(this, conversation.deviceName, conversation.deviceAddress)
     }
 
     override fun connectedToModel() {

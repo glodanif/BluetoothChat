@@ -27,6 +27,13 @@ class Message() {
         body = messageText
     }
 
+    constructor(uid: String, body: String, flag: Boolean, type: Type) : this() {
+        this.uid = uid
+        this.body = body
+        this.type = type
+        this.flag = flag
+    }
+
     constructor(uid: String, body: String, type: Type) : this() {
         this.uid = uid
         this.body = body
@@ -64,8 +71,16 @@ class Message() {
 
     companion object {
 
-        fun getConnectMessage(name: String, @ColorInt color: Int): String {
-            return "3#0#0#$name#$color"
+        fun createConnectMessage(name: String, @ColorInt color: Int): Message {
+            return Message("0", "$name#$color", Type.CONNECTION_REQUEST)
+        }
+
+        fun createAcceptConnectionMessage(name: String, @ColorInt color: Int): Message {
+            return Message("0", "$name#$color", true, Type.CONNECTION_RESPONSE)
+        }
+
+        fun createRejectConnectionMessage(name: String, @ColorInt color: Int) : Message{
+            return Message("0", "$name#$color", false, Type.CONNECTION_RESPONSE)
         }
     }
 }

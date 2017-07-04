@@ -124,10 +124,12 @@ class ChatActivity : AppCompatActivity(), ChatView {
 
     override fun showConnected() {
         toolbar.subtitle = "Connected"
+        actions.visibility = View.GONE
     }
 
     override fun showAcceptedConnection() {
         toolbar.subtitle = "Connected"
+        actions.visibility = View.GONE
     }
 
     override fun showRejectedConnection() {

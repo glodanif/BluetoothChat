@@ -5,6 +5,7 @@ import com.glodanif.bluetoothchat.entity.ChatMessage
 import com.glodanif.bluetoothchat.model.*
 import com.glodanif.bluetoothchat.view.ChatView
 import android.bluetooth.BluetoothAdapter
+import com.glodanif.bluetoothchat.entity.Conversation
 
 class ChatPresenter(private val deviceAddress: String, private val view: ChatView,
                     private val connectionModel: BluetoothConnector, private val storage: MessagesStorage) {
@@ -12,18 +13,18 @@ class ChatPresenter(private val deviceAddress: String, private val view: ChatVie
     private val prepareListener = object : OnPrepareListener {
 
         override fun onPrepared() {
-            if (connectionModel.getCurrentlyConnectedDevice() != null) {
+            if (connectionModel.getCurrentConversation() != null) {
                 view.showConnected()
             }
             connectionModel.setOnConnectListener(connectionListener)
             connectionModel.setOnMessageListener(messageListener)
 
-            val currentDevice: BluetoothDevice? = connectionModel.getCurrentlyConnectedDevice()
-            if (currentDevice == null) {
+            val currentConversation: Conversation? = connectionModel.getCurrentConversation()
+            if (currentConversation == null) {
                 view.showNotConnectedToAnyDevice()
-            } else if (currentDevice.address != deviceAddress) {
-                view.showNotConnectedToThisDevice(currentDevice.address)
-            } else if (connectionModel.isPending() && currentDevice.address == deviceAddress) {
+            } else if (currentConversation.deviceAddress != deviceAddress) {
+                view.showNotConnectedToThisDevice(currentConversation.deviceAddress)
+            } else if (connectionModel.isPending() && currentConversation.deviceAddress == deviceAddress) {
                 view.showWainingForOpponent()
             }
         }
@@ -43,11 +44,11 @@ class ChatPresenter(private val deviceAddress: String, private val view: ChatVie
             view.showRejectedConnection()
         }
 
-        override fun onConnectedIn(device: BluetoothDevice) {
+        override fun onConnectedIn(conversation: Conversation) {
 
         }
 
-        override fun onConnectedOut(device: BluetoothDevice) {
+        override fun onConnectedOut(conversation: Conversation) {
 
         }
 

@@ -6,8 +6,8 @@ import com.glodanif.bluetoothchat.entity.Conversation
 
 interface ConversationsView {
 
-    fun redirectToChat(device: BluetoothDevice)
-    fun notifyAboutConnectedDevice(device: BluetoothDevice)
+    fun redirectToChat(conversation: Conversation)
+    fun notifyAboutConnectedDevice(conversation: Conversation)
     fun connectedToModel()
 
     fun hideActions()

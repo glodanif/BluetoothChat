@@ -69,6 +69,7 @@ class BluetoothConnectionService : Service() {
     private var connectionState: ConnectionState = ConnectionState.NOT_CONNECTED
 
     private var currentSocket: BluetoothSocket? = null
+    private var currentConversation: Conversation? = null
 
     private val db: ChatDatabase = Storage.getInstance(this).db
     private lateinit var settings: SettingsManager;
@@ -114,8 +115,8 @@ class BluetoothConnectionService : Service() {
         return Service.START_STICKY
     }
 
-    fun getCurrentDevice(): BluetoothDevice? {
-        return currentSocket?.remoteDevice
+    fun getCurrentConversation(): Conversation? {
+        return currentConversation
     }
 
     private fun showNotification(message: String) {
@@ -253,12 +254,6 @@ class BluetoothConnectionService : Service() {
 
         connectedThread = ConnectedThread(socket, type)
         connectedThread!!.start()
-
-        handler.post {
-            if (type == ConnectionType.OUTCOMING) {
-                connectionListener?.onConnectedOut(device)
-            }
-        }
     }
 
     @Synchronized fun stop() {
@@ -345,8 +340,19 @@ class BluetoothConnectionService : Service() {
             }
         } else if (message.type == Message.Type.CONNECTION_RESPONSE) {
             if (message.flag) {
+
+                val device: BluetoothDevice = currentSocket!!.remoteDevice
+
+                val parts = message.body.split("#")
+                val conversation = Conversation(device.address, device.name, parts[0], parts[1].toInt())
+                thread { db.conversationsDao().insert(conversation) }
+
+                currentConversation = conversation
+
                 connectionState = ConnectionState.CONNECTED
                 connectionListener?.onConnectionAccepted()
+                connectionListener?.onConnectedOut(conversation)
+
             } else {
                 connectionState = ConnectionState.REJECTED
                 prepareForAccept()
@@ -356,13 +362,15 @@ class BluetoothConnectionService : Service() {
 
             val device: BluetoothDevice = currentSocket!!.remoteDevice
 
-            connectionListener?.onConnectedIn(device)
-            showConnectionRequestNotification(device.name)
-
             val parts = message.body.split("#")
-
             val conversation = Conversation(device.address, device.name, parts[0], parts[1].toInt())
             thread { db.conversationsDao().insert(conversation) }
+
+            currentConversation = conversation
+
+            connectionListener?.onConnectedIn(conversation)
+            showConnectionRequestNotification(
+                    "${conversation.displayName} (${conversation.deviceName}")
         }
     }
 
@@ -529,7 +537,8 @@ class BluetoothConnectionService : Service() {
             showNotification("Connected to ${socket.remoteDevice.name}")
             connectionState = ConnectionState.PENDING
             if (type == ConnectionType.OUTCOMING) {
-                write(Message.getConnectMessage(settings.getUserName(), settings.getUserColor()))
+                val message = Message.createConnectMessage(settings.getUserName(), settings.getUserColor())
+                write(message.getDecodedMessage())
             }
         }
 

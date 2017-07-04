@@ -1,6 +1,7 @@
 package com.glodanif.bluetoothchat.model
 
 import android.bluetooth.BluetoothDevice
+import com.glodanif.bluetoothchat.entity.Conversation
 
 interface BluetoothConnector {
 
@@ -15,7 +16,7 @@ interface BluetoothConnector {
     fun sendMessage(message: String)
     fun isConnected(): Boolean
     fun isPending(): Boolean
-    fun getCurrentlyConnectedDevice(): BluetoothDevice?
+    fun getCurrentConversation(): Conversation?
     fun acceptConnection()
     fun rejectConnection()
 }

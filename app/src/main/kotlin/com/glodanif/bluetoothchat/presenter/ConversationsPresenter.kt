@@ -2,6 +2,7 @@ package com.glodanif.bluetoothchat.presenter
 
 import android.bluetooth.BluetoothDevice
 import com.glodanif.bluetoothchat.entity.ChatMessage
+import com.glodanif.bluetoothchat.entity.Conversation
 import com.glodanif.bluetoothchat.model.*
 import com.glodanif.bluetoothchat.view.ConversationsView
 
@@ -18,7 +19,7 @@ class ConversationsPresenter(private val view: ConversationsView, private val co
 
             loadConversations()
 
-            val device = connection.getCurrentlyConnectedDevice()
+            val device = connection.getCurrentConversation()
 
             if (device != null && connection.isPending()) {
                 view.notifyAboutConnectedDevice(device)
@@ -42,12 +43,12 @@ class ConversationsPresenter(private val view: ConversationsView, private val co
 
         }
 
-        override fun onConnectedIn(device: BluetoothDevice) {
-            view.notifyAboutConnectedDevice(device)
+        override fun onConnectedIn(conversation: Conversation) {
+            view.notifyAboutConnectedDevice(conversation)
         }
 
-        override fun onConnectedOut(device: BluetoothDevice) {
-            view.redirectToChat(device)
+        override fun onConnectedOut(conversation: Conversation) {
+            view.redirectToChat(conversation)
         }
 
         override fun onConnecting() {
@@ -93,7 +94,7 @@ class ConversationsPresenter(private val view: ConversationsView, private val co
     fun loadConversations() {
         storage.getConversations {
             if (it.isEmpty()) view.showNoConversations() else
-                view.showConversations(it, connection.getCurrentlyConnectedDevice()?.address)
+                view.showConversations(it, connection.getCurrentConversation()?.deviceAddress)
         }
     }
 
@@ -107,10 +108,10 @@ class ConversationsPresenter(private val view: ConversationsView, private val co
         connection.release()
     }
 
-    fun startChat(device: BluetoothDevice) {
+    fun startChat(conversation: Conversation) {
         connection.acceptConnection()
         view.hideActions()
-        view.redirectToChat(device)
+        view.redirectToChat(conversation)
     }
 
     fun rejectConnection() {

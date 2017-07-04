@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.ServiceConnection
 import android.os.IBinder
 import com.glodanif.bluetoothchat.entity.ChatMessage
+import com.glodanif.bluetoothchat.entity.Conversation
 import com.glodanif.bluetoothchat.entity.Message
 import com.glodanif.bluetoothchat.service.BluetoothConnectionService
 import java.lang.IllegalStateException
@@ -54,12 +55,12 @@ class BluetoothConnectorImpl(private val context: Context) : BluetoothConnector 
             connectListener?.onConnecting()
         }
 
-        override fun onConnectedIn(device: BluetoothDevice) {
-            connectListener?.onConnectedIn(device)
+        override fun onConnectedIn(conversation: Conversation) {
+            connectListener?.onConnectedIn(conversation)
         }
 
-        override fun onConnectedOut(device: BluetoothDevice) {
-            connectListener?.onConnectedOut(device)
+        override fun onConnectedOut(conversation: Conversation) {
+            connectListener?.onConnectedOut(conversation)
         }
 
         override fun onConnectionLost() {
@@ -165,12 +166,12 @@ class BluetoothConnectorImpl(private val context: Context) : BluetoothConnector 
         return if (service == null) false else service!!.isPending()
     }
 
-    override fun getCurrentlyConnectedDevice(): BluetoothDevice? {
+    override fun getCurrentConversation(): Conversation? {
         if (!bound) {
             throw IllegalStateException("Bluetooth connection service is not prepared yet")
         }
 
-        return service?.getCurrentDevice()
+        return service?.getCurrentConversation()
     }
 
     override fun acceptConnection() {
@@ -178,7 +179,8 @@ class BluetoothConnectorImpl(private val context: Context) : BluetoothConnector 
             throw IllegalStateException("Bluetooth connection service is not prepared yet")
         }
 
-        val message = Message(true, Message.Type.CONNECTION_RESPONSE)
+        val settings = SettingsManagerImpl(context)
+        val message = Message.createAcceptConnectionMessage(settings.getUserName(), settings.getUserColor())
         service?.sendMessage(message)
     }
 
@@ -188,7 +190,8 @@ class BluetoothConnectorImpl(private val context: Context) : BluetoothConnector 
             throw IllegalStateException("Bluetooth connection service is not prepared yet")
         }
 
-        val message = Message(false, Message.Type.CONNECTION_RESPONSE)
+        val settings = SettingsManagerImpl(context)
+        val message = Message.createRejectConnectionMessage(settings.getUserName(), settings.getUserColor())
         service?.sendMessage(message)
     }
 }
