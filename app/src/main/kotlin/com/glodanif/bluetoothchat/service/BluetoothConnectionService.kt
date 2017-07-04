@@ -18,7 +18,6 @@ import android.os.Binder
 import android.os.Build
 import android.os.Handler
 import android.os.IBinder
-import android.provider.Settings
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import com.glodanif.bluetoothchat.ChatApplication
@@ -32,6 +31,8 @@ import com.glodanif.bluetoothchat.entity.Conversation
 import com.glodanif.bluetoothchat.entity.Message
 import com.glodanif.bluetoothchat.model.OnConnectionListener
 import com.glodanif.bluetoothchat.model.OnMessageListener
+import com.glodanif.bluetoothchat.model.SettingsManager
+import com.glodanif.bluetoothchat.model.SettingsManagerImpl
 import java.io.IOException
 import java.io.InputStream
 import java.io.OutputStream
@@ -70,6 +71,7 @@ class BluetoothConnectionService : Service() {
     private var currentSocket: BluetoothSocket? = null
 
     private val db: ChatDatabase = Storage.getInstance(this).db
+    private lateinit var settings: SettingsManager;
 
     private lateinit var application: ChatApplication
 
@@ -88,6 +90,7 @@ class BluetoothConnectionService : Service() {
         super.onCreate()
         Log.e(TAG, "CREATED")
         application = getApplication() as ChatApplication
+        settings = SettingsManagerImpl(this)
         notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
         isRunning = true
     }
@@ -248,20 +251,14 @@ class BluetoothConnectionService : Service() {
         acceptThread?.cancel()
         acceptThread = null
 
-        connectedThread = ConnectedThread(socket)
+        connectedThread = ConnectedThread(socket, type)
         connectedThread!!.start()
 
         handler.post {
-            if (type == ConnectionType.INCOMING) {
-                connectionListener?.onConnectedIn(device)
-                showConnectionRequestNotification(device.name)
-            } else {
+            if (type == ConnectionType.OUTCOMING) {
                 connectionListener?.onConnectedOut(device)
             }
         }
-
-        val conversation = Conversation(device.address, device.name)
-        thread { db.conversationsDao().insert(conversation) }
     }
 
     @Synchronized fun stop() {
@@ -291,7 +288,7 @@ class BluetoothConnectionService : Service() {
             connectedThread?.write(message.getDecodedMessage())
         }
 
-        if (message.type == Message.Type.CONNECTION) {
+        if (message.type == Message.Type.CONNECTION_RESPONSE) {
             if (message.flag) {
                 connectionState = ConnectionState.CONNECTED
             } else {
@@ -318,7 +315,7 @@ class BluetoothConnectionService : Service() {
 
     private fun onMessageReceived(messageBody: String) {
 
-        Log.e(TAG, "MessageReceived :$messageBody")
+        Log.e(TAG, "Message received: $messageBody")
 
         val message = Message(messageBody)
 
@@ -346,7 +343,7 @@ class BluetoothConnectionService : Service() {
             if (message.flag) {
                 messageListener?.onMessageSeen(message.uid)
             }
-        } else if (message.type == Message.Type.CONNECTION) {
+        } else if (message.type == Message.Type.CONNECTION_RESPONSE) {
             if (message.flag) {
                 connectionState = ConnectionState.CONNECTED
                 connectionListener?.onConnectionAccepted()
@@ -355,6 +352,17 @@ class BluetoothConnectionService : Service() {
                 prepareForAccept()
                 connectionListener?.onConnectionRejected()
             }
+        } else if (message.type == Message.Type.CONNECTION_REQUEST && currentSocket != null) {
+
+            val device: BluetoothDevice = currentSocket!!.remoteDevice
+
+            connectionListener?.onConnectedIn(device)
+            showConnectionRequestNotification(device.name)
+
+            val parts = message.body.split("#")
+
+            val conversation = Conversation(device.address, device.name, parts[0], parts[1].toInt())
+            thread { db.conversationsDao().insert(conversation) }
         }
     }
 
@@ -502,7 +510,7 @@ class BluetoothConnectionService : Service() {
         }
     }
 
-    private inner class ConnectedThread(private val socket: BluetoothSocket) : Thread() {
+    private inner class ConnectedThread(private val socket: BluetoothSocket, type: ConnectionType) : Thread() {
 
         private var inputStream: InputStream? = null
         private var outputStream: OutputStream? = null
@@ -520,6 +528,9 @@ class BluetoothConnectionService : Service() {
 
             showNotification("Connected to ${socket.remoteDevice.name}")
             connectionState = ConnectionState.PENDING
+            if (type == ConnectionType.OUTCOMING) {
+                write(Message.getConnectMessage(settings.getUserName(), settings.getUserColor()))
+            }
         }
 
         override fun run() {

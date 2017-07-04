@@ -10,7 +10,9 @@ data class Conversation(
         @PrimaryKey
         @ColumnInfo(name = "address")
         var deviceAddress: String,
-        var deviceName: String
+        var deviceName: String,
+        var displayName: String,
+        var color: Int
 ) {
         @ColumnInfo(name = "date")
         var lastActivity: Date? = null

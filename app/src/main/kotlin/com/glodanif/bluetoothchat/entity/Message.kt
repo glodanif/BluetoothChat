@@ -1,5 +1,7 @@
 package com.glodanif.bluetoothchat.entity
 
+import android.support.annotation.ColorInt
+
 class Message() {
 
     val DIVIDER = "#"
@@ -45,9 +47,10 @@ class Message() {
     enum class Type(val value : Int) {
         MESSAGE(0),
         DELIVERY(1),
-        CONNECTION(2),
-        SEEING(3),
-        EDITING(4);
+        CONNECTION_RESPONSE(2),
+        CONNECTION_REQUEST(3),
+        SEEING(4),
+        EDITING(5);
 
         companion object {
             fun from(findValue: Int): Type = Type.values().first { it.value == findValue }
@@ -57,5 +60,12 @@ class Message() {
     fun getDecodedMessage(): String {
         val flag = if (this.flag) 1 else 0
         return "${type.value}$DIVIDER$uid$DIVIDER$flag$DIVIDER$body"
+    }
+
+    companion object {
+
+        fun getConnectMessage(name: String, @ColorInt color: Int): String {
+            return "3#0#0#$name#$color"
+        }
     }
 }

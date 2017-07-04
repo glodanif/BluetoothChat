@@ -1,11 +1,13 @@
 package com.glodanif.bluetoothchat.adapter
 
+import android.graphics.Color
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import com.amulyakhare.textdrawable.TextDrawable
 import com.glodanif.bluetoothchat.R
 import com.glodanif.bluetoothchat.entity.Conversation
 import com.glodanif.bluetoothchat.extension.getRelativeTime
@@ -25,7 +27,8 @@ class ConversationsAdapter : RecyclerView.Adapter<ConversationsAdapter.Conversat
         if (holder == null) return
 
         val conversation = conversations[position]
-        holder.name.text = conversation.deviceName
+
+        holder.name.text = "${conversation.displayName} (${conversation.deviceName})"
         holder.itemView?.setOnClickListener { listener?.invoke(conversation) }
         holder.connected.visibility = View.VISIBLE
 
@@ -39,14 +42,15 @@ class ConversationsAdapter : RecyclerView.Adapter<ConversationsAdapter.Conversat
             holder.time.visibility = View.GONE
         }
 
-        val creator = Picasso.with(holder.itemView?.context).load(R.drawable.empty_avatar)
-                .transform(CircleTransformation())
-
+        var color = conversation.color
         if (!isConnected || position > 0) {
             holder.connected.visibility = View.GONE
-            creator.transform(GrayscaleTransformation())
+            color = Color.LTGRAY
         }
-        creator.into(holder.avatar)
+
+        val symbol = conversation.displayName[0].toString().toUpperCase()
+        val drawable = TextDrawable.builder().buildRound(symbol, color)
+        holder.avatar.setImageDrawable(drawable)
     }
 
     override fun getItemCount(): Int {

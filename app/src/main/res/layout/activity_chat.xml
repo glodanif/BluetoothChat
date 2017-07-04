@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/background_chat"
+    android:background="@drawable/background"
     android:clipToPadding="false"
     tools:context="com.glodanif.bluetoothchat.activity.ChatActivity">
 

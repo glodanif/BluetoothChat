@@ -5,7 +5,6 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.ServiceConnection
 import android.os.IBinder
-import android.util.Log
 import com.glodanif.bluetoothchat.entity.ChatMessage
 import com.glodanif.bluetoothchat.entity.Message
 import com.glodanif.bluetoothchat.service.BluetoothConnectionService
@@ -179,7 +178,7 @@ class BluetoothConnectorImpl(private val context: Context) : BluetoothConnector 
             throw IllegalStateException("Bluetooth connection service is not prepared yet")
         }
 
-        val message = Message(true, Message.Type.CONNECTION)
+        val message = Message(true, Message.Type.CONNECTION_RESPONSE)
         service?.sendMessage(message)
     }
 
@@ -189,7 +188,7 @@ class BluetoothConnectorImpl(private val context: Context) : BluetoothConnector 
             throw IllegalStateException("Bluetooth connection service is not prepared yet")
         }
 
-        val message = Message(false, Message.Type.CONNECTION)
+        val message = Message(false, Message.Type.CONNECTION_RESPONSE)
         service?.sendMessage(message)
     }
 }
