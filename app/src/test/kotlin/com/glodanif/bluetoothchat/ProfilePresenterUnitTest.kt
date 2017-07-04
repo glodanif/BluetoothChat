@@ -26,29 +26,29 @@ class ProfilePresenterUnitTest {
 
     @Test
     fun validation_emptyUserName() {
-        Mockito.`when`(model.getUserName()).thenReturn("")
-        ProfilePresenter(view, model).saveUser()
+        presenter.onNameChanged("")
+        presenter.saveUser()
         Mockito.verify(view)?.showNotValidNameError()
     }
 
     @Test
     fun validation_forbiddenCharacters() {
-        Mockito.`when`(model.getUserName()).thenReturn("Test#")
-        ProfilePresenter(view, model).saveUser()
+        presenter.onNameChanged("Test#")
+        presenter.saveUser()
         Mockito.verify(view)?.showNotValidNameError()
     }
 
     @Test
     fun validation_longUserName() {
-        Mockito.`when`(model.getUserName()).thenReturn("Test longer that 25 characters")
-        ProfilePresenter(view, model).saveUser()
+        presenter.onNameChanged("Test longer that 25 character")
+        presenter.saveUser()
         Mockito.verify(view)?.showNotValidNameError()
     }
 
     @Test
     fun validation_validUsername() {
-        Mockito.`when`(model.getUserName()).thenReturn("Test")
-        ProfilePresenter(view, model).saveUser()
+        presenter.onNameChanged("Test")
+        presenter.saveUser()
         Mockito.verify(view)?.redirectToConversations()
     }
 
