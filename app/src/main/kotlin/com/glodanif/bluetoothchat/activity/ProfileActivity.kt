@@ -22,6 +22,9 @@ import me.priyesh.chroma.ColorMode
 import me.priyesh.chroma.ColorSelectListener
 import com.amulyakhare.textdrawable.TextDrawable
 import com.glodanif.bluetoothchat.model.SettingsManager
+import android.text.Spanned
+import android.text.InputFilter
+
 
 class ProfileActivity : AppCompatActivity(), ProfileView {
 
@@ -100,9 +103,14 @@ class ProfileActivity : AppCompatActivity(), ProfileView {
         finish()
     }
 
+    override fun showNotValidNameError() {
+        nameField.error = "Your name cannot be empty or longer than 25 characters, also, \'#\' symbol is not allowed"
+    }
+
     private val textWatcher = object : TextWatcher {
 
         override fun afterTextChanged(s: Editable?) {
+            nameField.error = null
             presenter.onNameChanged(s.toString())
         }
 

@@ -6,7 +6,7 @@ import com.glodanif.bluetoothchat.model.*
 import com.glodanif.bluetoothchat.view.ConversationsView
 
 class ConversationsPresenter(private val view: ConversationsView, private val connection: BluetoothConnector,
-                             private val storage: ConversationsStorage) {
+                             private val storage: ConversationsStorage, private val settings: SettingsManager) {
 
     private val prepareListener = object : OnPrepareListener {
 
@@ -100,6 +100,7 @@ class ConversationsPresenter(private val view: ConversationsView, private val co
     fun onStart() {
         connection.setOnPrepareListener(prepareListener)
         connection.prepare()
+        view.setupUserProfile(settings.getUserName(), settings.getUserColor())
     }
 
     fun onStop() {

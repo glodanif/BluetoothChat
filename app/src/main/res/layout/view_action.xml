@@ -6,7 +6,7 @@
     android:layout_height="wrap_content"
     android:background="@android:color/white"
     android:paddingBottom="8dp"
-    app:elevation="4dp">
+    app:elevation="8dp">
 
     <TextView
         android:id="@+id/tv_text"

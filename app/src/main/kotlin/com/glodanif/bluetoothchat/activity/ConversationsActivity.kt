@@ -12,13 +12,12 @@ import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.Toolbar
 import android.view.View
+import android.widget.ImageView
+import com.amulyakhare.textdrawable.TextDrawable
 import com.glodanif.bluetoothchat.R
 import com.glodanif.bluetoothchat.adapter.ConversationsAdapter
 import com.glodanif.bluetoothchat.entity.Conversation
-import com.glodanif.bluetoothchat.model.BluetoothConnector
-import com.glodanif.bluetoothchat.model.BluetoothConnectorImpl
-import com.glodanif.bluetoothchat.model.ConversationsStorage
-import com.glodanif.bluetoothchat.model.ConversationsStorageImpl
+import com.glodanif.bluetoothchat.model.*
 import com.glodanif.bluetoothchat.presenter.ConversationsPresenter
 import com.glodanif.bluetoothchat.view.ConversationsView
 import com.glodanif.bluetoothchat.widget.ActionView
@@ -28,6 +27,7 @@ class ConversationsActivity : AppCompatActivity(), ConversationsView {
     private val REQUEST_SCAN = 101
 
     private lateinit var presenter: ConversationsPresenter
+    private lateinit var settings: SettingsManager
     private val connection: BluetoothConnector = BluetoothConnectorImpl(this)
     private val storage: ConversationsStorage = ConversationsStorageImpl(this)
 
@@ -37,6 +37,7 @@ class ConversationsActivity : AppCompatActivity(), ConversationsView {
     private lateinit var noConversations: View
     private lateinit var addButton: FloatingActionButton
     private lateinit var actions: ActionView
+    private lateinit var userAvatar: ImageView
 
     private val adapter: ConversationsAdapter = ConversationsAdapter()
 
@@ -46,10 +47,12 @@ class ConversationsActivity : AppCompatActivity(), ConversationsView {
         val toolbar = findViewById(R.id.toolbar) as Toolbar
         setSupportActionBar(toolbar)
 
-        presenter = ConversationsPresenter(this, connection, storage)
+        settings = SettingsManagerImpl(this)
+        presenter = ConversationsPresenter(this, connection, storage, settings)
 
         actions = findViewById(R.id.av_actions) as ActionView
 
+        userAvatar = findViewById(R.id.iv_avatar) as ImageView
         conversationsList = findViewById(R.id.rv_conversations) as RecyclerView
         noConversations = findViewById(R.id.ll_empty_holder)
         conversationsList.layoutManager = LinearLayoutManager(this)
@@ -115,7 +118,9 @@ class ConversationsActivity : AppCompatActivity(), ConversationsView {
     }
 
     override fun setupUserProfile(name: String, color: Int) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        val symbol = if (name.isEmpty()) "?" else name[0].toString().toUpperCase()
+        val drawable = TextDrawable.builder().buildRound(symbol, color)
+        userAvatar.setImageDrawable(drawable)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

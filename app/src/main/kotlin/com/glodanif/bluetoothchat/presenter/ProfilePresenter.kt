@@ -11,9 +11,13 @@ class ProfilePresenter(private val view: ProfileView, private val settings: Sett
     private var currentName = settings.getUserName()
 
     fun saveUser() {
-        settings.saveUserName(currentName)
-        settings.saveUserColor(currentColor)
-        view.redirectToConversations()
+        if (!currentName.isEmpty() && currentName.length <= 25 && !currentName.contains("#")) {
+            settings.saveUserName(currentName)
+            settings.saveUserColor(currentColor)
+            view.redirectToConversations()
+        } else {
+            view.showNotValidNameError()
+        }
     }
 
     fun prepareColorPicker() {
@@ -26,8 +30,8 @@ class ProfilePresenter(private val view: ProfileView, private val settings: Sett
     }
 
     fun onNameChanged(name: String) {
-        currentName = name
-        view.displayUserData(name, currentColor)
+        currentName = name.replace("\\s{2,}".toRegex(), " ")
+        view.displayUserData(currentName, currentColor)
     }
 
     fun onStart() {

@@ -6,4 +6,5 @@ interface ProfileView {
     fun displayUserData(name: String, @ColorInt color: Int)
     fun showColorPicker(@ColorInt color: Int)
     fun redirectToConversations()
+    fun showNotValidNameError()
 }
