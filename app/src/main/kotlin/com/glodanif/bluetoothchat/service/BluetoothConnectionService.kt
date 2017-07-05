@@ -235,6 +235,7 @@ class BluetoothConnectionService : Service() {
         connectedThread?.cancel()
         connectedThread = null
         currentSocket = null
+        currentConversation = null
 
         connectThread = ConnectThread(device)
         connectThread!!.start()
@@ -275,6 +276,7 @@ class BluetoothConnectionService : Service() {
         connectedThread?.cancel()
         connectedThread = null
         currentSocket = null
+        currentConversation = null
     }
 
     fun sendMessage(message: Message) {
@@ -370,12 +372,13 @@ class BluetoothConnectionService : Service() {
 
             connectionListener?.onConnectedIn(conversation)
             showConnectionRequestNotification(
-                    "${conversation.displayName} (${conversation.deviceName}")
+                    "${conversation.displayName} (${conversation.deviceName})")
         }
     }
 
     private fun connectionFailed() {
         currentSocket = null
+        currentConversation = null
         handler.post { connectionListener?.onConnectionFailed() }
         connectionState = ConnectionState.NOT_CONNECTED
         prepareForAccept()
@@ -383,6 +386,7 @@ class BluetoothConnectionService : Service() {
 
     private fun connectionLost() {
         currentSocket = null
+        currentConversation = null
         if (isConnected()) {
             handler.post { connectionListener?.onConnectionLost() }
         }
@@ -575,6 +579,7 @@ class BluetoothConnectionService : Service() {
             try {
                 socket.close()
                 currentSocket = null
+                currentConversation = null
             } catch (e: IOException) {
                 Log.e(TAG, "close() of connect socket failed", e)
             }
@@ -585,6 +590,7 @@ class BluetoothConnectionService : Service() {
         super.onDestroy()
         isRunning = false
         currentSocket = null
+        currentConversation = null
         Log.e(TAG, "DESTROYED")
     }
 
