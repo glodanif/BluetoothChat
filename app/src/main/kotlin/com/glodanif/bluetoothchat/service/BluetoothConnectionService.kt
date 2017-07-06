@@ -324,7 +324,8 @@ class BluetoothConnectionService : Service() {
                     ChatMessage(device.address, Date(), false, message.body)
             thread { db.messagesDao().insert(receivedMessage) }
 
-            if (messageListener != null && application.isInForeground()) {
+            if (messageListener != null &&
+                    application.currentChat != null && application.currentChat.equals(device.address)) {
                 messageListener!!.onMessageReceived(receivedMessage)
             } else {
                 showNewMessageNotification(message.body, device.name, device.address)
@@ -371,8 +372,11 @@ class BluetoothConnectionService : Service() {
             currentConversation = conversation
 
             connectionListener?.onConnectedIn(conversation)
-            showConnectionRequestNotification(
-                    "${conversation.displayName} (${conversation.deviceName})")
+
+            if (!application.isConversationsOpened && !(application.currentChat != null && application.currentChat.equals(device.address))) {
+                showConnectionRequestNotification(
+                        "${conversation.displayName} (${conversation.deviceName})")
+            }
         }
     }
 
@@ -469,7 +473,7 @@ class BluetoothConnectionService : Service() {
         }
     }
 
-    private inner class ConnectThread(bluetoothDevice: BluetoothDevice): Thread() {
+    private inner class ConnectThread(bluetoothDevice: BluetoothDevice) : Thread() {
 
         private var socket: BluetoothSocket? = null
         private val device = bluetoothDevice
