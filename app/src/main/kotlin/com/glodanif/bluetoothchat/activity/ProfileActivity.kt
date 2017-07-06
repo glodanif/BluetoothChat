@@ -23,6 +23,7 @@ import me.priyesh.chroma.ColorMode
 import me.priyesh.chroma.ColorSelectListener
 import com.amulyakhare.textdrawable.TextDrawable
 import com.glodanif.bluetoothchat.model.SettingsManager
+import com.glodanif.bluetoothchat.util.SimpleTextWatcher
 
 class ProfileActivity : AppCompatActivity(), ProfileView {
 
@@ -112,15 +113,11 @@ class ProfileActivity : AppCompatActivity(), ProfileView {
         nameField.error = "Your name cannot be empty or longer than 25 characters, also, \'#\' symbol is not allowed"
     }
 
-    private val textWatcher = object : TextWatcher {
-
-        override fun afterTextChanged(s: Editable?) {
+    private val textWatcher = object : SimpleTextWatcher() {
+        override fun afterTextChanged(text: String) {
             nameField.error = null
-            presenter.onNameChanged(s.toString())
+            presenter.onNameChanged(text)
         }
-
-        override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-        override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
     }
 
     private val colorSelectListener = object : ColorSelectListener {

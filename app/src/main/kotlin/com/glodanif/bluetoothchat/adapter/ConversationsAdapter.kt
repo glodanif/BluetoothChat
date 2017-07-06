@@ -11,9 +11,6 @@ import com.amulyakhare.textdrawable.TextDrawable
 import com.glodanif.bluetoothchat.R
 import com.glodanif.bluetoothchat.entity.Conversation
 import com.glodanif.bluetoothchat.extension.getRelativeTime
-import com.glodanif.bluetoothchat.util.CircleTransformation
-import com.glodanif.bluetoothchat.util.GrayscaleTransformation
-import com.squareup.picasso.Picasso
 
 class ConversationsAdapter : RecyclerView.Adapter<ConversationsAdapter.ConversationViewHolder>() {
 
