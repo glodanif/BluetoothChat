@@ -10,8 +10,8 @@ import kotlin.concurrent.thread
 class MessagesStorageImpl(val context: Context) : MessagesStorage {
 
     private val handler: Handler = Handler()
-    val dao: MessagesDao = Storage.getInstance(context).db.messagesDao()
 
+    val dao: MessagesDao = Storage.getInstance(context).db.messagesDao()
     override fun insertMessage(message: ChatMessage) {
         thread { dao.insert(message) }
     }
@@ -21,5 +21,9 @@ class MessagesStorageImpl(val context: Context) : MessagesStorage {
             val messages: List<ChatMessage> = dao.getMessagesByDevice(address)
             handler.post { listener.invoke(messages) }
         }
+    }
+
+    override fun updateMessages(messages: List<ChatMessage>) {
+        thread { dao.updateMessages(messages) }
     }
 }

@@ -305,8 +305,11 @@ class BluetoothConnectionService : Service() {
                 currentSocket!!.remoteDevice.address, Date(), true, message.body)
 
         if (message.type == Message.Type.MESSAGE) {
-            thread { db.messagesDao().insert(sentMessage) }
-            handler.post { messageListener?.onMessageSent(sentMessage) }
+            sentMessage.seenHere = true
+            thread {
+                db.messagesDao().insert(sentMessage)
+                handler.post { messageListener?.onMessageSent(sentMessage) }
+            }
         }
     }
 
@@ -322,12 +325,16 @@ class BluetoothConnectionService : Service() {
 
             val receivedMessage: ChatMessage =
                     ChatMessage(device.address, Date(), false, message.body)
-            thread { db.messagesDao().insert(receivedMessage) }
 
             if (messageListener == null || application.currentChat == null || !application.currentChat.equals(device.address)) {
                 showNewMessageNotification(message.body, device.name, device.address)
+            } else {
+                receivedMessage.seenHere = true
             }
-            messageListener?.onMessageReceived(receivedMessage)
+            thread {
+                db.messagesDao().insert(receivedMessage)
+                handler.post { messageListener?.onMessageReceived(receivedMessage) }
+            }
 
         } else if (message.type == Message.Type.DELIVERY) {
             if (message.flag) {

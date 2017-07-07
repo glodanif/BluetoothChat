@@ -14,6 +14,7 @@ data class ChatMessage(
 
     @PrimaryKey(autoGenerate = true)
     var uid: Long = 0
-    var seen: Boolean = false
+    var seenHere: Boolean = false
+    var seenThere: Boolean = false
     var edited: Boolean = false
 }

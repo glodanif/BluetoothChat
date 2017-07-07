@@ -90,7 +90,11 @@ class ChatPresenter(private val deviceAddress: String, private val view: ChatVie
         if (!connectionModel.isConnected()) {
             connectionModel.prepare()
         }
-        storage.getMessagesByDevice(deviceAddress) { view.showMessagesHistory(it) }
+        storage.getMessagesByDevice(deviceAddress) {
+            it.forEach { it.seenHere = true }
+            storage.updateMessages(it)
+            view.showMessagesHistory(it)
+        }
     }
 
     fun onStop() {

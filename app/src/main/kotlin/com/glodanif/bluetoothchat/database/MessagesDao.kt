@@ -5,6 +5,9 @@ import android.arch.persistence.room.Delete
 import android.arch.persistence.room.Insert
 import android.arch.persistence.room.Query
 import com.glodanif.bluetoothchat.entity.ChatMessage
+import android.arch.persistence.room.Update
+
+
 
 @Dao
 interface MessagesDao {
@@ -14,6 +17,9 @@ interface MessagesDao {
 
     @Insert
     fun insert(message: ChatMessage)
+
+    @Update
+    fun updateMessages(messages: List<ChatMessage>)
 
     @Delete
     fun delete(message: ChatMessage)

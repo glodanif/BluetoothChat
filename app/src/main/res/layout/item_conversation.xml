@@ -51,27 +51,52 @@
             <TextView
                 android:id="@+id/tv_time"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_weight="0"
-                android:textSize="12sp"
+                android:gravity="top"
                 android:textColor="#aaa"
+                android:layout_marginStart="8dp"
+                android:textSize="12sp"
                 android:visibility="gone"
                 tools:text="11:21"
                 tools:visibility="visible" />
         </LinearLayout>
 
-        <TextView
-            android:id="@+id/tv_last_message"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:id="@+id/ll_message_info"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:ellipsize="end"
-            android:lines="1"
-            android:layout_marginTop="4dp"
-            android:textSize="12sp"
-            android:textColor="#aaa"
+            android:gravity="top"
+            android:orientation="horizontal"
             android:visibility="gone"
-            tools:text="Lorem Ipsum is simply dummy text of the printing and typesetting industry."
-            tools:visibility="visible" />
+            tools:visibility="visible">
+
+            <TextView
+                android:id="@+id/tv_last_message"
+                android:layout_width="wrap_content"
+                android:layout_height="18dp"
+                android:layout_weight="1"
+                android:ellipsize="end"
+                android:gravity="center_vertical"
+                android:lines="1"
+                android:textColor="#aaa"
+                android:textSize="12sp"
+                tools:text="Lorem Ipsum is simply dummy text of the printing and typesetting industry." />
+
+            <TextView
+                android:id="@+id/tv_not_seen"
+                android:layout_width="wrap_content"
+                android:layout_height="18dp"
+                android:layout_marginStart="8dp"
+                android:layout_weight="0"
+                android:gravity="center"
+                android:background="@drawable/badge_circle"
+                android:textColor="@android:color/white"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                tools:text="15" />
+
+        </LinearLayout>
 
     </LinearLayout>
 </LinearLayout>
