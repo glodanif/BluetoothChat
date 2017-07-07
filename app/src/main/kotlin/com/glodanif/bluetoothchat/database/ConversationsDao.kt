@@ -10,7 +10,7 @@ interface ConversationsDao {
     fun getAllConversations(): List<Conversation>
 
     @Query("SELECT conversation.*, message.*, " +
-            "(SELECT COUNT(*) FROM message WHERE conversation.address = message.deviceAddress AND message.seen = 0) AS notSeen, " +
+            "(SELECT COUNT(message.seen) FROM message WHERE conversation.address = message.deviceAddress AND message.seen = 0) AS notSeen, " +
             "(SELECT MAX(message.date) FROM message WHERE conversation.address = message.deviceAddress) AS lastActivity " +
             "FROM conversation LEFT JOIN message ON conversation.address = message.deviceAddress AND " +
             "message.date = lastActivity AND conversation.notSeen = notSeen GROUP BY message.date ORDER BY message.date DESC")
