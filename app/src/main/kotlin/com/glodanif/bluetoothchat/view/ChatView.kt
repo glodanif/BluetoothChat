@@ -1,6 +1,7 @@
 package com.glodanif.bluetoothchat.view
 
 import com.glodanif.bluetoothchat.entity.ChatMessage
+import com.glodanif.bluetoothchat.entity.Conversation
 
 interface ChatView {
 
@@ -10,6 +11,7 @@ interface ChatView {
     fun showConnected()
     fun showAcceptedConnection()
     fun showRejectedConnection()
+    fun showConnectionRequest(conversation: Conversation)
     fun showLostConnection()
     fun showDisconnected()
     fun showNotConnectedToAnyDevice()

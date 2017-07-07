@@ -13,6 +13,7 @@ interface ConversationsView {
     fun hideActions()
     fun showNoConversations()
     fun showConversations(conversations: List<Conversation>, connected: String?)
+    fun refreshList(connected: String?)
 
     fun setupUserProfile(name: String, @ColorInt color: Int)
 }

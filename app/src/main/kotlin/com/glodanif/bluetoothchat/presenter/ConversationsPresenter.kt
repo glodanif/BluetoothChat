@@ -36,7 +36,7 @@ class ConversationsPresenter(private val view: ConversationsView, private val co
     private val connectionListener = object : OnConnectionListener {
 
         override fun onConnectionAccepted() {
-
+            view.refreshList(connection.getCurrentConversation()?.deviceAddress)
         }
 
         override fun onConnectionRejected() {
@@ -56,15 +56,15 @@ class ConversationsPresenter(private val view: ConversationsView, private val co
         }
 
         override fun onConnectionLost() {
-
+            view.refreshList(connection.getCurrentConversation()?.deviceAddress)
         }
 
         override fun onConnectionFailed() {
-
+            view.refreshList(connection.getCurrentConversation()?.deviceAddress)
         }
 
         override fun onDisconnected() {
-
+            view.refreshList(connection.getCurrentConversation()?.deviceAddress)
         }
     }
 

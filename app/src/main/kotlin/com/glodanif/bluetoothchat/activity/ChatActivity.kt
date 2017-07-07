@@ -15,6 +15,7 @@ import android.widget.Toast
 import com.glodanif.bluetoothchat.R
 import com.glodanif.bluetoothchat.adapter.ChatAdapter
 import com.glodanif.bluetoothchat.entity.ChatMessage
+import com.glodanif.bluetoothchat.entity.Conversation
 import com.glodanif.bluetoothchat.model.BluetoothConnector
 import com.glodanif.bluetoothchat.model.BluetoothConnectorImpl
 import com.glodanif.bluetoothchat.model.MessagesStorage
@@ -138,6 +139,14 @@ class ChatActivity : AppCompatActivity(), ChatView {
         actions.setActions("Your connection was rejected. Do you want to try again?",
                 ActionView.Action("Try again") { presenter.connectToDevice() },
                 ActionView.Action("Dismiss") { hideActions() }
+        )
+    }
+
+    override fun showConnectionRequest(conversation: Conversation) {
+        actions.visibility = View.VISIBLE
+        actions.setActions("${conversation.displayName} (${conversation.deviceName}) has just connected to you",
+                ActionView.Action("Start chat") { presenter.acceptConnection() },
+                ActionView.Action("Disconnect") { presenter.rejectConnection() }
         )
     }
 

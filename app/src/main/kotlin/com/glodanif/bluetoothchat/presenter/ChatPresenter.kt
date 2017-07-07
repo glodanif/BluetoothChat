@@ -19,14 +19,7 @@ class ChatPresenter(private val deviceAddress: String, private val view: ChatVie
             connectionModel.setOnConnectListener(connectionListener)
             connectionModel.setOnMessageListener(messageListener)
 
-            val currentConversation: Conversation? = connectionModel.getCurrentConversation()
-            if (currentConversation == null) {
-                view.showNotConnectedToAnyDevice()
-            } else if (currentConversation.deviceAddress != deviceAddress) {
-                view.showNotConnectedToThisDevice(currentConversation.deviceAddress)
-            } else if (connectionModel.isPending() && currentConversation.deviceAddress == deviceAddress) {
-                view.showWainingForOpponent()
-            }
+            updateState()
         }
 
         override fun onError() {
@@ -141,5 +134,28 @@ class ChatPresenter(private val deviceAddress: String, private val view: ChatVie
 
     fun onConnect(device: BluetoothDevice) {
         connectionModel.connect(device)
+    }
+
+    fun acceptConnection() {
+        view.hideActions()
+        view.showConnected()
+        connectionModel.acceptConnection()
+    }
+
+    fun rejectConnection() {
+        view.hideActions()
+        updateState()
+        connectionModel.rejectConnection()
+    }
+
+    private fun updateState() {
+        val currentConversation: Conversation? = connectionModel.getCurrentConversation()
+        if (currentConversation == null) {
+            view.showNotConnectedToAnyDevice()
+        } else if (currentConversation.deviceAddress != deviceAddress) {
+            view.showNotConnectedToThisDevice(currentConversation.deviceAddress)
+        } else if (connectionModel.isPending() && currentConversation.deviceAddress == deviceAddress) {
+            view.showWainingForOpponent()
+        }
     }
 }

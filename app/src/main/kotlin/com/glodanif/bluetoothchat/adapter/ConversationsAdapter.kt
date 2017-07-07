@@ -55,16 +55,17 @@ class ConversationsAdapter : RecyclerView.Adapter<ConversationsAdapter.Conversat
     }
 
     fun setData(items: ArrayList<Conversation>, connected: String?) {
-        val current: Conversation? = items.findLast { it.deviceAddress == connected }
-        isConnected = current != null
-        if (current == null) {
-            conversations = items
-        } else {
-            items.remove(current)
-            conversations = ArrayList()
-            conversations.add(current)
-            conversations.addAll(items)
-        }
+        conversations = items
+        setCurrentConversation(connected)
+    }
+
+    fun setCurrentConversation(connected: String?) {
+        isConnected = connected != null
+        val sortedList = conversations.sortedWith(
+                compareByDescending<Conversation> { it.deviceAddress == connected }
+                        .thenByDescending { it.lastActivity })
+        conversations = ArrayList()
+        conversations.addAll(sortedList)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): ConversationViewHolder {

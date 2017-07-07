@@ -2,7 +2,6 @@ package com.glodanif.bluetoothchat
 
 import android.app.Activity
 import android.app.Application
-import android.os.Bundle
 import com.glodanif.bluetoothchat.activity.ChatActivity
 import com.glodanif.bluetoothchat.activity.ConversationsActivity
 import com.glodanif.bluetoothchat.util.StartStopActivityLifecycleCallbacks

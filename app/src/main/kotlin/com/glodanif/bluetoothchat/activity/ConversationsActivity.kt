@@ -102,6 +102,11 @@ class ConversationsActivity : AppCompatActivity(), ConversationsView {
         adapter.notifyDataSetChanged()
     }
 
+    override fun refreshList(connected: String?) {
+        adapter.setCurrentConversation(connected)
+        adapter.notifyDataSetChanged()
+    }
+
     override fun notifyAboutConnectedDevice(conversation: Conversation) {
 
         actions.visibility = View.VISIBLE
