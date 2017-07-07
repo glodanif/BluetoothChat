@@ -18,4 +18,5 @@ data class Conversation(
         var lastActivity: Date? = null
         @ColumnInfo(name = "text")
         var lastMessage: String? = null
+        var notSeen: Int = 0
 }

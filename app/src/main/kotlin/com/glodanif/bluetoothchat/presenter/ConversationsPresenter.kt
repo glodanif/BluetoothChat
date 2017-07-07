@@ -71,11 +71,11 @@ class ConversationsPresenter(private val view: ConversationsView, private val co
     private val messageListener = object : OnMessageListener {
 
         override fun onMessageReceived(message: ChatMessage) {
-
+            loadConversations()
         }
 
         override fun onMessageSent(message: ChatMessage) {
-
+            loadConversations()
         }
 
         override fun onMessageDelivered(id: String) {

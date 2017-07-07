@@ -324,12 +324,10 @@ class BluetoothConnectionService : Service() {
                     ChatMessage(device.address, Date(), false, message.body)
             thread { db.messagesDao().insert(receivedMessage) }
 
-            if (messageListener != null &&
-                    application.currentChat != null && application.currentChat.equals(device.address)) {
-                messageListener!!.onMessageReceived(receivedMessage)
-            } else {
+            if (messageListener == null || application.currentChat == null || !application.currentChat.equals(device.address)) {
                 showNewMessageNotification(message.body, device.name, device.address)
             }
+            messageListener?.onMessageReceived(receivedMessage)
 
         } else if (message.type == Message.Type.DELIVERY) {
             if (message.flag) {
