@@ -91,6 +91,7 @@ class BluetoothConnectionService : Service() {
             acceptThread?.cancel()
 
             connectionListener?.onDisconnected()
+            connectionListener?.onConnectionDestroyed()
 
             stopSelf()
             return START_NOT_STICKY
@@ -498,8 +499,7 @@ class BluetoothConnectionService : Service() {
     override fun onDestroy() {
         super.onDestroy()
         isRunning = false
-        currentSocket = null
-        currentConversation = null
+        cancelConnections()
         Log.e(TAG, "DESTROYED")
     }
 

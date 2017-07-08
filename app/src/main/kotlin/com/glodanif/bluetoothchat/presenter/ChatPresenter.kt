@@ -29,6 +29,10 @@ class ChatPresenter(private val deviceAddress: String, private val view: ChatVie
 
     private val connectionListener = object : OnConnectionListener {
 
+        override fun onConnectionDestroyed() {
+            view.showServiceDestroyed()
+        }
+
         override fun onConnectionAccepted() {
             view.showAcceptedConnection()
         }

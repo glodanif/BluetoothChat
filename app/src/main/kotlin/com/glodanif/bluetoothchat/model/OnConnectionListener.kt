@@ -9,6 +9,7 @@ interface OnConnectionListener {
     fun onConnectedOut(conversation: Conversation)
     fun onConnectionLost()
     fun onConnectionFailed()
+    fun onConnectionDestroyed()
     fun onDisconnected()
     fun onConnectionAccepted()
     fun onConnectionRejected()

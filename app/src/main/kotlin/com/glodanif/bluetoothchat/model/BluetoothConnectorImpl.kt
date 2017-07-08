@@ -74,6 +74,10 @@ class BluetoothConnectorImpl(private val context: Context) : BluetoothConnector 
         override fun onDisconnected() {
             connectListener?.onDisconnected()
         }
+
+        override fun onConnectionDestroyed() {
+            connectListener?.onConnectionDestroyed()
+        }
     }
 
     private val messageListenerInner = object : OnMessageListener {

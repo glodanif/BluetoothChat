@@ -35,6 +35,10 @@ class ConversationsPresenter(private val view: ConversationsView, private val co
 
     private val connectionListener = object : OnConnectionListener {
 
+        override fun onConnectionDestroyed() {
+            view.showServiceDestroyed()
+        }
+
         override fun onConnectionAccepted() {
             view.refreshList(connection.getCurrentConversation()?.deviceAddress)
         }

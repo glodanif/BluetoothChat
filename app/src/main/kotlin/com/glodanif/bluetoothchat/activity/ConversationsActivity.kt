@@ -102,6 +102,15 @@ class ConversationsActivity : AppCompatActivity(), ConversationsView {
         adapter.notifyDataSetChanged()
     }
 
+    override fun showServiceDestroyed() {
+
+        AlertDialog.Builder(this)
+                .setMessage("Bluetooth Chat service just has been stopped, restart the service to be able to use the app")
+                .setPositiveButton("Restart", { _, _ -> presenter.onStart() })
+                .setCancelable(false)
+                .show()
+    }
+
     override fun refreshList(connected: String?) {
         adapter.setCurrentConversation(connected)
         adapter.notifyDataSetChanged()

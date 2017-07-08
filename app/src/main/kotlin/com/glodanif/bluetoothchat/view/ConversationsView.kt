@@ -9,6 +9,7 @@ interface ConversationsView {
     fun redirectToChat(conversation: Conversation)
     fun notifyAboutConnectedDevice(conversation: Conversation)
     fun connectedToModel()
+    fun showServiceDestroyed()
 
     fun hideActions()
     fun showNoConversations()

@@ -1,5 +1,6 @@
 package com.glodanif.bluetoothchat.activity
 
+import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -100,6 +101,15 @@ class ChatActivity : AppCompatActivity(), ChatView {
                 ActionView.Action("Cancel") { presenter.disconnect() },
                 null
         )
+    }
+
+    override fun showServiceDestroyed() {
+
+        AlertDialog.Builder(this)
+                .setMessage("Bluetooth Chat service just has been stopped, restart the service to be able to use the app")
+                .setPositiveButton("Restart", { _, _ -> presenter.onStart() })
+                .setCancelable(false)
+                .show()
     }
 
     override fun hideActions() {
