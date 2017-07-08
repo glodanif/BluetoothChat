@@ -1,8 +1,5 @@
 package com.glodanif.bluetoothchat.service
 
-import android.app.Notification
-import android.app.NotificationManager
-import android.app.PendingIntent
 import android.app.Service
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
@@ -11,20 +8,13 @@ import android.bluetooth.BluetoothSocket
 import android.content.Context
 import android.content.Intent
 import android.content.ServiceConnection
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.graphics.Color
 import android.os.Binder
-import android.os.Build
 import android.os.Handler
 import android.os.IBinder
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import com.glodanif.bluetoothchat.ChatApplication
-import com.glodanif.bluetoothchat.R
 import com.glodanif.bluetoothchat.Storage
-import com.glodanif.bluetoothchat.activity.ChatActivity
-import com.glodanif.bluetoothchat.activity.ConversationsActivity
 import com.glodanif.bluetoothchat.database.ChatDatabase
 import com.glodanif.bluetoothchat.entity.ChatMessage
 import com.glodanif.bluetoothchat.entity.Conversation
@@ -41,14 +31,9 @@ import kotlin.concurrent.thread
 
 class BluetoothConnectionService : Service() {
 
-    private val binder = ConnectionBinder()
-
     private val TAG = "BCS"
 
-    private val NOTIFICATION_ID_MESSAGE = 0
-    private val NOTIFICATION_ID_CONNECTION = 1
-
-    private lateinit var notificationManager: NotificationManager
+    private val binder = ConnectionBinder()
 
     enum class ConnectionState { CONNECTED, CONNECTING, NOT_CONNECTED, REJECTED, PENDING, LISTENING }
     enum class ConnectionType { INCOMING, OUTCOMING }
@@ -75,6 +60,7 @@ class BluetoothConnectionService : Service() {
     private lateinit var settings: SettingsManager;
 
     private lateinit var application: ChatApplication
+    private lateinit var notificationView: NotificationView
 
     override fun onBind(intent: Intent): IBinder? {
         return binder
@@ -92,7 +78,7 @@ class BluetoothConnectionService : Service() {
         Log.e(TAG, "CREATED")
         application = getApplication() as ChatApplication
         settings = SettingsManagerImpl(this)
-        notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+        notificationView = NotificationViewImpl(this)
         isRunning = true
     }
 
@@ -120,94 +106,8 @@ class BluetoothConnectionService : Service() {
     }
 
     private fun showNotification(message: String) {
-
-        val notificationIntent = Intent(this, ConversationsActivity::class.java)
-        notificationIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-        val pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0)
-
-        val stopIntent = Intent(this, BluetoothConnectionService::class.java)
-        stopIntent.action = ACTION_STOP
-        val stopPendingIntent = PendingIntent.getService(this, 0, stopIntent, 0)
-
-        val icon = BitmapFactory.decodeResource(resources, R.mipmap.ic_launcher)
-
-        val builder = Notification.Builder(this)
-                .setContentTitle("Bluetooth Chat")
-                .setContentText(message)
-                .setSmallIcon(R.drawable.ic_notification)
-                .setLargeIcon(Bitmap.createScaledBitmap(icon, 128, 128, false))
-                .setContentIntent(pendingIntent)
-                .setOngoing(true)
-                .setPriority(Notification.PRIORITY_LOW)
-                .addAction(0, "STOP", stopPendingIntent)
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            builder.setColor(resources.getColor(R.color.colorPrimary))
-        }
-
-        startForeground(FOREGROUND_SERVICE, builder.build())
-    }
-
-    private fun showNewMessageNotification(message: String, deviceName: String, address: String) {
-
-        val notificationIntent = Intent(this, ChatActivity::class.java)
-                .putExtra(ChatActivity.EXTRA_ADDRESS, address)
-                .putExtra(ChatActivity.EXTRA_NAME, deviceName)
-        notificationIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-        val pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0)
-
-        val icon = BitmapFactory.decodeResource(resources, R.mipmap.ic_launcher)
-
-        val builder = Notification.Builder(this)
-                .setContentTitle(deviceName)
-                .setContentText(message)
-                .setLights(Color.BLUE, 3000, 3000)
-                .setSmallIcon(R.drawable.ic_new_message)
-                .setLargeIcon(Bitmap.createScaledBitmap(icon, 128, 128, false))
-                .setContentIntent(pendingIntent)
-                .setAutoCancel(true)
-                .setPriority(Notification.PRIORITY_MAX)
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            builder.setColor(resources.getColor(R.color.colorPrimary))
-        }
-
-        val notification = builder.build()
-
-        notification.defaults = notification.defaults or Notification.DEFAULT_SOUND
-        notification.defaults = notification.defaults or Notification.DEFAULT_VIBRATE
-
-        notificationManager.notify(NOTIFICATION_ID_MESSAGE, notification)
-    }
-
-    private fun showConnectionRequestNotification(deviceName: String) {
-
-        val notificationIntent = Intent(this, ConversationsActivity::class.java)
-        notificationIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-        val pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0)
-
-        val icon = BitmapFactory.decodeResource(resources, R.mipmap.ic_launcher)
-
-        val builder = Notification.Builder(this)
-                .setContentTitle("Connection request")
-                .setContentText("$deviceName wants to connect to you")
-                .setLights(Color.BLUE, 3000, 3000)
-                .setSmallIcon(R.drawable.ic_connection_request)
-                .setLargeIcon(Bitmap.createScaledBitmap(icon, 128, 128, false))
-                .setContentIntent(pendingIntent)
-                .setAutoCancel(true)
-                .setPriority(Notification.PRIORITY_MAX)
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            builder.setColor(resources.getColor(R.color.colorPrimary))
-        }
-
-        val notification = builder.build()
-
-        notification.defaults = notification.defaults or Notification.DEFAULT_SOUND
-        notification.defaults = notification.defaults or Notification.DEFAULT_VIBRATE
-
-        notificationManager.notify(NOTIFICATION_ID_CONNECTION, notification)
+        val notification = notificationView.getForegroundNotification(message)
+        startForeground(FOREGROUND_SERVICE, notification)
     }
 
     @Synchronized fun prepareForAccept() {
@@ -291,7 +191,7 @@ class BluetoothConnectionService : Service() {
             } else {
                 prepareForAccept()
             }
-            notificationManager.cancel(NOTIFICATION_ID_CONNECTION)
+            notificationView.dismissConnectionNotification()
         }
     }
 
@@ -327,7 +227,7 @@ class BluetoothConnectionService : Service() {
                     ChatMessage(device.address, Date(), false, message.body)
 
             if (messageListener == null || application.currentChat == null || !application.currentChat.equals(device.address)) {
-                showNewMessageNotification(message.body, device.name, device.address)
+                notificationView.showNewMessageNotification(message.body, device.name, device.address)
             } else {
                 receivedMessage.seenHere = true
             }
@@ -379,7 +279,7 @@ class BluetoothConnectionService : Service() {
             connectionListener?.onConnectedIn(conversation)
 
             if (!application.isConversationsOpened && !(application.currentChat != null && application.currentChat.equals(device.address))) {
-                showConnectionRequestNotification(
+                notificationView.showConnectionRequestNotification(
                         "${conversation.displayName} (${conversation.deviceName})")
             }
         }

@@ -33,7 +33,7 @@ android {
 dependencies {
 
     def final SUPPORT_VERSION = '25.3.1'
-    def final ROOM_VERSION = '1.0.0-alpha1'
+    def final ARCH_VERSION = '1.0.0-alpha1'
     def final DAGGER_VERSION = '2.4'
 
     compile fileTree(dir: 'libs', include: ['*.jar'])
@@ -43,26 +43,25 @@ dependencies {
     compile "com.android.support:recyclerview-v7:$SUPPORT_VERSION"
     compile "com.android.support:cardview-v7:$SUPPORT_VERSION"
 
-    compile "android.arch.persistence.room:runtime:$ROOM_VERSION"
-    kapt "android.arch.persistence.room:compiler:$ROOM_VERSION"
+    compile "android.arch.persistence.room:runtime:$ARCH_VERSION"
+    kapt "android.arch.persistence.room:compiler:$ARCH_VERSION"
 
     compile "com.google.dagger:dagger:$DAGGER_VERSION"
     kapt "com.google.dagger:dagger-compiler:$DAGGER_VERSION"
-
-    compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$KOTLIN_VERSION"
-
-    testCompile "org.jetbrains.kotlin:kotlin-stdlib:$KOTLIN_VERSION"
-    testCompile "org.jetbrains.kotlin:kotlin-test-junit:$KOTLIN_VERSION"
-
-    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
-        exclude group: 'com.android.support', module: 'support-annotations'
-    })
 
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
     compile 'com.amulyakhare:com.amulyakhare.textdrawable:1.0.1'
     compile 'com.akexorcist:RoundCornerProgressBar:2.0.3'
     compile 'me.priyesh:chroma:1.0.2'
 
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$KOTLIN_VERSION"
+
+    testCompile "org.jetbrains.kotlin:kotlin-stdlib:$KOTLIN_VERSION"
+    testCompile "org.jetbrains.kotlin:kotlin-test-junit:$KOTLIN_VERSION"
     testCompile 'org.mockito:mockito-core:2.8.9'
     testCompile 'junit:junit:4.12'
+
+    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
 }

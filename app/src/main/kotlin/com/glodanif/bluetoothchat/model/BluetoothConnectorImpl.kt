@@ -126,35 +126,19 @@ class BluetoothConnectorImpl(private val context: Context) : BluetoothConnector 
     }
 
     override fun connect(device: BluetoothDevice) {
-        if (!bound) {
-            throw IllegalStateException("Bluetooth connection service is not prepared yet")
-        }
-
         service?.connect(device)
     }
 
     override fun stop() {
-        if (!bound) {
-            throw IllegalStateException("Bluetooth connection service is not prepared yet")
-        }
-
         service?.stop()
     }
 
     override fun sendMessage(message: String) {
-        if (!bound) {
-            throw IllegalStateException("Bluetooth connection service is not prepared yet")
-        }
-
         val chatMessage = Message(System.nanoTime().toString(), message, Message.Type.MESSAGE)
         service?.sendMessage(chatMessage)
     }
 
     override fun restart() {
-        if (!bound) {
-            throw IllegalStateException("Bluetooth connection service is not prepared yet")
-        }
-
         service?.prepareForAccept()
     }
 
@@ -167,29 +151,16 @@ class BluetoothConnectorImpl(private val context: Context) : BluetoothConnector 
     }
 
     override fun getCurrentConversation(): Conversation? {
-        if (!bound) {
-            throw IllegalStateException("Bluetooth connection service is not prepared yet")
-        }
-
         return service?.getCurrentConversation()
     }
 
     override fun acceptConnection() {
-        if (!bound) {
-            throw IllegalStateException("Bluetooth connection service is not prepared yet")
-        }
-
         val settings = SettingsManagerImpl(context)
         val message = Message.createAcceptConnectionMessage(settings.getUserName(), settings.getUserColor())
         service?.sendMessage(message)
     }
 
     override fun rejectConnection() {
-
-        if (!bound) {
-            throw IllegalStateException("Bluetooth connection service is not prepared yet")
-        }
-
         val settings = SettingsManagerImpl(context)
         val message = Message.createRejectConnectionMessage(settings.getUserName(), settings.getUserColor())
         service?.sendMessage(message)
