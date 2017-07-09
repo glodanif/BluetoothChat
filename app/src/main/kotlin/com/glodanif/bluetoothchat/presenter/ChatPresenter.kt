@@ -42,7 +42,7 @@ class ChatPresenter(private val deviceAddress: String, private val view: ChatVie
         }
 
         override fun onConnectedIn(conversation: Conversation) {
-
+            view.notifyAboutConnectedDevice(conversation)
         }
 
         override fun onConnectedOut(conversation: Conversation) {
@@ -58,7 +58,7 @@ class ChatPresenter(private val deviceAddress: String, private val view: ChatVie
         }
 
         override fun onConnectionFailed() {
-
+            view.showFailedConnection()
         }
 
         override fun onDisconnected() {

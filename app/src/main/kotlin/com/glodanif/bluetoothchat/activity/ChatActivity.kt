@@ -40,6 +40,8 @@ class ChatActivity : AppCompatActivity(), ChatView {
 
     private val adapter: ChatAdapter = ChatAdapter()
 
+    private var isStarted = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_chat)
@@ -71,11 +73,13 @@ class ChatActivity : AppCompatActivity(), ChatView {
 
     override fun onStart() {
         super.onStart()
+        isStarted = true
         presenter.onStart()
     }
 
     override fun onStop() {
         super.onStop()
+        isStarted = false
         presenter.onStop()
     }
 
@@ -103,7 +107,17 @@ class ChatActivity : AppCompatActivity(), ChatView {
         )
     }
 
+    override fun notifyAboutConnectedDevice(conversation: Conversation) {
+        actions.visibility = View.VISIBLE
+        actions.setActions("${conversation.displayName} (${conversation.deviceName}) has just connected to you",
+                ActionView.Action("Start chat") { presenter.acceptConnection() },
+                ActionView.Action("Disconnect") { presenter.rejectConnection() }
+        )
+    }
+
     override fun showServiceDestroyed() {
+
+        if (!isStarted) return
 
         AlertDialog.Builder(this)
                 .setMessage("Bluetooth Chat service just has been stopped, restart the service to be able to use the app")
@@ -144,12 +158,16 @@ class ChatActivity : AppCompatActivity(), ChatView {
     }
 
     override fun showRejectedConnection() {
+
         toolbar.subtitle = "Not connected"
-        actions.visibility = View.VISIBLE
-        actions.setActions("Your connection was rejected. Do you want to try again?",
-                ActionView.Action("Try again") { presenter.connectToDevice() },
-                ActionView.Action("Dismiss") { hideActions() }
-        )
+
+        if (!isStarted) return
+
+        AlertDialog.Builder(this)
+                .setMessage("Your connection request was rejected")
+                .setPositiveButton("OK", null)
+                .setCancelable(false)
+                .show()
     }
 
     override fun showConnectionRequest(conversation: Conversation) {
@@ -161,19 +179,46 @@ class ChatActivity : AppCompatActivity(), ChatView {
     }
 
     override fun showLostConnection() {
+
         toolbar.subtitle = "Not connected"
-        actions.setActions("Connection with this device was lost. Do you want to reconnect?",
-                ActionView.Action("Reconnect") { presenter.connectToDevice() },
-                ActionView.Action("Dismiss") { hideActions() }
-        )
+
+        if (!isStarted) return
+
+        AlertDialog.Builder(this)
+                .setMessage("Connection with this device was lost. Do you want to reconnect?")
+                .setPositiveButton("Reconnect", { _,_ -> presenter.connectToDevice()})
+                .setNegativeButton("Cancel", null)
+                .setCancelable(false)
+                .show()
     }
 
     override fun showDisconnected() {
+
         toolbar.subtitle = "Not connected"
-        actions.setActions("Your opponent disconnected from your device. Do you want to reconnect?",
-                ActionView.Action("Reconnect") { presenter.connectToDevice() },
-                ActionView.Action("Dismiss") { hideActions() }
-        )
+
+        if (!isStarted) return
+
+        AlertDialog.Builder(this)
+                .setMessage("Your opponent disconnected from your device. Do you want to reconnect?")
+                .setPositiveButton("Reconnect", { _,_ -> presenter.connectToDevice()})
+                .setNegativeButton("Cancel", null)
+                .setCancelable(false)
+                .show()
+    }
+
+    override fun showFailedConnection() {
+
+        toolbar.subtitle = "Not connected"
+
+        if (!isStarted) return
+
+        AlertDialog.Builder(this)
+                .setMessage("Unable to connect to this device, do you want to try again?")
+                .setPositiveButton("Try again", { _,_ -> presenter.connectToDevice()})
+                .setNegativeButton("Cancel", null)
+                .setCancelable(false)
+                .show()
+
     }
 
     override fun showNotValidMessage() {

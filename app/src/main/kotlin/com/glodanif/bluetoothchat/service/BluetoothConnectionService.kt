@@ -57,7 +57,7 @@ class BluetoothConnectionService : Service() {
     private var currentConversation: Conversation? = null
 
     private val db: ChatDatabase = Storage.getInstance(this).db
-    private lateinit var settings: SettingsManager;
+    private lateinit var settings: SettingsManager
 
     private lateinit var application: ChatApplication
     private lateinit var notificationView: NotificationView
@@ -111,6 +111,12 @@ class BluetoothConnectionService : Service() {
         startForeground(FOREGROUND_SERVICE, notification)
     }
 
+    @Synchronized fun disconnect() {
+        connectedThread?.cancel(true)
+        connectedThread = null
+        prepareForAccept()
+    }
+
     @Synchronized fun prepareForAccept() {
 
         Log.d(TAG, "start")
@@ -143,7 +149,7 @@ class BluetoothConnectionService : Service() {
         handler.post { connectionListener?.onConnecting() }
     }
 
-    @Synchronized fun connected(socket: BluetoothSocket, device: BluetoothDevice, type: ConnectionType) {
+    @Synchronized fun connected(socket: BluetoothSocket, type: ConnectionType) {
 
         Log.d(TAG, "connected")
 
@@ -354,7 +360,7 @@ class BluetoothConnectionService : Service() {
                     when (connectionState) {
                         ConnectionState.LISTENING, ConnectionState.CONNECTING -> {
                             Log.e(TAG, "AcceptThread")
-                            connected(socket, socket.remoteDevice, ConnectionType.INCOMING)
+                            connected(socket, ConnectionType.INCOMING)
                         }
                         ConnectionState.NOT_CONNECTED, ConnectionState.CONNECTED, ConnectionState.PENDING, ConnectionState.REJECTED -> try {
                             socket.close()
@@ -418,7 +424,7 @@ class BluetoothConnectionService : Service() {
 
             if (socket != null) {
                 Log.e(TAG, "ConnectThread")
-                connected(socket!!, device, ConnectionType.OUTCOMING)
+                connected(socket!!, ConnectionType.OUTCOMING)
             }
         }
 
@@ -436,6 +442,8 @@ class BluetoothConnectionService : Service() {
 
         private var inputStream: InputStream? = null
         private var outputStream: OutputStream? = null
+
+        private var skipEvents = false
 
         init {
             Log.d(TAG, "create ConnectedThread, connected:${socket.isConnected}")
@@ -470,7 +478,10 @@ class BluetoothConnectionService : Service() {
                     }
                 } catch (e: IOException) {
                     Log.e(TAG, "disconnected", e)
-                    connectionLost()
+                    if (!skipEvents) {
+                        connectionLost()
+                        skipEvents = false
+                    }
                     break
                 }
             }
@@ -486,6 +497,11 @@ class BluetoothConnectionService : Service() {
         }
 
         fun cancel() {
+            cancel(false)
+        }
+
+        fun cancel(skipEvents: Boolean) {
+            this.skipEvents = skipEvents
             try {
                 socket.close()
                 currentSocket = null

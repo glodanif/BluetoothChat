@@ -41,6 +41,8 @@ class ConversationsActivity : AppCompatActivity(), ConversationsView {
 
     private val adapter: ConversationsAdapter = ConversationsAdapter()
 
+    private var isStarted = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_conversations)
@@ -75,11 +77,13 @@ class ConversationsActivity : AppCompatActivity(), ConversationsView {
 
     override fun onStart() {
         super.onStart()
+        isStarted = true
         presenter.onStart()
     }
 
     override fun onStop() {
         super.onStop()
+        isStarted = false
         presenter.onStop()
     }
 
@@ -104,6 +108,8 @@ class ConversationsActivity : AppCompatActivity(), ConversationsView {
 
     override fun showServiceDestroyed() {
 
+        if (!isStarted) return
+
         AlertDialog.Builder(this)
                 .setMessage("Bluetooth Chat service just has been stopped, restart the service to be able to use the app")
                 .setPositiveButton("Restart", { _, _ -> presenter.onStart() })
@@ -123,6 +129,17 @@ class ConversationsActivity : AppCompatActivity(), ConversationsView {
                 ActionView.Action("Start chat") { presenter.startChat(conversation) },
                 ActionView.Action("Disconnect") { presenter.rejectConnection() }
         )
+    }
+
+    override fun showRejectedNotification(conversation: Conversation) {
+
+        if (!isStarted) return
+
+        AlertDialog.Builder(this)
+                .setMessage("Your connection request to ${conversation.displayName} (${conversation.deviceName}) was rejected")
+                .setPositiveButton("OK", null)
+                .setCancelable(false)
+                .show()
     }
 
     override fun redirectToChat(conversation: Conversation) {

@@ -143,7 +143,7 @@ class BluetoothConnectorImpl(private val context: Context) : BluetoothConnector 
     }
 
     override fun restart() {
-        service?.prepareForAccept()
+        service?.disconnect()
     }
 
     override fun isConnected(): Boolean {

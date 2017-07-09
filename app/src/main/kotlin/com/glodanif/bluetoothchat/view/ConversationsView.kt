@@ -13,6 +13,7 @@ interface ConversationsView {
 
     fun hideActions()
     fun showNoConversations()
+    fun showRejectedNotification(conversation: Conversation)
     fun showConversations(conversations: List<Conversation>, connected: String?)
     fun refreshList(connected: String?)
 

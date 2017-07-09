@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">Bluetooth Chat</string>
     <string name="action_disconnect">Disconnect</string>
+    <string name="action_connect">Connect</string>
     <string name="scan">Scan</string>
     <string name="discoverable">Discoverable</string>
     <string name="make_discoverable">Make discoverable</string>
