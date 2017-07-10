@@ -9,7 +9,6 @@ import com.glodanif.bluetoothchat.entity.ChatMessage
 import com.glodanif.bluetoothchat.entity.Conversation
 import com.glodanif.bluetoothchat.entity.Message
 import com.glodanif.bluetoothchat.service.BluetoothConnectionService
-import java.lang.IllegalStateException
 
 class BluetoothConnectorImpl(private val context: Context) : BluetoothConnector {
 
@@ -148,6 +147,10 @@ class BluetoothConnectorImpl(private val context: Context) : BluetoothConnector 
 
     override fun isConnected(): Boolean {
         return if (service == null) false else service!!.isConnected()
+    }
+
+    override fun isConnectedOrPending(): Boolean {
+        return if (service == null) false else service!!.isConnectedOrPending()
     }
 
     override fun isPending(): Boolean {

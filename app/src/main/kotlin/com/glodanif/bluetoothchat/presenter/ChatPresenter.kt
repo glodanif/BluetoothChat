@@ -1,6 +1,5 @@
 package com.glodanif.bluetoothchat.presenter
 
-import android.bluetooth.BluetoothDevice
 import com.glodanif.bluetoothchat.entity.ChatMessage
 import com.glodanif.bluetoothchat.model.*
 import com.glodanif.bluetoothchat.view.ChatView
@@ -35,10 +34,12 @@ class ChatPresenter(private val deviceAddress: String, private val view: ChatVie
 
         override fun onConnectionAccepted() {
             view.showAcceptedConnection()
+            view.hideActions()
         }
 
         override fun onConnectionRejected() {
             view.showRejectedConnection()
+            updateState()
         }
 
         override fun onConnectedIn(conversation: Conversation) {
@@ -55,14 +56,17 @@ class ChatPresenter(private val deviceAddress: String, private val view: ChatVie
 
         override fun onConnectionLost() {
             view.showLostConnection()
+            updateState()
         }
 
         override fun onConnectionFailed() {
             view.showFailedConnection()
+            updateState()
         }
 
         override fun onDisconnected() {
             view.showDisconnected()
+            updateState()
         }
     }
 
@@ -93,7 +97,7 @@ class ChatPresenter(private val deviceAddress: String, private val view: ChatVie
 
         connectionModel.setOnPrepareListener(prepareListener)
 
-        if (!connectionModel.isConnected()) {
+        if (!connectionModel.isConnectedOrPending()) {
             connectionModel.prepare()
         } else {
             updateState()
@@ -112,7 +116,7 @@ class ChatPresenter(private val deviceAddress: String, private val view: ChatVie
         connectionModel.setOnConnectListener(null)
         connectionModel.setOnMessageListener(null)
 
-        if (!connectionModel.isConnected()) {
+        if (!connectionModel.isConnectedOrPending()) {
             connectionModel.release()
         }
     }
@@ -131,17 +135,24 @@ class ChatPresenter(private val deviceAddress: String, private val view: ChatVie
 
         if (device != null) {
             connectionModel.connect(device)
-            view.hideActions()
+            view.showWainingForOpponent()
         } else {
             view.showDeviceIsNotAvailable()
         }
     }
 
     fun sendMessage(message: String) {
+
+        if (!connectionModel.isConnected()) {
+            view.showNotConnectedToSend()
+            return
+        }
+
         if (message.isNullOrEmpty()) {
             view.showNotValidMessage()
         } else {
             connectionModel.sendMessage(message)
+            view.afterMessageSent()
         }
     }
 

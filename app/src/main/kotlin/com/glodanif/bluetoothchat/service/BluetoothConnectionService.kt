@@ -188,7 +188,7 @@ class BluetoothConnectionService : Service() {
 
     fun sendMessage(message: Message) {
 
-        if (isConnected()) {
+        if (isConnectedOrPending()) {
             connectedThread?.write(message.getDecodedMessage())
         }
 
@@ -303,7 +303,7 @@ class BluetoothConnectionService : Service() {
     private fun connectionLost() {
         currentSocket = null
         currentConversation = null
-        if (isConnected()) {
+        if (isConnectedOrPending()) {
             handler.post { connectionListener?.onConnectionLost() }
         }
         connectionState = ConnectionState.NOT_CONNECTED
@@ -311,6 +311,10 @@ class BluetoothConnectionService : Service() {
     }
 
     fun isConnected(): Boolean {
+        return connectionState == ConnectionState.CONNECTED
+    }
+
+    fun isConnectedOrPending(): Boolean {
         return connectionState == ConnectionState.CONNECTED ||
                 connectionState == ConnectionState.PENDING
     }
@@ -348,7 +352,7 @@ class BluetoothConnectionService : Service() {
 
             var socket: BluetoothSocket?
 
-            while (!isConnected()) {
+            while (!isConnectedOrPending()) {
                 try {
                     socket = serverSocket?.accept()
                 } catch (e: IOException) {
@@ -469,7 +473,7 @@ class BluetoothConnectionService : Service() {
             val buffer = ByteArray(1024)
             var bytes: Int?
 
-            while (isConnected()) {
+            while (isConnectedOrPending()) {
                 try {
                     bytes = inputStream?.read(buffer)
 

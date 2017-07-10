@@ -61,14 +61,17 @@ class ConversationsPresenter(private val view: ConversationsView, private val co
 
         override fun onConnectionLost() {
             view.refreshList(connection.getCurrentConversation()?.deviceAddress)
+            view.hideActions()
         }
 
         override fun onConnectionFailed() {
             view.refreshList(connection.getCurrentConversation()?.deviceAddress)
+            view.hideActions()
         }
 
         override fun onDisconnected() {
             view.refreshList(connection.getCurrentConversation()?.deviceAddress)
+            view.hideActions()
         }
     }
 
@@ -97,8 +100,13 @@ class ConversationsPresenter(private val view: ConversationsView, private val co
 
     fun loadConversations() {
         storage.getConversations {
-            if (it.isEmpty()) view.showNoConversations() else
-                view.showConversations(it, connection.getCurrentConversation()?.deviceAddress)
+            if (it.isEmpty()) {
+                view.showNoConversations()
+            } else {
+                val connectedDevice = if (connection.isConnected())
+                    connection.getCurrentConversation()?.deviceAddress else null
+                view.showConversations(it, connectedDevice)
+            }
         }
     }
 

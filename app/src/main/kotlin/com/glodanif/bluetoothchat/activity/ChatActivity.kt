@@ -55,7 +55,6 @@ class ChatActivity : AppCompatActivity(), ChatView {
 
         findViewById(R.id.ib_send).setOnClickListener {
             presenter.sendMessage(messageField.text.toString().trim())
-            messageField.text = null
         }
 
         chatList = findViewById(R.id.rv_chat) as RecyclerView
@@ -83,7 +82,16 @@ class ChatActivity : AppCompatActivity(), ChatView {
         presenter.onStop()
     }
 
+    override fun showNotConnectedToSend() {
+        Toast.makeText(this, "You are not connected to this device.", Toast.LENGTH_LONG).show()
+    }
+
+    override fun afterMessageSent() {
+        messageField.text = null
+    }
+
     override fun showNotConnectedToThisDevice(currentDevice: String) {
+        toolbar.subtitle = "Not connected"
         actions.visibility = View.VISIBLE
         actions.setActions("You are currently connected to $currentDevice. Do you want to disconnect from it?",
                 ActionView.Action("Connect") { presenter.connectToDevice() },
@@ -92,6 +100,7 @@ class ChatActivity : AppCompatActivity(), ChatView {
     }
 
     override fun showNotConnectedToAnyDevice() {
+        toolbar.subtitle = "Not connected"
         actions.visibility = View.VISIBLE
         actions.setActions("You are not connected to this device right now. Do you want to connect to it?",
                 ActionView.Action("Connect") { presenter.connectToDevice() },
@@ -100,6 +109,7 @@ class ChatActivity : AppCompatActivity(), ChatView {
     }
 
     override fun showWainingForOpponent() {
+        toolbar.subtitle = "Not connected"
         actions.visibility = View.VISIBLE
         actions.setActions("You are waiting for this device to approve a connection.",
                 ActionView.Action("Cancel") { presenter.disconnect() },
@@ -108,6 +118,7 @@ class ChatActivity : AppCompatActivity(), ChatView {
     }
 
     override fun notifyAboutConnectedDevice(conversation: Conversation) {
+        toolbar.subtitle = "Not connected"
         actions.visibility = View.VISIBLE
         actions.setActions("${conversation.displayName} (${conversation.deviceName}) has just connected to you",
                 ActionView.Action("Start chat") { presenter.acceptConnection() },
@@ -171,6 +182,9 @@ class ChatActivity : AppCompatActivity(), ChatView {
     }
 
     override fun showConnectionRequest(conversation: Conversation) {
+
+        toolbar.subtitle = "Not connected"
+
         actions.visibility = View.VISIBLE
         actions.setActions("${conversation.displayName} (${conversation.deviceName}) has just connected to you",
                 ActionView.Action("Start chat") { presenter.acceptConnection() },
@@ -186,7 +200,7 @@ class ChatActivity : AppCompatActivity(), ChatView {
 
         AlertDialog.Builder(this)
                 .setMessage("Connection with this device was lost. Do you want to reconnect?")
-                .setPositiveButton("Reconnect", { _,_ -> presenter.reconnect()})
+                .setPositiveButton("Reconnect", { _, _ -> presenter.reconnect() })
                 .setNegativeButton("Cancel", null)
                 .setCancelable(false)
                 .show()
@@ -200,7 +214,7 @@ class ChatActivity : AppCompatActivity(), ChatView {
 
         AlertDialog.Builder(this)
                 .setMessage("Your opponent disconnected from your device. Do you want to reconnect?")
-                .setPositiveButton("Reconnect", { _,_ -> presenter.reconnect()})
+                .setPositiveButton("Reconnect", { _, _ -> presenter.reconnect() })
                 .setNegativeButton("Cancel", null)
                 .setCancelable(false)
                 .show()
@@ -214,7 +228,7 @@ class ChatActivity : AppCompatActivity(), ChatView {
 
         AlertDialog.Builder(this)
                 .setMessage("Unable to connect to this device, do you want to try again?")
-                .setPositiveButton("Try again", { _,_ -> presenter.connectToDevice()})
+                .setPositiveButton("Try again", { _, _ -> presenter.connectToDevice() })
                 .setNegativeButton("Cancel", null)
                 .setCancelable(false)
                 .show()
