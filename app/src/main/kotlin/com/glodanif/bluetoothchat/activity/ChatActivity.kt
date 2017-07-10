@@ -186,7 +186,7 @@ class ChatActivity : AppCompatActivity(), ChatView {
 
         AlertDialog.Builder(this)
                 .setMessage("Connection with this device was lost. Do you want to reconnect?")
-                .setPositiveButton("Reconnect", { _,_ -> presenter.connectToDevice()})
+                .setPositiveButton("Reconnect", { _,_ -> presenter.reconnect()})
                 .setNegativeButton("Cancel", null)
                 .setCancelable(false)
                 .show()
@@ -200,7 +200,7 @@ class ChatActivity : AppCompatActivity(), ChatView {
 
         AlertDialog.Builder(this)
                 .setMessage("Your opponent disconnected from your device. Do you want to reconnect?")
-                .setPositiveButton("Reconnect", { _,_ -> presenter.connectToDevice()})
+                .setPositiveButton("Reconnect", { _,_ -> presenter.reconnect()})
                 .setNegativeButton("Cancel", null)
                 .setCancelable(false)
                 .show()

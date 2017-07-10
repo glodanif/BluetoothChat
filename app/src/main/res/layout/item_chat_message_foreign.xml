@@ -33,6 +33,9 @@
 
             <TextView
                 android:id="@+id/tv_text"
+                android:autoLink="all"
+                android:linksClickable="true"
+                android:textIsSelectable="true"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:textColor="#222"
