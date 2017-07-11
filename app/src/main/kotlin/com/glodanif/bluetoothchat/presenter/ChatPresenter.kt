@@ -12,12 +12,8 @@ class ChatPresenter(private val deviceAddress: String, private val view: ChatVie
     private val prepareListener = object : OnPrepareListener {
 
         override fun onPrepared() {
-            if (connectionModel.getCurrentConversation() != null) {
-                view.showConnected()
-            }
             connectionModel.setOnConnectListener(connectionListener)
             connectionModel.setOnMessageListener(messageListener)
-
             updateState()
         }
 
@@ -33,7 +29,7 @@ class ChatPresenter(private val deviceAddress: String, private val view: ChatVie
         }
 
         override fun onConnectionAccepted() {
-            view.showAcceptedConnection()
+            view.showStatusConnected()
             view.hideActions()
         }
 
@@ -43,6 +39,7 @@ class ChatPresenter(private val deviceAddress: String, private val view: ChatVie
         }
 
         override fun onConnectedIn(conversation: Conversation) {
+            view.showStatusPending()
             view.notifyAboutConnectedDevice(conversation)
         }
 
@@ -121,8 +118,15 @@ class ChatPresenter(private val deviceAddress: String, private val view: ChatVie
         }
     }
 
-    fun disconnect() {
+    fun resetConnection() {
         connectionModel.restart()
+        view.showStatusNotConnected()
+        view.showNotConnectedToAnyDevice()
+    }
+
+    fun disconnect() {
+        connectionModel.disconnect()
+        view.showStatusNotConnected()
         view.showNotConnectedToAnyDevice()
     }
 
@@ -134,9 +138,11 @@ class ChatPresenter(private val deviceAddress: String, private val view: ChatVie
                 .first()
 
         if (device != null) {
+            view.showStatusPending()
             connectionModel.connect(device)
             view.showWainingForOpponent()
         } else {
+            view.showStatusNotConnected()
             view.showDeviceIsNotAvailable()
         }
     }
@@ -158,17 +164,19 @@ class ChatPresenter(private val deviceAddress: String, private val view: ChatVie
 
     fun reconnect() {
         connectToDevice()
+        view.showStatusPending()
         view.showWainingForOpponent()
     }
 
     fun acceptConnection() {
         view.hideActions()
-        view.showConnected()
+        view.showStatusConnected()
         connectionModel.acceptConnection()
     }
 
     fun rejectConnection() {
         view.hideActions()
+        view.showStatusNotConnected()
         updateState()
         connectionModel.rejectConnection()
     }
@@ -177,14 +185,20 @@ class ChatPresenter(private val deviceAddress: String, private val view: ChatVie
         val currentConversation: Conversation? = connectionModel.getCurrentConversation()
         if (currentConversation == null) {
             if (connectionModel.isPending()) {
+                view.showStatusPending()
                 view.showWainingForOpponent()
             } else {
+                view.showStatusNotConnected()
                 view.showNotConnectedToAnyDevice()
             }
         } else if (currentConversation.deviceAddress != deviceAddress) {
+            view.showStatusNotConnected()
             view.showNotConnectedToThisDevice(currentConversation.deviceAddress)
         } else if (connectionModel.isPending() && currentConversation.deviceAddress == deviceAddress) {
+            view.showStatusPending()
             view.notifyAboutConnectedDevice(currentConversation)
+        } else {
+            view.showStatusConnected()
         }
     }
 }

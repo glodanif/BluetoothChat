@@ -82,6 +82,18 @@ class ChatActivity : AppCompatActivity(), ChatView {
         presenter.onStop()
     }
 
+    override fun showStatusConnected() {
+        toolbar.subtitle = "Connected"
+    }
+
+    override fun showStatusNotConnected() {
+        toolbar.subtitle = "Not connected"
+    }
+
+    override fun showStatusPending() {
+        toolbar.subtitle = "Pending"
+    }
+
     override fun showNotConnectedToSend() {
         Toast.makeText(this, "You are not connected to this device.", Toast.LENGTH_LONG).show()
     }
@@ -91,7 +103,7 @@ class ChatActivity : AppCompatActivity(), ChatView {
     }
 
     override fun showNotConnectedToThisDevice(currentDevice: String) {
-        toolbar.subtitle = "Not connected"
+
         actions.visibility = View.VISIBLE
         actions.setActions("You are currently connected to $currentDevice. Do you want to disconnect from it?",
                 ActionView.Action("Connect") { presenter.connectToDevice() },
@@ -100,7 +112,7 @@ class ChatActivity : AppCompatActivity(), ChatView {
     }
 
     override fun showNotConnectedToAnyDevice() {
-        toolbar.subtitle = "Not connected"
+
         actions.visibility = View.VISIBLE
         actions.setActions("You are not connected to this device right now. Do you want to connect to it?",
                 ActionView.Action("Connect") { presenter.connectToDevice() },
@@ -109,16 +121,16 @@ class ChatActivity : AppCompatActivity(), ChatView {
     }
 
     override fun showWainingForOpponent() {
-        toolbar.subtitle = "Not connected"
+
         actions.visibility = View.VISIBLE
         actions.setActions("You are waiting for this device to approve a connection.",
-                ActionView.Action("Cancel") { presenter.disconnect() },
+                ActionView.Action("Cancel") { presenter.resetConnection() },
                 null
         )
     }
 
     override fun notifyAboutConnectedDevice(conversation: Conversation) {
-        toolbar.subtitle = "Not connected"
+
         actions.visibility = View.VISIBLE
         actions.setActions("${conversation.displayName} (${conversation.deviceName}) has just connected to you",
                 ActionView.Action("Start chat") { presenter.acceptConnection() },
@@ -158,19 +170,7 @@ class ChatActivity : AppCompatActivity(), ChatView {
         layoutManager.scrollToPosition(0)
     }
 
-    override fun showConnected() {
-        toolbar.subtitle = "Connected"
-        actions.visibility = View.GONE
-    }
-
-    override fun showAcceptedConnection() {
-        toolbar.subtitle = "Connected"
-        actions.visibility = View.GONE
-    }
-
     override fun showRejectedConnection() {
-
-        toolbar.subtitle = "Not connected"
 
         if (!isStarted) return
 
@@ -183,8 +183,6 @@ class ChatActivity : AppCompatActivity(), ChatView {
 
     override fun showConnectionRequest(conversation: Conversation) {
 
-        toolbar.subtitle = "Not connected"
-
         actions.visibility = View.VISIBLE
         actions.setActions("${conversation.displayName} (${conversation.deviceName}) has just connected to you",
                 ActionView.Action("Start chat") { presenter.acceptConnection() },
@@ -193,8 +191,6 @@ class ChatActivity : AppCompatActivity(), ChatView {
     }
 
     override fun showLostConnection() {
-
-        toolbar.subtitle = "Not connected"
 
         if (!isStarted) return
 
@@ -208,8 +204,6 @@ class ChatActivity : AppCompatActivity(), ChatView {
 
     override fun showDisconnected() {
 
-        toolbar.subtitle = "Not connected"
-
         if (!isStarted) return
 
         AlertDialog.Builder(this)
@@ -221,8 +215,6 @@ class ChatActivity : AppCompatActivity(), ChatView {
     }
 
     override fun showFailedConnection() {
-
-        toolbar.subtitle = "Not connected"
 
         if (!isStarted) return
 

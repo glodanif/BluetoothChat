@@ -172,4 +172,9 @@ class BluetoothConnectorImpl(private val context: Context) : BluetoothConnector 
         val message = Message.createRejectConnectionMessage(settings.getUserName(), settings.getUserColor())
         service?.sendMessage(message)
     }
+
+    override fun disconnect() {
+        val message = Message.createDisconnectMessage()
+        service?.sendMessage(message)
+    }
 }

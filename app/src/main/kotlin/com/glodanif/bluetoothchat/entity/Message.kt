@@ -72,7 +72,11 @@ class Message() {
     companion object {
 
         fun createConnectMessage(name: String, @ColorInt color: Int): Message {
-            return Message("0", "$name#$color", Type.CONNECTION_REQUEST)
+            return Message("0", "$name#$color", true, Type.CONNECTION_REQUEST)
+        }
+
+        fun createDisconnectMessage(): Message {
+            return Message("0", "", false, Type.CONNECTION_REQUEST)
         }
 
         fun createAcceptConnectionMessage(name: String, @ColorInt color: Int): Message {

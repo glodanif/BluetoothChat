@@ -90,7 +90,6 @@ class BluetoothConnectionService : Service() {
             cancelConnections()
             acceptThread?.cancel()
 
-            connectionListener?.onDisconnected()
             connectionListener?.onConnectionDestroyed()
 
             stopSelf()
@@ -174,7 +173,6 @@ class BluetoothConnectionService : Service() {
         acceptThread = null
 
         connectionState = ConnectionState.NOT_CONNECTED
-        handler.post { connectionListener?.onDisconnected() }
     }
 
     private fun cancelConnections() {
@@ -275,19 +273,24 @@ class BluetoothConnectionService : Service() {
             }
         } else if (message.type == Message.Type.CONNECTION_REQUEST && currentSocket != null) {
 
-            val device: BluetoothDevice = currentSocket!!.remoteDevice
+            if  (message.flag) {
+                val device: BluetoothDevice = currentSocket!!.remoteDevice
 
-            val parts = message.body.split("#")
-            val conversation = Conversation(device.address, device.name, parts[0], parts[1].toInt())
-            thread { db.conversationsDao().insert(conversation) }
+                val parts = message.body.split("#")
+                val conversation = Conversation(device.address, device.name, parts[0], parts[1].toInt())
+                thread { db.conversationsDao().insert(conversation) }
 
-            currentConversation = conversation
+                currentConversation = conversation
 
-            connectionListener?.onConnectedIn(conversation)
+                connectionListener?.onConnectedIn(conversation)
 
-            if (!application.isConversationsOpened && !(application.currentChat != null && application.currentChat.equals(device.address))) {
-                notificationView.showConnectionRequestNotification(
-                        "${conversation.displayName} (${conversation.deviceName})")
+                if (!application.isConversationsOpened && !(application.currentChat != null && application.currentChat.equals(device.address))) {
+                    notificationView.showConnectionRequestNotification(
+                            "${conversation.displayName} (${conversation.deviceName})")
+                }
+            } else {
+                connectionListener?.onDisconnected()
+                disconnect()
             }
         }
     }

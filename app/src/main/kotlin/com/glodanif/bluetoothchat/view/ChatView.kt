@@ -8,9 +8,7 @@ interface ChatView {
     fun showMessagesHistory(messages: List<ChatMessage>)
     fun showReceivedMessage(message: ChatMessage)
     fun showSentMessage(message: ChatMessage)
-    fun showConnected()
     fun showServiceDestroyed()
-    fun showAcceptedConnection()
     fun showRejectedConnection()
     fun showConnectionRequest(conversation: Conversation)
     fun showLostConnection()
@@ -25,4 +23,7 @@ interface ChatView {
     fun showWainingForOpponent()
     fun hideActions()
     fun afterMessageSent()
+    fun showStatusConnected()
+    fun showStatusNotConnected()
+    fun showStatusPending()
 }

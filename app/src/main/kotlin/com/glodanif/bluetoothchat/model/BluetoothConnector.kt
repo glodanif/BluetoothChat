@@ -20,4 +20,5 @@ interface BluetoothConnector {
     fun getCurrentConversation(): Conversation?
     fun acceptConnection()
     fun rejectConnection()
+    fun disconnect()
 }
