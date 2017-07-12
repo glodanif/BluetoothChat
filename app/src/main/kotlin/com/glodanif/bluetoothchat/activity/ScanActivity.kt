@@ -110,7 +110,7 @@ class ScanActivity : AppCompatActivity(), ScanView {
         }
     }
 
-    override fun showBluetoothFunctionality() {
+    override fun showBluetoothScanner() {
         container.visibility = View.VISIBLE
         presenter.checkBluetoothEnabling()
     }
@@ -120,7 +120,7 @@ class ScanActivity : AppCompatActivity(), ScanView {
         listHolder.visibility = View.GONE
     }
 
-    override fun enableBluetooth() {
+    override fun requestBluetoothEnabling() {
         val enableBtIntent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
         startActivityForResult(enableBtIntent, REQUEST_ENABLE_BLUETOOTH)
     }
@@ -145,24 +145,24 @@ class ScanActivity : AppCompatActivity(), ScanView {
         startActivityForResult(discoverableIntent, REQUEST_MAKE_DISCOVERABLE)
     }
 
-    override fun discoverableInProcess() {
+    override fun showDiscoverableProcess() {
         makeDiscoverableButton.text = getString(R.string.discoverable)
         makeDiscoverableButton.isEnabled = false
     }
 
-    override fun discoverableFinished() {
+    override fun showDiscoverableFinished() {
         makeDiscoverableButton.text = getString(R.string.make_discoverable)
         makeDiscoverableButton.isEnabled = true
     }
 
-    override fun scanningStarted(seconds: Int) {
+    override fun showScanningStarted(seconds: Int) {
         progressBar.runExpiring(seconds)
         progressBar.visibility = View.VISIBLE
         discoveryLabel.visibility = View.VISIBLE
         scanForDevicesButton.text = "Stop scanning"
     }
 
-    override fun scanningStopped() {
+    override fun showScanningStopped() {
         progressBar.cancel()
         progressBar.visibility = View.GONE
         discoveryLabel.visibility = View.GONE

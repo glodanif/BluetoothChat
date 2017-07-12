@@ -26,16 +26,16 @@ class ProfilePresenter(private val view: ProfileView, private val settings: Sett
 
     fun onColorPicked(@ColorInt color: Int) {
         currentColor = color
-        view.displayUserData(currentName, color)
+        view.showUserData(currentName, color)
     }
 
     fun onNameChanged(name: String) {
         currentName = name.replace("\\s{2,}".toRegex(), " ")
-        view.displayUserData(currentName, currentColor)
+        view.showUserData(currentName, currentColor)
     }
 
-    fun onStart() {
+    fun loadSavedUser() {
         view.prefillUsername(currentName)
-        view.displayUserData(currentName, currentColor)
+        view.showUserData(currentName, currentColor)
     }
 }

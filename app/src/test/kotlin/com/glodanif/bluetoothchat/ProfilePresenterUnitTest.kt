@@ -55,7 +55,7 @@ class ProfilePresenterUnitTest {
     @Test
     fun input_typedText() {
         presenter.onNameChanged("Test")
-        Mockito.verify(view)?.displayUserData("Test", 0)
+        Mockito.verify(view)?.showUserData("Test", 0)
     }
 
     @Test
@@ -67,14 +67,14 @@ class ProfilePresenterUnitTest {
     @Test
     fun color_onColorPicked() {
         presenter.onColorPicked(0)
-        Mockito.verify(view)?.displayUserData(uninitialized(), 0)
+        Mockito.verify(view)?.showUserData(uninitialized(), 0)
     }
 
     @Test
     fun onStart_displayProfile() {
-        presenter.onStart()
+        presenter.loadSavedUser()
         Mockito.verify(view)?.prefillUsername(uninitialized())
-        Mockito.verify(view)?.displayUserData(uninitialized(), 0)
+        Mockito.verify(view)?.showUserData(uninitialized(), 0)
     }
 
     @Suppress("UNCHECKED_CAST")

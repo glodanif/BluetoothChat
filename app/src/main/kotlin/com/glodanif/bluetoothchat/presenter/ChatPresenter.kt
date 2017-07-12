@@ -4,11 +4,13 @@ import com.glodanif.bluetoothchat.entity.ChatMessage
 import com.glodanif.bluetoothchat.model.*
 import com.glodanif.bluetoothchat.view.ChatView
 import android.bluetooth.BluetoothAdapter
-import android.util.Log
+import android.bluetooth.BluetoothDevice
 import com.glodanif.bluetoothchat.entity.Conversation
 
 class ChatPresenter(private val deviceAddress: String, private val view: ChatView,
                     private val connectionModel: BluetoothConnector, private val storage: MessagesStorage) {
+
+    private var bluetoothDevice: BluetoothDevice? = null
 
     private val prepareListener = object : OnPrepareListener {
 
@@ -19,7 +21,7 @@ class ChatPresenter(private val deviceAddress: String, private val view: ChatVie
         }
 
         override fun onError() {
-            onStop()
+            releaseConnection()
         }
     }
 
@@ -93,7 +95,11 @@ class ChatPresenter(private val deviceAddress: String, private val view: ChatVie
         }
     }
 
-    fun onStart() {
+    fun initWithBluetoothDevice(bluetoothDevice: BluetoothDevice?) {
+        this.bluetoothDevice = bluetoothDevice
+    }
+
+    fun prepareConnection() {
 
         connectionModel.setOnPrepareListener(prepareListener)
 
@@ -110,7 +116,7 @@ class ChatPresenter(private val deviceAddress: String, private val view: ChatVie
         }
     }
 
-    fun onStop() {
+    fun releaseConnection() {
 
         connectionModel.setOnPrepareListener(null)
         connectionModel.setOnConnectListener(null)
@@ -136,9 +142,10 @@ class ChatPresenter(private val deviceAddress: String, private val view: ChatVie
     fun connectToDevice() {
 
         val adapter = BluetoothAdapter.getDefaultAdapter()
-        val device = adapter.bondedDevices
+        val pairedDevice = adapter.bondedDevices
                 .filter { it.address.equals(deviceAddress, ignoreCase = true) }
-                .first()
+        val device = if (bluetoothDevice != null) bluetoothDevice else
+            if (pairedDevice.isEmpty()) null else pairedDevice.first()
 
         if (device != null) {
             view.showStatusPending()

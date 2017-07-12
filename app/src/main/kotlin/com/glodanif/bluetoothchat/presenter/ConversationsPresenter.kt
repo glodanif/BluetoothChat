@@ -15,7 +15,6 @@ class ConversationsPresenter(private val view: ConversationsView, private val co
 
             connection.setOnConnectListener(connectionListener)
             connection.setOnMessageListener(messageListener)
-            view.connectedToModel()
 
             loadConversations()
 
@@ -114,13 +113,16 @@ class ConversationsPresenter(private val view: ConversationsView, private val co
         }
     }
 
-    fun onStart() {
+    fun prepareConnection() {
         connection.setOnPrepareListener(prepareListener)
         connection.prepare()
-        view.setupUserProfile(settings.getUserName(), settings.getUserColor())
     }
 
-    fun onStop() {
+    fun loadUserProfile() {
+        view.showUserProfile(settings.getUserName(), settings.getUserColor())
+    }
+
+    fun releaseConnection() {
         connection.release()
     }
 

@@ -12,19 +12,19 @@ class ScanPresenter(private val view: ScanView, private val scanner: BluetoothSc
         scanner.setScanningListener(object : BluetoothScanner.ScanningListener {
 
             override fun onDiscoverableFinish() {
-                view.discoverableFinished()
+                view.showDiscoverableFinished()
             }
 
             override fun onDiscoverableStart() {
-                view.discoverableInProcess()
+                view.showDiscoverableProcess()
             }
 
             override fun onDiscoveryStart(seconds: Int) {
-                view.scanningStarted(seconds)
+                view.showScanningStarted(seconds)
             }
 
             override fun onDiscoveryFinish() {
-                view.scanningStopped()
+                view.showScanningStopped()
             }
 
             override fun onDeviceFind(device: BluetoothDevice) {
@@ -36,7 +36,7 @@ class ScanPresenter(private val view: ScanView, private val scanner: BluetoothSc
     fun checkBluetoothAvailability() {
 
         if (scanner.isBluetoothAvailable()) {
-            view.showBluetoothFunctionality()
+            view.showBluetoothScanner()
         } else {
             view.showBluetoothIsNotAvailableMessage()
         }
@@ -48,9 +48,9 @@ class ScanPresenter(private val view: ScanView, private val scanner: BluetoothSc
             onPairedDevicesReady()
             if (scanner.isDiscoverable()) {
                 scanner.startDiscoverable()
-                view.discoverableInProcess()
+                view.showDiscoverableProcess()
             } else {
-                view.discoverableFinished()
+                view.showDiscoverableFinished()
             }
         } else {
             view.showBluetoothEnablingRequest()
@@ -59,7 +59,7 @@ class ScanPresenter(private val view: ScanView, private val scanner: BluetoothSc
 
     fun turnOnBluetooth() {
         if (!scanner.isBluetoothEnabled()) {
-            view.enableBluetooth()
+            view.requestBluetoothEnabling()
         }
     }
 
@@ -73,7 +73,7 @@ class ScanPresenter(private val view: ScanView, private val scanner: BluetoothSc
 
     fun onMadeDiscoverable() {
         scanner.startDiscoverable()
-        view.discoverableInProcess()
+        view.showDiscoverableProcess()
     }
 
     fun makeDiscoverable() {
@@ -91,7 +91,7 @@ class ScanPresenter(private val view: ScanView, private val scanner: BluetoothSc
     }
 
     fun cancelScanning() {
-        view.scanningStopped()
+        view.showScanningStopped()
         scanner.stopScanning()
     }
 }

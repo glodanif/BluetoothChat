@@ -1,6 +1,7 @@
 package com.glodanif.bluetoothchat.activity
 
 import android.app.AlertDialog
+import android.bluetooth.BluetoothDevice
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -62,24 +63,30 @@ class ChatActivity : AppCompatActivity(), ChatView {
         chatList.layoutManager = layoutManager
         chatList.adapter = adapter
 
-        val deviceName: String = intent.getStringExtra(EXTRA_NAME)
-        val deviceAddress: String = intent.getStringExtra(EXTRA_ADDRESS)
-        title = deviceName
+        val deviceName: String? = intent.getStringExtra(EXTRA_NAME)
+        val deviceAddress: String? = intent.getStringExtra(EXTRA_ADDRESS)
+        val device: BluetoothDevice? = intent.getParcelableExtra(EXTRA_DEVICE)
+        title = if (!deviceName.isNullOrEmpty()) deviceName else
+            if (device != null) device.name else "Unknown"
         toolbar.subtitle = "Not connected"
 
-        presenter = ChatPresenter(deviceAddress, this, connectionModel, storageModel)
+        val address: String = if (!deviceAddress.isNullOrEmpty()) deviceAddress!! else
+            if (device != null) device.address else "Unknown"
+
+        presenter = ChatPresenter(address, this, connectionModel, storageModel)
+        presenter.initWithBluetoothDevice(device)
     }
 
     override fun onStart() {
         super.onStart()
         isStarted = true
-        presenter.onStart()
+        presenter.prepareConnection()
     }
 
     override fun onStop() {
         super.onStop()
         isStarted = false
-        presenter.onStop()
+        presenter.releaseConnection()
     }
 
     override fun showStatusConnected() {
@@ -144,7 +151,7 @@ class ChatActivity : AppCompatActivity(), ChatView {
 
         AlertDialog.Builder(this)
                 .setMessage("Bluetooth Chat service just has been stopped, restart the service to be able to use the app")
-                .setPositiveButton("Restart", { _, _ -> presenter.onStart() })
+                .setPositiveButton("Restart", { _, _ -> presenter.prepareConnection() })
                 .setCancelable(false)
                 .show()
     }
@@ -259,11 +266,19 @@ class ChatActivity : AppCompatActivity(), ChatView {
 
         val EXTRA_NAME = "extra.name"
         val EXTRA_ADDRESS = "extra.address"
+        val EXTRA_DEVICE = "extra.device"
 
         fun start(context: Context, name: String, address: String) {
             val intent: Intent = Intent(context, ChatActivity::class.java)
                     .putExtra(EXTRA_NAME, name)
                     .putExtra(EXTRA_ADDRESS, address)
+            context.startActivity(intent)
+        }
+
+        fun start(context: Context, device: BluetoothDevice) {
+            val intent: Intent = Intent(context, ChatActivity::class.java)
+                    .putExtra(EXTRA_DEVICE, device)
+                    .putExtra(EXTRA_ADDRESS, device.address)
             context.startActivity(intent)
         }
     }

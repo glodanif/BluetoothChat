@@ -6,8 +6,6 @@ import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.annotation.ColorInt
 import android.support.v7.widget.Toolbar
-import android.text.Editable
-import android.text.TextWatcher
 import android.view.MenuItem
 import android.view.View
 import android.widget.EditText
@@ -70,7 +68,7 @@ class ProfileActivity : AppCompatActivity(), ProfileView {
 
     override fun onStart() {
         super.onStart()
-        presenter.onStart()
+        presenter.loadSavedUser()
         nameField.addTextChangedListener(textWatcher)
     }
 
@@ -79,7 +77,7 @@ class ProfileActivity : AppCompatActivity(), ProfileView {
         nameField.removeTextChangedListener(textWatcher)
     }
 
-    override fun displayUserData(name: String, color: Int) {
+    override fun showUserData(name: String, color: Int) {
         val symbol = if (name.isEmpty()) "?" else name[0].toString().toUpperCase()
         nameLabel.text = if (name.isEmpty()) "Your name" else name
         nameLabel.setTextColor(resources.getColor(

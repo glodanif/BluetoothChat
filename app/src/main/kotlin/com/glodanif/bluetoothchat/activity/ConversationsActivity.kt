@@ -21,8 +21,6 @@ import com.glodanif.bluetoothchat.model.*
 import com.glodanif.bluetoothchat.presenter.ConversationsPresenter
 import com.glodanif.bluetoothchat.view.ConversationsView
 import com.glodanif.bluetoothchat.widget.ActionView
-import android.content.DialogInterface
-import android.R.array
 
 
 class ConversationsActivity : AppCompatActivity(), ConversationsView {
@@ -102,13 +100,14 @@ class ConversationsActivity : AppCompatActivity(), ConversationsView {
     override fun onStart() {
         super.onStart()
         isStarted = true
-        presenter.onStart()
+        presenter.prepareConnection()
+        presenter.loadUserProfile()
     }
 
     override fun onStop() {
         super.onStop()
         isStarted = false
-        presenter.onStop()
+        presenter.releaseConnection()
     }
 
     override fun hideActions() {
@@ -136,7 +135,10 @@ class ConversationsActivity : AppCompatActivity(), ConversationsView {
 
         AlertDialog.Builder(this)
                 .setMessage("Bluetooth Chat service just has been stopped, restart the service to be able to use the app")
-                .setPositiveButton("Restart", { _, _ -> presenter.onStart() })
+                .setPositiveButton("Restart", { _, _ ->
+                    presenter.prepareConnection()
+                    presenter.loadUserProfile()
+                })
                 .setCancelable(false)
                 .show()
     }
@@ -170,12 +172,7 @@ class ConversationsActivity : AppCompatActivity(), ConversationsView {
         ChatActivity.start(this, conversation.deviceName, conversation.deviceAddress)
     }
 
-    override fun connectedToModel() {
-        connectAction?.invoke()
-        connectAction = null
-    }
-
-    override fun setupUserProfile(name: String, color: Int) {
+    override fun showUserProfile(name: String, color: Int) {
         val symbol = if (name.isEmpty()) "?" else name[0].toString().toUpperCase()
         val drawable = TextDrawable.builder().buildRound(symbol, color)
         userAvatar.setImageDrawable(drawable)
@@ -189,10 +186,7 @@ class ConversationsActivity : AppCompatActivity(), ConversationsView {
                     ?.getParcelableExtra<BluetoothDevice>(ScanActivity.EXTRA_BLUETOOTH_DEVICE)
 
             if (device != null) {
-                connectAction = {
-                    connection.connect(device)
-                    ChatActivity.start(this, device.name, device.address)
-                }
+                ChatActivity.start(this, device)
             }
         }
     }

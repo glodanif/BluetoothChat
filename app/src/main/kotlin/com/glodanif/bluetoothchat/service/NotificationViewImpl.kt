@@ -52,7 +52,7 @@ class NotificationViewImpl(private val context: Context) : NotificationView {
         return builder.build()
     }
 
-    override fun showNewMessageNotification(message: String, deviceName: String, address: String) {
+    override fun showNewMessageNotification(message: String, displayName: String?, deviceName: String, address: String) {
 
         val notificationIntent = Intent(context, ChatActivity::class.java)
                 .putExtra(ChatActivity.EXTRA_ADDRESS, address)
@@ -61,9 +61,10 @@ class NotificationViewImpl(private val context: Context) : NotificationView {
         val pendingIntent = PendingIntent.getActivity(context, 0, notificationIntent, 0)
 
         val icon = BitmapFactory.decodeResource(resources, R.mipmap.ic_launcher)
+        val name = if (displayName.isNullOrEmpty()) deviceName else "$displayName ($deviceName)"
 
         val builder = Notification.Builder(context)
-                .setContentTitle(deviceName)
+                .setContentTitle(name)
                 .setContentText(message)
                 .setLights(Color.BLUE, 3000, 3000)
                 .setSmallIcon(R.drawable.ic_new_message)

@@ -243,7 +243,7 @@ class BluetoothConnectionService : Service() {
                     ChatMessage(device.address, Date(), false, message.body)
 
             if (messageListener == null || application.currentChat == null || !application.currentChat.equals(device.address)) {
-                notificationView.showNewMessageNotification(message.body, device.name, device.address)
+                notificationView.showNewMessageNotification(message.body, currentConversation?.displayName, device.name, device.address)
             } else {
                 receivedMessage.seenHere = true
             }

@@ -29,7 +29,7 @@ class ScanningPresenterUnitTest {
     fun availability_isAvailable() {
         Mockito.`when`(model.isBluetoothAvailable()).thenReturn(true)
         presenter.checkBluetoothAvailability()
-        Mockito.verify(view)?.showBluetoothFunctionality()
+        Mockito.verify(view)?.showBluetoothScanner()
     }
 
     @Test
@@ -45,7 +45,7 @@ class ScanningPresenterUnitTest {
         Mockito.`when`(model.isDiscoverable()).thenReturn(true)
         presenter.checkBluetoothEnabling()
         Mockito.verify(view)?.showPairedDevices(ArrayList<BluetoothDevice>())
-        Mockito.verify(view)?.discoverableInProcess()
+        Mockito.verify(view)?.showDiscoverableProcess()
     }
 
     @Test
@@ -54,7 +54,7 @@ class ScanningPresenterUnitTest {
         Mockito.`when`(model.isDiscoverable()).thenReturn(false)
         presenter.checkBluetoothEnabling()
         Mockito.verify(view)?.showPairedDevices(ArrayList<BluetoothDevice>())
-        Mockito.verify(view)?.discoverableFinished()
+        Mockito.verify(view)?.showDiscoverableFinished()
     }
 
     @Test
