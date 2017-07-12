@@ -21,6 +21,9 @@ import com.glodanif.bluetoothchat.model.*
 import com.glodanif.bluetoothchat.presenter.ConversationsPresenter
 import com.glodanif.bluetoothchat.view.ConversationsView
 import com.glodanif.bluetoothchat.widget.ActionView
+import android.content.DialogInterface
+import android.R.array
+
 
 class ConversationsActivity : AppCompatActivity(), ConversationsView {
 
@@ -59,9 +62,8 @@ class ConversationsActivity : AppCompatActivity(), ConversationsView {
         noConversations = findViewById(R.id.ll_empty_holder)
         conversationsList.layoutManager = LinearLayoutManager(this)
         conversationsList.adapter = adapter
-        adapter.listener = {
-            ChatActivity.start(this, it.deviceName, it.deviceAddress)
-        }
+        adapter.clickListener = { ChatActivity.start(this, it.deviceName, it.deviceAddress) }
+        adapter.longClickListener = { showContextMenu(it) }
 
         addButton = findViewById(R.id.fab_new_conversation) as FloatingActionButton
         addButton.setOnClickListener {
@@ -73,6 +75,28 @@ class ConversationsActivity : AppCompatActivity(), ConversationsView {
         userAvatar.setOnClickListener {
             ProfileActivity.start(this, true)
         }
+    }
+
+    private fun showContextMenu(conversation: Conversation) {
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle("Conversation options")
+                .setItems(arrayOf("Remove"), { _, which ->
+                    when (which) {
+                        0 -> {
+                            confirmRemoval(conversation)
+                        }
+                    }
+                })
+        builder.create().show()
+    }
+
+    private fun confirmRemoval(conversation: Conversation) {
+
+        AlertDialog.Builder(this)
+                .setMessage("Do you really want to remove this conversation? All messages will be lost.")
+                .setPositiveButton("Yes", { _, _ -> presenter.removeConversation(conversation) })
+                .setNegativeButton("No", null)
+                .show()
     }
 
     override fun onStart() {

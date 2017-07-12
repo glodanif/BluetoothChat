@@ -7,8 +7,6 @@ import android.arch.persistence.room.Query
 import com.glodanif.bluetoothchat.entity.ChatMessage
 import android.arch.persistence.room.Update
 
-
-
 @Dao
 interface MessagesDao {
 
@@ -23,4 +21,7 @@ interface MessagesDao {
 
     @Delete
     fun delete(message: ChatMessage)
+
+    @Query("DELETE FROM message WHERE deviceAddress = :address")
+    fun deleteAllByDeviceAddress(address: String)
 }

@@ -15,7 +15,8 @@ import com.glodanif.bluetoothchat.extension.getRelativeTime
 
 class ConversationsAdapter : RecyclerView.Adapter<ConversationsAdapter.ConversationViewHolder>() {
 
-    var listener: ((Conversation) -> Unit)? = null
+    var clickListener: ((Conversation) -> Unit)? = null
+    var longClickListener: ((Conversation) -> Unit)? = null
 
     private var isConnected: Boolean = false
     private var conversations: ArrayList<Conversation> = ArrayList()
@@ -27,7 +28,11 @@ class ConversationsAdapter : RecyclerView.Adapter<ConversationsAdapter.Conversat
         val conversation = conversations[position]
 
         holder.name.text = "${conversation.displayName} (${conversation.deviceName})"
-        holder.itemView?.setOnClickListener { listener?.invoke(conversation) }
+        holder.itemView?.setOnClickListener { clickListener?.invoke(conversation) }
+        holder.itemView?.setOnLongClickListener {
+            longClickListener?.invoke(conversation)
+            return@setOnLongClickListener true
+        }
         holder.connected.visibility = View.VISIBLE
 
         if (!conversation.lastMessage.isNullOrEmpty()) {

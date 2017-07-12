@@ -142,4 +142,10 @@ class ConversationsPresenter(private val view: ConversationsView, private val co
     fun onConnect(device: BluetoothDevice) {
         connection.connect(device)
     }
+
+    fun removeConversation(conversation: Conversation) {
+        connection.sendDisconnectRequest()
+        storage.removeConversation(conversation)
+        loadConversations()
+    }
 }
