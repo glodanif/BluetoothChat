@@ -1,6 +1,5 @@
 package com.glodanif.bluetoothchat.model
 
-import android.bluetooth.BluetoothDevice
 import com.glodanif.bluetoothchat.entity.Conversation
 
 interface OnConnectionListener {
@@ -13,4 +12,5 @@ interface OnConnectionListener {
     fun onDisconnected()
     fun onConnectionAccepted()
     fun onConnectionRejected()
+    fun onConnectionWithdrawn()
 }

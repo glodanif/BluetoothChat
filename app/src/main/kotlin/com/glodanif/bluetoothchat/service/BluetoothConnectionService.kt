@@ -52,6 +52,7 @@ class BluetoothConnectionService : Service() {
     private var connectedThread: ConnectedThread? = null
 
     private var connectionState: ConnectionState = ConnectionState.NOT_CONNECTED
+    private var connectionType: ConnectionType? = null
 
     private var currentSocket: BluetoothSocket? = null
     private var currentConversation: Conversation? = null
@@ -154,6 +155,8 @@ class BluetoothConnectionService : Service() {
 
         cancelConnections()
 
+        connectionType = type
+
         currentSocket = socket
 
         acceptThread?.cancel()
@@ -182,12 +185,20 @@ class BluetoothConnectionService : Service() {
         connectedThread = null
         currentSocket = null
         currentConversation = null
+        connectionType = null
     }
 
     fun sendMessage(message: Message) {
 
         if (isConnectedOrPending()) {
-            connectedThread?.write(message.getDecodedMessage())
+            val disconnect = message.type == Message.Type.CONNECTION_REQUEST && !message.flag
+            connectedThread?.write(message.getDecodedMessage(), disconnect)
+            if (disconnect) {
+                connectedThread?.cancel(disconnect)
+                connectedThread = null
+
+                prepareForAccept()
+            }
         }
 
         if (message.type == Message.Type.CONNECTION_RESPONSE) {
@@ -289,8 +300,8 @@ class BluetoothConnectionService : Service() {
                             "${conversation.displayName} (${conversation.deviceName})")
                 }
             } else {
-                connectionListener?.onDisconnected()
                 disconnect()
+                connectionListener?.onDisconnected()
             }
         }
     }
@@ -307,10 +318,17 @@ class BluetoothConnectionService : Service() {
         currentSocket = null
         currentConversation = null
         if (isConnectedOrPending()) {
-            handler.post { connectionListener?.onConnectionLost() }
+            handler.post {
+                if (isPending() && connectionType == ConnectionType.INCOMING) {
+                    connectionState = ConnectionState.NOT_CONNECTED
+                    connectionListener?.onConnectionWithdrawn()
+                } else {
+                    connectionState = ConnectionState.NOT_CONNECTED
+                    connectionListener?.onConnectionLost()
+                }
+                prepareForAccept()
+            }
         }
-        connectionState = ConnectionState.NOT_CONNECTED
-        prepareForAccept()
     }
 
     fun isConnected(): Boolean {
@@ -495,6 +513,11 @@ class BluetoothConnectionService : Service() {
         }
 
         fun write(message: String) {
+            write(message, false)
+        }
+
+        fun write(message: String, skipEvents: Boolean) {
+            this.skipEvents = skipEvents
             try {
                 outputStream?.write(message.toByteArray(Charsets.UTF_8))
                 onMessageSent(message)

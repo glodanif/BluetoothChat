@@ -10,7 +10,7 @@ abstract class SimpleTextWatcher: TextWatcher {
 
     @CallSuper
     override fun afterTextChanged(s: Editable?) {
-        val text = if (s == null) "" else s.toString()
+        val text = s?.toString() ?: ""
         afterTextChanged(text)
     }
 

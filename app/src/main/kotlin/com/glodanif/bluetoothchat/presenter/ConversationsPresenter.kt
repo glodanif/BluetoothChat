@@ -35,6 +35,10 @@ class ConversationsPresenter(private val view: ConversationsView, private val co
 
     private val connectionListener = object : OnConnectionListener {
 
+        override fun onConnectionWithdrawn() {
+            view.hideActions()
+        }
+
         override fun onConnectionDestroyed() {
             view.showServiceDestroyed()
         }

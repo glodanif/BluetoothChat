@@ -4,6 +4,7 @@ import com.glodanif.bluetoothchat.entity.ChatMessage
 import com.glodanif.bluetoothchat.model.*
 import com.glodanif.bluetoothchat.view.ChatView
 import android.bluetooth.BluetoothAdapter
+import android.util.Log
 import com.glodanif.bluetoothchat.entity.Conversation
 
 class ChatPresenter(private val deviceAddress: String, private val view: ChatView,
@@ -23,6 +24,10 @@ class ChatPresenter(private val deviceAddress: String, private val view: ChatVie
     }
 
     private val connectionListener = object : OnConnectionListener {
+
+        override fun onConnectionWithdrawn() {
+            updateState()
+        }
 
         override fun onConnectionDestroyed() {
             view.showServiceDestroyed()
@@ -44,11 +49,9 @@ class ChatPresenter(private val deviceAddress: String, private val view: ChatVie
         }
 
         override fun onConnectedOut(conversation: Conversation) {
-
         }
 
         override fun onConnecting() {
-
         }
 
         override fun onConnectionLost() {
@@ -125,7 +128,7 @@ class ChatPresenter(private val deviceAddress: String, private val view: ChatVie
     }
 
     fun disconnect() {
-        connectionModel.disconnect()
+        connectionModel.sendDisconnectRequest()
         view.showStatusNotConnected()
         view.showNotConnectedToAnyDevice()
     }

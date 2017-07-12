@@ -13,8 +13,8 @@ import com.glodanif.bluetoothchat.service.BluetoothConnectionService
 class BluetoothConnectorImpl(private val context: Context) : BluetoothConnector {
 
     private var prepareListener: OnPrepareListener? = null
-    private var connectListener: OnConnectionListener? = null
     private var messageListener: OnMessageListener? = null
+    private var connectListener: OnConnectionListener? = null
 
     private var service: BluetoothConnectionService? = null
     private var bound = false
@@ -41,6 +41,10 @@ class BluetoothConnectorImpl(private val context: Context) : BluetoothConnector 
     }
 
     private val connectionListenerInner = object : OnConnectionListener {
+
+        override fun onConnectionWithdrawn() {
+            connectListener?.onConnectionWithdrawn()
+        }
 
         override fun onConnectionAccepted() {
             connectListener?.onConnectionAccepted()
@@ -173,7 +177,7 @@ class BluetoothConnectorImpl(private val context: Context) : BluetoothConnector 
         service?.sendMessage(message)
     }
 
-    override fun disconnect() {
+    override fun sendDisconnectRequest() {
         val message = Message.createDisconnectMessage()
         service?.sendMessage(message)
     }

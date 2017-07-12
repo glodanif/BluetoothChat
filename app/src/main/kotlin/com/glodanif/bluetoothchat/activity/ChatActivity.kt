@@ -105,18 +105,18 @@ class ChatActivity : AppCompatActivity(), ChatView {
     override fun showNotConnectedToThisDevice(currentDevice: String) {
 
         actions.visibility = View.VISIBLE
-        actions.setActions("You are currently connected to $currentDevice. Do you want to disconnect from it?",
+        actions.setActions("You are currently connected to $currentDevice. You can connect to this device (current connection will be interrupted)?",
                 ActionView.Action("Connect") { presenter.connectToDevice() },
-                ActionView.Action("Dismiss") { hideActions() }
+                null
         )
     }
 
     override fun showNotConnectedToAnyDevice() {
 
         actions.visibility = View.VISIBLE
-        actions.setActions("You are not connected to this device right now. Do you want to connect to it?",
+        actions.setActions("You are not connected to this device right now.",
                 ActionView.Action("Connect") { presenter.connectToDevice() },
-                ActionView.Action("Dismiss") { hideActions() }
+                null
         )
     }
 
