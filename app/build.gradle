@@ -1,3 +1,6 @@
+def final VERSION_CODE = 1
+def final VERSION_NAME = '1.0'
+
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
@@ -10,17 +13,10 @@ android {
         applicationId "com.glodanif.bluetoothchat"
         minSdkVersion 19
         targetSdkVersion 25
-        versionCode 1
-        versionName "1.0"
+        versionCode VERSION_CODE
+        versionName VERSION_NAME
         vectorDrawables.useSupportLibrary = true
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-    }
-
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-        }
     }
 
     sourceSets {
@@ -28,12 +24,54 @@ android {
         test.java.srcDirs += 'src/test/kotlin'
         androidTest.java.srcDirs += 'src/androidTest/kotlin'
     }
+
+    signingConfigs {
+
+        release {
+
+            if (project.hasProperty("bluetoothchat.properties") &&
+                    new File(project.property("bluetoothchat.properties")).exists()) {
+
+                Properties properties = new Properties()
+                properties.load(new FileInputStream(file(project.property("bluetoothchat.properties"))))
+
+                storeFile file(properties['keystore'])
+                storePassword properties['keystore.password']
+                keyAlias properties['keyAlias']
+                keyPassword properties['keyPassword']
+            } else {
+                null
+            }
+        }
+    }
+
+    buildTypes {
+
+        debug {
+            minifyEnabled false
+            shrinkResources false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            applicationIdSuffix '.dev'
+            versionNameSuffix '-DEV'
+        }
+
+        release {
+            minifyEnabled false
+            shrinkResources false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
+        }
+    }
+
+    packagingOptions {
+        exclude 'META-INF/app_debug.kotlin_module'
+    }
 }
 
 dependencies {
 
-    def final SUPPORT_VERSION = '25.3.1'
-    def final ARCH_VERSION = '1.0.0-alpha1'
+    def final SUPPORT_VERSION = '25.4.0'
+    def final ARCH_VERSION = '1.0.0-alpha4'
     def final DAGGER_VERSION = '2.4'
 
     compile fileTree(dir: 'libs', include: ['*.jar'])
