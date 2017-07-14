@@ -102,12 +102,7 @@ class ChatPresenter(private val deviceAddress: String, private val view: ChatVie
     fun prepareConnection() {
 
         connectionModel.setOnPrepareListener(prepareListener)
-
-        if (!connectionModel.isConnectedOrPending()) {
-            connectionModel.prepare()
-        } else {
-            updateState()
-        }
+        connectionModel.prepare()
 
         storage.getMessagesByDevice(deviceAddress) {
             it.forEach { it.seenHere = true }

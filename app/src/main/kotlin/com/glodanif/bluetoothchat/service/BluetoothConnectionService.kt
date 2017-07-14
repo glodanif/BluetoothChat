@@ -205,7 +205,7 @@ class BluetoothConnectionService : Service() {
             if (message.flag) {
                 connectionState = ConnectionState.CONNECTED
             } else {
-                prepareForAccept()
+                disconnect()
             }
             notificationView.dismissConnectionNotification()
         }
