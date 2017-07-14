@@ -4,23 +4,29 @@ import com.glodanif.bluetoothchat.model.SettingsManager
 import com.glodanif.bluetoothchat.presenter.ProfilePresenter
 import com.glodanif.bluetoothchat.view.ProfileView
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.mockito.Mock
 import org.mockito.Mockito
 import org.mockito.MockitoAnnotations
+import org.mockito.junit.MockitoJUnit
+import org.mockito.junit.MockitoRule
 
 class ProfilePresenterUnitTest {
 
-    @Mock
-    lateinit var model: SettingsManager
-    @Mock
-    lateinit var view: ProfileView
+    @JvmField
+    @Rule
+    val mockitoRule: MockitoRule = MockitoJUnit.rule()
 
-    lateinit var presenter: ProfilePresenter
+    @Mock
+    private lateinit var model: SettingsManager
+    @Mock
+    private lateinit var view: ProfileView
+
+    private lateinit var presenter: ProfilePresenter
 
     @Before
-    fun setUp() {
-        MockitoAnnotations.initMocks(this)
+    fun setup() {
         presenter = ProfilePresenter(view, model)
     }
 

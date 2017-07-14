@@ -98,7 +98,7 @@ class BluetoothScannerImpl(val context: Context) : BluetoothScanner {
         return isDiscovering
     }
 
-    override fun startDiscoverable() {
+    override fun listenForDevices() {
         context.registerReceiver(discoverableStateReceiver, discoverableStateFilter)
     }
 

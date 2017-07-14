@@ -2,65 +2,160 @@ package com.glodanif.bluetoothchat
 
 import android.bluetooth.BluetoothDevice
 import com.glodanif.bluetoothchat.model.BluetoothScanner
+import com.glodanif.bluetoothchat.model.BluetoothScanner.ScanningListener
 import com.glodanif.bluetoothchat.presenter.ScanPresenter
 import com.glodanif.bluetoothchat.view.ScanView
+import com.nhaarman.mockito_kotlin.KArgumentCaptor
+import com.nhaarman.mockito_kotlin.argumentCaptor
+import com.nhaarman.mockito_kotlin.createinstance.createInstance
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
-import org.mockito.Mock
-import org.mockito.Mockito
-import org.mockito.MockitoAnnotations
+import org.mockito.*
+import org.mockito.Mockito.*
+import org.mockito.junit.MockitoJUnit
+import org.mockito.junit.MockitoRule
 
 class ScanningPresenterUnitTest {
 
+    @JvmField
+    @Rule
+    val mockitoRule: MockitoRule = MockitoJUnit.rule()
+
     @Mock
-    lateinit var model: BluetoothScanner
+    private lateinit var model: BluetoothScanner
     @Mock
-    lateinit var view: ScanView
+    private lateinit var view: ScanView
+    @Mock
+    private lateinit var listener: ScanningListener
+
+    private val captor: KArgumentCaptor<ScanningListener> = argumentCaptor<ScanningListener>()
 
     lateinit var presenter: ScanPresenter
 
     @Before
-    fun setUp() {
-        MockitoAnnotations.initMocks(this)
+    fun setup() {
         presenter = ScanPresenter(view, model)
     }
 
     @Test
     fun availability_isAvailable() {
-        Mockito.`when`(model.isBluetoothAvailable()).thenReturn(true)
+        `when`(model.isBluetoothAvailable()).thenReturn(true)
         presenter.checkBluetoothAvailability()
-        Mockito.verify(view)?.showBluetoothScanner()
+        verify(view).showBluetoothScanner()
     }
 
     @Test
     fun availability_isNotAvailable() {
-        Mockito.`when`(model.isBluetoothAvailable()).thenReturn(false)
+        `when`(model.isBluetoothAvailable()).thenReturn(false)
         presenter.checkBluetoothAvailability()
-        Mockito.verify(view)?.showBluetoothIsNotAvailableMessage()
+        verify(view).showBluetoothIsNotAvailableMessage()
     }
 
     @Test
     fun enabling_isEnabled_isDiscoverable() {
-        Mockito.`when`(model.isBluetoothEnabled()).thenReturn(true)
-        Mockito.`when`(model.isDiscoverable()).thenReturn(true)
+        `when`(model.isBluetoothEnabled()).thenReturn(true)
+        `when`(model.isDiscoverable()).thenReturn(true)
         presenter.checkBluetoothEnabling()
-        Mockito.verify(view)?.showPairedDevices(ArrayList<BluetoothDevice>())
-        Mockito.verify(view)?.showDiscoverableProcess()
+        verify(view).showPairedDevices(ArrayList<BluetoothDevice>())
+        verify(view).showDiscoverableProcess()
     }
 
     @Test
     fun enabling_isEnabled_isNotDiscoverable() {
-        Mockito.`when`(model.isBluetoothEnabled()).thenReturn(true)
-        Mockito.`when`(model.isDiscoverable()).thenReturn(false)
+        `when`(model.isBluetoothEnabled()).thenReturn(true)
+        `when`(model.isDiscoverable()).thenReturn(false)
         presenter.checkBluetoothEnabling()
-        Mockito.verify(view)?.showPairedDevices(ArrayList<BluetoothDevice>())
-        Mockito.verify(view)?.showDiscoverableFinished()
+        verify(view).showPairedDevices(ArrayList<BluetoothDevice>())
+        verify(view).showDiscoverableFinished()
     }
 
     @Test
     fun enabling_isDisabled() {
-        Mockito.`when`(model.isBluetoothEnabled()).thenReturn(false)
+        `when`(model.isBluetoothEnabled()).thenReturn(false)
         presenter.checkBluetoothEnabling()
-        Mockito.verify(view)?.showBluetoothEnablingRequest()
+        verify(view).showBluetoothEnablingRequest()
+    }
+
+    @Test
+    fun enabling_turnOn() {
+        `when`(model.isBluetoothEnabled()).thenReturn(false)
+        presenter.turnOnBluetooth()
+        verify(view).requestBluetoothEnabling()
+    }
+
+    @Test
+    fun enabling_onEnablingFailed() {
+        presenter.onBluetoothEnablingFailed()
+        verify(view).showBluetoothEnablingFailed()
+    }
+
+    @Test
+    fun discovery_onMadeDiscoverable() {
+        presenter.onMadeDiscoverable()
+        verify(view).showDiscoverableProcess()
+    }
+
+    @Test
+    fun discovery_makeDiscoverable() {
+        `when`(model.isDiscoverable()).thenReturn(false)
+        presenter.makeDiscoverable()
+        verify(view).requestMakingDiscoverable()
+    }
+
+    @Test
+    fun scanning_cancel() {
+        presenter.cancelScanning()
+        verify(view).showScanningStopped()
+    }
+
+    @Test
+    fun scanning_start() {
+        presenter.scanForDevices()
+        verify(model).scanForDevices(30)
+        verify(model).setScanningListener(captor.capture())
+        val scanningListener = captor.firstValue
+        scanningListener.onDiscoveryStart(0)
+        verify(view).showScanningStarted(0)
+    }
+
+    @Test
+    fun scanning_finished() {
+        verify(model).setScanningListener(captor.capture())
+        val scanningListener = captor.firstValue
+        scanningListener.onDiscoveryFinish()
+        verify(view).showScanningStopped()
+    }
+
+    @Test
+    fun scanning_discoverableStart() {
+        verify(model).setScanningListener(captor.capture())
+        val scanningListener = captor.firstValue
+        scanningListener.onDiscoverableStart()
+        verify(view)?.showDiscoverableProcess()
+    }
+
+    @Test
+    fun scanning_discoverableFinishStart() {
+        verify(model).setScanningListener(captor.capture())
+        val scanningListener = captor.firstValue
+        scanningListener.onDiscoverableFinish()
+        verify(view).showDiscoverableFinished()
+    }
+
+    @Test
+    fun scanning_onFoundDevice() {
+        val device = mock(BluetoothDevice::class.java)
+        verify(model).setScanningListener(captor.capture())
+        val scanningListener = captor.firstValue
+        scanningListener.onDeviceFind(device)
+        verify(view).addFoundDevice(device)
+    }
+
+    @Test
+    fun scanning_startAlreadyStarted() {
+        `when`(model.isDiscovering()).thenReturn(true)
+        presenter.scanForDevices()
+        verify(view).showScanningStopped()
     }
 }

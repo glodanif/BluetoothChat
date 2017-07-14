@@ -97,6 +97,7 @@ dependencies {
     testCompile "org.jetbrains.kotlin:kotlin-stdlib:$KOTLIN_VERSION"
     testCompile "org.jetbrains.kotlin:kotlin-test-junit:$KOTLIN_VERSION"
     testCompile 'org.mockito:mockito-core:2.8.9'
+    testCompile "com.nhaarman:mockito-kotlin-kt1.1:1.5.0"
     testCompile 'junit:junit:4.12'
 
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
