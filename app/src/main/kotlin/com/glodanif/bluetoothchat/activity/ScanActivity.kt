@@ -35,6 +35,7 @@ class ScanActivity : AppCompatActivity(), ScanView {
     private lateinit var container: View
     private lateinit var turnOnHolder: View
     private lateinit var listHolder: View
+    private lateinit var progress: View
 
     private lateinit var infoLabel: TextView
     private lateinit var discoveryLabel: TextView
@@ -47,6 +48,8 @@ class ScanActivity : AppCompatActivity(), ScanView {
     private val adapter: DevicesAdapter = DevicesAdapter()
 
     private lateinit var presenter: ScanPresenter
+
+    private var isStarted = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -61,6 +64,7 @@ class ScanActivity : AppCompatActivity(), ScanView {
         container = findViewById(R.id.fl_container)
         turnOnHolder = findViewById(R.id.cl_turn_on)
         listHolder = findViewById(R.id.cl_list)
+        progress = findViewById(R.id.fl_progress)
 
         infoLabel = findViewById(R.id.tv_info) as TextView
         discoveryLabel = findViewById(R.id.tv_discovery_label) as TextView
@@ -75,6 +79,7 @@ class ScanActivity : AppCompatActivity(), ScanView {
 
         adapter.listener = {
             presenter.onDevicePicked(it.address)
+            progress.visibility = View.VISIBLE
         }
 
         presenter.checkBluetoothAvailability()
@@ -133,14 +138,14 @@ class ScanActivity : AppCompatActivity(), ScanView {
     override fun showBluetoothIsNotAvailableMessage() {
         AlertDialog.Builder(this)
                 .setMessage("Cannot get access to Bluetooth on your device")
-                .setPositiveButton("OK", { _, _ -> finish() })
+                .setPositiveButton(getString(R.string.general__ok), { _, _ -> finish() })
                 .show()
     }
 
     override fun showBluetoothEnablingFailed() {
         AlertDialog.Builder(this)
                 .setMessage("This app requires Bluetooth enabled to work properly")
-                .setPositiveButton("OK", null)
+                .setPositiveButton(getString(R.string.general__ok), null)
                 .show()
     }
 
@@ -177,7 +182,29 @@ class ScanActivity : AppCompatActivity(), ScanView {
     override fun showBluetoothDiscoverableFailure() {
         AlertDialog.Builder(this)
                 .setMessage("Unable to make your device discoverable")
-                .setPositiveButton("OK", null)
+                .setPositiveButton(getString(R.string.general__ok), null)
+                .show()
+    }
+
+    override fun showServiceUnavailable() {
+        progress.visibility = View.GONE
+
+        if (!isStarted) return
+
+        AlertDialog.Builder(this)
+                .setMessage("Unable to engage connection, please restart the app")
+                .setPositiveButton(getString(R.string.general__ok), null)
+                .show()
+    }
+
+    override fun showUnableToConnect() {
+        progress.visibility = View.GONE
+
+        if (!isStarted) return
+
+        AlertDialog.Builder(this)
+                .setMessage("Unable to connect to this device")
+                .setPositiveButton(getString(R.string.general__ok), null)
                 .show()
     }
 
@@ -216,15 +243,21 @@ class ScanActivity : AppCompatActivity(), ScanView {
     private fun explainAskingPermission() {
         AlertDialog.Builder(this)
                 .setMessage("To be able to find other devices this app requires LOCATION permission")
-                .setPositiveButton("OK", { _, _ ->
+                .setPositiveButton(getString(R.string.general__ok), { _, _ ->
                     ActivityCompat.requestPermissions(this,
                             arrayOf(Manifest.permission.ACCESS_COARSE_LOCATION), REQUEST_LOCATION_PERMISSION)
                 })
                 .show()
     }
 
+    override fun onStart() {
+        super.onStart()
+        isStarted = true
+    }
+
     override fun onStop() {
         super.onStop()
+        isStarted = false
         presenter.cancelScanning()
     }
 

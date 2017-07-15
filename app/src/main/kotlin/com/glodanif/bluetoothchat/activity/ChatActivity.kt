@@ -65,11 +65,11 @@ class ChatActivity : AppCompatActivity(), ChatView {
         val deviceAddress: String? = intent.getStringExtra(EXTRA_ADDRESS)
         val device: BluetoothDevice? = intent.getParcelableExtra(EXTRA_DEVICE)
         title = if (!deviceName.isNullOrEmpty()) deviceName else
-            if (device != null) device.name else "Unknown"
-        toolbar.subtitle = "Not connected"
+            if (device != null) device.name else getString(R.string.chat__unknown)
+        toolbar.subtitle = getString(R.string.chat__not_connected)
 
         val address: String = if (!deviceAddress.isNullOrEmpty()) deviceAddress!! else
-            if (device != null) device.address else "Unknown"
+            if (device != null) device.address else getString(R.string.chat__unknown)
 
         presenter = ChatPresenter(address, this, scanModel, connectionModel, storageModel)
         presenter.initWithBluetoothDevice(device)
@@ -88,20 +88,19 @@ class ChatActivity : AppCompatActivity(), ChatView {
     }
 
     override fun showStatusConnected() {
-        toolbar.subtitle = "Connected"
+        toolbar.subtitle = getString(R.string.chat__connected)
     }
 
     override fun showStatusNotConnected() {
-        toolbar.subtitle = "Not connected"
+        toolbar.subtitle = getString(R.string.chat__not_connected)
     }
 
     override fun showStatusPending() {
-        toolbar.subtitle = "Pending"
+        toolbar.subtitle = getString(R.string.chat__pending)
     }
 
-    override fun showNotConnectedToSend() {
-        Toast.makeText(this, "You are not connected to this device.", Toast.LENGTH_LONG).show()
-    }
+    override fun showNotConnectedToSend() =
+            Toast.makeText(this, getString(R.string.chat__not_connected_to_send), Toast.LENGTH_LONG).show()
 
     override fun afterMessageSent() {
         messageField.text = null
@@ -111,7 +110,7 @@ class ChatActivity : AppCompatActivity(), ChatView {
 
         actions.visibility = View.VISIBLE
         actions.setActions("You are currently connected to $currentDevice. You can connect to this device (current connection will be interrupted)?",
-                ActionView.Action("Connect") { presenter.connectToDevice() },
+                ActionView.Action(getString(R.string.chat__connect)) { presenter.connectToDevice() },
                 null
         )
     }
@@ -120,7 +119,7 @@ class ChatActivity : AppCompatActivity(), ChatView {
 
         actions.visibility = View.VISIBLE
         actions.setActions("You are not connected to this device right now.",
-                ActionView.Action("Connect") { presenter.connectToDevice() },
+                ActionView.Action(getString(R.string.chat__connect)) { presenter.connectToDevice() },
                 null
         )
     }
@@ -128,8 +127,8 @@ class ChatActivity : AppCompatActivity(), ChatView {
     override fun showWainingForOpponent() {
 
         actions.visibility = View.VISIBLE
-        actions.setActions("You are waiting for this device to approve a connection.",
-                ActionView.Action("Cancel") { presenter.resetConnection() },
+        actions.setActions(getString(R.string.chat__waiting_for_device),
+                ActionView.Action(getString(R.string.general__cancel)) { presenter.resetConnection() },
                 null
         )
     }
@@ -138,8 +137,8 @@ class ChatActivity : AppCompatActivity(), ChatView {
 
         actions.visibility = View.VISIBLE
         actions.setActions("${conversation.displayName} (${conversation.deviceName}) has just connected to you",
-                ActionView.Action("Start chat") { presenter.acceptConnection() },
-                ActionView.Action("Disconnect") { presenter.rejectConnection() }
+                ActionView.Action(getString(R.string.general__start_chat)) { presenter.acceptConnection() },
+                ActionView.Action(getString(R.string.chat__disconnect)) { presenter.rejectConnection() }
         )
     }
 
@@ -149,7 +148,7 @@ class ChatActivity : AppCompatActivity(), ChatView {
 
         AlertDialog.Builder(this)
                 .setMessage("Bluetooth Chat service just has been stopped, restart the service to be able to use the app")
-                .setPositiveButton("Restart", { _, _ -> presenter.prepareConnection() })
+                .setPositiveButton(getString(R.string.general__restart), { _, _ -> presenter.prepareConnection() })
                 .setCancelable(false)
                 .show()
     }
@@ -180,8 +179,8 @@ class ChatActivity : AppCompatActivity(), ChatView {
         if (!isStarted) return
 
         AlertDialog.Builder(this)
-                .setMessage("Your connection request was rejected")
-                .setPositiveButton("OK", null)
+                .setMessage(getString(R.string.chat__connection_rejected))
+                .setPositiveButton(getString(R.string.general__ok), null)
                 .setCancelable(false)
                 .show()
     }
@@ -190,8 +189,8 @@ class ChatActivity : AppCompatActivity(), ChatView {
 
         actions.visibility = View.VISIBLE
         actions.setActions("${conversation.displayName} (${conversation.deviceName}) has just connected to you",
-                ActionView.Action("Start chat") { presenter.acceptConnection() },
-                ActionView.Action("Disconnect") { presenter.rejectConnection() }
+                ActionView.Action(getString(R.string.general__start_chat)) { presenter.acceptConnection() },
+                ActionView.Action(getString(R.string.chat__disconnect)) { presenter.rejectConnection() }
         )
     }
 
@@ -201,8 +200,8 @@ class ChatActivity : AppCompatActivity(), ChatView {
 
         AlertDialog.Builder(this)
                 .setMessage("Connection with this device was lost. Do you want to reconnect?")
-                .setPositiveButton("Reconnect", { _, _ -> presenter.reconnect() })
-                .setNegativeButton("Cancel", null)
+                .setPositiveButton(getString(R.string.chat__reconnect), { _, _ -> presenter.reconnect() })
+                .setNegativeButton(getString(R.string.general__cancel), null)
                 .setCancelable(false)
                 .show()
     }
@@ -213,8 +212,8 @@ class ChatActivity : AppCompatActivity(), ChatView {
 
         AlertDialog.Builder(this)
                 .setMessage("Your opponent disconnected from your device. Do you want to reconnect?")
-                .setPositiveButton("Reconnect", { _, _ -> presenter.reconnect() })
-                .setNegativeButton("Cancel", null)
+                .setPositiveButton(getString(R.string.chat__reconnect), { _, _ -> presenter.reconnect() })
+                .setNegativeButton(getString(R.string.general__cancel), null)
                 .setCancelable(false)
                 .show()
     }
@@ -225,8 +224,8 @@ class ChatActivity : AppCompatActivity(), ChatView {
 
         AlertDialog.Builder(this)
                 .setMessage("Unable to connect to this device, do you want to try again?")
-                .setPositiveButton("Try again", { _, _ -> presenter.connectToDevice() })
-                .setNegativeButton("Cancel", null)
+                .setPositiveButton(getString(R.string.general__try_again), { _, _ -> presenter.connectToDevice() })
+                .setNegativeButton(getString(R.string.general__cancel), null)
                 .setCancelable(false)
                 .show()
 
@@ -237,7 +236,14 @@ class ChatActivity : AppCompatActivity(), ChatView {
     }
 
     override fun showDeviceIsNotAvailable() {
-        Toast.makeText(this, "This device is not available right now, make sure it's paired", Toast.LENGTH_LONG).show()
+
+        if (!isStarted) return
+
+        AlertDialog.Builder(this)
+                .setMessage("This device is not available right now, make sure it's paired.")
+                .setPositiveButton(getString(R.string.general__ok), null)
+                .setCancelable(false)
+                .show()
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

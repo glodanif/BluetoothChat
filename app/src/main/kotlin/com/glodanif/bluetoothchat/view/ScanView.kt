@@ -17,4 +17,6 @@ interface ScanView {
     fun showScanningStopped()
     fun addFoundDevice(device: BluetoothDevice)
     fun openChat(device: BluetoothDevice)
+    fun showServiceUnavailable()
+    fun showUnableToConnect()
 }

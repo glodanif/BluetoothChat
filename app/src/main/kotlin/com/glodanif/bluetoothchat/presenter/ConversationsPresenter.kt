@@ -22,6 +22,8 @@ class ConversationsPresenter(private val view: ConversationsView, private val co
 
             if (device != null && connection.isPending()) {
                 view.notifyAboutConnectedDevice(device)
+            } else {
+                view.hideActions()
             }
         }
 

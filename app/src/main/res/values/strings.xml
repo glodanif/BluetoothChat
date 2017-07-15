@@ -5,4 +5,19 @@
     <string name="scan">Scan</string>
     <string name="discoverable">Discoverable</string>
     <string name="make_discoverable">Make discoverable</string>
+    <string name="chat__not_connected">Not connected</string>
+    <string name="chat__connected">Connected</string>
+    <string name="chat__pending">Pending</string>
+    <string name="chat__unknown">Unknown</string>
+    <string name="general__ok">OK</string>
+    <string name="general__cancel">Cancel</string>
+    <string name="general__try_again">Try again</string>
+    <string name="chat__reconnect">Reconnect</string>
+    <string name="chat__disconnect">Disconnect</string>
+    <string name="general__start_chat">Start chat</string>
+    <string name="chat__connection_rejected">Your connection request was rejected</string>
+    <string name="chat__waiting_for_device">You are waiting for this device to approve a connection.</string>
+    <string name="chat__connect">Connect</string>
+    <string name="chat__not_connected_to_send">You are not connected to this device.</string>
+    <string name="general__restart">Restart</string>
 </resources>

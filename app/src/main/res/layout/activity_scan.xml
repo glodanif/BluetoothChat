@@ -15,6 +15,21 @@
         app:layout_constraintRight_toRightOf="@+id/toolbar"
         app:layout_constraintTop_toBottomOf="@+id/toolbar">
 
+        <FrameLayout
+            android:id="@+id/fl_progress"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#44444444"
+            android:clickable="true"
+            android:visibility="gone">
+
+            <ProgressBar
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_gravity="center" />
+
+        </FrameLayout>
+
         <android.support.constraint.ConstraintLayout
             android:id="@+id/cl_list"
             android:layout_width="match_parent"
@@ -62,13 +77,13 @@
                 android:layout_marginLeft="8dp"
                 android:layout_marginRight="8dp"
                 android:layout_marginStart="8dp"
+                android:layout_marginTop="16dp"
                 android:gravity="center"
                 android:text="Scan for devices to find your future interlocutor or make your device discoverable so he/she will be able to find you"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                android:layout_marginTop="16dp" />
+                app:layout_constraintTop_toTopOf="parent" />
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/rv_paired_devices"
@@ -102,9 +117,11 @@
                 android:layout_height="36dp"
                 android:layout_marginLeft="8dp"
                 android:layout_marginRight="8dp"
+                android:layout_marginTop="8dp"
                 android:visibility="gone"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_discovery_label"
                 app:rcBackgroundColor="#ddd"
                 app:rcBackgroundPadding="4dp"
                 app:rcIconBackgroundColor="#aaa"
@@ -115,9 +132,7 @@
                 app:rcProgress="75"
                 app:rcProgressColor="@color/colorAccent"
                 app:rcRadius="4dp"
-                tools:visibility="visible"
-                android:layout_marginTop="8dp"
-                app:layout_constraintTop_toBottomOf="@+id/tv_discovery_label" />
+                tools:visibility="visible" />
         </android.support.constraint.ConstraintLayout>
 
         <android.support.constraint.ConstraintLayout

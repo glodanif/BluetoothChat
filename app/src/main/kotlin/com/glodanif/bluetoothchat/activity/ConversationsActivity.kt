@@ -163,7 +163,7 @@ class ConversationsActivity : AppCompatActivity(), ConversationsView {
 
         AlertDialog.Builder(this)
                 .setMessage("Your connection request to ${conversation.displayName} (${conversation.deviceName}) was rejected")
-                .setPositiveButton("OK", null)
+                .setPositiveButton(getString(R.string.general__ok), null)
                 .setCancelable(false)
                 .show()
     }
