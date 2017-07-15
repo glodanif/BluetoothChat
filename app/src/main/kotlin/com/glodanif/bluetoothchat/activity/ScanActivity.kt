@@ -20,6 +20,7 @@ import android.widget.Button
 import android.widget.TextView
 import com.glodanif.bluetoothchat.R
 import com.glodanif.bluetoothchat.adapter.DevicesAdapter
+import com.glodanif.bluetoothchat.model.BluetoothConnectorImpl
 import com.glodanif.bluetoothchat.model.BluetoothScannerImpl
 import com.glodanif.bluetoothchat.presenter.ScanPresenter
 import com.glodanif.bluetoothchat.view.ScanView
@@ -55,7 +56,7 @@ class ScanActivity : AppCompatActivity(), ScanView {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
 
-        presenter = ScanPresenter(this, BluetoothScannerImpl(this))
+        presenter = ScanPresenter(this, BluetoothScannerImpl(this), BluetoothConnectorImpl(this))
 
         container = findViewById(R.id.fl_container)
         turnOnHolder = findViewById(R.id.cl_turn_on)
@@ -73,9 +74,7 @@ class ScanActivity : AppCompatActivity(), ScanView {
         pairedDevicesList.adapter = adapter
 
         adapter.listener = {
-            val intent: Intent = Intent().putExtra(EXTRA_BLUETOOTH_DEVICE, it)
-            setResult(Activity.RESULT_OK, intent)
-            finish()
+            presenter.onDevicePicked(it.address)
         }
 
         presenter.checkBluetoothAvailability()
@@ -97,6 +96,12 @@ class ScanActivity : AppCompatActivity(), ScanView {
                 }
             }
         }
+    }
+
+    override fun openChat(device: BluetoothDevice) {
+        val intent: Intent = Intent().putExtra(EXTRA_BLUETOOTH_DEVICE, device)
+        setResult(Activity.RESULT_OK, intent)
+        finish()
     }
 
     override fun showPairedDevices(pairedDevices: List<BluetoothDevice>) {

@@ -7,13 +7,21 @@ import com.glodanif.bluetoothchat.presenter.ConversationsPresenter
 import com.glodanif.bluetoothchat.presenter.ProfilePresenter
 import com.glodanif.bluetoothchat.view.ConversationsView
 import com.glodanif.bluetoothchat.view.ProfileView
+import com.nhaarman.mockito_kotlin.verify
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.mockito.Mock
 import org.mockito.Mockito
 import org.mockito.MockitoAnnotations
+import org.mockito.junit.MockitoJUnit
+import org.mockito.junit.MockitoRule
 
 class ConversationsPresenterUnitTest {
+
+    @JvmField
+    @Rule
+    val mockitoRule: MockitoRule = MockitoJUnit.rule()
 
     @Mock
     lateinit var settingsModel: SettingsManager
@@ -28,20 +36,19 @@ class ConversationsPresenterUnitTest {
 
     @Before
     fun setup() {
-        MockitoAnnotations.initMocks(this)
         presenter = ConversationsPresenter(view, connectionModel, storageModel, settingsModel)
     }
 
     @Test
     fun connection_reject() {
         presenter.rejectConnection()
-        Mockito.verify(view).hideActions()
+        verify(view).hideActions()
     }
 
     @Test
     fun user_load() {
         presenter.loadUserProfile()
-        Mockito.verify(view).showUserProfile(uninitialized(), 0)
+        verify(view).showUserProfile(uninitialized(), 0)
     }
 
     @Suppress("UNCHECKED_CAST")

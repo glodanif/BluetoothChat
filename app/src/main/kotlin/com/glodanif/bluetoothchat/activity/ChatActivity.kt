@@ -18,10 +18,7 @@ import com.glodanif.bluetoothchat.R
 import com.glodanif.bluetoothchat.adapter.ChatAdapter
 import com.glodanif.bluetoothchat.entity.ChatMessage
 import com.glodanif.bluetoothchat.entity.Conversation
-import com.glodanif.bluetoothchat.model.BluetoothConnector
-import com.glodanif.bluetoothchat.model.BluetoothConnectorImpl
-import com.glodanif.bluetoothchat.model.MessagesStorage
-import com.glodanif.bluetoothchat.model.MessagesStorageImpl
+import com.glodanif.bluetoothchat.model.*
 import com.glodanif.bluetoothchat.presenter.ChatPresenter
 import com.glodanif.bluetoothchat.view.ChatView
 import com.glodanif.bluetoothchat.widget.ActionView
@@ -31,6 +28,7 @@ class ChatActivity : AppCompatActivity(), ChatView {
 
     private lateinit var presenter: ChatPresenter
     private val connectionModel: BluetoothConnector = BluetoothConnectorImpl(this)
+    private val scanModel: BluetoothScanner = BluetoothScannerImpl(this)
     private val storageModel: MessagesStorage = MessagesStorageImpl(this)
 
     private val layoutManager = LinearLayoutManager(this)
@@ -73,7 +71,7 @@ class ChatActivity : AppCompatActivity(), ChatView {
         val address: String = if (!deviceAddress.isNullOrEmpty()) deviceAddress!! else
             if (device != null) device.address else "Unknown"
 
-        presenter = ChatPresenter(address, this, connectionModel, storageModel)
+        presenter = ChatPresenter(address, this, scanModel, connectionModel, storageModel)
         presenter.initWithBluetoothDevice(device)
     }
 

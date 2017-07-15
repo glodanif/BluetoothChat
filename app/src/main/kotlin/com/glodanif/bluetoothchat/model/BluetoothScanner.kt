@@ -8,6 +8,7 @@ interface BluetoothScanner {
     fun scanForDevices(seconds: Int)
     fun stopScanning()
     fun getBondedDevices(): List<BluetoothDevice>
+    fun getDeviceByAddress(address: String): BluetoothDevice?
     fun isBluetoothAvailable(): Boolean
     fun isBluetoothEnabled(): Boolean
     fun isDiscoverable(): Boolean

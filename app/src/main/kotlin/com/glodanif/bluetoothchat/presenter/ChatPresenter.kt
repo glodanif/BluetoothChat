@@ -7,7 +7,7 @@ import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
 import com.glodanif.bluetoothchat.entity.Conversation
 
-class ChatPresenter(private val deviceAddress: String, private val view: ChatView,
+class ChatPresenter(private val deviceAddress: String, private val view: ChatView, private val scanModel: BluetoothScanner,
                     private val connectionModel: BluetoothConnector, private val storage: MessagesStorage) {
 
     private var bluetoothDevice: BluetoothDevice? = null
@@ -26,6 +26,10 @@ class ChatPresenter(private val deviceAddress: String, private val view: ChatVie
     }
 
     private val connectionListener = object : OnConnectionListener {
+
+        override fun onConnected() {
+
+        }
 
         override fun onConnectionWithdrawn() {
             updateState()
@@ -136,11 +140,8 @@ class ChatPresenter(private val deviceAddress: String, private val view: ChatVie
 
     fun connectToDevice() {
 
-        val adapter = BluetoothAdapter.getDefaultAdapter()
-        val pairedDevice = adapter.bondedDevices
-                .filter { it.address.equals(deviceAddress, ignoreCase = true) }
         val device = if (bluetoothDevice != null) bluetoothDevice else
-            if (pairedDevice.isEmpty()) null else pairedDevice.first()
+            scanModel.getDeviceByAddress(deviceAddress)
 
         if (device != null) {
             view.showStatusPending()

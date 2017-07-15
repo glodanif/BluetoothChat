@@ -20,6 +20,8 @@ class BluetoothScannerImpl(val context: Context) : BluetoothScanner {
 
     private val adapter: BluetoothAdapter? = BluetoothAdapter.getDefaultAdapter()
 
+    private val foundDevices = HashMap<String, BluetoothDevice>()
+
     private val foundDeviceFilter: IntentFilter = IntentFilter(BluetoothDevice.ACTION_FOUND)
     private val foundDeviceReceiver = object : BroadcastReceiver() {
 
@@ -28,6 +30,7 @@ class BluetoothScannerImpl(val context: Context) : BluetoothScanner {
             if (BluetoothDevice.ACTION_FOUND == intent.action) {
                 val device = intent
                         .getParcelableExtra<BluetoothDevice>(BluetoothDevice.EXTRA_DEVICE)
+                foundDevices.put(device.address, device)
                 listener?.onDeviceFind(device)
             }
         }
@@ -80,6 +83,12 @@ class BluetoothScannerImpl(val context: Context) : BluetoothScanner {
 
     override fun getBondedDevices(): List<BluetoothDevice> {
         return ArrayList<BluetoothDevice>(adapter?.bondedDevices)
+    }
+
+    override fun getDeviceByAddress(address: String): BluetoothDevice? {
+        val pairedDevice = getBondedDevices()
+                .filter { it.address.equals(address, ignoreCase = true) }
+        return if (!pairedDevice.isEmpty()) pairedDevice.first() else foundDevices[address]
     }
 
     override fun isBluetoothAvailable(): Boolean {

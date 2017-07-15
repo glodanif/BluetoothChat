@@ -3,6 +3,7 @@ package com.glodanif.bluetoothchat
 import com.glodanif.bluetoothchat.model.SettingsManager
 import com.glodanif.bluetoothchat.presenter.ProfilePresenter
 import com.glodanif.bluetoothchat.view.ProfileView
+import com.nhaarman.mockito_kotlin.verify
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -34,53 +35,53 @@ class ProfilePresenterUnitTest {
     fun validation_emptyUserName() {
         presenter.onNameChanged("")
         presenter.saveUser()
-        Mockito.verify(view)?.showNotValidNameError()
+        verify(view).showNotValidNameError()
     }
 
     @Test
     fun validation_forbiddenCharacters() {
         presenter.onNameChanged("Test#")
         presenter.saveUser()
-        Mockito.verify(view)?.showNotValidNameError()
+        verify(view).showNotValidNameError()
     }
 
     @Test
     fun validation_longUserName() {
         presenter.onNameChanged("Test longer that 25 character")
         presenter.saveUser()
-        Mockito.verify(view)?.showNotValidNameError()
+        verify(view).showNotValidNameError()
     }
 
     @Test
     fun validation_validUsername() {
         presenter.onNameChanged("Test")
         presenter.saveUser()
-        Mockito.verify(view)?.redirectToConversations()
+        verify(view).redirectToConversations()
     }
 
     @Test
     fun input_typedText() {
         presenter.onNameChanged("Test")
-        Mockito.verify(view)?.showUserData("Test", 0)
+        verify(view).showUserData("Test", 0)
     }
 
     @Test
     fun color_preparePicker() {
         presenter.prepareColorPicker()
-        Mockito.verify(view)?.showColorPicker(0)
+        verify(view).showColorPicker(0)
     }
 
     @Test
     fun color_onColorPicked() {
         presenter.onColorPicked(0)
-        Mockito.verify(view)?.showUserData(uninitialized(), 0)
+        verify(view).showUserData(uninitialized(), 0)
     }
 
     @Test
     fun onStart_displayProfile() {
         presenter.loadSavedUser()
-        Mockito.verify(view)?.prefillUsername(uninitialized())
-        Mockito.verify(view)?.showUserData(uninitialized(), 0)
+        verify(view).prefillUsername(uninitialized())
+        verify(view).showUserData(uninitialized(), 0)
     }
 
     @Suppress("UNCHECKED_CAST")

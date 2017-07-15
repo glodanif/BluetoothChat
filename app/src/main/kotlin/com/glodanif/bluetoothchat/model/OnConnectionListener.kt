@@ -4,6 +4,7 @@ import com.glodanif.bluetoothchat.entity.Conversation
 
 interface OnConnectionListener {
     fun onConnecting()
+    fun onConnected()
     fun onConnectedIn(conversation: Conversation)
     fun onConnectedOut(conversation: Conversation)
     fun onConnectionLost()

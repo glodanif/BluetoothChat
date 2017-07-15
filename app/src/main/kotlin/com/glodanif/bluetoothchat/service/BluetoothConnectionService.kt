@@ -164,6 +164,8 @@ class BluetoothConnectionService : Service() {
 
         connectedThread = ConnectedThread(socket, type)
         connectedThread!!.start()
+
+        handler.post { connectionListener?.onConnected() }
     }
 
     @Synchronized fun stop() {

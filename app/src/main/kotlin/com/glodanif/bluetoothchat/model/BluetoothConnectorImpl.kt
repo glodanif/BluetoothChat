@@ -42,6 +42,10 @@ class BluetoothConnectorImpl(private val context: Context) : BluetoothConnector 
 
     private val connectionListenerInner = object : OnConnectionListener {
 
+        override fun onConnected() {
+            connectListener?.onConnected()
+        }
+
         override fun onConnectionWithdrawn() {
             connectListener?.onConnectionWithdrawn()
         }

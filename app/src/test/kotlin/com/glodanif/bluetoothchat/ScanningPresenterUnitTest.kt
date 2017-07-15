@@ -1,13 +1,13 @@
 package com.glodanif.bluetoothchat
 
 import android.bluetooth.BluetoothDevice
+import com.glodanif.bluetoothchat.model.BluetoothConnector
 import com.glodanif.bluetoothchat.model.BluetoothScanner
 import com.glodanif.bluetoothchat.model.BluetoothScanner.ScanningListener
 import com.glodanif.bluetoothchat.presenter.ScanPresenter
 import com.glodanif.bluetoothchat.view.ScanView
 import com.nhaarman.mockito_kotlin.KArgumentCaptor
 import com.nhaarman.mockito_kotlin.argumentCaptor
-import com.nhaarman.mockito_kotlin.createinstance.createInstance
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -23,7 +23,9 @@ class ScanningPresenterUnitTest {
     val mockitoRule: MockitoRule = MockitoJUnit.rule()
 
     @Mock
-    private lateinit var model: BluetoothScanner
+    private lateinit var scannerModel: BluetoothScanner
+    @Mock
+    private lateinit var connectionModel: BluetoothConnector
     @Mock
     private lateinit var view: ScanView
     @Mock
@@ -35,27 +37,27 @@ class ScanningPresenterUnitTest {
 
     @Before
     fun setup() {
-        presenter = ScanPresenter(view, model)
+        presenter = ScanPresenter(view, scannerModel, connectionModel)
     }
 
     @Test
     fun availability_isAvailable() {
-        `when`(model.isBluetoothAvailable()).thenReturn(true)
+        `when`(scannerModel.isBluetoothAvailable()).thenReturn(true)
         presenter.checkBluetoothAvailability()
         verify(view).showBluetoothScanner()
     }
 
     @Test
     fun availability_isNotAvailable() {
-        `when`(model.isBluetoothAvailable()).thenReturn(false)
+        `when`(scannerModel.isBluetoothAvailable()).thenReturn(false)
         presenter.checkBluetoothAvailability()
         verify(view).showBluetoothIsNotAvailableMessage()
     }
 
     @Test
     fun enabling_isEnabled_isDiscoverable() {
-        `when`(model.isBluetoothEnabled()).thenReturn(true)
-        `when`(model.isDiscoverable()).thenReturn(true)
+        `when`(scannerModel.isBluetoothEnabled()).thenReturn(true)
+        `when`(scannerModel.isDiscoverable()).thenReturn(true)
         presenter.checkBluetoothEnabling()
         verify(view).showPairedDevices(ArrayList<BluetoothDevice>())
         verify(view).showDiscoverableProcess()
@@ -63,8 +65,8 @@ class ScanningPresenterUnitTest {
 
     @Test
     fun enabling_isEnabled_isNotDiscoverable() {
-        `when`(model.isBluetoothEnabled()).thenReturn(true)
-        `when`(model.isDiscoverable()).thenReturn(false)
+        `when`(scannerModel.isBluetoothEnabled()).thenReturn(true)
+        `when`(scannerModel.isDiscoverable()).thenReturn(false)
         presenter.checkBluetoothEnabling()
         verify(view).showPairedDevices(ArrayList<BluetoothDevice>())
         verify(view).showDiscoverableFinished()
@@ -72,14 +74,14 @@ class ScanningPresenterUnitTest {
 
     @Test
     fun enabling_isDisabled() {
-        `when`(model.isBluetoothEnabled()).thenReturn(false)
+        `when`(scannerModel.isBluetoothEnabled()).thenReturn(false)
         presenter.checkBluetoothEnabling()
         verify(view).showBluetoothEnablingRequest()
     }
 
     @Test
     fun enabling_turnOn() {
-        `when`(model.isBluetoothEnabled()).thenReturn(false)
+        `when`(scannerModel.isBluetoothEnabled()).thenReturn(false)
         presenter.turnOnBluetooth()
         verify(view).requestBluetoothEnabling()
     }
@@ -98,7 +100,7 @@ class ScanningPresenterUnitTest {
 
     @Test
     fun discovery_makeDiscoverable() {
-        `when`(model.isDiscoverable()).thenReturn(false)
+        `when`(scannerModel.isDiscoverable()).thenReturn(false)
         presenter.makeDiscoverable()
         verify(view).requestMakingDiscoverable()
     }
@@ -112,8 +114,8 @@ class ScanningPresenterUnitTest {
     @Test
     fun scanning_start() {
         presenter.scanForDevices()
-        verify(model).scanForDevices(30)
-        verify(model).setScanningListener(captor.capture())
+        verify(scannerModel).scanForDevices(30)
+        verify(scannerModel).setScanningListener(captor.capture())
         val scanningListener = captor.firstValue
         scanningListener.onDiscoveryStart(0)
         verify(view).showScanningStarted(0)
@@ -121,7 +123,7 @@ class ScanningPresenterUnitTest {
 
     @Test
     fun scanning_finished() {
-        verify(model).setScanningListener(captor.capture())
+        verify(scannerModel).setScanningListener(captor.capture())
         val scanningListener = captor.firstValue
         scanningListener.onDiscoveryFinish()
         verify(view).showScanningStopped()
@@ -129,7 +131,7 @@ class ScanningPresenterUnitTest {
 
     @Test
     fun scanning_discoverableStart() {
-        verify(model).setScanningListener(captor.capture())
+        verify(scannerModel).setScanningListener(captor.capture())
         val scanningListener = captor.firstValue
         scanningListener.onDiscoverableStart()
         verify(view)?.showDiscoverableProcess()
@@ -137,7 +139,7 @@ class ScanningPresenterUnitTest {
 
     @Test
     fun scanning_discoverableFinishStart() {
-        verify(model).setScanningListener(captor.capture())
+        verify(scannerModel).setScanningListener(captor.capture())
         val scanningListener = captor.firstValue
         scanningListener.onDiscoverableFinish()
         verify(view).showDiscoverableFinished()
@@ -146,7 +148,7 @@ class ScanningPresenterUnitTest {
     @Test
     fun scanning_onFoundDevice() {
         val device = mock(BluetoothDevice::class.java)
-        verify(model).setScanningListener(captor.capture())
+        verify(scannerModel).setScanningListener(captor.capture())
         val scanningListener = captor.firstValue
         scanningListener.onDeviceFind(device)
         verify(view).addFoundDevice(device)
@@ -154,7 +156,7 @@ class ScanningPresenterUnitTest {
 
     @Test
     fun scanning_startAlreadyStarted() {
-        `when`(model.isDiscovering()).thenReturn(true)
+        `when`(scannerModel.isDiscovering()).thenReturn(true)
         presenter.scanForDevices()
         verify(view).showScanningStopped()
     }
