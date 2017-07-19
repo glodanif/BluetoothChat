@@ -1,4 +1,4 @@
-package com.glodanif.bluetoothchat.service
+package com.glodanif.bluetoothchat.view
 
 import android.app.Notification
 

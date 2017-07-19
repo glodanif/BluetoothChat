@@ -17,6 +17,7 @@ interface BluetoothConnector {
     fun isConnected(): Boolean
     fun isConnectedOrPending(): Boolean
     fun isPending(): Boolean
+    fun isConnectionPrepared(): Boolean
     fun getCurrentConversation(): Conversation?
     fun acceptConnection()
     fun rejectConnection()

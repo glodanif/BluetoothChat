@@ -1,4 +1,4 @@
-package com.glodanif.bluetoothchat.service
+package com.glodanif.bluetoothchat.view
 
 import android.app.Notification
 import android.app.NotificationManager
@@ -13,6 +13,7 @@ import android.os.Build
 import com.glodanif.bluetoothchat.R
 import com.glodanif.bluetoothchat.activity.ChatActivity
 import com.glodanif.bluetoothchat.activity.ConversationsActivity
+import com.glodanif.bluetoothchat.service.BluetoothConnectionService
 
 class NotificationViewImpl(private val context: Context) : NotificationView {
 

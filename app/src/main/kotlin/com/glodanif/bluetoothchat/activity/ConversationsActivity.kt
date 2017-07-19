@@ -32,8 +32,6 @@ class ConversationsActivity : AppCompatActivity(), ConversationsView {
     private val connection: BluetoothConnector = BluetoothConnectorImpl(this)
     private val storage: ConversationsStorage = ConversationsStorageImpl(this)
 
-    private var connectAction: (() -> Unit)? = null
-
     private lateinit var conversationsList: RecyclerView
     private lateinit var noConversations: View
     private lateinit var addButton: FloatingActionButton

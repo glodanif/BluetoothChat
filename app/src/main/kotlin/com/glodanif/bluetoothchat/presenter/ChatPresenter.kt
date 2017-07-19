@@ -50,8 +50,11 @@ class ChatPresenter(private val deviceAddress: String, private val view: ChatVie
         }
 
         override fun onConnectedIn(conversation: Conversation) {
-            view.showStatusPending()
-            view.notifyAboutConnectedDevice(conversation)
+            val currentConversation: Conversation? = connectionModel.getCurrentConversation()
+            if (currentConversation?.deviceAddress == deviceAddress) {
+                view.showStatusPending()
+                view.notifyAboutConnectedDevice(conversation)
+            }
         }
 
         override fun onConnectedOut(conversation: Conversation) {
@@ -106,7 +109,14 @@ class ChatPresenter(private val deviceAddress: String, private val view: ChatVie
     fun prepareConnection() {
 
         connectionModel.setOnPrepareListener(prepareListener)
-        connectionModel.prepare()
+
+        if (connectionModel.isConnectionPrepared()) {
+            connectionModel.setOnConnectListener(connectionListener)
+            connectionModel.setOnMessageListener(messageListener)
+            updateState()
+        } else {
+            connectionModel.prepare()
+        }
 
         storage.getMessagesByDevice(deviceAddress) {
             it.forEach { it.seenHere = true }

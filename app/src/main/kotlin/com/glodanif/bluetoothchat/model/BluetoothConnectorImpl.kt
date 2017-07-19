@@ -111,6 +111,8 @@ class BluetoothConnectorImpl(private val context: Context) : BluetoothConnector 
     }
 
     override fun prepare() {
+        service = null
+        bound = false
         if (!BluetoothConnectionService.isRunning) {
             BluetoothConnectionService.start(context)
         }
@@ -121,7 +123,12 @@ class BluetoothConnectorImpl(private val context: Context) : BluetoothConnector 
         if (bound) {
             context.unbindService(connection)
             bound = false
+            service = null
         }
+    }
+
+    override fun isConnectionPrepared(): Boolean {
+        return bound
     }
 
     override fun setOnConnectListener(listener: OnConnectionListener?) {

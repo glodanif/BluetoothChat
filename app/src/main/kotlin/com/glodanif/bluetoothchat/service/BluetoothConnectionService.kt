@@ -23,6 +23,8 @@ import com.glodanif.bluetoothchat.model.OnConnectionListener
 import com.glodanif.bluetoothchat.model.OnMessageListener
 import com.glodanif.bluetoothchat.model.SettingsManager
 import com.glodanif.bluetoothchat.model.SettingsManagerImpl
+import com.glodanif.bluetoothchat.view.NotificationView
+import com.glodanif.bluetoothchat.view.NotificationViewImpl
 import java.io.IOException
 import java.io.InputStream
 import java.io.OutputStream
@@ -139,10 +141,12 @@ class BluetoothConnectionService : Service() {
             connectThread = null
         }
 
-        connectedThread?.cancel()
+        connectedThread?.cancel(true)
+        acceptThread?.cancel()
         connectedThread = null
         currentSocket = null
         currentConversation = null
+        connectionType = null
 
         connectThread = ConnectThread(device)
         connectThread!!.start()
