@@ -102,14 +102,19 @@ class ChatPresenter(private val deviceAddress: String, private val view: ChatVie
 
     fun prepareConnection() {
 
-        connectionModel.setOnPrepareListener(prepareListener)
-
-        if (connectionModel.isConnectionPrepared()) {
-            connectionModel.setOnConnectListener(connectionListener)
-            connectionModel.setOnMessageListener(messageListener)
-            updateState()
+        if (!scanModel.isBluetoothEnabled()) {
+            view.showBluetoothDisabled()
         } else {
-            connectionModel.prepare()
+
+            connectionModel.setOnPrepareListener(prepareListener)
+
+            if (connectionModel.isConnectionPrepared()) {
+                connectionModel.setOnConnectListener(connectionListener)
+                connectionModel.setOnMessageListener(messageListener)
+                updateState()
+            } else {
+                connectionModel.prepare()
+            }
         }
 
         storage.getMessagesByDevice(deviceAddress) {
@@ -172,9 +177,13 @@ class ChatPresenter(private val deviceAddress: String, private val view: ChatVie
     }
 
     fun reconnect() {
-        connectToDevice()
-        view.showStatusPending()
-        view.showWainingForOpponent()
+        if (scanModel.isBluetoothEnabled()) {
+            connectToDevice()
+            view.showStatusPending()
+            view.showWainingForOpponent()
+        } else {
+            view.showBluetoothDisabled()
+        }
     }
 
     fun acceptConnection() {
@@ -188,6 +197,18 @@ class ChatPresenter(private val deviceAddress: String, private val view: ChatVie
         view.showStatusNotConnected()
         connectionModel.rejectConnection()
         updateState()
+    }
+
+    fun onBluetoothEnabled() {
+        prepareConnection()
+    }
+
+    fun onBluetoothEnablingFailed() {
+        view.showBluetoothEnablingFailed()
+    }
+
+    fun enableBluetooth() {
+        view.requestBluetoothEnabling()
     }
 
     private fun updateState() {

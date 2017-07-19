@@ -26,4 +26,7 @@ interface ChatView {
     fun showStatusConnected()
     fun showStatusNotConnected()
     fun showStatusPending()
+    fun showBluetoothDisabled()
+    fun showBluetoothEnablingFailed()
+    fun requestBluetoothEnabling()
 }

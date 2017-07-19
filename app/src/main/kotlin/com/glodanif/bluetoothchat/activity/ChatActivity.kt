@@ -1,6 +1,8 @@
 package com.glodanif.bluetoothchat.activity
 
+import android.app.Activity
 import android.app.AlertDialog
+import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
 import android.content.Context
 import android.content.Intent
@@ -25,6 +27,8 @@ import com.glodanif.bluetoothchat.widget.ActionView
 import java.util.*
 
 class ChatActivity : AppCompatActivity(), ChatView {
+
+    private val REQUEST_ENABLE_BLUETOOTH = 101
 
     private lateinit var presenter: ChatPresenter
     private val connectionModel: BluetoothConnector = BluetoothConnectorImpl(this)
@@ -188,6 +192,14 @@ class ChatActivity : AppCompatActivity(), ChatView {
         )
     }
 
+    override fun showBluetoothDisabled() {
+        actions.visibility = View.VISIBLE
+        actions.setActions("Bluetooth is disabled",
+                ActionView.Action("Enable") { presenter.enableBluetooth() },
+                null
+        )
+    }
+
     override fun showLostConnection() {
 
         if (!isStarted) return
@@ -235,8 +247,19 @@ class ChatActivity : AppCompatActivity(), ChatView {
 
         AlertDialog.Builder(this)
                 .setMessage("This device is not available right now, make sure it's paired.")
+                .setPositiveButton("Rescan", { _,_ -> ScanActivity.start(this) })
+                .show()
+    }
+
+    override fun requestBluetoothEnabling() {
+        val enableBtIntent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
+        startActivityForResult(enableBtIntent, REQUEST_ENABLE_BLUETOOTH)
+    }
+
+    override fun showBluetoothEnablingFailed() {
+        AlertDialog.Builder(this)
+                .setMessage("This app requires Bluetooth enabled to work properly")
                 .setPositiveButton(getString(R.string.general__ok), null)
-                .setCancelable(false)
                 .show()
     }
 
@@ -244,6 +267,18 @@ class ChatActivity : AppCompatActivity(), ChatView {
         val inflater = menuInflater
         inflater.inflate(R.menu.menu_chat, menu)
         return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (requestCode == REQUEST_ENABLE_BLUETOOTH) {
+            if (resultCode == Activity.RESULT_OK) {
+                presenter.onBluetoothEnabled()
+            } else {
+                presenter.onBluetoothEnablingFailed()
+            }
+        }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

@@ -125,10 +125,8 @@ class BluetoothConnectionService : Service() {
 
         cancelConnections()
 
-        if (acceptThread == null) {
-            acceptThread = AcceptThread()
-            acceptThread!!.start()
-        }
+        acceptThread = AcceptThread()
+        acceptThread!!.start()
         showNotification("Ready to connect")
     }
 
@@ -144,6 +142,7 @@ class BluetoothConnectionService : Service() {
         connectedThread?.cancel(true)
         acceptThread?.cancel()
         connectedThread = null
+        acceptThread = null
         currentSocket = null
         currentConversation = null
         connectionType = null
@@ -290,7 +289,7 @@ class BluetoothConnectionService : Service() {
             }
         } else if (message.type == Message.Type.CONNECTION_REQUEST && currentSocket != null) {
 
-            if  (message.flag) {
+            if (message.flag) {
                 val device: BluetoothDevice = currentSocket!!.remoteDevice
 
                 val parts = message.body.split("#")
@@ -334,6 +333,8 @@ class BluetoothConnectionService : Service() {
                 }
                 prepareForAccept()
             }
+        } else {
+            prepareForAccept()
         }
     }
 
@@ -416,24 +417,21 @@ class BluetoothConnectionService : Service() {
         }
     }
 
-    private inner class ConnectThread(bluetoothDevice: BluetoothDevice) : Thread() {
+    private inner class ConnectThread(private val bluetoothDevice: BluetoothDevice) : Thread() {
 
         private var socket: BluetoothSocket? = null
-        private val device = bluetoothDevice
 
-        init {
+        override fun run() {
+
+            Log.i(TAG, "BEGIN connectThread")
+
             try {
-                socket = device.createRfcommSocketToServiceRecord(APP_UUID)
+                socket = bluetoothDevice.createRfcommSocketToServiceRecord(APP_UUID)
             } catch (e: IOException) {
                 Log.e(TAG, "Socket create() failed", e)
                 e.printStackTrace()
             }
             connectionState = ConnectionState.CONNECTING
-        }
-
-        override fun run() {
-
-            Log.i(TAG, "BEGIN connectThread")
 
             try {
                 socket?.connect()
