@@ -63,16 +63,10 @@ class ChatActivity : AppCompatActivity(), ChatView {
 
         val deviceName: String? = intent.getStringExtra(EXTRA_NAME)
         val deviceAddress: String? = intent.getStringExtra(EXTRA_ADDRESS)
-        val device: BluetoothDevice? = intent.getParcelableExtra(EXTRA_DEVICE)
-        title = if (!deviceName.isNullOrEmpty()) deviceName else
-            if (device != null) device.name else getString(R.string.chat__unknown)
+        title = deviceName
         toolbar.subtitle = getString(R.string.chat__not_connected)
-
-        val address: String = if (!deviceAddress.isNullOrEmpty()) deviceAddress!! else
-            if (device != null) device.address else getString(R.string.chat__unknown)
-
-        presenter = ChatPresenter(address, this, scanModel, connectionModel, storageModel)
-        presenter.initWithBluetoothDevice(device)
+        presenter = ChatPresenter(deviceAddress.toString(),
+                this, scanModel, connectionModel, storageModel)
     }
 
     override fun onStart() {
@@ -270,19 +264,11 @@ class ChatActivity : AppCompatActivity(), ChatView {
 
         val EXTRA_NAME = "extra.name"
         val EXTRA_ADDRESS = "extra.address"
-        val EXTRA_DEVICE = "extra.device"
 
         fun start(context: Context, name: String, address: String) {
             val intent: Intent = Intent(context, ChatActivity::class.java)
                     .putExtra(EXTRA_NAME, name)
                     .putExtra(EXTRA_ADDRESS, address)
-            context.startActivity(intent)
-        }
-
-        fun start(context: Context, device: BluetoothDevice) {
-            val intent: Intent = Intent(context, ChatActivity::class.java)
-                    .putExtra(EXTRA_DEVICE, device)
-                    .putExtra(EXTRA_ADDRESS, device.address)
             context.startActivity(intent)
         }
     }

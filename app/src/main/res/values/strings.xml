@@ -20,4 +20,12 @@
     <string name="chat__connect">Connect</string>
     <string name="chat__not_connected_to_send">You are not connected to this device.</string>
     <string name="general__restart">Restart</string>
+    <string name="conversations__no_conversations">You don\'t have any conversations yet Scan for devices to find you opponent</string>
+    <string name="conversations__scan">Scan</string>
+    <string name="scan__no_devices">No devices were found</string>
+    <string name="scan__scan_for_devices">Scan for devices</string>
+    <string name="scan__start_scanning">Scan for devices to find your future interlocutor or make your device discoverable so he/she will be able to find you</string>
+    <string name="scan__scanning">Scanning for devices</string>
+    <string name="scan__turn_on">Turn on</string>
+    <string name="scan__turn_bluetooth_on">Turn on Bluetooth to find your future interlocutor</string>
 </resources>

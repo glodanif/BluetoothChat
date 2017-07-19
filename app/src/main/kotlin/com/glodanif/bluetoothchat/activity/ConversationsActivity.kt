@@ -184,7 +184,7 @@ class ConversationsActivity : AppCompatActivity(), ConversationsView {
                     ?.getParcelableExtra<BluetoothDevice>(ScanActivity.EXTRA_BLUETOOTH_DEVICE)
 
             if (device != null) {
-                ChatActivity.start(this, device)
+                ChatActivity.start(this, device.name, device.address)
             }
         }
     }

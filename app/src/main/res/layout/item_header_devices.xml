@@ -25,7 +25,7 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:padding="12dp"
-        android:text="No devices were found"
+        android:text="@string/scan__no_devices"
         android:textSize="12sp" />
 
 </LinearLayout>

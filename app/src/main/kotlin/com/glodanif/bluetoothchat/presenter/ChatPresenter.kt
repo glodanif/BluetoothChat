@@ -10,8 +10,6 @@ import com.glodanif.bluetoothchat.entity.Conversation
 class ChatPresenter(private val deviceAddress: String, private val view: ChatView, private val scanModel: BluetoothScanner,
                     private val connectionModel: BluetoothConnector, private val storage: MessagesStorage) {
 
-    private var bluetoothDevice: BluetoothDevice? = null
-
     private val prepareListener = object : OnPrepareListener {
 
         override fun onPrepared() {
@@ -102,10 +100,6 @@ class ChatPresenter(private val deviceAddress: String, private val view: ChatVie
         }
     }
 
-    fun initWithBluetoothDevice(bluetoothDevice: BluetoothDevice?) {
-        this.bluetoothDevice = bluetoothDevice
-    }
-
     fun prepareConnection() {
 
         connectionModel.setOnPrepareListener(prepareListener)
@@ -150,8 +144,7 @@ class ChatPresenter(private val deviceAddress: String, private val view: ChatVie
 
     fun connectToDevice() {
 
-        val device = if (bluetoothDevice != null) bluetoothDevice else
-            scanModel.getDeviceByAddress(deviceAddress)
+        val device = scanModel.getDeviceByAddress(deviceAddress)
 
         if (device != null) {
             view.showStatusPending()
