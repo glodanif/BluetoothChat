@@ -551,6 +551,8 @@ class BluetoothConnectionService : Service() {
         super.onDestroy()
         isRunning = false
         cancelConnections()
+        acceptThread?.cancel()
+        acceptThread = null
         Log.e(TAG, "DESTROYED")
     }
 
