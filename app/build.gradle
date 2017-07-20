@@ -4,6 +4,7 @@ def final VERSION_NAME = '1.0'
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
+apply plugin: 'io.fabric'
 
 android {
     compileSdkVersion 25
@@ -71,7 +72,7 @@ android {
 dependencies {
 
     def final SUPPORT_VERSION = '25.4.0'
-    def final ARCH_VERSION = '1.0.0-alpha4'
+    def final ARCH_VERSION = '1.0.0-alpha5'
     def final DAGGER_VERSION = '2.4'
 
     compile fileTree(dir: 'libs', include: ['*.jar'])
@@ -91,6 +92,10 @@ dependencies {
     compile 'com.amulyakhare:com.amulyakhare.textdrawable:1.0.1'
     compile 'com.akexorcist:RoundCornerProgressBar:2.0.3'
     compile 'me.priyesh:chroma:1.0.2'
+
+    compile('com.crashlytics.sdk.android:crashlytics:2.6.8@aar') {
+        transitive = true;
+    }
 
     compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$KOTLIN_VERSION"
 

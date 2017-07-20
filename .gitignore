@@ -11,3 +11,4 @@ captures/
 *.iml
 local.properties
 gradle.properties
+fabric.properties

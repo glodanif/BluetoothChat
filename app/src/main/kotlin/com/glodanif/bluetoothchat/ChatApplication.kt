@@ -2,9 +2,11 @@ package com.glodanif.bluetoothchat
 
 import android.app.Activity
 import android.app.Application
+import com.crashlytics.android.Crashlytics
 import com.glodanif.bluetoothchat.activity.ChatActivity
 import com.glodanif.bluetoothchat.activity.ConversationsActivity
 import com.glodanif.bluetoothchat.util.StartStopActivityLifecycleCallbacks
+import io.fabric.sdk.android.Fabric
 
 class ChatApplication : Application() {
 
@@ -13,6 +15,8 @@ class ChatApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
+
+        Fabric.with(this, Crashlytics())
 
         registerActivityLifecycleCallbacks(object : StartStopActivityLifecycleCallbacks() {
 
