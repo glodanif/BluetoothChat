@@ -1,6 +1,7 @@
 package com.glodanif.bluetoothchat.view
 
 import android.bluetooth.BluetoothDevice
+import android.net.Uri
 
 interface ScanView {
     fun showBluetoothIsNotAvailableMessage()
@@ -19,4 +20,6 @@ interface ScanView {
     fun openChat(device: BluetoothDevice)
     fun showServiceUnavailable()
     fun showUnableToConnect()
+    fun shareApk(uri: Uri)
+    fun showExtractionApkFailureMessage()
 }

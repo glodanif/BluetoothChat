@@ -1,11 +1,11 @@
 package com.glodanif.bluetoothchat.presenter
 
 import android.bluetooth.BluetoothDevice
-import com.glodanif.bluetoothchat.entity.Conversation
 import com.glodanif.bluetoothchat.model.*
 import com.glodanif.bluetoothchat.view.ScanView
 
-class ScanPresenter(private val view: ScanView, private val scanner: BluetoothScanner, private val connection: BluetoothConnector) {
+class ScanPresenter(private val view: ScanView, private val scanner: BluetoothScanner,
+                    private val connection: BluetoothConnector, private val fileExtractor: FileExtractor) {
 
     private val SCAN_DURATION_SECONDS = 30
 
@@ -134,5 +134,13 @@ class ScanPresenter(private val view: ScanView, private val scanner: BluetoothSc
     fun cancelScanning() {
         view.showScanningStopped()
         scanner.stopScanning()
+    }
+
+    fun shareApk() {
+
+        fileExtractor.extractFile(
+                onExtracted = { view.shareApk(it) },
+                onFailed = { view.showExtractionApkFailureMessage() }
+        )
     }
 }

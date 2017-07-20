@@ -28,4 +28,5 @@
     <string name="scan__scanning">Scanning for devices</string>
     <string name="scan__turn_on">Turn on</string>
     <string name="scan__turn_bluetooth_on">Turn on Bluetooth to find your future interlocutor</string>
+    <string name="scan__share_apk">Don\'t have an Internet connection? Send the .apk file of this application to your friends via Bluetooth</string>
 </resources>

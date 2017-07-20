@@ -5,9 +5,11 @@ import android.app.Activity
 import android.app.AlertDialog
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
+import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Bundle
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
@@ -18,8 +20,10 @@ import android.support.v7.widget.Toolbar
 import android.view.View
 import android.widget.Button
 import android.widget.TextView
+import android.widget.Toast
 import com.glodanif.bluetoothchat.R
 import com.glodanif.bluetoothchat.adapter.DevicesAdapter
+import com.glodanif.bluetoothchat.model.ApkExtractor
 import com.glodanif.bluetoothchat.model.BluetoothConnectorImpl
 import com.glodanif.bluetoothchat.model.BluetoothScannerImpl
 import com.glodanif.bluetoothchat.presenter.ScanPresenter
@@ -59,7 +63,8 @@ class ScanActivity : AppCompatActivity(), ScanView {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
 
-        presenter = ScanPresenter(this, BluetoothScannerImpl(this), BluetoothConnectorImpl(this))
+        presenter = ScanPresenter(this, BluetoothScannerImpl(this),
+                BluetoothConnectorImpl(this), ApkExtractor(this))
 
         container = findViewById(R.id.fl_container)
         turnOnHolder = findViewById(R.id.cl_turn_on)
@@ -100,6 +105,25 @@ class ScanActivity : AppCompatActivity(), ScanView {
                             arrayOf(Manifest.permission.ACCESS_COARSE_LOCATION), REQUEST_LOCATION_PERMISSION)
                 }
             }
+        }
+
+        findViewById(R.id.ib_share).setOnClickListener {
+            presenter.shareApk()
+        }
+    }
+
+    override fun shareApk(uri: Uri) {
+
+        val sharingIntent = Intent(Intent.ACTION_SEND)
+        sharingIntent.type = "*/*"
+        sharingIntent.`package` = "com.android.bluetooth"
+        sharingIntent.putExtra(Intent.EXTRA_STREAM, uri)
+
+        try {
+            startActivity(Intent.createChooser(sharingIntent, "Share .apk"))
+        } catch (e: ActivityNotFoundException) {
+            e.printStackTrace()
+            Toast.makeText(this, "Unable to start Bluetooth sharing", Toast.LENGTH_LONG).show()
         }
     }
 
@@ -211,6 +235,7 @@ class ScanActivity : AppCompatActivity(), ScanView {
     override fun addFoundDevice(device: BluetoothDevice) {
         adapter.addNewFoundDevice(device)
         adapter.notifyDataSetChanged()
+        pairedDevicesList.smoothScrollToPosition(pairedDevicesList.adapter.itemCount);
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -247,6 +272,13 @@ class ScanActivity : AppCompatActivity(), ScanView {
                     ActivityCompat.requestPermissions(this,
                             arrayOf(Manifest.permission.ACCESS_COARSE_LOCATION), REQUEST_LOCATION_PERMISSION)
                 })
+                .show()
+    }
+
+    override fun showExtractionApkFailureMessage() {
+        AlertDialog.Builder(this)
+                .setMessage("Unable to fetch an .apk file.")
+                .setPositiveButton("OK", null)
                 .show()
     }
 

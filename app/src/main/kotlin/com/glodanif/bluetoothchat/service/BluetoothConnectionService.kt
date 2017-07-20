@@ -92,6 +92,7 @@ class BluetoothConnectionService : Service() {
             connectionState = ConnectionState.NOT_CONNECTED
             cancelConnections()
             acceptThread?.cancel()
+            acceptThread = null
 
             connectionListener?.onConnectionDestroyed()
 
