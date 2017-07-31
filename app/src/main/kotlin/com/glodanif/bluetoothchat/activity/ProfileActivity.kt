@@ -47,7 +47,7 @@ class ProfileActivity : AppCompatActivity(), ProfileView {
         supportActionBar?.setDisplayHomeAsUpEnabled(editMode)
         supportActionBar?.setDisplayShowHomeEnabled(editMode)
         if (editMode) {
-            title = "Profile"
+            title = getString(R.string.profile__profile)
         }
 
         settings = SettingsManagerImpl(this)
@@ -80,7 +80,7 @@ class ProfileActivity : AppCompatActivity(), ProfileView {
 
     override fun showUserData(name: String, color: Int) {
         val symbol = if (name.isEmpty()) "?" else name[0].toString().toUpperCase()
-        nameLabel.text = if (name.isEmpty()) "Your name" else name
+        nameLabel.text = if (name.isEmpty()) getString(R.string.profile__your_name) else name
         nameLabel.setTextColor(resources.getColor(
                 if (name.isEmpty()) R.color.text_light else R.color.text_dark))
         val drawable = TextDrawable.builder().buildRound(symbol, color)
@@ -109,7 +109,7 @@ class ProfileActivity : AppCompatActivity(), ProfileView {
     }
 
     override fun showNotValidNameError() {
-        nameField.error = "Your name cannot be empty or longer than 25 characters, also, \'#\' symbol is not allowed"
+        nameField.error = getString(R.string.profile__validation_error)
     }
 
     private val textWatcher = object : SimpleTextWatcher() {

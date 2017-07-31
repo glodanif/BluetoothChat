@@ -57,7 +57,6 @@ class NotificationViewImpl(private val context: Context) : NotificationView {
 
         val notificationIntent = Intent(context, ChatActivity::class.java)
                 .putExtra(ChatActivity.EXTRA_ADDRESS, address)
-                .putExtra(ChatActivity.EXTRA_NAME, deviceName)
         notificationIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         val pendingIntent = PendingIntent.getActivity(context, 0, notificationIntent, 0)
 

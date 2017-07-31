@@ -2,9 +2,7 @@ package com.glodanif.bluetoothchat.model
 
 import android.content.Context
 import android.os.Handler
-import android.util.Log
 import com.glodanif.bluetoothchat.Storage
-import com.glodanif.bluetoothchat.database.ConversationsDao
 import com.glodanif.bluetoothchat.entity.Conversation
 import kotlin.concurrent.thread
 
@@ -18,6 +16,13 @@ class ConversationsStorageImpl(context: Context) : ConversationsStorage {
         thread {
             val conversations: List<Conversation> = dao.getAllConversationsWithMessages()
             handler.post { listener.invoke(conversations) }
+        }
+    }
+
+    override fun getConversationByAddress(address: String, listener: (Conversation?) -> Unit) {
+        thread {
+            val conversation: Conversation? = dao.getConversationByAddress(address)
+            handler.post { listener.invoke(conversation) }
         }
     }
 

@@ -14,6 +14,7 @@ import android.os.IBinder
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import com.glodanif.bluetoothchat.ChatApplication
+import com.glodanif.bluetoothchat.R
 import com.glodanif.bluetoothchat.Storage
 import com.glodanif.bluetoothchat.database.ChatDatabase
 import com.glodanif.bluetoothchat.entity.ChatMessage
@@ -49,6 +50,7 @@ class BluetoothConnectionService : Service() {
     private val APP_UUID = UUID.fromString("220da3b2-41f5-11e7-a919-92ebcb67fe33")
 
     private val handler: Handler = Handler()
+
     private var acceptThread: AcceptThread? = null
     private var connectThread: ConnectThread? = null
     private var connectedThread: ConnectedThread? = null
@@ -101,7 +103,7 @@ class BluetoothConnectionService : Service() {
         }
 
         prepareForAccept()
-        showNotification("Ready to connect")
+        showNotification(getString(R.string.notification__ready_to_connect))
         return Service.START_STICKY
     }
 
@@ -128,7 +130,7 @@ class BluetoothConnectionService : Service() {
 
         acceptThread = AcceptThread()
         acceptThread!!.start()
-        showNotification("Ready to connect")
+        showNotification(getString(R.string.notification__ready_to_connect))
     }
 
     @Synchronized fun connect(device: BluetoothDevice) {
@@ -167,7 +169,7 @@ class BluetoothConnectionService : Service() {
         connectedThread = ConnectedThread(socket, type)
         connectedThread!!.start()
 
-        handler.post { connectionListener?.onConnected() }
+        handler.post { connectionListener?.onConnected(socket.remoteDevice) }
 
         log("connected")
     }
@@ -244,46 +246,24 @@ class BluetoothConnectionService : Service() {
 
         if (message.type == Message.Type.MESSAGE && currentSocket != null) {
 
-            val device: BluetoothDevice = currentSocket!!.remoteDevice
-
-            val receivedMessage: ChatMessage =
-                    ChatMessage(device.address, Date(), false, message.body)
-
-            if (messageListener == null || application.currentChat == null || !application.currentChat.equals(device.address)) {
-                notificationView.showNewMessageNotification(message.body, currentConversation?.displayName, device.name, device.address)
-            } else {
-                receivedMessage.seenHere = true
-            }
-            thread {
-                db.messagesDao().insert(receivedMessage)
-                handler.post { messageListener?.onMessageReceived(receivedMessage) }
-            }
+            handleReceivedMessage(message)
 
         } else if (message.type == Message.Type.DELIVERY) {
+
             if (message.flag) {
                 messageListener?.onMessageDelivered(message.uid)
             } else {
                 messageListener?.onMessageNotDelivered(message.uid)
             }
         } else if (message.type == Message.Type.SEEING) {
+
             if (message.flag) {
                 messageListener?.onMessageSeen(message.uid)
             }
         } else if (message.type == Message.Type.CONNECTION_RESPONSE) {
+
             if (message.flag) {
-
-                val device: BluetoothDevice = currentSocket!!.remoteDevice
-
-                val parts = message.body.split("#")
-                val conversation = Conversation(device.address, device.name, parts[0], parts[1].toInt())
-                thread { db.conversationsDao().insert(conversation) }
-
-                currentConversation = conversation
-
-                connectionState = ConnectionState.CONNECTED
-                connectionListener?.onConnectionAccepted()
-                connectionListener?.onConnectedOut(conversation)
-
+                handleConnectionApproval(message)
             } else {
                 connectionState = ConnectionState.REJECTED
                 prepareForAccept()
@@ -292,25 +272,62 @@ class BluetoothConnectionService : Service() {
         } else if (message.type == Message.Type.CONNECTION_REQUEST && currentSocket != null) {
 
             if (message.flag) {
-                val device: BluetoothDevice = currentSocket!!.remoteDevice
-
-                val parts = message.body.split("#")
-                val conversation = Conversation(device.address, device.name, parts[0], parts[1].toInt())
-                thread { db.conversationsDao().insert(conversation) }
-
-                currentConversation = conversation
-
-                connectionListener?.onConnectedIn(conversation)
-
-                if (!application.isConversationsOpened && !(application.currentChat != null && application.currentChat.equals(device.address))) {
-                    notificationView.showConnectionRequestNotification(
-                            "${conversation.displayName} (${conversation.deviceName})")
-                }
+                handleConnectionRequest(message)
             } else {
                 disconnect()
                 connectionListener?.onDisconnected()
             }
         }
+    }
+
+    private fun handleReceivedMessage(message: Message) {
+
+        val device: BluetoothDevice = currentSocket!!.remoteDevice
+
+        val receivedMessage: ChatMessage =
+                ChatMessage(device.address, Date(), false, message.body)
+
+        if (messageListener == null || application.currentChat == null || !application.currentChat.equals(device.address)) {
+            notificationView.showNewMessageNotification(message.body, currentConversation?.displayName, device.name, device.address)
+        } else {
+            receivedMessage.seenHere = true
+        }
+        thread {
+            db.messagesDao().insert(receivedMessage)
+            handler.post { messageListener?.onMessageReceived(receivedMessage) }
+        }
+    }
+
+    private fun handleConnectionRequest(message: Message) {
+
+        val device: BluetoothDevice = currentSocket!!.remoteDevice
+
+        val parts = message.body.split("#")
+        val conversation = Conversation(device.address, device.name, parts[0], parts[1].toInt())
+        thread { db.conversationsDao().insert(conversation) }
+
+        currentConversation = conversation
+
+        connectionListener?.onConnectedIn(conversation)
+
+        if (!application.isConversationsOpened && !(application.currentChat != null && application.currentChat.equals(device.address))) {
+            notificationView.showConnectionRequestNotification(
+                    "${conversation.displayName} (${conversation.deviceName})")
+        }
+    }
+
+    private fun handleConnectionApproval(message: Message) {
+        val device: BluetoothDevice = currentSocket!!.remoteDevice
+
+        val parts = message.body.split("#")
+        val conversation = Conversation(device.address, device.name, parts[0], parts[1].toInt())
+        thread { db.conversationsDao().insert(conversation) }
+
+        currentConversation = conversation
+
+        connectionState = ConnectionState.CONNECTED
+        connectionListener?.onConnectionAccepted()
+        connectionListener?.onConnectedOut(conversation)
     }
 
     private fun connectionFailed() {
@@ -585,7 +602,7 @@ class BluetoothConnectionService : Service() {
     }
 
     private fun log(text: String) {
-        val logBody = "$text (State: ${connectionState.name}, Type: ${connectionType?.name}, Conversation: $currentConversation, Threads: A: $acceptThread (running: ${acceptThread?.isAlive}), C: $connectThread (running: ${connectThread?.isAlive}), CD: $connectedThread (running: ${connectedThread?.isAlive}))"
+        val logBody = "$text - (State: ${connectionState.name}, Type: ${connectionType?.name}, Conversation: $currentConversation, Threads: A: $acceptThread (running: ${acceptThread?.isAlive}), C: $connectThread (running: ${connectThread?.isAlive}), CD: $connectedThread (running: ${connectedThread?.isAlive}))"
         Log.e(TAG, logBody)
     }
 }

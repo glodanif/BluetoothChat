@@ -129,7 +129,8 @@ class ScanActivity : AppCompatActivity(), ScanView {
     }
 
     override fun openChat(device: BluetoothDevice) {
-        val intent: Intent = Intent().putExtra(EXTRA_BLUETOOTH_DEVICE, device)
+        val intent: Intent = Intent()
+                .putExtra(EXTRA_BLUETOOTH_DEVICE, device)
         setResult(Activity.RESULT_OK, intent)
         finish()
     }

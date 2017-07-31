@@ -16,6 +16,9 @@ interface ConversationsDao {
             "message.date = lastActivity AND conversation.notSeen = notSeen GROUP BY message.date ORDER BY message.date DESC")
     fun getAllConversationsWithMessages(): List<Conversation>
 
+    @Query("SELECT * FROM conversation WHERE address = :address")
+    fun getConversationByAddress(address: String): Conversation?
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(conversations: Conversation)
 

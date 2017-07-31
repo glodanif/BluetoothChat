@@ -1,12 +1,13 @@
 package com.glodanif.bluetoothchat.model
 
+import android.bluetooth.BluetoothDevice
 import com.glodanif.bluetoothchat.entity.Conversation
 
 abstract class SimpleConnectionListener : OnConnectionListener {
 
     override fun onConnecting() {}
 
-    override abstract fun onConnected()
+    override abstract fun onConnected(device: BluetoothDevice)
 
     override fun onConnectedIn(conversation: Conversation) {}
 

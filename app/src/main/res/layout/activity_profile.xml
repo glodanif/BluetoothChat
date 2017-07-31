@@ -46,7 +46,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
             android:layout_marginTop="36dp"
-            android:text="Edit"
+            android:text="@string/profile__edit"
             android:textAllCaps="true"
             android:textColor="@drawable/button_text_color"
             android:textStyle="bold" />
@@ -60,14 +60,14 @@
             <TextView
                 android:layout_width="64dp"
                 android:layout_height="wrap_content"
-                android:text="Name" />
+                android:text="@string/profile__name" />
 
             <EditText
                 android:id="@+id/et_name"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
                 android:fontFamily="sans-serif-light"
-                android:hint="Your Name"
+                android:hint="@string/profile__your_name"
                 android:inputType="textCapWords"
                 android:textSize="14sp" />
         </LinearLayout>
@@ -82,7 +82,7 @@
             <TextView
                 android:layout_width="64dp"
                 android:layout_height="wrap_content"
-                android:text="Color" />
+                android:text="@string/profile__color" />
 
             <View
                 android:id="@+id/v_color"
@@ -99,7 +99,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="end"
             android:layout_marginTop="16dp"
-            android:text="Save"
+            android:text="@string/profile__save"
             android:textColor="@drawable/button_text_color" />
     </LinearLayout>
 </LinearLayout>

@@ -42,8 +42,8 @@ class BluetoothConnectorImpl(private val context: Context) : BluetoothConnector 
 
     private val connectionListenerInner = object : OnConnectionListener {
 
-        override fun onConnected() {
-            connectListener?.onConnected()
+        override fun onConnected(device: BluetoothDevice) {
+            connectListener?.onConnected(device)
         }
 
         override fun onConnectionWithdrawn() {
@@ -120,11 +120,9 @@ class BluetoothConnectorImpl(private val context: Context) : BluetoothConnector 
     }
 
     override fun release() {
-        if (bound) {
-            context.unbindService(connection)
-            bound = false
-            service = null
-        }
+        context.unbindService(connection)
+        bound = false
+        service = null
     }
 
     override fun isConnectionPrepared(): Boolean {

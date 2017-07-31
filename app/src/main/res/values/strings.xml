@@ -1,27 +1,60 @@
 <resources>
+
     <string name="app_name">Bluetooth Chat</string>
+
+    <string name="general__ok">OK</string>
+    <string name="general__cancel">Cancel</string>
+    <string name="general__try_again">Try again</string>
+    <string name="general__start_chat">Start chat</string>
+    <string name="general__restart">Restart</string>
+    <string name="general__yes">Yes</string>
+    <string name="general__no">No</string>
+    <string name="general__service_lost">Bluetooth Chat service just has been stopped, restart the service to be able to use the app</string>
+
+    <string name="profile__profile">Profile</string>
+    <string name="profile__your_name">Your name</string>
+    <string name="profile__validation_error">Your name cannot be empty or longer than 25 characters, also, \'#\' symbol is not allowed</string>
+    <string name="profile__edit">Edit</string>
+    <string name="profile__name">Name</string>
+    <string name="profile__color">Color</string>
+    <string name="profile__save">Save</string>
+
     <string name="action_disconnect">Disconnect</string>
     <string name="action_connect">Connect</string>
+
     <string name="scan">Scan</string>
     <string name="discoverable">Discoverable</string>
     <string name="make_discoverable">Make discoverable</string>
+
     <string name="chat__not_connected">Not connected</string>
     <string name="chat__connected">Connected</string>
     <string name="chat__pending">Pending</string>
     <string name="chat__unknown">Unknown</string>
-    <string name="general__ok">OK</string>
-    <string name="general__cancel">Cancel</string>
-    <string name="general__try_again">Try again</string>
     <string name="chat__reconnect">Reconnect</string>
     <string name="chat__disconnect">Disconnect</string>
-    <string name="general__start_chat">Start chat</string>
     <string name="chat__connection_rejected">Your connection request was rejected</string>
     <string name="chat__waiting_for_device">You are waiting for this device to approve a connection.</string>
     <string name="chat__connect">Connect</string>
     <string name="chat__not_connected_to_send">You are not connected to this device.</string>
-    <string name="general__restart">Restart</string>
+    <string name="chat__not_connected_to_this_device">You are not connected to this device right now.</string>
+    <string name="chat__connection_request">%s (%s) wants to connect to you</string>
+    <string name="chat__message_cannot_be_empty">Message cannot be empty</string>
+    <string name="chat__partner_disconnected">Your partner disconnected from your device. Do you want to reconnect?</string>
+    <string name="chat__connection_lost">Connection with this device was lost. Do you want to reconnect?</string>
+    <string name="chat__bluetooth_is_disabled">Bluetooth is disabled</string>
+    <string name="chat__enable">Enable</string>
+    <string name="chat__unable_to_connect">Unable to connect to this device, do you want to try again?</string>
+    <string name="chat__rescan">Rescan</string>
+    <string name="chat__device_is_not_available">This device is not available right now, make sure it\'s paired.</string>
+    <string name="chat__bluetooth_required">This app requires Bluetooth enabled to work properly</string>
+    <string name="chat__connected_to_another">You are currently connected to %s. You can connect to this device (current connection will be interrupted)?</string>
+
     <string name="conversations__no_conversations">You don\'t have any conversations yet Scan for devices to find you opponent</string>
     <string name="conversations__scan">Scan</string>
+    <string name="conversations__options">Conversation options</string>
+    <string name="conversations__remove">Remove</string>
+    <string name="conversations__removal_confirmation">Do you really want to remove this conversation? All messages will be lost.</string>
+
     <string name="scan__no_devices">No devices were found</string>
     <string name="scan__scan_for_devices">Scan for devices</string>
     <string name="scan__start_scanning">Scan for devices to find your future interlocutor or make your device discoverable so he/she will be able to find you</string>
@@ -29,4 +62,7 @@
     <string name="scan__turn_on">Turn on</string>
     <string name="scan__turn_bluetooth_on">Turn on Bluetooth to find your future interlocutor</string>
     <string name="scan__share_apk">Don\'t have an Internet connection? Send the .apk file of this application to your friends via Bluetooth</string>
+
+    <string name="notification__ready_to_connect">Ready to connect</string>
+
 </resources>

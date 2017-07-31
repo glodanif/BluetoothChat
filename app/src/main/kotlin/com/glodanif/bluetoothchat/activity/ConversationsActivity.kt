@@ -59,7 +59,7 @@ class ConversationsActivity : AppCompatActivity(), ConversationsView {
         noConversations = findViewById(R.id.ll_empty_holder)
         conversationsList.layoutManager = LinearLayoutManager(this)
         conversationsList.adapter = adapter
-        adapter.clickListener = { ChatActivity.start(this, it.deviceName, it.deviceAddress) }
+        adapter.clickListener = { ChatActivity.start(this, it.deviceAddress) }
         adapter.longClickListener = { showContextMenu(it) }
 
         addButton = findViewById<FloatingActionButton>(R.id.fab_new_conversation)
@@ -76,8 +76,8 @@ class ConversationsActivity : AppCompatActivity(), ConversationsView {
 
     private fun showContextMenu(conversation: Conversation) {
         val builder = AlertDialog.Builder(this)
-        builder.setTitle("Conversation options")
-                .setItems(arrayOf("Remove"), { _, which ->
+        builder.setTitle(getString(R.string.conversations__options))
+                .setItems(arrayOf(getString(R.string.conversations__remove)), { _, which ->
                     when (which) {
                         0 -> {
                             confirmRemoval(conversation)
@@ -90,9 +90,9 @@ class ConversationsActivity : AppCompatActivity(), ConversationsView {
     private fun confirmRemoval(conversation: Conversation) {
 
         AlertDialog.Builder(this)
-                .setMessage("Do you really want to remove this conversation? All messages will be lost.")
-                .setPositiveButton("Yes", { _, _ -> presenter.removeConversation(conversation) })
-                .setNegativeButton("No", null)
+                .setMessage(getString(R.string.conversations__removal_confirmation))
+                .setPositiveButton(getString(R.string.general__yes), { _, _ -> presenter.removeConversation(conversation) })
+                .setNegativeButton(getString(R.string.general__no), null)
                 .show()
     }
 
@@ -133,8 +133,8 @@ class ConversationsActivity : AppCompatActivity(), ConversationsView {
         if (!isStarted) return
 
         AlertDialog.Builder(this)
-                .setMessage("Bluetooth Chat service just has been stopped, restart the service to be able to use the app")
-                .setPositiveButton("Restart", { _, _ ->
+                .setMessage(getString(R.string.general__service_lost))
+                .setPositiveButton(getString(R.string.general__restart), { _, _ ->
                     presenter.prepareConnection()
                     presenter.loadUserProfile()
                 })
@@ -168,7 +168,7 @@ class ConversationsActivity : AppCompatActivity(), ConversationsView {
     }
 
     override fun redirectToChat(conversation: Conversation) {
-        ChatActivity.start(this, conversation.deviceName, conversation.deviceAddress)
+        ChatActivity.start(this, conversation.deviceAddress)
     }
 
     override fun showUserProfile(name: String, color: Int) {
@@ -185,7 +185,7 @@ class ConversationsActivity : AppCompatActivity(), ConversationsView {
                     ?.getParcelableExtra<BluetoothDevice>(ScanActivity.EXTRA_BLUETOOTH_DEVICE)
 
             if (device != null) {
-                ChatActivity.start(this, device.name, device.address)
+                ChatActivity.start(this, device.address)
             }
         }
     }

@@ -15,7 +15,7 @@ class SplashActivity: AppCompatActivity() {
         Handler().postDelayed({
             val settings = SettingsManagerImpl(this)
             if (settings.getUserName().isEmpty()) {
-                ProfileActivity.start(this, false)
+                ProfileActivity.start(this, editMode = false)
             } else {
                 ConversationsActivity.start(this)
             }

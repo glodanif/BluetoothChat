@@ -3,7 +3,6 @@ package com.glodanif.bluetoothchat.activity
 import android.app.Activity
 import android.app.AlertDialog
 import android.bluetooth.BluetoothAdapter
-import android.bluetooth.BluetoothDevice
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -35,6 +34,7 @@ class ChatActivity : AppCompatActivity(), ChatView {
     private val connectionModel: BluetoothConnector = BluetoothConnectorImpl(this)
     private val scanModel: BluetoothScanner = BluetoothScannerImpl(this)
     private val storageModel: MessagesStorage = MessagesStorageImpl(this)
+    private val conversationModel: ConversationsStorage = ConversationsStorageImpl(this)
 
     private val layoutManager = LinearLayoutManager(this)
     private lateinit var actions: ActionView
@@ -66,12 +66,12 @@ class ChatActivity : AppCompatActivity(), ChatView {
         chatList.layoutManager = layoutManager
         chatList.adapter = adapter
 
-        val deviceName: String? = intent.getStringExtra(EXTRA_NAME)
         val deviceAddress: String? = intent.getStringExtra(EXTRA_ADDRESS)
-        title = deviceName
+
+        title = if (deviceAddress.isNullOrEmpty()) getString(R.string.app_name) else  deviceAddress
         toolbar.subtitle = getString(R.string.chat__not_connected)
         presenter = ChatPresenter(deviceAddress.toString(),
-                this, scanModel, connectionModel, storageModel)
+                this, scanModel, connectionModel, conversationModel, storageModel)
     }
 
     override fun onStart() {
@@ -84,6 +84,10 @@ class ChatActivity : AppCompatActivity(), ChatView {
         super.onStop()
         isStarted = false
         presenter.releaseConnection()
+    }
+
+    override fun showPartnerName(name: String, device: String) {
+        title = "$name ($device)"
     }
 
     override fun showStatusConnected() {
@@ -108,7 +112,7 @@ class ChatActivity : AppCompatActivity(), ChatView {
     override fun showNotConnectedToThisDevice(currentDevice: String) {
 
         actions.visibility = View.VISIBLE
-        actions.setActions("You are currently connected to $currentDevice. You can connect to this device (current connection will be interrupted)?",
+        actions.setActions(getString(R.string.chat__connected_to_another, currentDevice),
                 ActionView.Action(getString(R.string.chat__connect)) { presenter.connectToDevice() },
                 null
         )
@@ -117,7 +121,7 @@ class ChatActivity : AppCompatActivity(), ChatView {
     override fun showNotConnectedToAnyDevice() {
 
         actions.visibility = View.VISIBLE
-        actions.setActions("You are not connected to this device right now.",
+        actions.setActions(getString(R.string.chat__not_connected_to_this_device),
                 ActionView.Action(getString(R.string.chat__connect)) { presenter.connectToDevice() },
                 null
         )
@@ -132,10 +136,10 @@ class ChatActivity : AppCompatActivity(), ChatView {
         )
     }
 
-    override fun notifyAboutConnectedDevice(conversation: Conversation) {
+    override fun showConnectionRequest(conversation: Conversation) {
 
         actions.visibility = View.VISIBLE
-        actions.setActions("${conversation.displayName} (${conversation.deviceName}) has just connected to you",
+        actions.setActions(getString(R.string.chat__connection_request, conversation.displayName, conversation.deviceName),
                 ActionView.Action(getString(R.string.general__start_chat)) { presenter.acceptConnection() },
                 ActionView.Action(getString(R.string.chat__disconnect)) { presenter.rejectConnection() }
         )
@@ -146,7 +150,7 @@ class ChatActivity : AppCompatActivity(), ChatView {
         if (!isStarted) return
 
         AlertDialog.Builder(this)
-                .setMessage("Bluetooth Chat service just has been stopped, restart the service to be able to use the app")
+                .setMessage(getString(R.string.general__service_lost))
                 .setPositiveButton(getString(R.string.general__restart), { _, _ -> presenter.prepareConnection() })
                 .setCancelable(false)
                 .show()
@@ -184,19 +188,10 @@ class ChatActivity : AppCompatActivity(), ChatView {
                 .show()
     }
 
-    override fun showConnectionRequest(conversation: Conversation) {
-
-        actions.visibility = View.VISIBLE
-        actions.setActions("${conversation.displayName} (${conversation.deviceName}) has just connected to you",
-                ActionView.Action(getString(R.string.general__start_chat)) { presenter.acceptConnection() },
-                ActionView.Action(getString(R.string.chat__disconnect)) { presenter.rejectConnection() }
-        )
-    }
-
     override fun showBluetoothDisabled() {
         actions.visibility = View.VISIBLE
-        actions.setActions("Bluetooth is disabled",
-                ActionView.Action("Enable") { presenter.enableBluetooth() },
+        actions.setActions(getString(R.string.chat__bluetooth_is_disabled),
+                ActionView.Action(getString(R.string.chat__enable)) { presenter.enableBluetooth() },
                 null
         )
     }
@@ -206,7 +201,7 @@ class ChatActivity : AppCompatActivity(), ChatView {
         if (!isStarted) return
 
         AlertDialog.Builder(this)
-                .setMessage("Connection with this device was lost. Do you want to reconnect?")
+                .setMessage(getString(R.string.chat__connection_lost))
                 .setPositiveButton(getString(R.string.chat__reconnect), { _, _ -> presenter.reconnect() })
                 .setNegativeButton(getString(R.string.general__cancel), null)
                 .setCancelable(false)
@@ -218,7 +213,7 @@ class ChatActivity : AppCompatActivity(), ChatView {
         if (!isStarted) return
 
         AlertDialog.Builder(this)
-                .setMessage("Your opponent disconnected from your device. Do you want to reconnect?")
+                .setMessage(getString(R.string.chat__partner_disconnected))
                 .setPositiveButton(getString(R.string.chat__reconnect), { _, _ -> presenter.reconnect() })
                 .setNegativeButton(getString(R.string.general__cancel), null)
                 .setCancelable(false)
@@ -230,7 +225,7 @@ class ChatActivity : AppCompatActivity(), ChatView {
         if (!isStarted) return
 
         AlertDialog.Builder(this)
-                .setMessage("Unable to connect to this device, do you want to try again?")
+                .setMessage(getString(R.string.chat__unable_to_connect))
                 .setPositiveButton(getString(R.string.general__try_again), { _, _ -> presenter.connectToDevice() })
                 .setNegativeButton(getString(R.string.general__cancel), null)
                 .setCancelable(false)
@@ -239,7 +234,7 @@ class ChatActivity : AppCompatActivity(), ChatView {
     }
 
     override fun showNotValidMessage() {
-        Toast.makeText(this, "Message cannot be empty", Toast.LENGTH_SHORT).show()
+        Toast.makeText(this, getString(R.string.chat__message_cannot_be_empty), Toast.LENGTH_SHORT).show()
     }
 
     override fun showDeviceIsNotAvailable() {
@@ -247,8 +242,8 @@ class ChatActivity : AppCompatActivity(), ChatView {
         if (!isStarted) return
 
         AlertDialog.Builder(this)
-                .setMessage("This device is not available right now, make sure it's paired.")
-                .setPositiveButton("Rescan", { _,_ -> ScanActivity.start(this) })
+                .setMessage(getString(R.string.chat__device_is_not_available))
+                .setPositiveButton(getString(R.string.chat__rescan), { _, _ -> ScanActivity.start(this) })
                 .show()
     }
 
@@ -259,7 +254,7 @@ class ChatActivity : AppCompatActivity(), ChatView {
 
     override fun showBluetoothEnablingFailed() {
         AlertDialog.Builder(this)
-                .setMessage("This app requires Bluetooth enabled to work properly")
+                .setMessage(getString(R.string.chat__bluetooth_required))
                 .setPositiveButton(getString(R.string.general__ok), null)
                 .show()
     }
@@ -298,12 +293,10 @@ class ChatActivity : AppCompatActivity(), ChatView {
 
     companion object {
 
-        val EXTRA_NAME = "extra.name"
         val EXTRA_ADDRESS = "extra.address"
 
-        fun start(context: Context, name: String, address: String) {
+        fun start(context: Context, address: String) {
             val intent: Intent = Intent(context, ChatActivity::class.java)
-                    .putExtra(EXTRA_NAME, name)
                     .putExtra(EXTRA_ADDRESS, address)
             context.startActivity(intent)
         }

@@ -3,12 +3,11 @@ package com.glodanif.bluetoothchat.presenter
 import com.glodanif.bluetoothchat.entity.ChatMessage
 import com.glodanif.bluetoothchat.model.*
 import com.glodanif.bluetoothchat.view.ChatView
-import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
 import com.glodanif.bluetoothchat.entity.Conversation
 
 class ChatPresenter(private val deviceAddress: String, private val view: ChatView, private val scanModel: BluetoothScanner,
-                    private val connectionModel: BluetoothConnector, private val storage: MessagesStorage) {
+                    private val connectionModel: BluetoothConnector, private val conversations: ConversationsStorage, private val storage: MessagesStorage) {
 
     private val prepareListener = object : OnPrepareListener {
 
@@ -25,7 +24,7 @@ class ChatPresenter(private val deviceAddress: String, private val view: ChatVie
 
     private val connectionListener = object : OnConnectionListener {
 
-        override fun onConnected() {
+        override fun onConnected(device: BluetoothDevice) {
 
         }
 
@@ -40,6 +39,12 @@ class ChatPresenter(private val deviceAddress: String, private val view: ChatVie
         override fun onConnectionAccepted() {
             view.showStatusConnected()
             view.hideActions()
+
+            conversations.getConversationByAddress(deviceAddress) {
+                if (it != null) {
+                    view.showPartnerName(it.displayName, it.deviceName)
+                }
+            }
         }
 
         override fun onConnectionRejected() {
@@ -121,6 +126,12 @@ class ChatPresenter(private val deviceAddress: String, private val view: ChatVie
             it.forEach { it.seenHere = true }
             storage.updateMessages(it)
             view.showMessagesHistory(it)
+        }
+
+        conversations.getConversationByAddress(deviceAddress) {
+            if (it != null) {
+                view.showPartnerName(it.displayName, it.deviceName)
+            }
         }
     }
 
