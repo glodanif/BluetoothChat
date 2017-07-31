@@ -19,6 +19,7 @@ import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.Toolbar
 import android.view.View
 import android.widget.Button
+import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toast
 import com.glodanif.bluetoothchat.R
@@ -58,7 +59,7 @@ class ScanActivity : AppCompatActivity(), ScanView {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_scan)
-        val toolbar = findViewById(R.id.toolbar) as Toolbar
+        val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
@@ -71,14 +72,14 @@ class ScanActivity : AppCompatActivity(), ScanView {
         listHolder = findViewById(R.id.cl_list)
         progress = findViewById(R.id.fl_progress)
 
-        infoLabel = findViewById(R.id.tv_info) as TextView
-        discoveryLabel = findViewById(R.id.tv_discovery_label) as TextView
-        progressBar = findViewById(R.id.epb_progress) as ExpiringProgressBar
+        infoLabel = findViewById<TextView>(R.id.tv_info)
+        discoveryLabel = findViewById<TextView>(R.id.tv_discovery_label)
+        progressBar = findViewById<ExpiringProgressBar>(R.id.epb_progress)
 
-        makeDiscoverableButton = findViewById(R.id.btn_make_discoverable) as Button
-        scanForDevicesButton = findViewById(R.id.btn_scan) as Button
+        makeDiscoverableButton = findViewById<Button>(R.id.btn_make_discoverable)
+        scanForDevicesButton = findViewById<Button>(R.id.btn_scan)
 
-        pairedDevicesList = findViewById(R.id.rv_paired_devices) as RecyclerView
+        pairedDevicesList = findViewById<RecyclerView>(R.id.rv_paired_devices)
         pairedDevicesList.layoutManager = LinearLayoutManager(this)
         pairedDevicesList.adapter = adapter
 
@@ -89,7 +90,7 @@ class ScanActivity : AppCompatActivity(), ScanView {
 
         presenter.checkBluetoothAvailability()
 
-        findViewById(R.id.btn_turn_on).setOnClickListener { presenter.turnOnBluetooth() }
+        findViewById<Button>(R.id.btn_turn_on).setOnClickListener { presenter.turnOnBluetooth() }
 
         makeDiscoverableButton.setOnClickListener { presenter.makeDiscoverable() }
         scanForDevicesButton.setOnClickListener {
@@ -107,7 +108,7 @@ class ScanActivity : AppCompatActivity(), ScanView {
             }
         }
 
-        findViewById(R.id.ib_share).setOnClickListener {
+        findViewById<ImageButton>(R.id.ib_share).setOnClickListener {
             presenter.shareApk()
         }
     }

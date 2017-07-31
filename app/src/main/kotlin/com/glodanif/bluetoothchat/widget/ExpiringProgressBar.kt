@@ -57,18 +57,15 @@ class ExpiringProgressBar : View {
     override fun onDraw(canvas: Canvas?) {
         super.onDraw(canvas)
 
-        val viewWidth = width
-        val viewHeight = height
-
-        circleRect.set(strokeWidth, strokeWidth,viewWidth - strokeWidth, viewHeight - strokeWidth)
+        circleRect.set(strokeWidth, strokeWidth, width - strokeWidth, height - strokeWidth)
 
         canvas?.drawArc(circleRect, -90f, getProgressAngle(), false, strokePaint)
 
         val textHeight = textPaint.descent() + textPaint.ascent()
         canvas?.drawText(
                 progress.toString(),
-                (viewWidth - textPaint.measureText(progress.toString())) / 2.0f,
-                (viewWidth - textHeight) / 2.0f,
+                (width - textPaint.measureText(progress.toString())) / 2.0f,
+                (width - textHeight) / 2.0f,
                 textPaint
         )
     }

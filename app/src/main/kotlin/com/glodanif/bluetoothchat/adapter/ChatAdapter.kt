@@ -43,7 +43,7 @@ class ChatAdapter : RecyclerView.Adapter<ChatAdapter.MessageViewHolder>() {
     }
 
     class MessageViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val date: TextView = itemView.findViewById(R.id.tv_date) as TextView
-        val text: TextView = itemView.findViewById(R.id.tv_text) as TextView
+        val date: TextView = itemView.findViewById<TextView>(R.id.tv_date)
+        val text: TextView = itemView.findViewById<TextView>(R.id.tv_text)
     }
 }

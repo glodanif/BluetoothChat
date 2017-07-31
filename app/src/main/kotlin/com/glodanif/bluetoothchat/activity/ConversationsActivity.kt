@@ -12,6 +12,7 @@ import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.Toolbar
 import android.view.View
+import android.widget.Button
 import android.widget.ImageView
 import com.amulyakhare.textdrawable.TextDrawable
 import com.glodanif.bluetoothchat.R
@@ -45,31 +46,31 @@ class ConversationsActivity : AppCompatActivity(), ConversationsView {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_conversations)
-        val toolbar = findViewById(R.id.toolbar) as Toolbar
+        val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
 
         settings = SettingsManagerImpl(this)
         presenter = ConversationsPresenter(this, connection, storage, settings)
 
-        actions = findViewById(R.id.av_actions) as ActionView
+        actions = findViewById<ActionView>(R.id.av_actions)
 
-        userAvatar = findViewById(R.id.iv_avatar) as ImageView
-        conversationsList = findViewById(R.id.rv_conversations) as RecyclerView
+        userAvatar = findViewById<ImageView>(R.id.iv_avatar)
+        conversationsList = findViewById<RecyclerView>(R.id.rv_conversations)
         noConversations = findViewById(R.id.ll_empty_holder)
         conversationsList.layoutManager = LinearLayoutManager(this)
         conversationsList.adapter = adapter
         adapter.clickListener = { ChatActivity.start(this, it.deviceName, it.deviceAddress) }
         adapter.longClickListener = { showContextMenu(it) }
 
-        addButton = findViewById(R.id.fab_new_conversation) as FloatingActionButton
+        addButton = findViewById<FloatingActionButton>(R.id.fab_new_conversation)
         addButton.setOnClickListener {
             ScanActivity.startForResult(this, REQUEST_SCAN)
         }
-        findViewById(R.id.btn_scan).setOnClickListener {
+        findViewById<Button>(R.id.btn_scan).setOnClickListener {
             ScanActivity.startForResult(this, REQUEST_SCAN)
         }
         userAvatar.setOnClickListener {
-            ProfileActivity.start(this, true)
+            ProfileActivity.start(context = this, editMode = true)
         }
     }
 

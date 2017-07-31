@@ -15,6 +15,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.EditText
+import android.widget.ImageButton
 import android.widget.Toast
 import com.glodanif.bluetoothchat.R
 import com.glodanif.bluetoothchat.adapter.ChatAdapter
@@ -48,19 +49,19 @@ class ChatActivity : AppCompatActivity(), ChatView {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_chat)
-        toolbar = findViewById(R.id.toolbar) as Toolbar
+        toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
 
-        actions = findViewById(R.id.av_actions) as ActionView
-        messageField = findViewById(R.id.et_message) as EditText
+        actions = findViewById<ActionView>(R.id.av_actions)
+        messageField = findViewById<EditText>(R.id.et_message)
 
-        findViewById(R.id.ib_send).setOnClickListener {
+        findViewById<ImageButton>(R.id.ib_send).setOnClickListener {
             presenter.sendMessage(messageField.text.toString().trim())
         }
 
-        chatList = findViewById(R.id.rv_chat) as RecyclerView
+        chatList = findViewById<RecyclerView>(R.id.rv_chat)
         layoutManager.reverseLayout = true
         chatList.layoutManager = layoutManager
         chatList.adapter = adapter

@@ -27,7 +27,8 @@ class ApkExtractor(private val context: Context) : FileExtractor {
             thread {
                 val newFile = copyAndZip(file, directory, "BluetoothChat")
                 handler.post {
-                    onExtracted.invoke(Uri.fromFile(newFile))
+                    val uri = Uri.fromFile(newFile)
+                    onExtracted.invoke(uri)
                 }
             }
 

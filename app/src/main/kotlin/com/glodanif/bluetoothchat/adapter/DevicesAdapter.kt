@@ -79,12 +79,12 @@ class DevicesAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     }
 
     class HeaderViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        var header: TextView = itemView.findViewById(R.id.tv_header) as TextView
-        var emptyMessage: TextView = itemView.findViewById(R.id.tv_empty_message) as TextView
+        var header: TextView = itemView.findViewById<TextView>(R.id.tv_header)
+        var emptyMessage: TextView = itemView.findViewById<TextView>(R.id.tv_empty_message)
     }
 
     class DeviceViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        var name: TextView = itemView.findViewById(R.id.tv_name) as TextView
-        var macAddress: TextView = itemView.findViewById(R.id.tv_mac_address) as TextView
+        var name: TextView = itemView.findViewById<TextView>(R.id.tv_name)
+        var macAddress: TextView = itemView.findViewById<TextView>(R.id.tv_mac_address)
     }
 }

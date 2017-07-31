@@ -87,12 +87,12 @@ class ConversationsAdapter : RecyclerView.Adapter<ConversationsAdapter.Conversat
     }
 
     class ConversationViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val avatar = itemView.findViewById(R.id.iv_avatar) as ImageView
-        val name = itemView.findViewById(R.id.tv_name) as TextView
-        val connected = itemView.findViewById(R.id.iv_connected)
-        val lastMessage = itemView.findViewById(R.id.tv_last_message) as TextView
-        val time = itemView.findViewById(R.id.tv_time) as TextView
-        val notSeen = itemView.findViewById(R.id.tv_not_seen) as TextView
-        val messageContainer = itemView.findViewById(R.id.ll_message_info) as LinearLayout
+        val avatar = itemView.findViewById<ImageView>(R.id.iv_avatar)
+        val name = itemView.findViewById<TextView>(R.id.tv_name)
+        val connected = itemView.findViewById<ImageView>(R.id.iv_connected)
+        val lastMessage = itemView.findViewById<TextView>(R.id.tv_last_message)
+        val time = itemView.findViewById<TextView>(R.id.tv_time)
+        val notSeen = itemView.findViewById<TextView>(R.id.tv_not_seen)
+        val messageContainer = itemView.findViewById<LinearLayout>(R.id.ll_message_info)
     }
 }

@@ -22,9 +22,9 @@ class ActionView: FrameLayout {
 
         removeAllViews()
 
-        val textLabel = container.findViewById(R.id.tv_text) as TextView
-        val firstActionButton = container.findViewById(R.id.btn_first_action) as Button
-        val secondActionButton = container.findViewById(R.id.btn_second_action) as Button
+        val textLabel = container.findViewById<TextView>(R.id.tv_text)
+        val firstActionButton = container.findViewById<Button>(R.id.btn_first_action)
+        val secondActionButton = container.findViewById<Button>(R.id.btn_second_action)
 
         textLabel.text = text
 

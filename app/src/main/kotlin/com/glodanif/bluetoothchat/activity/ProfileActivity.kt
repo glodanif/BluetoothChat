@@ -8,6 +8,7 @@ import android.support.annotation.ColorInt
 import android.support.v7.widget.Toolbar
 import android.view.MenuItem
 import android.view.View
+import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
@@ -41,7 +42,7 @@ class ProfileActivity : AppCompatActivity(), ProfileView {
 
         editMode = intent.getBooleanExtra(EXTRA_EDIT_MODE, false)
 
-        val toolbar = findViewById(R.id.tb_toolbar) as Toolbar
+        val toolbar = findViewById<Toolbar>(R.id.tb_toolbar)
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(editMode)
         supportActionBar?.setDisplayShowHomeEnabled(editMode)
@@ -53,15 +54,15 @@ class ProfileActivity : AppCompatActivity(), ProfileView {
         presenter = ProfilePresenter(this, settings)
 
         colorPicker = findViewById(R.id.v_color)
-        nameField = findViewById(R.id.et_name) as EditText
-        nameLabel = findViewById(R.id.tv_name) as TextView
-        avatar = findViewById(R.id.iv_avatar) as ImageView
+        nameField = findViewById<EditText>(R.id.et_name)
+        nameLabel = findViewById<TextView>(R.id.tv_name)
+        avatar = findViewById<ImageView>(R.id.iv_avatar)
 
         colorPicker.setOnClickListener {
             presenter.prepareColorPicker()
         }
 
-        findViewById(R.id.btn_save).setOnClickListener {
+        findViewById<Button>(R.id.btn_save).setOnClickListener {
             presenter.saveUser()
         }
     }
