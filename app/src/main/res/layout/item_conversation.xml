@@ -16,8 +16,7 @@
         android:id="@+id/iv_avatar"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_marginEnd="12dp"
-        android:src="@drawable/empty_avatar" />
+        android:layout_marginEnd="12dp" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -36,8 +35,9 @@
                 android:layout_width="16dp"
                 android:layout_height="16dp"
                 android:layout_marginEnd="4dp"
+                android:layout_gravity="center_vertical"
                 android:layout_weight="0"
-                android:src="@drawable/ic_connected"
+                app:srcCompat="@drawable/ic_link_black_24dp"
                 android:tint="@color/colorAccent" />
 
             <TextView

@@ -56,7 +56,7 @@ class ChatPresenter(private val deviceAddress: String, private val view: ChatVie
             val currentConversation: Conversation? = connectionModel.getCurrentConversation()
             if (currentConversation?.deviceAddress == deviceAddress) {
                 view.showStatusPending()
-                view.notifyAboutConnectedDevice(conversation)
+                view.showConnectionRequest(conversation)
             }
         }
 
@@ -237,7 +237,7 @@ class ChatPresenter(private val deviceAddress: String, private val view: ChatVie
             view.showNotConnectedToThisDevice("${currentConversation.displayName} (${currentConversation.deviceName})")
         } else if (connectionModel.isPending() && currentConversation.deviceAddress == deviceAddress) {
             view.showStatusPending()
-            view.notifyAboutConnectedDevice(currentConversation)
+            view.showConnectionRequest(currentConversation)
         } else {
             view.showStatusConnected()
         }

@@ -37,7 +37,7 @@
     <string name="chat__connect">Connect</string>
     <string name="chat__not_connected_to_send">You are not connected to this device.</string>
     <string name="chat__not_connected_to_this_device">You are not connected to this device right now.</string>
-    <string name="chat__connection_request">%s (%s) wants to connect to you</string>
+    <string name="chat__connection_request">%1$s (%2$s) wants to connect to you</string>
     <string name="chat__message_cannot_be_empty">Message cannot be empty</string>
     <string name="chat__partner_disconnected">Your partner disconnected from your device. Do you want to reconnect?</string>
     <string name="chat__connection_lost">Connection with this device was lost. Do you want to reconnect?</string>
@@ -64,5 +64,6 @@
     <string name="scan__share_apk">Don\'t have an Internet connection? Send the .apk file of this application to your friends via Bluetooth</string>
 
     <string name="notification__ready_to_connect">Ready to connect</string>
+    <string name="chat__message_hint">Message</string>
 
 </resources>

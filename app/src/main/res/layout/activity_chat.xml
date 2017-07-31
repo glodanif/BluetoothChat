@@ -53,7 +53,7 @@
             android:layout_weight="1"
             android:background="@null"
             android:ems="10"
-            android:hint="Message"
+            android:hint="@string/chat__message_hint"
             android:inputType="textShortMessage"
             android:padding="8dp"
             android:textSize="16sp" />

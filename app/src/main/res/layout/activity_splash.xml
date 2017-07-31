@@ -2,6 +2,7 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/colorPrimary"
     android:padding="24dp">
 
@@ -9,6 +10,6 @@
         android:layout_width="64dp"
         android:layout_height="64dp"
         android:layout_gravity="bottom|end"
-        android:src="@drawable/ic_bluetooth_splash" />
+        app:srcCompat="@drawable/ic_bluetooth_black_24dp" />
 
 </FrameLayout>
