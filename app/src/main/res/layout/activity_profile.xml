@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
+
+
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -15,90 +17,97 @@
         android:theme="@style/AppTheme.AppBarOverlay"
         app:popupTheme="@style/AppTheme.PopupOverlay" />
 
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="16dp"
-        android:gravity="center"
-        android:orientation="vertical">
-
-        <ImageView
-            android:id="@+id/iv_avatar"
-            android:layout_width="128dp"
-            android:layout_height="128dp"
-            android:layout_marginBottom="16dp" />
-
-        <TextView
-            android:id="@+id/tv_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:layout_marginStart="8dp"
-            android:fontFamily="sans-serif-light"
-            android:textColor="@color/text_dark"
-            android:textSize="20sp"
-            tools:text="Nexus 6P" />
-
-        <TextView
-            android:id="@+id/textView4"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:layout_marginTop="36dp"
-            android:text="@string/profile__edit"
-            android:textAllCaps="true"
-            android:textColor="@drawable/button_text_color"
-            android:textStyle="bold" />
+        android:fillViewport="true">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <ImageView
+                android:id="@+id/iv_avatar"
+                android:layout_width="128dp"
+                android:layout_height="128dp"
+                android:layout_marginBottom="16dp"
+                android:contentDescription="@string/profile__cd__avatar_preview" />
 
             <TextView
-                android:layout_width="64dp"
+                android:id="@+id/tv_name"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/profile__name" />
-
-            <EditText
-                android:id="@+id/et_name"
-                android:layout_width="match_parent"
-                android:layout_height="48dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
                 android:fontFamily="sans-serif-light"
-                android:hint="@string/profile__your_name"
-                android:inputType="textCapWords"
-                android:textSize="14sp" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
+                android:textColor="@color/text_dark"
+                android:textSize="20sp"
+                tools:text="Nexus 6P" />
 
             <TextView
-                android:layout_width="64dp"
-                android:layout_height="wrap_content"
-                android:text="@string/profile__color" />
-
-            <View
-                android:id="@+id/v_color"
+                android:id="@+id/textView4"
                 android:layout_width="match_parent"
-                android:layout_height="48dp"
-                tools:background="@android:color/holo_green_light" />
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:layout_marginTop="36dp"
+                android:text="@string/profile__edit"
+                android:textAllCaps="true"
+                android:textColor="@drawable/button_text_color"
+                android:textStyle="bold" />
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="64dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/profile__name" />
+
+                <EditText
+                    android:id="@+id/et_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:fontFamily="sans-serif-light"
+                    android:hint="@string/profile__your_name"
+                    android:inputType="textCapWords"
+                    android:textSize="14sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="64dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/profile__color" />
+
+                <View
+                    android:id="@+id/v_color"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    tools:background="@android:color/holo_green_light" />
+
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/btn_save"
+                style="@style/Widget.AppCompat.Button.Borderless"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:layout_marginTop="16dp"
+                android:text="@string/profile__save"
+                android:textColor="@drawable/button_text_color" />
         </LinearLayout>
-
-        <Button
-            android:id="@+id/btn_save"
-            style="@style/Widget.AppCompat.Button.Borderless"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="end"
-            android:layout_marginTop="16dp"
-            android:text="@string/profile__save"
-            android:textColor="@drawable/button_text_color" />
-    </LinearLayout>
+    </ScrollView>
 </LinearLayout>

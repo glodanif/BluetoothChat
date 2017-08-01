@@ -120,9 +120,11 @@ class BluetoothConnectorImpl(private val context: Context) : BluetoothConnector 
     }
 
     override fun release() {
-        context.unbindService(connection)
-        bound = false
-        service = null
+        if (bound) {
+            context.unbindService(connection)
+            bound = false
+            service = null
+        }
     }
 
     override fun isConnectionPrepared(): Boolean {

@@ -7,6 +7,7 @@ import com.glodanif.bluetoothchat.activity.ChatActivity
 import com.glodanif.bluetoothchat.activity.ConversationsActivity
 import com.glodanif.bluetoothchat.util.StartStopActivityLifecycleCallbacks
 import io.fabric.sdk.android.Fabric
+import android.os.StrictMode
 
 class ChatApplication : Application() {
 
@@ -42,5 +43,17 @@ class ChatApplication : Application() {
                 }
             }
         })
+
+        if (BuildConfig.DEBUG) {
+
+            StrictMode.setThreadPolicy(StrictMode.ThreadPolicy.Builder()
+                    .detectAll()
+                    .penaltyLog()
+                    .build())
+            StrictMode.setVmPolicy(StrictMode.VmPolicy.Builder()
+                    .detectAll()
+                    .penaltyLog()
+                    .build())
+        }
     }
 }

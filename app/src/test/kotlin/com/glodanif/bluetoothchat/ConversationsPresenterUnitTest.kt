@@ -4,16 +4,12 @@ import com.glodanif.bluetoothchat.model.BluetoothConnector
 import com.glodanif.bluetoothchat.model.ConversationsStorage
 import com.glodanif.bluetoothchat.model.SettingsManager
 import com.glodanif.bluetoothchat.presenter.ConversationsPresenter
-import com.glodanif.bluetoothchat.presenter.ProfilePresenter
 import com.glodanif.bluetoothchat.view.ConversationsView
-import com.glodanif.bluetoothchat.view.ProfileView
 import com.nhaarman.mockito_kotlin.verify
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.mockito.Mock
-import org.mockito.Mockito
-import org.mockito.MockitoAnnotations
 import org.mockito.junit.MockitoJUnit
 import org.mockito.junit.MockitoRule
 

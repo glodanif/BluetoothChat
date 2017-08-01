@@ -10,11 +10,11 @@
         android:id="@+id/fl_container"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:layout_marginBottom="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout2"
         app:layout_constraintLeft_toLeftOf="@+id/toolbar"
         app:layout_constraintRight_toRightOf="@+id/toolbar"
-        app:layout_constraintTop_toBottomOf="@+id/toolbar"
-        android:layout_marginBottom="0dp"
-        app:layout_constraintBottom_toTopOf="@+id/linearLayout2">
+        app:layout_constraintTop_toBottomOf="@+id/toolbar">
 
         <FrameLayout
             android:id="@+id/fl_progress"
@@ -127,26 +127,23 @@
                 tools:visibility="visible" />
         </android.support.constraint.ConstraintLayout>
 
-        <android.support.constraint.ConstraintLayout
-            android:id="@+id/cl_turn_on"
+        <LinearLayout
+            android:id="@+id/ll_turn_on"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:gravity="center"
+            android:orientation="vertical"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="parent">
 
-            <ImageView
-                android:id="@+id/imageView"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:layout_marginBottom="24dp"
-                app:layout_constraintBottom_toTopOf="@+id/textView"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_chainStyle="packed" />
+            <TextView
+                android:id="@+id/textView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/scan__turn_bluetooth_on" />
 
             <Button
                 android:id="@+id/btn_turn_on"
@@ -155,23 +152,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
                 android:text="@string/scan__turn_on"
-                android:textColor="@color/colorAccent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView" />
+                android:textColor="@color/colorAccent" />
 
-            <TextView
-                android:id="@+id/textView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/scan__turn_bluetooth_on"
-                app:layout_constraintBottom_toTopOf="@+id/btn_turn_on"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/imageView" />
-
-        </android.support.constraint.ConstraintLayout>
+        </LinearLayout>
     </FrameLayout>
 
     <LinearLayout
@@ -190,8 +173,8 @@
         <View
             android:id="@+id/textView3"
             android:layout_width="wrap_content"
-            android:layout_height="4dp"
-            android:background="@drawable/shadow_top" />
+            android:layout_height="2dp"
+            android:background="@color/colorPrimary" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -206,13 +189,14 @@
                 android:layout_weight="1"
                 android:text="@string/scan__share_apk" />
 
-            <ImageButton
-                android:id="@+id/ib_share"
+            <ImageView
+                android:id="@+id/iv_share"
                 style="@style/Widget.AppCompat.Button.Borderless"
                 android:layout_width="56dp"
                 android:layout_height="56dp"
                 android:layout_marginStart="16dp"
                 android:layout_weight="0"
+                android:contentDescription="@string/scan__cd__share_apk_file_button"
                 app:srcCompat="@drawable/ic_share_black_24dp" />
 
         </LinearLayout>

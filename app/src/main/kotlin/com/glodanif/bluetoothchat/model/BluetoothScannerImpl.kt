@@ -62,7 +62,7 @@ class BluetoothScannerImpl(val context: Context) : BluetoothScanner {
             Log.e("TAG13", e.message)
         }
         if (adapter != null && adapter.isDiscovering) {
-            adapter.cancelDiscovery();
+            adapter.cancelDiscovery()
         }
     }
 

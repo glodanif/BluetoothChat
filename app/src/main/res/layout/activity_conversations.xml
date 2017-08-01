@@ -29,6 +29,7 @@
             app:popupTheme="@style/AppTheme.PopupOverlay">
 
             <ImageView
+                android:contentDescription="@string/conversations__cd__user_profile_button"
                 android:id="@+id/iv_avatar"
                 android:layout_width="36dp"
                 android:layout_height="36dp"

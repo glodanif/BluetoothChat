@@ -1,10 +1,10 @@
 package com.glodanif.bluetoothchat.widget
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.Button
 import android.widget.FrameLayout
 import android.widget.TextView
@@ -12,7 +12,9 @@ import com.glodanif.bluetoothchat.R
 
 class ActionView: FrameLayout {
 
-    private var container: View = LayoutInflater.from(context).inflate(R.layout.view_action, null)
+    @SuppressLint("InflateParams")
+    private var container: View =
+            LayoutInflater.from(context).inflate(R.layout.view_action, null)
 
     constructor(context: Context?) : super(context)
     constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)

@@ -46,8 +46,8 @@
     <View
         android:id="@+id/textView3"
         android:layout_width="wrap_content"
-        android:layout_height="4dp"
-        android:background="@drawable/shadow_bottom"
+        android:layout_height="2dp"
+        android:background="@color/colorPrimary"
         app:layout_constraintBottom_toBottomOf="parent"
         android:layout_marginBottom="0dp"
         android:layout_marginLeft="0dp"

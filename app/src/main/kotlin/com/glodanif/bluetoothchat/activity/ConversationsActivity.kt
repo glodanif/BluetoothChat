@@ -23,7 +23,6 @@ import com.glodanif.bluetoothchat.presenter.ConversationsPresenter
 import com.glodanif.bluetoothchat.view.ConversationsView
 import com.glodanif.bluetoothchat.widget.ActionView
 
-
 class ConversationsActivity : AppCompatActivity(), ConversationsView {
 
     private val REQUEST_SCAN = 101
@@ -150,9 +149,9 @@ class ConversationsActivity : AppCompatActivity(), ConversationsView {
     override fun notifyAboutConnectedDevice(conversation: Conversation) {
 
         actions.visibility = View.VISIBLE
-        actions.setActions("${conversation.displayName} (${conversation.deviceName}) has just connected to you",
-                ActionView.Action("Start chat") { presenter.startChat(conversation) },
-                ActionView.Action("Disconnect") { presenter.rejectConnection() }
+        actions.setActions(getString(R.string.conversations__connection_request, conversation.displayName, conversation.deviceName),
+                ActionView.Action(getString(R.string.general__start_chat)) { presenter.startChat(conversation) },
+                ActionView.Action(getString(R.string.general__disconnect)) { presenter.rejectConnection() }
         )
     }
 
@@ -161,7 +160,8 @@ class ConversationsActivity : AppCompatActivity(), ConversationsView {
         if (!isStarted) return
 
         AlertDialog.Builder(this)
-                .setMessage("Your connection request to ${conversation.displayName} (${conversation.deviceName}) was rejected")
+                .setMessage(getString(R.string.conversations__connection_rejected,
+                        conversation.displayName, conversation.deviceName))
                 .setPositiveButton(getString(R.string.general__ok), null)
                 .setCancelable(false)
                 .show()

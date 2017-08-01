@@ -95,7 +95,7 @@ class ExpiringProgressBar : View {
     fun cancel() {
         periodHandler.removeCallbacks(tick)
         timeLeft = 0
-        isCanceled = true;
+        isCanceled = true
     }
 
     private fun getProgressAngle(): Float {
@@ -123,7 +123,7 @@ class ExpiringProgressBar : View {
 
     override fun onSaveInstanceState(): Parcelable {
         val bundle = Bundle()
-        bundle.putParcelable(INSTANCE_STATE, super.onSaveInstanceState());
+        bundle.putParcelable(INSTANCE_STATE, super.onSaveInstanceState())
         bundle.putInt(INSTANCE_PROGRESS, progress)
         return bundle
     }

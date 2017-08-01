@@ -4,6 +4,7 @@ import android.bluetooth.BluetoothDevice
 import com.glodanif.bluetoothchat.model.BluetoothConnector
 import com.glodanif.bluetoothchat.model.BluetoothScanner
 import com.glodanif.bluetoothchat.model.BluetoothScanner.ScanningListener
+import com.glodanif.bluetoothchat.model.FileExtractor
 import com.glodanif.bluetoothchat.presenter.ScanPresenter
 import com.glodanif.bluetoothchat.view.ScanView
 import com.nhaarman.mockito_kotlin.KArgumentCaptor
@@ -27,17 +28,19 @@ class ScanningPresenterUnitTest {
     @Mock
     private lateinit var connectionModel: BluetoothConnector
     @Mock
+    private lateinit var fileModel: FileExtractor
+    @Mock
     private lateinit var view: ScanView
     @Mock
     private lateinit var listener: ScanningListener
 
-    private val captor: KArgumentCaptor<ScanningListener> = argumentCaptor<ScanningListener>()
+    private val captor: KArgumentCaptor<ScanningListener> = argumentCaptor()
 
     lateinit var presenter: ScanPresenter
 
     @Before
     fun setup() {
-        presenter = ScanPresenter(view, scannerModel, connectionModel)
+        presenter = ScanPresenter(view, scannerModel, connectionModel, fileModel)
     }
 
     @Test

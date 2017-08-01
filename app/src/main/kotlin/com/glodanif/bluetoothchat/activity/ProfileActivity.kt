@@ -94,7 +94,7 @@ class ProfileActivity : AppCompatActivity(), ProfileView {
                 .colorMode(ColorMode.RGB)
                 .onColorSelected(colorSelectListener)
                 .create()
-                .show(supportFragmentManager, "ChromaDialog");
+                .show(supportFragmentManager, "ChromaDialog")
     }
 
     override fun redirectToConversations() {

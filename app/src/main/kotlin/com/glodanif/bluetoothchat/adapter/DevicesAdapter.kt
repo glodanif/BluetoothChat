@@ -1,6 +1,7 @@
 package com.glodanif.bluetoothchat.adapter
 
 import android.bluetooth.BluetoothDevice
+import android.content.Context
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -8,7 +9,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import com.glodanif.bluetoothchat.R
 
-class DevicesAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class DevicesAdapter(private val context: Context) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private val TYPE_ITEM = 0
     private val TYPE_HEADER = 1
@@ -25,11 +26,11 @@ class DevicesAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             val holder: HeaderViewHolder = viewHolder
 
             if (position == 0) {
-                holder.header.text = "Paired devices"
+                holder.header.text = context.getString(R.string.scan__paired_devices)
                 holder.emptyMessage.visibility =
                         if (pairedList.isEmpty()) View.VISIBLE else View.GONE
             } else {
-                holder.header.text = "Available devices"
+                holder.header.text = context.getString(R.string.scan__available_devices)
                 holder.emptyMessage.visibility =
                         if (availableList.isEmpty()) View.VISIBLE else View.GONE
             }

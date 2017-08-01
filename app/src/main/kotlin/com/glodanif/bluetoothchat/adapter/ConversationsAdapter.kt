@@ -1,5 +1,6 @@
 package com.glodanif.bluetoothchat.adapter
 
+import android.annotation.SuppressLint
 import android.graphics.Color
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
@@ -21,6 +22,7 @@ class ConversationsAdapter : RecyclerView.Adapter<ConversationsAdapter.Conversat
     private var isConnected: Boolean = false
     private var conversations: ArrayList<Conversation> = ArrayList()
 
+    @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: ConversationViewHolder?, position: Int) {
 
         if (holder == null) return
@@ -87,12 +89,12 @@ class ConversationsAdapter : RecyclerView.Adapter<ConversationsAdapter.Conversat
     }
 
     class ConversationViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val avatar = itemView.findViewById<ImageView>(R.id.iv_avatar)
-        val name = itemView.findViewById<TextView>(R.id.tv_name)
-        val connected = itemView.findViewById<ImageView>(R.id.iv_connected)
-        val lastMessage = itemView.findViewById<TextView>(R.id.tv_last_message)
-        val time = itemView.findViewById<TextView>(R.id.tv_time)
-        val notSeen = itemView.findViewById<TextView>(R.id.tv_not_seen)
-        val messageContainer = itemView.findViewById<LinearLayout>(R.id.ll_message_info)
+        val avatar: ImageView = itemView.findViewById<ImageView>(R.id.iv_avatar)
+        val name: TextView = itemView.findViewById<TextView>(R.id.tv_name)
+        val connected: ImageView = itemView.findViewById<ImageView>(R.id.iv_connected)
+        val lastMessage: TextView = itemView.findViewById<TextView>(R.id.tv_last_message)
+        val time: TextView = itemView.findViewById<TextView>(R.id.tv_time)
+        val notSeen: TextView = itemView.findViewById<TextView>(R.id.tv_not_seen)
+        val messageContainer: LinearLayout = itemView.findViewById<LinearLayout>(R.id.ll_message_info)
     }
 }

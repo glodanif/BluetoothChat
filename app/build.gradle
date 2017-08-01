@@ -90,7 +90,7 @@ dependencies {
     compile 'me.priyesh:chroma:1.0.2'
 
     compile('com.crashlytics.sdk.android:crashlytics:2.6.8@aar') {
-        transitive = true;
+        transitive = true
     }
 
     compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$KOTLIN_VERSION"

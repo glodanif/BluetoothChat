@@ -18,10 +18,7 @@ import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.Toolbar
 import android.view.View
-import android.widget.Button
-import android.widget.ImageButton
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import com.glodanif.bluetoothchat.R
 import com.glodanif.bluetoothchat.adapter.DevicesAdapter
 import com.glodanif.bluetoothchat.model.ApkExtractor
@@ -50,7 +47,7 @@ class ScanActivity : AppCompatActivity(), ScanView {
 
     private lateinit var pairedDevicesList: RecyclerView
 
-    private val adapter: DevicesAdapter = DevicesAdapter()
+    private val adapter: DevicesAdapter = DevicesAdapter(this)
 
     private lateinit var presenter: ScanPresenter
 
@@ -68,7 +65,7 @@ class ScanActivity : AppCompatActivity(), ScanView {
                 BluetoothConnectorImpl(this), ApkExtractor(this))
 
         container = findViewById(R.id.fl_container)
-        turnOnHolder = findViewById(R.id.cl_turn_on)
+        turnOnHolder = findViewById(R.id.ll_turn_on)
         listHolder = findViewById(R.id.cl_list)
         progress = findViewById(R.id.fl_progress)
 
@@ -108,7 +105,7 @@ class ScanActivity : AppCompatActivity(), ScanView {
             }
         }
 
-        findViewById<ImageButton>(R.id.ib_share).setOnClickListener {
+        findViewById<ImageView>(R.id.iv_share).setOnClickListener {
             presenter.shareApk()
         }
     }
@@ -121,10 +118,10 @@ class ScanActivity : AppCompatActivity(), ScanView {
         sharingIntent.putExtra(Intent.EXTRA_STREAM, uri)
 
         try {
-            startActivity(Intent.createChooser(sharingIntent, "Share .apk"))
+            startActivity(Intent.createChooser(sharingIntent, getString(R.string.scan__share_intent)))
         } catch (e: ActivityNotFoundException) {
             e.printStackTrace()
-            Toast.makeText(this, "Unable to start Bluetooth sharing", Toast.LENGTH_LONG).show()
+            Toast.makeText(this, getString(R.string.scan__unable_to_share_apk), Toast.LENGTH_LONG).show()
         }
     }
 
@@ -163,14 +160,14 @@ class ScanActivity : AppCompatActivity(), ScanView {
 
     override fun showBluetoothIsNotAvailableMessage() {
         AlertDialog.Builder(this)
-                .setMessage("Cannot get access to Bluetooth on your device")
+                .setMessage(getString(R.string.scan__no_access_to_bluetooth))
                 .setPositiveButton(getString(R.string.general__ok), { _, _ -> finish() })
                 .show()
     }
 
     override fun showBluetoothEnablingFailed() {
         AlertDialog.Builder(this)
-                .setMessage("This app requires Bluetooth enabled to work properly")
+                .setMessage(getString(R.string.scan__bluetooth_disabled))
                 .setPositiveButton(getString(R.string.general__ok), null)
                 .show()
     }
@@ -195,19 +192,19 @@ class ScanActivity : AppCompatActivity(), ScanView {
         progressBar.runExpiring(seconds)
         progressBar.visibility = View.VISIBLE
         discoveryLabel.visibility = View.VISIBLE
-        scanForDevicesButton.text = "Stop scanning"
+        scanForDevicesButton.text = getString(R.string.scan__stop_scanning)
     }
 
     override fun showScanningStopped() {
         progressBar.cancel()
         progressBar.visibility = View.GONE
         discoveryLabel.visibility = View.GONE
-        scanForDevicesButton.text = "Scan for devices"
+        scanForDevicesButton.text = getString(R.string.scan__scan)
     }
 
     override fun showBluetoothDiscoverableFailure() {
         AlertDialog.Builder(this)
-                .setMessage("Unable to make your device discoverable")
+                .setMessage(getString(R.string.scan__unable_to_make_discoverable))
                 .setPositiveButton(getString(R.string.general__ok), null)
                 .show()
     }
@@ -218,7 +215,7 @@ class ScanActivity : AppCompatActivity(), ScanView {
         if (!isStarted) return
 
         AlertDialog.Builder(this)
-                .setMessage("Unable to engage connection, please restart the app")
+                .setMessage(getString(R.string.scan__unable_to_connect_service))
                 .setPositiveButton(getString(R.string.general__ok), null)
                 .show()
     }
@@ -229,7 +226,7 @@ class ScanActivity : AppCompatActivity(), ScanView {
         if (!isStarted) return
 
         AlertDialog.Builder(this)
-                .setMessage("Unable to connect to this device")
+                .setMessage(getString(R.string.scan__unable_to_connect))
                 .setPositiveButton(getString(R.string.general__ok), null)
                 .show()
     }
@@ -237,7 +234,7 @@ class ScanActivity : AppCompatActivity(), ScanView {
     override fun addFoundDevice(device: BluetoothDevice) {
         adapter.addNewFoundDevice(device)
         adapter.notifyDataSetChanged()
-        pairedDevicesList.smoothScrollToPosition(pairedDevicesList.adapter.itemCount);
+        pairedDevicesList.smoothScrollToPosition(pairedDevicesList.adapter.itemCount)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -269,7 +266,7 @@ class ScanActivity : AppCompatActivity(), ScanView {
 
     private fun explainAskingPermission() {
         AlertDialog.Builder(this)
-                .setMessage("To be able to find other devices this app requires LOCATION permission")
+                .setMessage(getString(R.string.scan__permission_explanation))
                 .setPositiveButton(getString(R.string.general__ok), { _, _ ->
                     ActivityCompat.requestPermissions(this,
                             arrayOf(Manifest.permission.ACCESS_COARSE_LOCATION), REQUEST_LOCATION_PERMISSION)
@@ -279,8 +276,8 @@ class ScanActivity : AppCompatActivity(), ScanView {
 
     override fun showExtractionApkFailureMessage() {
         AlertDialog.Builder(this)
-                .setMessage("Unable to fetch an .apk file.")
-                .setPositiveButton("OK", null)
+                .setMessage(getString(R.string.scan__unable_to_fetch_apk))
+                .setPositiveButton(getString(R.string.general__ok), null)
                 .show()
     }
 
