@@ -2,7 +2,7 @@ package com.glodanif.bluetoothchat.model
 
 import android.content.Context
 import android.os.Handler
-import com.glodanif.bluetoothchat.Storage
+import com.glodanif.bluetoothchat.database.Storage
 import com.glodanif.bluetoothchat.entity.Conversation
 import kotlin.concurrent.thread
 

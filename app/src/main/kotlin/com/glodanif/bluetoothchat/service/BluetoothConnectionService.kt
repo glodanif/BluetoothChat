@@ -15,7 +15,7 @@ import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import com.glodanif.bluetoothchat.ChatApplication
 import com.glodanif.bluetoothchat.R
-import com.glodanif.bluetoothchat.Storage
+import com.glodanif.bluetoothchat.database.Storage
 import com.glodanif.bluetoothchat.database.ChatDatabase
 import com.glodanif.bluetoothchat.entity.ChatMessage
 import com.glodanif.bluetoothchat.entity.Conversation

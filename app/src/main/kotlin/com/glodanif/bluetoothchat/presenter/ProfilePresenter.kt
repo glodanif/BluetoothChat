@@ -12,7 +12,7 @@ class ProfilePresenter(private val view: ProfileView, private val settings: Sett
 
     fun saveUser() {
         if (!currentName.isEmpty() && currentName.length <= 25 && !currentName.contains("#")) {
-            settings.saveUserName(currentName)
+            settings.saveUserName(currentName.trim())
             settings.saveUserColor(currentColor)
             view.redirectToConversations()
         } else {
