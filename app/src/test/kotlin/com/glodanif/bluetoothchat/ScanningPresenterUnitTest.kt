@@ -10,11 +10,10 @@ import com.glodanif.bluetoothchat.presenter.ScanPresenter
 import com.glodanif.bluetoothchat.view.ScanView
 import com.nhaarman.mockito_kotlin.KArgumentCaptor
 import com.nhaarman.mockito_kotlin.argumentCaptor
-import com.nhaarman.mockito_kotlin.capture
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import org.mockito.*
+import org.mockito.Mock
 import org.mockito.Mockito.*
 import org.mockito.junit.MockitoJUnit
 import org.mockito.junit.MockitoRule
