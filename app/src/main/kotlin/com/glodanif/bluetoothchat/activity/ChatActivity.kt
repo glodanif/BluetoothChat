@@ -45,7 +45,7 @@ class ChatActivity : AppCompatActivity(), ChatView {
     private lateinit var messageField: EditText
     private lateinit var toolbar: Toolbar
 
-    private val adapter: ChatAdapter = ChatAdapter()
+    private val adapter: ChatAdapter = ChatAdapter(this)
 
     private var isStarted = false
 

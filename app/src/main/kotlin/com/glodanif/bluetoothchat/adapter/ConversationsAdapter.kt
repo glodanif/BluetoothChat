@@ -1,6 +1,7 @@
 package com.glodanif.bluetoothchat.adapter
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.graphics.Color
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
@@ -14,10 +15,10 @@ import com.glodanif.bluetoothchat.R
 import com.glodanif.bluetoothchat.entity.Conversation
 import com.glodanif.bluetoothchat.extension.getRelativeTime
 
-class ConversationsAdapter : RecyclerView.Adapter<ConversationsAdapter.ConversationViewHolder>() {
+class ConversationsAdapter(private val context: Context) : RecyclerView.Adapter<ConversationsAdapter.ConversationViewHolder>() {
 
     var clickListener: ((Conversation) -> Unit)? = null
-    var longClickListener: ((Conversation) -> Unit)? = null
+    var longClickListener: ((Conversation, Boolean) -> Unit)? = null
 
     private var isConnected: Boolean = false
     private var conversations: ArrayList<Conversation> = ArrayList()
@@ -32,7 +33,8 @@ class ConversationsAdapter : RecyclerView.Adapter<ConversationsAdapter.Conversat
         holder.name.text = "${conversation.displayName} (${conversation.deviceName})"
         holder.itemView?.setOnClickListener { clickListener?.invoke(conversation) }
         holder.itemView?.setOnLongClickListener {
-            longClickListener?.invoke(conversation)
+            val isCurrent = isConnected && position == 0
+            longClickListener?.invoke(conversation, isCurrent)
             return@setOnLongClickListener true
         }
         holder.connected.visibility = View.VISIBLE
@@ -41,7 +43,7 @@ class ConversationsAdapter : RecyclerView.Adapter<ConversationsAdapter.Conversat
             holder.messageContainer.visibility = View.VISIBLE
             holder.time.visibility = View.VISIBLE
             holder.lastMessage.text = conversation.lastMessage
-            holder.time.text = conversation.lastActivity?.getRelativeTime()
+            holder.time.text = conversation.lastActivity?.getRelativeTime(context)
             if (conversation.notSeen > 0) {
                 holder.notSeen.visibility = View.VISIBLE
                 holder.notSeen.text = conversation.notSeen.toString()

@@ -50,7 +50,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
                 android:layout_marginTop="8dp"
-                android:text="@string/make_discoverable"
+                android:text="@string/scan__make_discoverable"
                 android:textColor="@drawable/button_text_color"
                 app:layout_constraintBottom_toTopOf="@+id/rv_paired_devices"
                 app:layout_constraintLeft_toRightOf="@+id/btn_scan"

@@ -41,7 +41,7 @@ class ConversationsActivity : AppCompatActivity(), ConversationsView {
     private lateinit var actions: ActionView
     private lateinit var userAvatar: ImageView
 
-    private val adapter: ConversationsAdapter = ConversationsAdapter()
+    private val adapter: ConversationsAdapter = ConversationsAdapter(this)
 
     private var isStarted = false
 
@@ -62,7 +62,10 @@ class ConversationsActivity : AppCompatActivity(), ConversationsView {
         conversationsList.layoutManager = LinearLayoutManager(this)
         conversationsList.adapter = adapter
         adapter.clickListener = { ChatActivity.start(this, it.deviceAddress) }
-        adapter.longClickListener = { showContextMenu(it) }
+        adapter.longClickListener = {
+            conversation, isCurrent ->
+            showContextMenu(conversation, isCurrent)
+        }
 
         addButton = findViewById<FloatingActionButton>(R.id.fab_new_conversation)
         addButton.setOnClickListener {
@@ -76,13 +79,23 @@ class ConversationsActivity : AppCompatActivity(), ConversationsView {
         }
     }
 
-    private fun showContextMenu(conversation: Conversation) {
+    private fun showContextMenu(conversation: Conversation, isCurrent: Boolean) {
+
+        val labels = if (!isCurrent) {
+            arrayOf(getString(R.string.conversations__remove))
+        } else {
+            arrayOf(getString(R.string.conversations__remove), getString(R.string.general__disconnect))
+        }
+
         val builder = AlertDialog.Builder(this)
         builder.setTitle(getString(R.string.conversations__options))
-                .setItems(arrayOf(getString(R.string.conversations__remove)), { _, which ->
+                .setItems(labels, { _, which ->
                     when (which) {
                         0 -> {
                             confirmRemoval(conversation)
+                        }
+                        1 -> {
+                            presenter.disconnect()
                         }
                     }
                 })

@@ -30,19 +30,19 @@
 
         <activity
             android:name=".activity.ScanActivity"
-            android:label="@string/scan"
+            android:label="@string/scan__scan"
             android:screenOrientation="portrait" />
 
         <activity
             android:name=".activity.ChatActivity"
-            android:label="Chat"
+            android:label="@string/chat__chat"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme"
             android:windowSoftInputMode="adjustResize|stateHidden" />
 
         <activity
             android:name=".activity.ProfileActivity"
-            android:label="Initial Setup"
+            android:label="@string/initial_setup__initial_setup"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme">
 

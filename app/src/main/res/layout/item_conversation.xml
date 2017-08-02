@@ -17,7 +17,7 @@
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:layout_marginEnd="12dp"
-        android:contentDescription="@string/conversations__cd_partners_avatar" />
+        android:contentDescription="@string/conversations__cd__partners_avatar" />
 
     <LinearLayout
         android:layout_width="match_parent"

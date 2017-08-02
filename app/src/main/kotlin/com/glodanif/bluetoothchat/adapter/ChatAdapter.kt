@@ -1,5 +1,6 @@
 package com.glodanif.bluetoothchat.adapter
 
+import android.content.Context
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -10,7 +11,7 @@ import com.glodanif.bluetoothchat.entity.ChatMessage
 import com.glodanif.bluetoothchat.extension.getRelativeTime
 import java.util.*
 
-class ChatAdapter : RecyclerView.Adapter<ChatAdapter.MessageViewHolder>() {
+class ChatAdapter(private val context: Context) : RecyclerView.Adapter<ChatAdapter.MessageViewHolder>() {
 
     private val OWN_MESSAGE = 0
     private val FOREIGN_MESSAGE = 1
@@ -22,7 +23,7 @@ class ChatAdapter : RecyclerView.Adapter<ChatAdapter.MessageViewHolder>() {
         val holder: MessageViewHolder? = viewHolder
         val message = messages[position]
 
-        holder?.date?.text = message.date.getRelativeTime()
+        holder?.date?.text = message.date.getRelativeTime(context)
         holder?.text?.text = message.text
     }
 

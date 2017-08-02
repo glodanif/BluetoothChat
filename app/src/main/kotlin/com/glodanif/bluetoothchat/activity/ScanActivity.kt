@@ -179,12 +179,12 @@ class ScanActivity : AppCompatActivity(), ScanView {
     }
 
     override fun showDiscoverableProcess() {
-        makeDiscoverableButton.text = getString(R.string.discoverable)
+        makeDiscoverableButton.text = getString(R.string.scan__discoverable)
         makeDiscoverableButton.isEnabled = false
     }
 
     override fun showDiscoverableFinished() {
-        makeDiscoverableButton.text = getString(R.string.make_discoverable)
+        makeDiscoverableButton.text = getString(R.string.scan__make_discoverable)
         makeDiscoverableButton.isEnabled = true
     }
 

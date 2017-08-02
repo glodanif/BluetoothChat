@@ -149,4 +149,9 @@ class ConversationsPresenter(private val view: ConversationsView, private val co
         storage.removeConversation(conversation)
         loadConversations()
     }
+
+    fun disconnect() {
+        connection.sendDisconnectRequest()
+        loadConversations()
+    }
 }
