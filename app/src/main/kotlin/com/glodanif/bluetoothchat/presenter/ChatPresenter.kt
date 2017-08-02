@@ -15,6 +15,7 @@ class ChatPresenter(private val deviceAddress: String, private val view: ChatVie
             connectionModel.setOnConnectListener(connectionListener)
             connectionModel.setOnMessageListener(messageListener)
             updateState()
+            dismissNotification()
         }
 
         override fun onError() {
@@ -105,6 +106,14 @@ class ChatPresenter(private val deviceAddress: String, private val view: ChatVie
         }
     }
 
+    private fun dismissNotification() {
+        val currentConversation: Conversation? = connectionModel.getCurrentConversation()
+        if (currentConversation != null && connectionModel.isConnectedOrPending() &&
+                currentConversation.deviceAddress == deviceAddress) {
+            view.dismissMessageNotification()
+        }
+    }
+
     fun prepareConnection() {
 
         if (!scanModel.isBluetoothEnabled()) {
@@ -117,6 +126,7 @@ class ChatPresenter(private val deviceAddress: String, private val view: ChatVie
                 connectionModel.setOnConnectListener(connectionListener)
                 connectionModel.setOnMessageListener(messageListener)
                 updateState()
+                dismissNotification()
             } else {
                 connectionModel.prepare()
             }

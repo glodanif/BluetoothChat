@@ -1,6 +1,7 @@
 package com.glodanif.bluetoothchat
 
 import android.bluetooth.BluetoothDevice
+import android.net.Uri
 import com.glodanif.bluetoothchat.model.BluetoothConnector
 import com.glodanif.bluetoothchat.model.BluetoothScanner
 import com.glodanif.bluetoothchat.model.BluetoothScanner.ScanningListener
@@ -9,6 +10,7 @@ import com.glodanif.bluetoothchat.presenter.ScanPresenter
 import com.glodanif.bluetoothchat.view.ScanView
 import com.nhaarman.mockito_kotlin.KArgumentCaptor
 import com.nhaarman.mockito_kotlin.argumentCaptor
+import com.nhaarman.mockito_kotlin.capture
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -34,7 +36,9 @@ class ScanningPresenterUnitTest {
     @Mock
     private lateinit var listener: ScanningListener
 
-    private val captor: KArgumentCaptor<ScanningListener> = argumentCaptor()
+    private val scanCaptor: KArgumentCaptor<ScanningListener> = argumentCaptor()
+    private val extractedCaptor: KArgumentCaptor<(Uri) -> Unit> = argumentCaptor()
+    private val failedCaptor: KArgumentCaptor<() -> Unit> = argumentCaptor()
 
     lateinit var presenter: ScanPresenter
 
@@ -118,32 +122,32 @@ class ScanningPresenterUnitTest {
     fun scanning_start() {
         presenter.scanForDevices()
         verify(scannerModel).scanForDevices(30)
-        verify(scannerModel).setScanningListener(captor.capture())
-        val scanningListener = captor.firstValue
+        verify(scannerModel).setScanningListener(scanCaptor.capture())
+        val scanningListener = scanCaptor.firstValue
         scanningListener.onDiscoveryStart(0)
         verify(view).showScanningStarted(0)
     }
 
     @Test
     fun scanning_finished() {
-        verify(scannerModel).setScanningListener(captor.capture())
-        val scanningListener = captor.firstValue
+        verify(scannerModel).setScanningListener(scanCaptor.capture())
+        val scanningListener = scanCaptor.firstValue
         scanningListener.onDiscoveryFinish()
         verify(view).showScanningStopped()
     }
 
     @Test
     fun scanning_discoverableStart() {
-        verify(scannerModel).setScanningListener(captor.capture())
-        val scanningListener = captor.firstValue
+        verify(scannerModel).setScanningListener(scanCaptor.capture())
+        val scanningListener = scanCaptor.firstValue
         scanningListener.onDiscoverableStart()
         verify(view)?.showDiscoverableProcess()
     }
 
     @Test
     fun scanning_discoverableFinishStart() {
-        verify(scannerModel).setScanningListener(captor.capture())
-        val scanningListener = captor.firstValue
+        verify(scannerModel).setScanningListener(scanCaptor.capture())
+        val scanningListener = scanCaptor.firstValue
         scanningListener.onDiscoverableFinish()
         verify(view).showDiscoverableFinished()
     }
@@ -151,8 +155,8 @@ class ScanningPresenterUnitTest {
     @Test
     fun scanning_onFoundDevice() {
         val device = mock(BluetoothDevice::class.java)
-        verify(scannerModel).setScanningListener(captor.capture())
-        val scanningListener = captor.firstValue
+        verify(scannerModel).setScanningListener(scanCaptor.capture())
+        val scanningListener = scanCaptor.firstValue
         scanningListener.onDeviceFind(device)
         verify(view).addFoundDevice(device)
     }
@@ -163,4 +167,15 @@ class ScanningPresenterUnitTest {
         presenter.scanForDevices()
         verify(view).showScanningStopped()
     }
+
+    /*@Test
+    fun apkSharing_success() {
+
+        verify(fileModel).extractFile(extractedCaptor.capture(), failedCaptor.capture())
+        extractedCaptor.firstValue.invoke(Uri.EMPTY)
+        //verify(view).shareApk(Uri.EMPTY)
+    }*/
+
+    @Suppress("UNCHECKED_CAST")
+    private fun <T> uninitialized(): T = null as T
 }

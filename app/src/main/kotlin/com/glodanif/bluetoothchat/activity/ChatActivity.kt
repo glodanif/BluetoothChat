@@ -2,6 +2,8 @@ package com.glodanif.bluetoothchat.activity
 
 import android.app.Activity
 import android.app.AlertDialog
+import android.app.NotificationManager
+import android.app.Service
 import android.bluetooth.BluetoothAdapter
 import android.content.Context
 import android.content.Intent
@@ -23,6 +25,7 @@ import com.glodanif.bluetoothchat.entity.Conversation
 import com.glodanif.bluetoothchat.model.*
 import com.glodanif.bluetoothchat.presenter.ChatPresenter
 import com.glodanif.bluetoothchat.view.ChatView
+import com.glodanif.bluetoothchat.view.NotificationView
 import com.glodanif.bluetoothchat.widget.ActionView
 import java.util.*
 
@@ -84,6 +87,11 @@ class ChatActivity : AppCompatActivity(), ChatView {
         super.onStop()
         isStarted = false
         presenter.releaseConnection()
+    }
+
+    override fun dismissMessageNotification() {
+        (getSystemService(Service.NOTIFICATION_SERVICE) as NotificationManager)
+                .cancel(NotificationView.NOTIFICATION_TAG_MESSAGE, NotificationView.NOTIFICATION_ID_MESSAGE)
     }
 
     override fun showPartnerName(name: String, device: String) {

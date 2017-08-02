@@ -122,6 +122,7 @@ class ConversationsPresenter(private val view: ConversationsView, private val co
     fun prepareConnection() {
         connection.setOnPrepareListener(prepareListener)
         connection.prepare()
+        view.dismissConversationNotification()
     }
 
     fun loadUserProfile() {

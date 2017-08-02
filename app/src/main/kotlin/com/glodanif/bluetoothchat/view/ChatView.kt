@@ -29,4 +29,5 @@ interface ChatView {
     fun showBluetoothDisabled()
     fun showBluetoothEnablingFailed()
     fun requestBluetoothEnabling()
+    fun dismissMessageNotification()
 }

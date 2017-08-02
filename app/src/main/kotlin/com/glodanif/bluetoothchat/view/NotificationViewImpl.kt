@@ -17,9 +17,6 @@ import com.glodanif.bluetoothchat.service.BluetoothConnectionService
 
 class NotificationViewImpl(private val context: Context) : NotificationView {
 
-    private val NOTIFICATION_ID_MESSAGE = 0
-    private val NOTIFICATION_ID_CONNECTION = 1
-
     private val notificationManager =
             context.getSystemService(Service.NOTIFICATION_SERVICE) as NotificationManager
     private val resources = context.resources
@@ -82,7 +79,8 @@ class NotificationViewImpl(private val context: Context) : NotificationView {
         notification.defaults = notification.defaults or Notification.DEFAULT_SOUND
         notification.defaults = notification.defaults or Notification.DEFAULT_VIBRATE
 
-        notificationManager.notify(NOTIFICATION_ID_MESSAGE, notification)
+        notificationManager.notify(NotificationView.NOTIFICATION_TAG_MESSAGE,
+                NotificationView.NOTIFICATION_ID_MESSAGE, notification)
     }
 
     override fun showConnectionRequestNotification(deviceName: String) {
@@ -112,14 +110,17 @@ class NotificationViewImpl(private val context: Context) : NotificationView {
         notification.defaults = notification.defaults or Notification.DEFAULT_SOUND
         notification.defaults = notification.defaults or Notification.DEFAULT_VIBRATE
 
-        notificationManager.notify(NOTIFICATION_ID_CONNECTION, notification)
+        notificationManager.notify(NotificationView.NOTIFICATION_TAG_CONNECTION,
+                NotificationView.NOTIFICATION_ID_CONNECTION, notification)
     }
 
     override fun dismissMessageNotification() {
-        notificationManager.cancel(NOTIFICATION_ID_MESSAGE)
+        notificationManager.cancel(
+                NotificationView.NOTIFICATION_TAG_MESSAGE,NotificationView.NOTIFICATION_ID_MESSAGE)
     }
 
     override fun dismissConnectionNotification() {
-        notificationManager.cancel(NOTIFICATION_ID_CONNECTION)
+        notificationManager.cancel(
+                NotificationView.NOTIFICATION_TAG_CONNECTION, NotificationView.NOTIFICATION_ID_CONNECTION)
     }
 }
