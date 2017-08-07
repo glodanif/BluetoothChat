@@ -1,0 +1,120 @@
+<resources>
+
+    <string name="app_name">Bluetooth Chat</string>
+
+    <string name="general__ok">ОК</string>
+    <string name="general__cancel">Скасувати</string>
+    <string name="general__try_again">Спробувати ще</string>
+    <string name="general__start_chat">Почати чат</string>
+    <string name="general__restart">Рестарт</string>
+    <string name="general__yes">Так</string>
+    <string name="general__no">Ні</string>
+    <string name="general__service_lost">Bluetooth Chat сервіс був зупинений, перезапустіть скрвіс для коректної роботи додатку</string>
+    <string name="general__disconnect">Відключитись</string>
+
+    <string name="general__time_format">dd MMM, yyyy</string>
+    <string name="general__time_unknown">невідомл</string>
+    <string name="general__time_just_now">тільки що</string>
+    <string name="general__time_a_minute_ago">хвилину назад</string>
+    <string name="general__time_an_hour_ago">годину назад</string>
+    <string name="general__time_yesterday">вчора</string>
+
+    <plurals name="general__time_minutes_ago">
+        <item quantity="one">%d хвилину назад</item>
+        <item quantity="few">%d хвилини назад</item>
+        <item quantity="many">%d хвилин назад</item>
+        <item quantity="other">%d хвилину назад</item>
+    </plurals>
+
+    <plurals name="general__time_hours_ago">
+        <item quantity="one">%d годину</item>
+        <item quantity="few">%d години</item>
+        <item quantity="many">%d годин</item>
+        <item quantity="other">%d годин</item>
+    </plurals>
+
+    <plurals name="general__time_days_ago">
+        <item quantity="one">%d день</item>
+        <item quantity="few">%d дні</item>
+        <item quantity="many">%d днів</item>
+        <item quantity="other">%d днів</item>
+    </plurals>
+
+    <string name="profile__profile">Профіль</string>
+    <string name="profile__your_name">Ваше ім\'я</string>
+    <string name="profile__validation_error">Ваше ім\'я не може бути пустим або довшим 25 символів, також символ \'#\' заборонений</string>
+    <string name="profile__edit">Знінити</string>
+    <string name="profile__name">Ім\'я</string>
+    <string name="profile__color">Колір</string>
+    <string name="profile__save">Зберегти</string>
+
+    <string name="chat__not_connected">Не з\'єднано</string>
+    <string name="chat__connected">З\'єднано</string>
+    <string name="chat__pending">Очікується</string>
+    <string name="chat__reconnect">Перепідключитися</string>
+    <string name="chat__disconnect">Відключитися</string>
+    <string name="chat__connection_rejected">Ваш запит на з\'єднання був відхилений</string>
+    <string name="chat__waiting_for_device">Ви очікуете поки цей пристрій одібрить з\'єднання</string>
+    <string name="chat__connect">Під\'єднатися</string>
+    <string name="chat__not_connected_to_send">Ви не під\'єднані до цього пристрою</string>
+    <string name="chat__connection_request">%1$s (%2$s) хочк під\'єднатися до вас</string>
+    <string name="chat__not_connected_to_this_device">Зараз ви не під\'єднані до цього пристрою</string>
+    <string name="chat__message_cannot_be_empty">Повідомлення не може бути породнім</string>
+    <string name="chat__partner_disconnected">Ваш партнер від\'єднався від вашого пристрою. Хочете перепід\'єднатися?</string>
+    <string name="chat__connection_lost">З\'єднання з цим пристроєм було втрачено. Хочете перепід\'єднатися?</string>
+    <string name="chat__bluetooth_is_disabled">Bluetooth вимкнений</string>
+    <string name="chat__enable">Ввімкнути</string>
+    <string name="chat__unable_to_connect">Не вдається під\'єднатися до цього пристрою. Хочете спробувати ще раз?</string>
+    <string name="chat__rescan">Пересканусвати</string>
+    <string name="chat__device_is_not_available">Зараз цей пристрій недоступний, впевніться що ви з\'єднані</string>
+    <string name="chat__bluetooth_required">Для коректної роботи цього додатку необхідно ввімкнути Bluetooth</string>
+    <string name="chat__connected_to_another">Зараз ви з\'єднані з %s. Ви можете з\'єднатися з цим пристроєм (поточне з\'єднання буде перервано)?</string>
+    <string name="chat__message_hint">Повідомлення</string>
+    <string name="chat__chat">Чат</string>
+
+    <string name="conversations__no_conversations">У вас пока что нет ни одного разговора\nНачните сканирование чтобы найти вашего партнера</string>
+    <string name="conversations__scan">Сканувати</string>
+    <string name="conversations__options">Опції розмови</string>
+    <string name="conversations__remove">Видалити</string>
+    <string name="conversations__removal_confirmation">Ви впевнені що хочете видалити цю розмову? Всі повідомлення будуть втрачені</string>
+    <string name="conversations__connection_rejected">Ваш запит на з\'єднання до %1$s (%2$s) був відхилений</string>
+    <string name="conversations__connection_request">%1$s (%2$s) хоче з\'єднатися з вами</string>
+
+    <string name="scan__no_devices">Пристроїв не знайдено</string>
+    <string name="scan__scan_for_devices">Пошук пристроїв</string>
+    <string name="scan__start_scanning">Почніть сканування щоб знайти вашого партнера, або зробіть ваш пристрій видимим щоб він міг знайти вас</string>
+    <string name="scan__scanning">Пошук</string>
+    <string name="scan__turn_on">Ввімкнути</string>
+    <string name="scan__turn_bluetooth_on">Ввімкніть Bluetooth щоб знайти вашого партнера</string>
+    <string name="scan__share_apk">Немає Інтернет з\'єднання? Надішліть .apk файл цього додатку за допомогою Bluetooth</string>
+    <string name="scan__unable_to_share_apk">Не вда\'ється надіслати файл по Bluetooth</string>
+    <string name="scan__no_access_to_bluetooth">Не вда\'ється отримати доступ до Bluetooth на вашому пристрої</string>
+    <string name="scan__bluetooth_disabled">Для коректної роботи цього додатку необхідно ввімкнути Bluetooth</string>
+    <string name="scan__stop_scanning">Зупинити пошук</string>
+    <string name="scan__scan">Почати пошук</string>
+    <string name="scan__unable_to_make_discoverable">Не вдається зробити ваш пристрій видимим</string>
+    <string name="scan__unable_to_connect_service">Не вдається встановити зв\'язок з цим пристроєм, спробуйте перезапустити додапок</string>
+    <string name="scan__unable_to_connect">Не вдається з\'єднатися з цим пристроєм</string>
+    <string name="scan__unable_to_fetch_apk">Не вдається витягнути .apk файл</string>
+    <string name="scan__permission_explanation">Щоб почати пошук цей додаток потребує LOCATION дозвіл</string>
+    <string name="scan__share_intent">Відправти .apk</string>
+    <string name="scan__paired_devices">Під\'єднані пристрої</string>
+    <string name="scan__available_devices">Доступні пристрої</string>
+    <string name="scan__discoverable">Видимий</string>
+    <string name="scan__make_discoverable">Зробити видимим</string>
+
+    <string name="initial_setup__initial_setup">Первинне налаштування</string>
+
+    <string name="notification__ready_to_connect">Готовий до з\'єднання</string>
+    <string name="notification__connection_request">Запит на з\'єднання</string>
+    <string name="notification__connection_request_body">%s хоче з\'єднатися з вами</string>
+    <string name="notification__stop">ЗУПИНИТИ</string>
+
+    <string name="chat__cd__send_button">Кнопка відправки</string>
+    <string name="profile__cd__avatar_preview">Вид аватара</string>
+    <string name="scan__cd__share_apk_file_button">Кнопка відправки .apk файла</string>
+    <string name="conversations__cd__user_profile_button">Кнопка Профіля</string>
+    <string name="conversations__cd__partners_avatar">Аватар партнера</string>
+    <string name="conversations__cd__connected_indicator">Індикатор з\'єднання</string>
+
+</resources>

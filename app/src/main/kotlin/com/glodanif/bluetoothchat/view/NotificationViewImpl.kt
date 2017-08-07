@@ -34,14 +34,14 @@ class NotificationViewImpl(private val context: Context) : NotificationView {
         val icon = BitmapFactory.decodeResource(resources, R.mipmap.ic_launcher)
 
         val builder = Notification.Builder(context)
-                .setContentTitle("Bluetooth Chat")
+                .setContentTitle(context.getString(R.string.app_name))
                 .setContentText(message)
                 .setSmallIcon(R.drawable.ic_notification)
                 .setLargeIcon(Bitmap.createScaledBitmap(icon, 128, 128, false))
                 .setContentIntent(pendingIntent)
                 .setOngoing(true)
                 .setPriority(Notification.PRIORITY_LOW)
-                .addAction(0, "STOP", stopPendingIntent)
+                .addAction(0, context.getString(R.string.notification__stop), stopPendingIntent)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             builder.setColor(resources.getColor(R.color.colorPrimary))
@@ -92,8 +92,8 @@ class NotificationViewImpl(private val context: Context) : NotificationView {
         val icon = BitmapFactory.decodeResource(resources, R.mipmap.ic_launcher)
 
         val builder = Notification.Builder(context)
-                .setContentTitle("Connection request")
-                .setContentText("$deviceName wants to connect to you")
+                .setContentTitle(context.getString(R.string.notification__connection_request))
+                .setContentText(context.getString(R.string.notification__connection_request_body, deviceName))
                 .setLights(Color.BLUE, 3000, 3000)
                 .setSmallIcon(R.drawable.ic_connection_request)
                 .setLargeIcon(Bitmap.createScaledBitmap(icon, 128, 128, false))

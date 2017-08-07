@@ -18,9 +18,21 @@
     <string name="general__time_a_minute_ago">a minute ago</string>
     <string name="general__time_an_hour_ago">an hour ago</string>
     <string name="general__time_yesterday">yesterday</string>
-    <string name="general__time_minutes_ago">%d minutes ago</string>
-    <string name="general__time_hours_ago">%d hours ago</string>
-    <string name="general__time_days_ago">%d days ago</string>
+
+    <plurals name="general__time_minutes_ago">
+        <item quantity="one">%d minute ago</item>
+        <item quantity="other">%d minutes ago</item>
+    </plurals>
+
+    <plurals name="general__time_hours_ago">
+        <item quantity="one">%d hour</item>
+        <item quantity="other">%d hours</item>
+    </plurals>
+
+    <plurals name="general__time_days_ago">
+        <item quantity="one">%d day</item>
+        <item quantity="other">%d days</item>
+    </plurals>
 
     <string name="profile__profile">Profile</string>
     <string name="profile__your_name">Your name</string>
@@ -36,11 +48,11 @@
     <string name="chat__reconnect">Reconnect</string>
     <string name="chat__disconnect">Disconnect</string>
     <string name="chat__connection_rejected">Your connection request was rejected</string>
-    <string name="chat__waiting_for_device">You are waiting for this device to approve a connection.</string>
+    <string name="chat__waiting_for_device">You are waiting for this device to approve a connection</string>
     <string name="chat__connect">Connect</string>
-    <string name="chat__not_connected_to_send">You are not connected to this device.</string>
+    <string name="chat__not_connected_to_send">You are not connected to this device</string>
     <string name="chat__connection_request">%1$s (%2$s) wants to connect to you</string>
-    <string name="chat__not_connected_to_this_device">You are not connected to this device right now.</string>
+    <string name="chat__not_connected_to_this_device">You are not connected to this device right now</string>
     <string name="chat__message_cannot_be_empty">Message cannot be empty</string>
     <string name="chat__partner_disconnected">Your partner disconnected from your device. Do you want to reconnect?</string>
     <string name="chat__connection_lost">Connection with this device was lost. Do you want to reconnect?</string>
@@ -48,7 +60,7 @@
     <string name="chat__enable">Enable</string>
     <string name="chat__unable_to_connect">Unable to connect to this device, do you want to try again?</string>
     <string name="chat__rescan">Rescan</string>
-    <string name="chat__device_is_not_available">This device is not available right now, make sure it\'s paired.</string>
+    <string name="chat__device_is_not_available">This device is not available right now, make sure it\'s paired</string>
     <string name="chat__bluetooth_required">This app requires Bluetooth enabled to work properly</string>
     <string name="chat__connected_to_another">You are currently connected to %s. You can connect to this device (current connection will be interrupted)?</string>
     <string name="chat__message_hint">Message</string>
@@ -58,7 +70,7 @@
     <string name="conversations__scan">Scan</string>
     <string name="conversations__options">Conversation options</string>
     <string name="conversations__remove">Remove</string>
-    <string name="conversations__removal_confirmation">Do you really want to remove this conversation? All messages will be lost.</string>
+    <string name="conversations__removal_confirmation">Do you really want to remove this conversation? All messages will be lost</string>
     <string name="conversations__connection_rejected">Your connection request to %1$s (%2$s) was rejected</string>
     <string name="conversations__connection_request">%1$s (%2$s) wants to connect to you</string>
 
@@ -67,7 +79,7 @@
     <string name="scan__start_scanning">Scan for devices to find your partner or make your device discoverable so he/she will be able to find you</string>
     <string name="scan__scanning">Scanning for devices</string>
     <string name="scan__turn_on">Turn on</string>
-    <string name="scan__turn_bluetooth_on">Turn on Bluetooth to find your future interlocutor</string>
+    <string name="scan__turn_bluetooth_on">Turn on Bluetooth to find your partner</string>
     <string name="scan__share_apk">Don\'t have an Internet connection? Send the .apk file of this application to your partner via Bluetooth</string>
     <string name="scan__unable_to_share_apk">Unable to start Bluetooth sharing</string>
     <string name="scan__no_access_to_bluetooth">Cannot get access to Bluetooth on your device</string>
@@ -77,7 +89,7 @@
     <string name="scan__unable_to_make_discoverable">Unable to make your device discoverable</string>
     <string name="scan__unable_to_connect_service">Unable to engage connection, please restart the app</string>
     <string name="scan__unable_to_connect">Unable to connect to this device</string>
-    <string name="scan__unable_to_fetch_apk">Unable to fetch an .apk file.</string>
+    <string name="scan__unable_to_fetch_apk">Unable to fetch an .apk file</string>
     <string name="scan__permission_explanation">To be able to find other devices this app requires LOCATION permission</string>
     <string name="scan__share_intent">Share .apk</string>
     <string name="scan__paired_devices">Paired devices</string>
@@ -88,6 +100,9 @@
     <string name="initial_setup__initial_setup">Initial Setup</string>
 
     <string name="notification__ready_to_connect">Ready to connect</string>
+    <string name="notification__connection_request">Connection request</string>
+    <string name="notification__connection_request_body">wants to connect to you %s</string>
+    <string name="notification__stop">STOP</string>
 
     <string name="chat__cd__send_button">Send button</string>
     <string name="profile__cd__avatar_preview">Avatar preview</string>
