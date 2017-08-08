@@ -28,13 +28,35 @@
             android:background="?attr/colorPrimary"
             app:popupTheme="@style/AppTheme.PopupOverlay">
 
-            <ImageView
-                android:contentDescription="@string/conversations__cd__user_profile_button"
-                android:id="@+id/iv_avatar"
-                android:layout_width="36dp"
-                android:layout_height="36dp"
+            <LinearLayout
+                android:id="@+id/ll_options"
+                android:layout_width="wrap_content"
+                android:layout_height="?attr/actionBarSize"
                 android:layout_gravity="end"
-                android:layout_marginEnd="8dp" />
+                android:background="?android:attr/selectableItemBackground"
+                android:clickable="true"
+                android:focusable="true"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingEnd="8dp"
+                android:paddingStart="8dp">
+
+                <ImageView
+                    android:id="@+id/iv_avatar"
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+                    android:contentDescription="@string/conversations__cd__settings_button"
+                    tools:src="@color/colorAccent" />
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="4dp"
+                    android:contentDescription="@string/conversations__cd__settings_button"
+                    app:srcCompat="@drawable/ic_more_vert_black_24dp" />
+
+            </LinearLayout>
 
         </android.support.v7.widget.Toolbar>
 

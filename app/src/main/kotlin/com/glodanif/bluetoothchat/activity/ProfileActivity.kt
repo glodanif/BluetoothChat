@@ -8,6 +8,7 @@ import android.support.annotation.ColorInt
 import android.support.v7.widget.Toolbar
 import android.view.MenuItem
 import android.view.View
+import android.view.WindowManager
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
@@ -48,6 +49,7 @@ class ProfileActivity : AppCompatActivity(), ProfileView {
         supportActionBar?.setDisplayShowHomeEnabled(editMode)
         if (editMode) {
             title = getString(R.string.profile__profile)
+            window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN)
         }
 
         settings = SettingsManagerImpl(this)

@@ -1,6 +1,7 @@
 package com.glodanif.bluetoothchat.view
 
 import android.app.Notification
+import com.glodanif.bluetoothchat.util.NotificationSettings
 
 interface NotificationView {
 
@@ -12,8 +13,8 @@ interface NotificationView {
     }
 
     fun getForegroundNotification(message: String): Notification
-    fun showNewMessageNotification(message: String, displayName: String?, deviceName: String, address: String)
-    fun showConnectionRequestNotification(deviceName: String)
+    fun showNewMessageNotification(message: String, displayName: String?, deviceName: String, address: String, settings: NotificationSettings)
+    fun showConnectionRequestNotification(deviceName: String, settings: NotificationSettings)
     fun dismissMessageNotification()
     fun dismissConnectionNotification()
 }

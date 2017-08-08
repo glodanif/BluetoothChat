@@ -10,10 +10,6 @@ abstract class StartStopActivityLifecycleCallbacks : Application.ActivityLifecyc
 
     override fun onActivityPaused(activity: Activity?) {}
 
-    abstract override fun onActivityStarted(activity: Activity?)
-
-    abstract  override fun onActivityStopped(activity: Activity?)
-
     override fun onActivityCreated(activity: Activity?, savedInstanceState: Bundle?) {}
 
     override fun onActivityDestroyed(activity: Activity?) {}

@@ -59,6 +59,11 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:name=".activity.SettingsActivity"
+            android:label="@string/settings__title"
+            android:screenOrientation="portrait" />
+
         <service android:name=".service.BluetoothConnectionService" />
 
         <meta-data

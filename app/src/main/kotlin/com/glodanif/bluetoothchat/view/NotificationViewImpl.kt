@@ -14,6 +14,7 @@ import com.glodanif.bluetoothchat.R
 import com.glodanif.bluetoothchat.activity.ChatActivity
 import com.glodanif.bluetoothchat.activity.ConversationsActivity
 import com.glodanif.bluetoothchat.service.BluetoothConnectionService
+import com.glodanif.bluetoothchat.util.NotificationSettings
 
 class NotificationViewImpl(private val context: Context) : NotificationView {
 
@@ -50,7 +51,7 @@ class NotificationViewImpl(private val context: Context) : NotificationView {
         return builder.build()
     }
 
-    override fun showNewMessageNotification(message: String, displayName: String?, deviceName: String, address: String) {
+    override fun showNewMessageNotification(message: String, displayName: String?, deviceName: String, address: String, settings: NotificationSettings) {
 
         val notificationIntent = Intent(context, ChatActivity::class.java)
                 .putExtra(ChatActivity.EXTRA_ADDRESS, address)
@@ -76,14 +77,18 @@ class NotificationViewImpl(private val context: Context) : NotificationView {
 
         val notification = builder.build()
 
-        notification.defaults = notification.defaults or Notification.DEFAULT_SOUND
-        notification.defaults = notification.defaults or Notification.DEFAULT_VIBRATE
+        if (settings.soundEnabled) {
+            notification.defaults = notification.defaults or Notification.DEFAULT_SOUND
+        }
+        if (settings.vibrationEnabled) {
+            notification.defaults = notification.defaults or Notification.DEFAULT_VIBRATE
+        }
 
         notificationManager.notify(NotificationView.NOTIFICATION_TAG_MESSAGE,
                 NotificationView.NOTIFICATION_ID_MESSAGE, notification)
     }
 
-    override fun showConnectionRequestNotification(deviceName: String) {
+    override fun showConnectionRequestNotification(deviceName: String, settings: NotificationSettings) {
 
         val notificationIntent = Intent(context, ConversationsActivity::class.java)
         notificationIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
@@ -107,8 +112,12 @@ class NotificationViewImpl(private val context: Context) : NotificationView {
 
         val notification = builder.build()
 
-        notification.defaults = notification.defaults or Notification.DEFAULT_SOUND
-        notification.defaults = notification.defaults or Notification.DEFAULT_VIBRATE
+        if (settings.soundEnabled) {
+            notification.defaults = notification.defaults or Notification.DEFAULT_SOUND
+        }
+        if (settings.vibrationEnabled) {
+            notification.defaults = notification.defaults or Notification.DEFAULT_VIBRATE
+        }
 
         notificationManager.notify(NotificationView.NOTIFICATION_TAG_CONNECTION,
                 NotificationView.NOTIFICATION_ID_CONNECTION, notification)

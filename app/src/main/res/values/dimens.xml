@@ -5,4 +5,6 @@
     <dimen name="epb_stroke_width">8dp</dimen>
     <dimen name="epb_min_size">50dp</dimen>
     <dimen name="epb_text_size">22sp</dimen>
+
+    <dimen name="popup_settings_width">220dp</dimen>
 </resources>

@@ -20,10 +20,7 @@ import com.glodanif.bluetoothchat.database.ChatDatabase
 import com.glodanif.bluetoothchat.entity.ChatMessage
 import com.glodanif.bluetoothchat.entity.Conversation
 import com.glodanif.bluetoothchat.entity.Message
-import com.glodanif.bluetoothchat.model.OnConnectionListener
-import com.glodanif.bluetoothchat.model.OnMessageListener
-import com.glodanif.bluetoothchat.model.SettingsManager
-import com.glodanif.bluetoothchat.model.SettingsManagerImpl
+import com.glodanif.bluetoothchat.model.*
 import com.glodanif.bluetoothchat.view.NotificationView
 import com.glodanif.bluetoothchat.view.NotificationViewImpl
 import java.io.IOException
@@ -62,6 +59,7 @@ class BluetoothConnectionService : Service() {
     private var currentConversation: Conversation? = null
 
     private val db: ChatDatabase = Storage.getInstance(this).db
+    private lateinit var preferences: Preferences
     private lateinit var settings: SettingsManager
 
     private lateinit var application: ChatApplication
@@ -83,6 +81,7 @@ class BluetoothConnectionService : Service() {
         Log.e(TAG, "CREATED")
         application = getApplication() as ChatApplication
         settings = SettingsManagerImpl(this)
+        preferences = UserPreferences(this)
         notificationView = NotificationViewImpl(this)
         isRunning = true
     }
@@ -288,7 +287,8 @@ class BluetoothConnectionService : Service() {
                 ChatMessage(device.address, Date(), false, message.body)
 
         if (messageListener == null || application.currentChat == null || !application.currentChat.equals(device.address)) {
-            notificationView.showNewMessageNotification(message.body, currentConversation?.displayName, device.name, device.address)
+            notificationView.showNewMessageNotification(message.body, currentConversation?.displayName,
+                    device.name, device.address, preferences.getSettings())
         } else {
             receivedMessage.seenHere = true
         }
@@ -312,7 +312,7 @@ class BluetoothConnectionService : Service() {
 
         if (!application.isConversationsOpened && !(application.currentChat != null && application.currentChat.equals(device.address))) {
             notificationView.showConnectionRequestNotification(
-                    "${conversation.displayName} (${conversation.deviceName})")
+                    "${conversation.displayName} (${conversation.deviceName})", preferences.getSettings())
         }
     }
 

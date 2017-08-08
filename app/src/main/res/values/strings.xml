@@ -73,6 +73,7 @@
     <string name="conversations__removal_confirmation">Do you really want to remove this conversation? All messages will be lost</string>
     <string name="conversations__connection_rejected">Your connection request to %1$s (%2$s) was rejected</string>
     <string name="conversations__connection_request">%1$s (%2$s) wants to connect to you</string>
+    <string name="conversations__settings">Settings</string>
 
     <string name="scan__no_devices">No devices were found</string>
     <string name="scan__scan_for_devices">Scan for devices</string>
@@ -104,11 +105,17 @@
     <string name="notification__connection_request_body">wants to connect to you %s</string>
     <string name="notification__stop">STOP</string>
 
+    <string name="settings__title">Settings</string>
+    <string name="settings__notifications">Notifications</string>
+    <string name="settings__sound">Sound</string>
+    <string name="settings__vibration">Vibration</string>
+
     <string name="chat__cd__send_button">Send button</string>
     <string name="profile__cd__avatar_preview">Avatar preview</string>
     <string name="scan__cd__share_apk_file_button">Share .apk file button</string>
-    <string name="conversations__cd__user_profile_button">User Profile button</string>
+    <string name="conversations__cd__settings_button">Settings button</string>
     <string name="conversations__cd__partners_avatar">Partner\'s avatar</string>
     <string name="conversations__cd__connected_indicator">Connected indicator</string>
+    <string name="conversations__cd__users_avatar">User\'s avatar</string>
 
 </resources>

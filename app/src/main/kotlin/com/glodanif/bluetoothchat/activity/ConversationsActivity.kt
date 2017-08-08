@@ -20,11 +20,13 @@ import com.amulyakhare.textdrawable.TextDrawable
 import com.glodanif.bluetoothchat.R
 import com.glodanif.bluetoothchat.adapter.ConversationsAdapter
 import com.glodanif.bluetoothchat.entity.Conversation
+import com.glodanif.bluetoothchat.extension.getFirstLetter
 import com.glodanif.bluetoothchat.model.*
 import com.glodanif.bluetoothchat.presenter.ConversationsPresenter
 import com.glodanif.bluetoothchat.view.ConversationsView
 import com.glodanif.bluetoothchat.view.NotificationView
 import com.glodanif.bluetoothchat.widget.ActionView
+import com.glodanif.bluetoothchat.widget.SettingsPopup
 
 class ConversationsActivity : AppCompatActivity(), ConversationsView {
 
@@ -40,6 +42,9 @@ class ConversationsActivity : AppCompatActivity(), ConversationsView {
     private lateinit var addButton: FloatingActionButton
     private lateinit var actions: ActionView
     private lateinit var userAvatar: ImageView
+    private lateinit var optionsButton: View
+
+    private lateinit var settingsPopup: SettingsPopup
 
     private val adapter: ConversationsAdapter = ConversationsAdapter(this)
 
@@ -59,23 +64,32 @@ class ConversationsActivity : AppCompatActivity(), ConversationsView {
         userAvatar = findViewById<ImageView>(R.id.iv_avatar)
         conversationsList = findViewById<RecyclerView>(R.id.rv_conversations)
         noConversations = findViewById(R.id.ll_empty_holder)
+        optionsButton = findViewById(R.id.ll_options)
+        addButton = findViewById<FloatingActionButton>(R.id.fab_new_conversation)
+
         conversationsList.layoutManager = LinearLayoutManager(this)
         conversationsList.adapter = adapter
+
+        settingsPopup = SettingsPopup(this)
+        settingsPopup.setCallbacks(
+                profileClickListener = { ProfileActivity.start(context = this, editMode = true) },
+                settingsClickListener = { SettingsActivity.start(context = this) }
+        )
+
         adapter.clickListener = { ChatActivity.start(this, it.deviceAddress) }
         adapter.longClickListener = {
             conversation, isCurrent ->
             showContextMenu(conversation, isCurrent)
         }
 
-        addButton = findViewById<FloatingActionButton>(R.id.fab_new_conversation)
         addButton.setOnClickListener {
             ScanActivity.startForResult(this, REQUEST_SCAN)
         }
         findViewById<Button>(R.id.btn_scan).setOnClickListener {
             ScanActivity.startForResult(this, REQUEST_SCAN)
         }
-        userAvatar.setOnClickListener {
-            ProfileActivity.start(context = this, editMode = true)
+        optionsButton.setOnClickListener { v ->
+            settingsPopup.show(v)
         }
     }
 
@@ -193,9 +207,9 @@ class ConversationsActivity : AppCompatActivity(), ConversationsView {
     }
 
     override fun showUserProfile(name: String, color: Int) {
-        val symbol = if (name.isEmpty()) "?" else name[0].toString().toUpperCase()
-        val drawable = TextDrawable.builder().buildRound(symbol, color)
+        val drawable = TextDrawable.builder().buildRound(name.getFirstLetter(), color)
         userAvatar.setImageDrawable(drawable)
+        settingsPopup.populateData(name, color)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

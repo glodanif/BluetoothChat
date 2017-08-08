@@ -19,7 +19,7 @@ fun Date.getRelativeTime(context: Context): String {
 
     var timestamp = this.time
 
-    if (timestamp < 1000000000000L) {
+    if (timestamp < 1_000_000_000_000L) {
         timestamp *= 1000
     }
 
@@ -52,4 +52,8 @@ fun Date.getRelativeTime(context: Context): String {
     } else {
         return VIEW_FORMAT.format(this)
     }
+}
+
+fun String.getFirstLetter(): String {
+    return if (this.isEmpty()) "?" else this[0].toString().toUpperCase()
 }
