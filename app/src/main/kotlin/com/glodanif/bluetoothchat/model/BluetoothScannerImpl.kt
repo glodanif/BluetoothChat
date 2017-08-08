@@ -96,7 +96,7 @@ class BluetoothScannerImpl(val context: Context) : BluetoothScanner {
     }
 
     override fun isBluetoothEnabled(): Boolean {
-        return adapter?.isEnabled as Boolean
+        return adapter?.isEnabled ?: false
     }
 
     override fun isDiscoverable(): Boolean {

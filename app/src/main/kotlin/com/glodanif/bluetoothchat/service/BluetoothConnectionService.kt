@@ -13,6 +13,7 @@ import android.os.Handler
 import android.os.IBinder
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
+import com.glodanif.bluetoothchat.BuildConfig
 import com.glodanif.bluetoothchat.ChatApplication
 import com.glodanif.bluetoothchat.R
 import com.glodanif.bluetoothchat.database.Storage
@@ -602,7 +603,9 @@ class BluetoothConnectionService : Service() {
     }
 
     private fun log(text: String) {
-        val logBody = "$text - (State: ${connectionState.name}, Type: ${connectionType?.name}, Conversation: $currentConversation, Threads: A: $acceptThread (running: ${acceptThread?.isAlive}), C: $connectThread (running: ${connectThread?.isAlive}), CD: $connectedThread (running: ${connectedThread?.isAlive}))"
-        Log.e(TAG, logBody)
+        if (BuildConfig.DEBUG) {
+            val logBody = "$text - (State: ${connectionState.name}, Type: ${connectionType?.name}, Conversation: $currentConversation, Threads: A: $acceptThread (running: ${acceptThread?.isAlive}), C: $connectThread (running: ${connectThread?.isAlive}), CD: $connectedThread (running: ${connectedThread?.isAlive}))"
+            Log.e(TAG, logBody)
+        }
     }
 }

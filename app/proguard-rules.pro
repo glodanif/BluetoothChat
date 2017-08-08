@@ -24,6 +24,8 @@
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
 
+-dontobfuscate
+
 -dontwarn android.arch.**
 -dontwarn com.amulyakhare.**
 -dontwarn me.priyesh.**
