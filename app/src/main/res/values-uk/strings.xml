@@ -79,6 +79,7 @@
     <string name="conversations__removal_confirmation">Ви впевнені що хочете видалити цю розмову? Всі повідомлення будуть втрачені</string>
     <string name="conversations__connection_rejected">Ваш запит на з\'єднання до %1$s (%2$s) був відхилений</string>
     <string name="conversations__connection_request">%1$s (%2$s) хоче з\'єднатися з вами</string>
+    <string name="conversations__settings">Налаштування</string>
 
     <string name="scan__no_devices">Пристроїв не знайдено</string>
     <string name="scan__scan_for_devices">Пошук пристроїв</string>
@@ -110,11 +111,17 @@
     <string name="notification__connection_request_body">%s хоче з\'єднатися з вами</string>
     <string name="notification__stop">ЗУПИНИТИ</string>
 
+    <string name="settings__title">Налаштування</string>
+    <string name="settings__notifications">Сповіщення</string>
+    <string name="settings__sound">Звук</string>
+    <string name="settings__vibration">Вібрація</string>
+
     <string name="chat__cd__send_button">Кнопка відправки</string>
     <string name="profile__cd__avatar_preview">Вид аватара</string>
     <string name="scan__cd__share_apk_file_button">Кнопка відправки .apk файла</string>
-    <string name="conversations__cd__settings_button">Кнопка Профіля</string>
+    <string name="conversations__cd__settings_button">Кнопка налаштувань</string>
     <string name="conversations__cd__partners_avatar">Аватар партнера</string>
     <string name="conversations__cd__connected_indicator">Індикатор з\'єднання</string>
+    <string name="conversations__cd__users_avatar">Аватар користувача</string>
 
 </resources>
