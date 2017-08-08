@@ -1,120 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-
-    <string name="app_name">Bluetooth Chat</string>
-
-    <string name="general__ok">ОК</string>
-    <string name="general__cancel">Отмена</string>
-    <string name="general__try_again">Попробовать еще</string>
-    <string name="general__start_chat">Начать чат</string>
-    <string name="general__restart">Рестарт</string>
-    <string name="general__yes">Да</string>
-    <string name="general__no">Нет</string>
-    <string name="general__service_lost">Bluetooth Chat сервис был остановлен, перезапустите сервис для корректной работы приложения</string>
-    <string name="general__disconnect">Отключиться</string>
-
-    <string name="general__time_format">dd MMM, yyyy</string>
-    <string name="general__time_unknown">неизвестно</string>
-    <string name="general__time_just_now">только что</string>
-    <string name="general__time_a_minute_ago">минуту назад</string>
-    <string name="general__time_an_hour_ago">час назад</string>
-    <string name="general__time_yesterday">вчера</string>
-
-    <plurals name="general__time_minutes_ago">
-        <item quantity="one">%d минута назад</item>
-        <item quantity="few">%d минуты назад</item>
-        <item quantity="many">%d минут назад</item>
-        <item quantity="other">%d минут назад</item>
-    </plurals>
-
-    <plurals name="general__time_hours_ago">
-        <item quantity="one">%d час</item>
-        <item quantity="few">%d часа</item>
-        <item quantity="many">%d часов</item>
-        <item quantity="other">%d часов</item>
-    </plurals>
-
-    <plurals name="general__time_days_ago">
-        <item quantity="one">%d день</item>
-        <item quantity="few">%d дня</item>
-        <item quantity="many">%d дней</item>
-        <item quantity="other">%d дней</item>
-    </plurals>
-
-    <string name="profile__profile">Профиль</string>
-    <string name="profile__your_name">Ваше имя</string>
-    <string name="profile__validation_error">Ваше имя не может быть пустым или длиннее 25 символов, также символ \'#\' запрещен</string>
-    <string name="profile__edit">Изменить</string>
-    <string name="profile__name">Имя</string>
-    <string name="profile__color">Цвет</string>
-    <string name="profile__save">Сохранить</string>
-
-    <string name="chat__not_connected">Не соединено</string>
-    <string name="chat__connected">Соединено</string>
-    <string name="chat__pending">Ожидание</string>
-    <string name="chat__reconnect">Переподключиться</string>
-    <string name="chat__disconnect">Отключиться</string>
-    <string name="chat__connection_rejected">Ваш запрос на соединение был отклонен</string>
-    <string name="chat__waiting_for_device">Вы ждете пока это устройство одобрит соединение</string>
-    <string name="chat__connect">Подключится</string>
-    <string name="chat__not_connected_to_send">Вы не подключены к этому устройству</string>
-    <string name="chat__connection_request">%1$s (%2$s) хочет подключиться к вам</string>
-    <string name="chat__not_connected_to_this_device">Сейчас вы не подключены к этому устройству</string>
-    <string name="chat__message_cannot_be_empty">Сообщение не может быть пустым</string>
-    <string name="chat__partner_disconnected">Ваш партнер отсоединился от вашего устройства. Хотите переподлючиться?</string>
-    <string name="chat__connection_lost">Соединение с этим устройством было потеряно. Хотите переподлючиться?</string>
-    <string name="chat__bluetooth_is_disabled">Bluetooth выключен</string>
-    <string name="chat__enable">Включить</string>
-    <string name="chat__unable_to_connect">Не удается подключиться к этому устройству. Хотите попробовать еще раз?</string>
-    <string name="chat__rescan">Пересканнировать</string>
-    <string name="chat__device_is_not_available">Сейчас это устройство недоступно, убедитесь что вы подключены</string>
-    <string name="chat__bluetooth_required">Для корректной работы этого приложения необходимо включить Bluetooth</string>
-    <string name="chat__connected_to_another">Сейчас вы соеденины с %s. Вы можете подключиться к этому устройству (текущее соединение будет прервано)?</string>
-    <string name="chat__message_hint">Сообщение</string>
-    <string name="chat__chat">Чат</string>
-
-    <string name="conversations__no_conversations">У вас пока что нет ни одного разговора\nНачните сканирование чтобы найти вашего партнера</string>
-    <string name="conversations__scan">Сканировать</string>
-    <string name="conversations__options">Опции разговора</string>
-    <string name="conversations__remove">Удалить</string>
-    <string name="conversations__removal_confirmation">Вы уверенны что хотите удалить этот разговор? Все сообщения будут утраченны</string>
-    <string name="conversations__connection_rejected">Ваш запрос на соединение к %1$s (%2$s) был отклонен</string>
-    <string name="conversations__connection_request">%1$s (%2$s) хочет соедениться с вами</string>
-
-    <string name="scan__no_devices">Устройств не найдено</string>
-    <string name="scan__scan_for_devices">Поиск устройств</string>
-    <string name="scan__start_scanning">Начните сканирование чтобы найти вашего партнера или сделайте ваше устройство обнаружаемым чтобы он смог найти вас</string>
-    <string name="scan__scanning">Поиск</string>
-    <string name="scan__turn_on">Включить</string>
-    <string name="scan__turn_bluetooth_on">Включите Bluetooth чтобы найти вашего партнера</string>
-    <string name="scan__share_apk">Нет Интернет соединения? Отправте .apk файл этого приложения вашему партнеру с помощью Bluetooth</string>
-    <string name="scan__unable_to_share_apk">Не удается послать файл по Bluetooth</string>
-    <string name="scan__no_access_to_bluetooth">Не удаеться получить доступ к Bluetooth на вашем устройстве</string>
-    <string name="scan__bluetooth_disabled">Для корректной работы этого приложения необходимо включить Bluetooth</string>
-    <string name="scan__stop_scanning">Остановить поиск</string>
-    <string name="scan__scan">Начать поиск</string>
-    <string name="scan__unable_to_make_discoverable">Не удается сдалать ваше устройство обнаружаемым</string>
-    <string name="scan__unable_to_connect_service">Не удается установить свьязь с этим устройством, попробуйте перезапустить приложение</string>
-    <string name="scan__unable_to_connect">Не удается подключиться к этому устройству</string>
-    <string name="scan__unable_to_fetch_apk">Не удается извлечь .apk файл</string>
-    <string name="scan__permission_explanation">Для начала поиска это приложение требует LOCATION разрешение</string>
-    <string name="scan__share_intent">Отправить .apk</string>
-    <string name="scan__paired_devices">Подключенные устройства</string>
-    <string name="scan__available_devices">Доступные устройства</string>
-    <string name="scan__discoverable">Обнаружаемый</string>
-    <string name="scan__make_discoverable">Сделать обнаружаемым</string>
-
-    <string name="initial_setup__initial_setup">Первоначальная настройка</string>
-
-    <string name="notification__ready_to_connect">Готов к подключению</string>
-    <string name="notification__connection_request">Запрос на соединение</string>
-    <string name="notification__connection_request_body">%s хочет подключиться к вам</string>
-    <string name="notification__stop">ОСТАНОВИТЬ</string>
-
-    <string name="chat__cd__send_button">Кнопка отправки</string>
-    <string name="profile__cd__avatar_preview">Вид аватара</string>
-    <string name="scan__cd__share_apk_file_button">Кнопка отправки .apk файла</string>
-    <string name="conversations__cd__settings_button">Кнопка Профиля</string>
-    <string name="conversations__cd__partners_avatar">Аватар партнера</string>
-    <string name="conversations__cd__connected_indicator">Индикатор подключения</string>
-
+<string name="app_name">"Bluetooth Chat"</string>
+<string name="general__ok">"ОК"</string>
+<string name="general__cancel">"Отмена"</string>
+<string name="general__try_again">"Попробовать еще"</string>
+<string name="general__start_chat">"Начать чат"</string>
+<string name="general__restart">"Рестарт"</string>
+<string name="general__yes">"Да"</string>
+<string name="general__no">"Нет"</string>
+<string name="general__service_lost">"Bluetooth Chat сервис был остановлен, перезапустите сервис для корректной работы приложения"</string>
+<string name="general__disconnect">"Отключиться"</string>
+<string name="profile__profile">"Профиль"</string>
+<string name="profile__your_name">"Ваше имя"</string>
+<string name="profile__validation_error">"Ваше имя не может быть пустым или длиннее 25 символов, также символ '#' запрещен"</string>
+<string name="profile__edit">"Изменить"</string>
+<string name="profile__name">"Имя"</string>
+<string name="profile__color">"Цвет"</string>
+<string name="profile__save">"Сохранить"</string>
+<string name="scan"></string>
+<string name="discoverable"></string>
+<string name="make_discoverable"></string>
+<string name="chat__not_connected">"Не соединено"</string>
+<string name="chat__connected">"Соединено"</string>
+<string name="chat__pending">"Ожидание"</string>
+<string name="chat__reconnect">"Переподключиться"</string>
+<string name="chat__disconnect">"Отключиться"</string>
+<string name="chat__connection_rejected">"Ваш запрос на соединение был отклонен"</string>
+<string name="chat__waiting_for_device">"Вы ждете пока это устройство одобрит соединение"</string>
+<string name="chat__connect">"Подключится"</string>
+<string name="chat__not_connected_to_send">"Вы не подключены к этому устройству"</string>
+<string name="chat__connection_request">"%1$s (%2$s) хочет подключиться к вам"</string>
+<string name="chat__not_connected_to_this_device">"Сейчас вы не подключены к этому устройству"</string>
+<string name="chat__message_cannot_be_empty">"Сообщение не может быть пустым"</string>
+<string name="chat__partner_disconnected">"Ваш партнер отсоединился от вашего устройства. Хотите переподлючиться?"</string>
+<string name="chat__connection_lost">"Соединение с этим устройством было потеряно. Хотите переподлючиться?"</string>
+<string name="chat__bluetooth_is_disabled">"Bluetooth выключен"</string>
+<string name="chat__enable">"Включить"</string>
+<string name="chat__unable_to_connect">"Не удается подключиться к этому устройству. Хотите попробовать еще раз?"</string>
+<string name="chat__rescan">"Пересканнировать"</string>
+<string name="chat__device_is_not_available">"Сейчас это устройство недоступно, убедитесь что вы подключены"</string>
+<string name="chat__bluetooth_required">"Для корректной работы этого приложения необходимо включить Bluetooth"</string>
+<string name="chat__connected_to_another">"Сейчас вы соеденины с %s. Вы можете подключиться к этому устройству (текущее соединение будет прервано)?"</string>
+<string name="chat__message_hint">"Сообщение"</string>
+<string name="conversations__no_conversations">"У вас пока что нет ни одного разговора
+Начните сканирование чтобы найти вашего партнера"</string>
+<string name="conversations__scan">"Сканировать"</string>
+<string name="conversations__options">"Опции разговора"</string>
+<string name="conversations__remove">"Удалить"</string>
+<string name="conversations__removal_confirmation">"Вы уверенны что хотите удалить этот разговор? Все сообщения будут утраченны"</string>
+<string name="conversations__connection_rejected">"Ваш запрос на соединение к %1$s (%2$s) был отклонен"</string>
+<string name="conversations__connection_request">"%1$s (%2$s) хочет соедениться с вами"</string>
+<string name="scan__no_devices">"Устройств не найдено"</string>
+<string name="scan__scan_for_devices">"Поиск устройств"</string>
+<string name="scan__start_scanning">"Начните сканирование чтобы найти вашего партнера или сделайте ваше устройство обнаружаемым чтобы он смог найти вас"</string>
+<string name="scan__scanning">"Поиск"</string>
+<string name="scan__turn_on">"Включить"</string>
+<string name="scan__turn_bluetooth_on">"Включите Bluetooth чтобы найти вашего партнера"</string>
+<string name="scan__share_apk">"Нет Интернет соединения? Отправте .apk файл этого приложения вашему партнеру с помощью Bluetooth"</string>
+<string name="scan__unable_to_share_apk">"Не удается послать файл по Bluetooth"</string>
+<string name="scan__no_access_to_bluetooth">"Не удаеться получить доступ к Bluetooth на вашем устройстве"</string>
+<string name="scan__bluetooth_disabled">"Для корректной работы этого приложения необходимо включить Bluetooth"</string>
+<string name="scan__stop_scanning">"Остановить поиск"</string>
+<string name="scan__scan">"Начать поиск"</string>
+<string name="scan__unable_to_make_discoverable">"Не удается сдалать ваше устройство обнаружаемым"</string>
+<string name="scan__unable_to_connect_service">"Не удается установить свьязь с этим устройством, попробуйте перезапустить приложение"</string>
+<string name="scan__unable_to_connect">"Не удается подключиться к этому устройству"</string>
+<string name="scan__unable_to_fetch_apk">"Не удается извлечь .apk файл"</string>
+<string name="scan__permission_explanation">"Для начала поиска это приложение требует LOCATION разрешение"</string>
+<string name="scan__share_intent">"Отправить .apk"</string>
+<string name="scan__paired_devices">"Подключенные устройства"</string>
+<string name="scan__available_devices">"Доступные устройства"</string>
+<string name="notification__ready_to_connect">"Готов к подключению"</string>
+<string name="chat__cd__send_button">"Кнопка отправки"</string>
+<string name="profile__cd__avatar_preview">"Вид аватара"</string>
+<string name="scan__cd__share_apk_file_button">"Кнопка отправки .apk файла"</string>
+<string name="conversations__cd__user_profile_button">"Кнопка Профиля"</string>
+<string name="conversations__cd_partners_avatar"></string>
+<string name="conversations__cd__connected_indicator">"Индикатор подключения"</string>
+<string name="general__time_format">"dd MMM, yyyy"</string>
+<string name="general__time_unknown">"неизвестно"</string>
+<string name="general__time_just_now">"только что"</string>
+<string name="general__time_a_minute_ago">"минуту назад"</string>
+<string name="general__time_an_hour_ago">"час назад"</string>
+<string name="general__time_yesterday">"вчера"</string>
+<plurals name="general__time_minutes_ago">
+<item quantity="one">"%d минута назад"</item>
+<item quantity="few">"%d минуты назад"</item>
+<item quantity="many">"%d минут назад"</item>
+<item quantity="other">"%d минут назад"</item>
+</plurals>
+<plurals name="general__time_hours_ago">
+<item quantity="one">"%d час"</item>
+<item quantity="few">"%d часа"</item>
+<item quantity="many">"%d часов"</item>
+<item quantity="other">"%d часов"</item>
+</plurals>
+<plurals name="general__time_days_ago">
+<item quantity="one">"%d день"</item>
+<item quantity="few">"%d дня"</item>
+<item quantity="many">"%d дней"</item>
+<item quantity="other">"%d дней"</item>
+</plurals>
+<string name="chat__chat">"Чат"</string>
+<string name="scan__discoverable">"Обнаружаемый"</string>
+<string name="scan__make_discoverable">"Сделать обнаружаемым"</string>
+<string name="initial_setup__initial_setup">"Первоначальная настройка"</string>
+<string name="conversations__cd__partners_avatar">"Аватар партнера"</string>
+<string name="notification__connection_request">"Запрос на соединение"</string>
+<string name="notification__connection_request_body">"%s хочет подключиться к вам"</string>
+<string name="notification__stop">"ОСТАНОВИТЬ"</string>
+<string name="conversations__settings">"Настройки"</string>
+<string name="settings__title">"Настройки"</string>
+<string name="settings__notifications">"Уведомления"</string>
+<string name="settings__sound">"Звук"</string>
+<string name="settings__vibration">"Вибрация"</string>
+<string name="conversations__cd__settings_button">"Кнопка настроек"</string>
+<string name="conversations__cd__users_avatar">"Аватар пользователя"</string>
 </resources>
