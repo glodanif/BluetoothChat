@@ -37,7 +37,7 @@
     <LinearLayout
         android:id="@+id/linearLayout"
         android:layout_width="0dp"
-        android:layout_height="48dp"
+        android:layout_height="wrap_content"
         android:background="@android:color/white"
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -54,7 +54,8 @@
             android:background="@null"
             android:ems="10"
             android:hint="@string/chat__message_hint"
-            android:inputType="textShortMessage|textCapSentences"
+            android:inputType="textLongMessage|textCapSentences|textMultiLine"
+            android:maxLines="4"
             android:padding="8dp"
             android:textSize="16sp" />
 
@@ -65,9 +66,9 @@
             android:layout_gravity="center_vertical"
             android:layout_weight="0"
             android:background="?android:attr/selectableItemBackground"
+            android:contentDescription="@string/chat__cd__send_button"
             android:tint="@color/colorAccent"
-            app:srcCompat="@drawable/ic_send_black_24dp"
-            android:contentDescription="@string/chat__cd__send_button"/>
+            app:srcCompat="@drawable/ic_send_black_24dp" />
 
     </LinearLayout>
 
