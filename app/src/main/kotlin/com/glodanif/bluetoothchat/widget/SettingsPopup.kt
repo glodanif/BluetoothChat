@@ -38,7 +38,6 @@ class SettingsPopup(context: Context) : PopupWindow() {
     private var container: View
     private var avatar: ImageView
     private var userNameLabel: TextView
-    private var settingsButton: View
 
     private var isDismissing: Boolean = false
 
@@ -61,14 +60,13 @@ class SettingsPopup(context: Context) : PopupWindow() {
         container = rootView.findViewById(R.id.fl_container)
         avatar = rootView.findViewById<ImageView>(R.id.iv_avatar)
         userNameLabel = rootView.findViewById<TextView>(R.id.tv_username)
-        settingsButton = rootView.findViewById(R.id.tv_settings_button)
 
         rootView.findViewById<View>(R.id.ll_user_profile_container).setOnClickListener({
             dismiss()
             profileClickListener?.invoke()
         })
 
-        rootView.findViewById<View>(R.id.tv_settings_button).setOnClickListener({
+        rootView.findViewById<View>(R.id.ll_settings_button).setOnClickListener({
             dismiss()
             settingsClickListener?.invoke()
         })

@@ -5,6 +5,7 @@ import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.annotation.ColorInt
+import android.support.v7.app.AppCompatDelegate
 import android.support.v7.widget.Toolbar
 import android.view.MenuItem
 import android.view.View
@@ -39,6 +40,7 @@ class ProfileActivity : AppCompatActivity(), ProfileView {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true)
         setContentView(R.layout.activity_profile)
 
         editMode = intent.getBooleanExtra(EXTRA_EDIT_MODE, false)
