@@ -26,7 +26,7 @@ import com.amulyakhare.textdrawable.TextDrawable
 import com.glodanif.bluetoothchat.model.SettingsManager
 import com.glodanif.bluetoothchat.util.SimpleTextWatcher
 
-class ProfileActivity : AppCompatActivity(), ProfileView {
+class ProfileActivity : SkeletonActivity(), ProfileView {
 
     private lateinit var presenter: ProfilePresenter
     private lateinit var settings: SettingsManager
@@ -40,15 +40,12 @@ class ProfileActivity : AppCompatActivity(), ProfileView {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true)
-        setContentView(R.layout.activity_profile)
+        setContentView(R.layout.activity_profile, ActivityType.CHILD_ACTIVITY)
 
         editMode = intent.getBooleanExtra(EXTRA_EDIT_MODE, false)
-
-        val toolbar = findViewById<Toolbar>(R.id.tb_toolbar)
-        setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(editMode)
         supportActionBar?.setDisplayShowHomeEnabled(editMode)
+
         if (editMode) {
             title = getString(R.string.profile__profile)
             window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN)
@@ -126,16 +123,6 @@ class ProfileActivity : AppCompatActivity(), ProfileView {
     private val colorSelectListener = object : ColorSelectListener {
         override fun onColorSelected(color: Int) {
             presenter.onColorPicked(color)
-        }
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            android.R.id.home -> {
-                onBackPressed()
-                return true
-            }
-            else -> return onOptionsItemSelected(item)
         }
     }
 

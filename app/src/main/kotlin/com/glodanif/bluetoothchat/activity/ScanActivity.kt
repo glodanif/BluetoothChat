@@ -29,7 +29,7 @@ import com.glodanif.bluetoothchat.presenter.ScanPresenter
 import com.glodanif.bluetoothchat.view.ScanView
 import com.glodanif.bluetoothchat.widget.ExpiringProgressBar
 
-class ScanActivity : AppCompatActivity(), ScanView {
+class ScanActivity : SkeletonActivity(), ScanView {
 
     private val REQUEST_ENABLE_BLUETOOTH = 101
     private val REQUEST_MAKE_DISCOVERABLE = 102
@@ -56,12 +56,7 @@ class ScanActivity : AppCompatActivity(), ScanView {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true)
-        setContentView(R.layout.activity_scan)
-        val toolbar = findViewById<Toolbar>(R.id.toolbar)
-        setSupportActionBar(toolbar)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.setDisplayShowHomeEnabled(true)
+        setContentView(R.layout.activity_scan, ActivityType.CHILD_ACTIVITY)
 
         presenter = ScanPresenter(this, BluetoothScannerImpl(this),
                 BluetoothConnectorImpl(this), ApkExtractor(this))
@@ -292,11 +287,6 @@ class ScanActivity : AppCompatActivity(), ScanView {
         super.onStop()
         isStarted = false
         presenter.cancelScanning()
-    }
-
-    override fun onSupportNavigateUp(): Boolean {
-        onBackPressed()
-        return true
     }
 
     companion object {

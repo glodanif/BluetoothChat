@@ -92,7 +92,7 @@
     <string name="scan__no_access_to_bluetooth">Не вда\'ється отримати доступ до Bluetooth на вашому пристрої</string>
     <string name="scan__bluetooth_disabled">Для коректної роботи цього додатку необхідно ввімкнути Bluetooth</string>
     <string name="scan__stop_scanning">Зупинити пошук</string>
-    <string name="scan__scan">Почати пошук</string>
+    <string name="scan__scan">Пошук</string>
     <string name="scan__unable_to_make_discoverable">Не вдається зробити ваш пристрій видимим</string>
     <string name="scan__unable_to_connect_service">Не вдається встановити зв\'язок з цим пристроєм, спробуйте перезапустити додапок</string>
     <string name="scan__unable_to_connect">Не вдається з\'єднатися з цим пристроєм</string>

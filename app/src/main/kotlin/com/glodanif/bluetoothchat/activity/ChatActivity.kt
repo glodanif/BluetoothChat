@@ -30,7 +30,7 @@ import com.glodanif.bluetoothchat.view.NotificationView
 import com.glodanif.bluetoothchat.widget.ActionView
 import java.util.*
 
-class ChatActivity : AppCompatActivity(), ChatView {
+class ChatActivity : SkeletonActivity(), ChatView {
 
     private val REQUEST_ENABLE_BLUETOOTH = 101
 
@@ -44,7 +44,6 @@ class ChatActivity : AppCompatActivity(), ChatView {
     private lateinit var actions: ActionView
     private lateinit var chatList: RecyclerView
     private lateinit var messageField: EditText
-    private lateinit var toolbar: Toolbar
 
     private val adapter: ChatAdapter = ChatAdapter(this)
 
@@ -52,12 +51,10 @@ class ChatActivity : AppCompatActivity(), ChatView {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true)
-        setContentView(R.layout.activity_chat)
-        toolbar = findViewById<Toolbar>(R.id.toolbar)
-        setSupportActionBar(toolbar)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.setDisplayShowHomeEnabled(true)
+        setContentView(R.layout.activity_chat, ActivityType.CHILD_ACTIVITY)
+
+        toolbar?.setTitleTextAppearance(this, R.style.ActionBar_TitleTextStyle)
+        toolbar?.setSubtitleTextAppearance(this, R.style.ActionBar_SubTitleTextStyle)
 
         actions = findViewById<ActionView>(R.id.av_actions)
         messageField = findViewById<EditText>(R.id.et_message)
@@ -74,7 +71,7 @@ class ChatActivity : AppCompatActivity(), ChatView {
         val deviceAddress: String? = intent.getStringExtra(EXTRA_ADDRESS)
 
         title = if (deviceAddress.isNullOrEmpty()) getString(R.string.app_name) else  deviceAddress
-        toolbar.subtitle = getString(R.string.chat__not_connected)
+        toolbar?.subtitle = getString(R.string.chat__not_connected)
         presenter = ChatPresenter(deviceAddress.toString(),
                 this, scanModel, connectionModel, conversationModel, storageModel)
     }
@@ -101,15 +98,15 @@ class ChatActivity : AppCompatActivity(), ChatView {
     }
 
     override fun showStatusConnected() {
-        toolbar.subtitle = getString(R.string.chat__connected)
+        toolbar?.subtitle = getString(R.string.chat__connected)
     }
 
     override fun showStatusNotConnected() {
-        toolbar.subtitle = getString(R.string.chat__not_connected)
+        toolbar?.subtitle = getString(R.string.chat__not_connected)
     }
 
     override fun showStatusPending() {
-        toolbar.subtitle = getString(R.string.chat__pending)
+        toolbar?.subtitle = getString(R.string.chat__pending)
     }
 
     override fun showNotConnectedToSend() =

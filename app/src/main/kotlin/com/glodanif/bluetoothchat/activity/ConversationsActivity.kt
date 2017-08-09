@@ -29,7 +29,7 @@ import com.glodanif.bluetoothchat.view.NotificationView
 import com.glodanif.bluetoothchat.widget.ActionView
 import com.glodanif.bluetoothchat.widget.SettingsPopup
 
-class ConversationsActivity : AppCompatActivity(), ConversationsView {
+class ConversationsActivity : SkeletonActivity(), ConversationsView {
 
     private val REQUEST_SCAN = 101
 
@@ -53,10 +53,7 @@ class ConversationsActivity : AppCompatActivity(), ConversationsView {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true)
-        setContentView(R.layout.activity_conversations)
-        val toolbar = findViewById<Toolbar>(R.id.toolbar)
-        setSupportActionBar(toolbar)
+        setContentView(R.layout.activity_conversations, ActivityType.CUSTOM_TOOLBAR_ACTIVITY)
 
         settings = SettingsManagerImpl(this)
         presenter = ConversationsPresenter(this, connection, storage, settings)

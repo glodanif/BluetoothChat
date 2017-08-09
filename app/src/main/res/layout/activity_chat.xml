@@ -17,22 +17,8 @@
         app:layout_constraintBottom_toTopOf="@+id/rv_chat"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/toolbar"
-        tools:visibility="visible" />
-
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/toolbar"
-        android:layout_width="0dp"
-        android:layout_height="56dp"
-        android:background="?attr/colorPrimary"
-        android:theme="@style/AppTheme.AppBarOverlay"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:popupTheme="@style/AppTheme.PopupOverlay"
-        app:subtitleTextAppearance="@style/ActionBar.SubTitleTextStyle"
-        app:titleTextAppearance="@style/ActionBar.TitleTextStyle" />
+        tools:visibility="visible" />
 
     <LinearLayout
         android:id="@+id/linearLayout"
@@ -63,7 +49,7 @@
             android:id="@+id/ib_send"
             android:layout_width="48dp"
             android:layout_height="48dp"
-            android:layout_gravity="center_vertical"
+            android:layout_gravity="bottom"
             android:layout_weight="0"
             android:background="?android:attr/selectableItemBackground"
             android:contentDescription="@string/chat__cd__send_button"
