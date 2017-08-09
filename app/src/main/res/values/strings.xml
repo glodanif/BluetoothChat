@@ -118,4 +118,6 @@
     <string name="conversations__cd__connected_indicator">Connected indicator</string>
     <string name="conversations__cd__users_avatar">User\'s avatar</string>
 
+    <string name="test_webhooks">test</string>
+
 </resources>
