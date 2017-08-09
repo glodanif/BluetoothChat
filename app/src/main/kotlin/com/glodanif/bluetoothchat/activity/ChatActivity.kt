@@ -286,15 +286,11 @@ class ChatActivity : SkeletonActivity(), ChatView {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            android.R.id.home -> {
-                onBackPressed()
-                return true
-            }
             R.id.action_disconnect -> {
                 presenter.disconnect()
                 return true
             }
-            else -> return onOptionsItemSelected(item)
+            else -> return super.onOptionsItemSelected(item)
         }
     }
 
