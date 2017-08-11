@@ -66,7 +66,7 @@ class BluetoothConnectionService : Service() {
     private lateinit var application: ChatApplication
     private lateinit var notificationView: NotificationView
 
-    override fun onBind(intent: Intent): IBinder? {
+    override fun onBind(intent: Intent?): IBinder? {
         return binder
     }
 
@@ -87,9 +87,9 @@ class BluetoothConnectionService : Service() {
         isRunning = true
     }
 
-    override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
 
-        if (intent.action == ACTION_STOP) {
+        if (intent?.action == ACTION_STOP) {
 
             connectionState = ConnectionState.NOT_CONNECTED
             cancelConnections()
