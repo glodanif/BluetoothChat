@@ -196,7 +196,7 @@ class ScanActivity : SkeletonActivity(), ScanView {
         progressBar.cancel()
         progressBar.visibility = View.GONE
         discoveryLabel.visibility = View.GONE
-        scanForDevicesButton.text = getString(R.string.scan__scan)
+        scanForDevicesButton.text = getString(R.string.scan__scan_for_devices)
     }
 
     override fun showBluetoothDiscoverableFailure() {
