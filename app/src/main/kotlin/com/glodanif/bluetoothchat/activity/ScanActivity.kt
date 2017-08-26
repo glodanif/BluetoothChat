@@ -13,11 +13,8 @@ import android.net.Uri
 import android.os.Bundle
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
-import android.support.v7.app.AppCompatActivity
-import android.support.v7.app.AppCompatDelegate
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
-import android.support.v7.widget.Toolbar
 import android.view.View
 import android.widget.*
 import com.glodanif.bluetoothchat.R
@@ -34,6 +31,7 @@ class ScanActivity : SkeletonActivity(), ScanView {
     private val REQUEST_ENABLE_BLUETOOTH = 101
     private val REQUEST_MAKE_DISCOVERABLE = 102
     private val REQUEST_LOCATION_PERMISSION = 103
+    private val REQUEST_STORAGE_PERMISSION = 104
 
     private lateinit var container: View
     private lateinit var turnOnHolder: View
@@ -94,7 +92,7 @@ class ScanActivity : SkeletonActivity(), ScanView {
                 presenter.scanForDevices()
             } else {
                 if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_COARSE_LOCATION)) {
-                    explainAskingPermission()
+                    explainAskingLocationPermission()
                 } else {
                     ActivityCompat.requestPermissions(this,
                             arrayOf(Manifest.permission.ACCESS_COARSE_LOCATION), REQUEST_LOCATION_PERMISSION)
@@ -103,7 +101,17 @@ class ScanActivity : SkeletonActivity(), ScanView {
         }
 
         findViewById<ImageView>(R.id.iv_share).setOnClickListener {
-            presenter.shareApk()
+            if (ContextCompat.checkSelfPermission(this,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+                presenter.shareApk()
+            } else {
+                if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+                    explainAskingStoragePermission()
+                } else {
+                    ActivityCompat.requestPermissions(this,
+                            arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), REQUEST_STORAGE_PERMISSION)
+                }
+            }
         }
     }
 
@@ -256,17 +264,33 @@ class ScanActivity : SkeletonActivity(), ScanView {
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 presenter.scanForDevices()
             } else {
-                explainAskingPermission()
+                explainAskingLocationPermission()
+            }
+        } else if (requestCode == REQUEST_STORAGE_PERMISSION) {
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                presenter.shareApk()
+            } else {
+                explainAskingStoragePermission()
             }
         }
     }
 
-    private fun explainAskingPermission() {
+    private fun explainAskingLocationPermission() {
         AlertDialog.Builder(this)
-                .setMessage(getString(R.string.scan__permission_explanation))
+                .setMessage(getString(R.string.scan__permission_explanation_location))
                 .setPositiveButton(getString(R.string.general__ok), { _, _ ->
                     ActivityCompat.requestPermissions(this,
                             arrayOf(Manifest.permission.ACCESS_COARSE_LOCATION), REQUEST_LOCATION_PERMISSION)
+                })
+                .show()
+    }
+
+    private fun explainAskingStoragePermission() {
+        AlertDialog.Builder(this)
+                .setMessage(getString(R.string.scan__permission_explanation_storage))
+                .setPositiveButton(getString(R.string.general__ok), { _, _ ->
+                    ActivityCompat.requestPermissions(this,
+                            arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), REQUEST_STORAGE_PERMISSION)
                 })
                 .show()
     }

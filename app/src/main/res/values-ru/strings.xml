@@ -97,7 +97,8 @@
     <string name="scan__unable_to_connect_service">Не удается установить свьязь с этим устройством, попробуйте перезапустить приложение</string>
     <string name="scan__unable_to_connect">Не удается подключиться к этому устройству</string>
     <string name="scan__unable_to_fetch_apk">Не удается извлечь .apk файл</string>
-    <string name="scan__permission_explanation">Для начала поиска это приложение требует LOCATION разрешение</string>
+    <string name="scan__permission_explanation_location">Для начала поиска это приложение требует LOCATION разрешение</string>
+    <string name="scan__permission_explanation_storage">Для извлечения файла это приложение требует STORAGE разрешение</string>
     <string name="scan__share_intent">Отправить .apk</string>
     <string name="scan__paired_devices">Подключенные устройства</string>
     <string name="scan__available_devices">Доступные устройства</string>

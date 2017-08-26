@@ -1,5 +1,5 @@
-def final VERSION_CODE = 4
-def final VERSION_NAME = '1.0.0-alpha4'
+def final VERSION_CODE = 5
+def final VERSION_NAME = '1.0.0-alpha5'
 
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
@@ -72,7 +72,7 @@ android {
 
 dependencies {
 
-    def final SUPPORT_VERSION = '26.0.0'
+    def final SUPPORT_VERSION = '26.0.1'
     def final ARCH_VERSION = '1.0.0-alpha7'
 
     compile fileTree(dir: 'libs', include: ['*.jar'])

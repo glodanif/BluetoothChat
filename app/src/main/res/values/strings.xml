@@ -91,7 +91,8 @@
     <string name="scan__unable_to_connect_service">Unable to engage connection, please restart the app</string>
     <string name="scan__unable_to_connect">Unable to connect to this device</string>
     <string name="scan__unable_to_fetch_apk">Unable to fetch an .apk file</string>
-    <string name="scan__permission_explanation">To be able to find other devices this app requires LOCATION permission</string>
+    <string name="scan__permission_explanation_location">To be able to find other devices this app requires LOCATION permission</string>
+    <string name="scan__permission_explanation_storage">To be able to extract a file this app requires STORAGE permission</string>
     <string name="scan__share_intent">Share .apk</string>
     <string name="scan__paired_devices">Paired devices</string>
     <string name="scan__available_devices">Available devices</string>
