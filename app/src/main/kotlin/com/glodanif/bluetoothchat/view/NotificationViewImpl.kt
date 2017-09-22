@@ -39,12 +39,10 @@ class NotificationViewImpl(private val context: Context) : NotificationView {
             notificationManager.createNotificationChannel(channel)
         }
 
-        val icon = BitmapFactory.decodeResource(resources, R.mipmap.ic_launcher)
         val builder = NotificationCompat.Builder(context, CHANNEL_FOREGROUND)
                 .setContentTitle(context.getString(R.string.app_name))
                 .setContentText(message)
                 .setSmallIcon(R.drawable.ic_notification)
-                .setLargeIcon(Bitmap.createScaledBitmap(icon, 128, 128, false))
                 .setContentIntent(pendingIntent)
                 .setOngoing(true)
                 .setPriority(Notification.PRIORITY_LOW)
@@ -64,11 +62,11 @@ class NotificationViewImpl(private val context: Context) : NotificationView {
         notificationIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         val pendingIntent = PendingIntent.getActivity(context, 0, notificationIntent, 0)
 
-        val icon = BitmapFactory.decodeResource(resources, R.mipmap.ic_launcher)
         val name = if (displayName.isNullOrEmpty()) deviceName else "$displayName ($deviceName)"
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel(CHANNEL_MESSAGE, context.getString(R.string.notification__channel_message), NotificationManager.IMPORTANCE_MAX)
+            channel.setShowBadge(true)
             notificationManager.createNotificationChannel(channel)
         }
 
@@ -77,7 +75,6 @@ class NotificationViewImpl(private val context: Context) : NotificationView {
                 .setContentText(message)
                 .setLights(Color.BLUE, 3000, 3000)
                 .setSmallIcon(R.drawable.ic_new_message)
-                .setLargeIcon(Bitmap.createScaledBitmap(icon, 128, 128, false))
                 .setContentIntent(pendingIntent)
                 .setAutoCancel(true)
                 .setPriority(Notification.PRIORITY_MAX)
@@ -107,17 +104,15 @@ class NotificationViewImpl(private val context: Context) : NotificationView {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel(CHANNEL_REQUEST, context.getString(R.string.notification__channel_request), NotificationManager.IMPORTANCE_MAX)
+            channel.setShowBadge(true)
             notificationManager.createNotificationChannel(channel)
         }
-
-        val icon = BitmapFactory.decodeResource(resources, R.mipmap.ic_launcher)
 
         val builder = NotificationCompat.Builder(context, CHANNEL_REQUEST)
                 .setContentTitle(context.getString(R.string.notification__connection_request))
                 .setContentText(context.getString(R.string.notification__connection_request_body, deviceName))
                 .setLights(Color.BLUE, 3000, 3000)
                 .setSmallIcon(R.drawable.ic_connection_request)
-                .setLargeIcon(Bitmap.createScaledBitmap(icon, 128, 128, false))
                 .setContentIntent(pendingIntent)
                 .setAutoCancel(true)
                 .setPriority(Notification.PRIORITY_MAX)
