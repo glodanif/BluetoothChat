@@ -111,6 +111,9 @@
     <string name="notification__connection_request">Запит на з\'єднання</string>
     <string name="notification__connection_request_body">%s хоче з\'єднатися з вами</string>
     <string name="notification__stop">ЗУПИНИТИ</string>
+    <string name="notification__channel_background">Фоновий сервіс</string>
+    <string name="notification__channel_request">Запит на з\'єднання</string>
+    <string name="notification__channel_message">Нове повідомлення</string>
 
     <string name="settings__title">Налаштування</string>
     <string name="settings__notifications">Сповіщення</string>

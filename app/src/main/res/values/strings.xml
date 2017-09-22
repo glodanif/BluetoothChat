@@ -105,6 +105,9 @@
     <string name="notification__connection_request">Connection request</string>
     <string name="notification__connection_request_body">wants to connect to you %s</string>
     <string name="notification__stop">STOP</string>
+    <string name="notification__channel_background">Background Service</string>
+    <string name="notification__channel_request">Connection Request</string>
+    <string name="notification__channel_message">New Message</string>
 
     <string name="settings__title">Settings</string>
     <string name="settings__notifications">Notifications</string>

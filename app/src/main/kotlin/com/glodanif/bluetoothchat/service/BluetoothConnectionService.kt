@@ -1,5 +1,6 @@
 package com.glodanif.bluetoothchat.service
 
+import android.app.NotificationManager
 import android.app.Service
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
@@ -9,6 +10,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.ServiceConnection
 import android.os.Binder
+import android.os.Build
 import android.os.Handler
 import android.os.IBinder
 import android.support.v7.app.AppCompatActivity
@@ -116,13 +118,15 @@ class BluetoothConnectionService : Service() {
         startForeground(FOREGROUND_SERVICE, notification)
     }
 
-    @Synchronized fun disconnect() {
+    @Synchronized
+    fun disconnect() {
         connectedThread?.cancel(true)
         connectedThread = null
         prepareForAccept()
     }
 
-    @Synchronized fun prepareForAccept() {
+    @Synchronized
+    fun prepareForAccept() {
 
         Log.d(TAG, "start")
 
@@ -133,7 +137,8 @@ class BluetoothConnectionService : Service() {
         showNotification(getString(R.string.notification__ready_to_connect))
     }
 
-    @Synchronized fun connect(device: BluetoothDevice) {
+    @Synchronized
+    fun connect(device: BluetoothDevice) {
 
         log("connect to: ${device.name}")
 
@@ -155,7 +160,8 @@ class BluetoothConnectionService : Service() {
         handler.post { connectionListener?.onConnecting() }
     }
 
-    @Synchronized fun connected(socket: BluetoothSocket, type: ConnectionType) {
+    @Synchronized
+    fun connected(socket: BluetoothSocket, type: ConnectionType) {
 
         cancelConnections()
 
@@ -174,7 +180,8 @@ class BluetoothConnectionService : Service() {
         log("connected")
     }
 
-    @Synchronized fun stop() {
+    @Synchronized
+    fun stop() {
 
         cancelConnections()
 
@@ -226,8 +233,7 @@ class BluetoothConnectionService : Service() {
 
         val message = Message(messageBody)
 
-        val sentMessage: ChatMessage = ChatMessage(
-                currentSocket!!.remoteDevice.address, Date(), true, message.body)
+        val sentMessage = ChatMessage(currentSocket!!.remoteDevice.address, Date(), true, message.body)
 
         if (message.type == Message.Type.MESSAGE) {
             sentMessage.seenHere = true
@@ -284,8 +290,7 @@ class BluetoothConnectionService : Service() {
 
         val device: BluetoothDevice = currentSocket!!.remoteDevice
 
-        val receivedMessage: ChatMessage =
-                ChatMessage(device.address, Date(), false, message.body)
+        val receivedMessage = ChatMessage(device.address, Date(), false, message.body)
 
         if (messageListener == null || application.currentChat == null || !application.currentChat.equals(device.address)) {
             notificationView.showNewMessageNotification(message.body, currentConversation?.displayName,
@@ -593,6 +598,11 @@ class BluetoothConnectionService : Service() {
 
         fun start(context: Context) {
             val intent = Intent(context, BluetoothConnectionService::class.java)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                context.startForegroundService(intent)
+            } else {
+                context.startService(intent)
+            }
             context.startService(intent)
         }
 

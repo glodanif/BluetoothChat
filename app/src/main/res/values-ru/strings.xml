@@ -111,6 +111,9 @@
     <string name="notification__connection_request">Запрос на соединение</string>
     <string name="notification__connection_request_body">%s хочет подключиться к вам</string>
     <string name="notification__stop">ОСТАНОВИТЬ</string>
+    <string name="notification__channel_background">Фоновый сервис</string>
+    <string name="notification__channel_request">Запрос на соединение</string>
+    <string name="notification__channel_message">Новое сообщение</string>
 
     <string name="settings__title">Настройки</string>
     <string name="settings__notifications">Уведомления</string>
