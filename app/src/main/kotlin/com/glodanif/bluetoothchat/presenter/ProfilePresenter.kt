@@ -14,6 +14,7 @@ class ProfilePresenter(private val view: ProfileView, private val settings: Sett
         if (!currentName.isEmpty() && currentName.length <= 25 && !currentName.contains("#")) {
             settings.saveUserName(currentName.trim())
             settings.saveUserColor(currentColor)
+            view.addSearchShortcut()
             view.redirectToConversations()
         } else {
             view.showNotValidNameError()

@@ -147,6 +147,7 @@ class ConversationsPresenter(private val view: ConversationsView, private val co
     fun removeConversation(conversation: Conversation) {
         connection.sendDisconnectRequest()
         storage.removeConversation(conversation)
+        view.removeFromShortcuts(conversation.deviceAddress)
         loadConversations()
     }
 

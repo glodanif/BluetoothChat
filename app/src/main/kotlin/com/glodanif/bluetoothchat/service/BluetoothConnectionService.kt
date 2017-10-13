@@ -1,6 +1,5 @@
 package com.glodanif.bluetoothchat.service
 
-import android.app.NotificationManager
 import android.app.Service
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
@@ -26,6 +25,8 @@ import com.glodanif.bluetoothchat.entity.Message
 import com.glodanif.bluetoothchat.model.*
 import com.glodanif.bluetoothchat.view.NotificationView
 import com.glodanif.bluetoothchat.view.NotificationViewImpl
+import com.glodanif.bluetoothchat.widget.ShortcutManager
+import com.glodanif.bluetoothchat.widget.ShortcutManagerImpl
 import java.io.IOException
 import java.io.InputStream
 import java.io.OutputStream
@@ -67,6 +68,7 @@ class BluetoothConnectionService : Service() {
 
     private lateinit var application: ChatApplication
     private lateinit var notificationView: NotificationView
+    private lateinit var shortcutManager: ShortcutManager
 
     override fun onBind(intent: Intent?): IBinder? {
         return binder
@@ -86,6 +88,7 @@ class BluetoothConnectionService : Service() {
         settings = SettingsManagerImpl(this)
         preferences = UserPreferences(this)
         notificationView = NotificationViewImpl(this)
+        shortcutManager = ShortcutManagerImpl(this)
         isRunning = true
     }
 
@@ -240,6 +243,10 @@ class BluetoothConnectionService : Service() {
             thread {
                 db.messagesDao().insert(sentMessage)
                 handler.post { messageListener?.onMessageSent(sentMessage) }
+                if (currentConversation != null) {
+                    shortcutManager.addConversationShortcut(sentMessage.deviceAddress,
+                            currentConversation!!.displayName, currentConversation!!.color)
+                }
             }
         }
     }
@@ -301,6 +308,10 @@ class BluetoothConnectionService : Service() {
         thread {
             db.messagesDao().insert(receivedMessage)
             handler.post { messageListener?.onMessageReceived(receivedMessage) }
+            if (currentConversation != null) {
+                shortcutManager.addConversationShortcut(device.address,
+                        currentConversation!!.displayName, currentConversation!!.color)
+            }
         }
     }
 

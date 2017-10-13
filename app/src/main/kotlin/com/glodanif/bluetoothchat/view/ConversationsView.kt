@@ -15,4 +15,5 @@ interface ConversationsView {
     fun showConversations(conversations: List<Conversation>, connected: String?)
     fun showUserProfile(name: String, @ColorInt color: Int)
     fun dismissConversationNotification()
+    fun removeFromShortcuts(address: String)
 }

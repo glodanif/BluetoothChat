@@ -8,11 +8,8 @@ import android.bluetooth.BluetoothAdapter
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
-import android.support.v7.app.AppCompatDelegate
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
-import android.support.v7.widget.Toolbar
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -56,14 +53,14 @@ class ChatActivity : SkeletonActivity(), ChatView {
         toolbar?.setTitleTextAppearance(this, R.style.ActionBar_TitleTextStyle)
         toolbar?.setSubtitleTextAppearance(this, R.style.ActionBar_SubTitleTextStyle)
 
-        actions = findViewById<ActionView>(R.id.av_actions)
-        messageField = findViewById<EditText>(R.id.et_message)
+        actions = findViewById(R.id.av_actions)
+        messageField = findViewById(R.id.et_message)
 
         findViewById<ImageButton>(R.id.ib_send).setOnClickListener {
             presenter.sendMessage(messageField.text.toString().trim())
         }
 
-        chatList = findViewById<RecyclerView>(R.id.rv_chat)
+        chatList = findViewById(R.id.rv_chat)
         layoutManager.reverseLayout = true
         chatList.layoutManager = layoutManager
         chatList.adapter = adapter

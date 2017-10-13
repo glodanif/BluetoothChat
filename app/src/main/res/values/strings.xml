@@ -74,6 +74,7 @@
     <string name="conversations__connection_rejected">Your connection request to %1$s (%2$s) was rejected</string>
     <string name="conversations__connection_request">%1$s (%2$s) wants to connect to you</string>
     <string name="conversations__settings">Settings</string>
+    <string name="conversations__pin_to_home_screen">Pin to your home screen</string>
 
     <string name="scan__no_devices">No devices were found</string>
     <string name="scan__scan_for_devices">Scan for devices</string>

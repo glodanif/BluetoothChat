@@ -1,10 +1,19 @@
 package com.glodanif.bluetoothchat.extension
 
 import android.content.Context
+import android.graphics.Bitmap
+import com.amulyakhare.textdrawable.TextDrawable
 import com.glodanif.bluetoothchat.R
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
+import android.R.attr.bitmap
+import android.graphics.Canvas
+import android.graphics.drawable.Drawable
+import android.opengl.ETC1.getHeight
+import android.opengl.ETC1.getWidth
+
+
 
 fun Date.getRelativeTime(context: Context): String {
 
@@ -56,4 +65,14 @@ fun Date.getRelativeTime(context: Context): String {
 
 fun String.getFirstLetter(): String {
     return if (this.isEmpty()) "?" else this[0].toString().toUpperCase()
+}
+
+fun TextDrawable.getBitmap(): Bitmap {
+
+    val bitmap = Bitmap.createBitmap(128, 128, Bitmap.Config.ARGB_8888)
+    val canvas = Canvas(bitmap)
+    this.setBounds(0, 0, canvas.width, canvas.height)
+    this.draw(canvas)
+
+    return bitmap
 }

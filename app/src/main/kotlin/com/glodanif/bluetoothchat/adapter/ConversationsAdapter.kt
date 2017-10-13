@@ -13,6 +13,7 @@ import android.widget.TextView
 import com.amulyakhare.textdrawable.TextDrawable
 import com.glodanif.bluetoothchat.R
 import com.glodanif.bluetoothchat.entity.Conversation
+import com.glodanif.bluetoothchat.extension.getFirstLetter
 import com.glodanif.bluetoothchat.extension.getRelativeTime
 
 class ConversationsAdapter(private val context: Context) : RecyclerView.Adapter<ConversationsAdapter.ConversationViewHolder>() {
@@ -61,8 +62,7 @@ class ConversationsAdapter(private val context: Context) : RecyclerView.Adapter<
             color = Color.LTGRAY
         }
 
-        val symbol = conversation.displayName[0].toString().toUpperCase()
-        val drawable = TextDrawable.builder().buildRound(symbol, color)
+        val drawable = TextDrawable.builder().buildRound(conversation.displayName.getFirstLetter(), color)
         holder.avatar.setImageDrawable(drawable)
     }
 
@@ -91,12 +91,12 @@ class ConversationsAdapter(private val context: Context) : RecyclerView.Adapter<
     }
 
     class ConversationViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val avatar: ImageView = itemView.findViewById<ImageView>(R.id.iv_avatar)
-        val name: TextView = itemView.findViewById<TextView>(R.id.tv_name)
-        val connected: ImageView = itemView.findViewById<ImageView>(R.id.iv_connected)
-        val lastMessage: TextView = itemView.findViewById<TextView>(R.id.tv_last_message)
-        val time: TextView = itemView.findViewById<TextView>(R.id.tv_time)
-        val notSeen: TextView = itemView.findViewById<TextView>(R.id.tv_not_seen)
-        val messageContainer: LinearLayout = itemView.findViewById<LinearLayout>(R.id.ll_message_info)
+        val avatar: ImageView = itemView.findViewById(R.id.iv_avatar)
+        val name: TextView = itemView.findViewById(R.id.tv_name)
+        val connected: ImageView = itemView.findViewById(R.id.iv_connected)
+        val lastMessage: TextView = itemView.findViewById(R.id.tv_last_message)
+        val time: TextView = itemView.findViewById(R.id.tv_time)
+        val notSeen: TextView = itemView.findViewById(R.id.tv_not_seen)
+        val messageContainer: LinearLayout = itemView.findViewById(R.id.ll_message_info)
     }
 }

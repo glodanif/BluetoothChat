@@ -7,5 +7,6 @@ interface ProfileView {
     fun showColorPicker(@ColorInt color: Int)
     fun showNotValidNameError()
     fun prefillUsername(name: String)
+    fun addSearchShortcut()
     fun redirectToConversations()
 }

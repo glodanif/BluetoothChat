@@ -80,6 +80,7 @@
     <string name="conversations__connection_rejected">Ваш запит на з\'єднання до %1$s (%2$s) був відхилений</string>
     <string name="conversations__connection_request">%1$s (%2$s) хоче з\'єднатися з вами</string>
     <string name="conversations__settings">Налаштування</string>
+    <string name="conversations__pin_to_home_screen">Додати на домашній екран</string>
 
     <string name="scan__no_devices">Пристроїв не знайдено</string>
     <string name="scan__scan_for_devices">Пошук пристроїв</string>

@@ -80,6 +80,7 @@
     <string name="conversations__connection_rejected">Ваш запрос на соединение к %1$s (%2$s) был отклонен</string>
     <string name="conversations__connection_request">%1$s (%2$s) хочет соедениться с вами</string>
     <string name="conversations__settings">Настройки</string>
+    <string name="conversations__pin_to_home_screen">Добавить на начальный экран</string>
 
     <string name="scan__no_devices">Устройств не найдено</string>
     <string name="scan__scan_for_devices">Поиск устройств</string>

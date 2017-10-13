@@ -2,29 +2,25 @@ package com.glodanif.bluetoothchat.activity
 
 import android.content.Context
 import android.content.Intent
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.annotation.ColorInt
-import android.support.v7.app.AppCompatDelegate
-import android.support.v7.widget.Toolbar
-import android.view.MenuItem
 import android.view.View
 import android.view.WindowManager
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
-
+import com.amulyakhare.textdrawable.TextDrawable
 import com.glodanif.bluetoothchat.R
+import com.glodanif.bluetoothchat.model.SettingsManager
 import com.glodanif.bluetoothchat.model.SettingsManagerImpl
 import com.glodanif.bluetoothchat.presenter.ProfilePresenter
+import com.glodanif.bluetoothchat.util.SimpleTextWatcher
 import com.glodanif.bluetoothchat.view.ProfileView
+import com.glodanif.bluetoothchat.widget.ShortcutManagerImpl
 import me.priyesh.chroma.ChromaDialog
 import me.priyesh.chroma.ColorMode
 import me.priyesh.chroma.ColorSelectListener
-import com.amulyakhare.textdrawable.TextDrawable
-import com.glodanif.bluetoothchat.model.SettingsManager
-import com.glodanif.bluetoothchat.util.SimpleTextWatcher
 
 class ProfileActivity : SkeletonActivity(), ProfileView {
 
@@ -111,6 +107,10 @@ class ProfileActivity : SkeletonActivity(), ProfileView {
 
     override fun showNotValidNameError() {
         nameField.error = getString(R.string.profile__validation_error)
+    }
+
+    override fun addSearchShortcut() {
+        ShortcutManagerImpl(this).addSearchShortcut()
     }
 
     private val textWatcher = object : SimpleTextWatcher() {

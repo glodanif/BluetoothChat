@@ -9,11 +9,8 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.FloatingActionButton
-import android.support.v7.app.AppCompatActivity
-import android.support.v7.app.AppCompatDelegate
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
-import android.support.v7.widget.Toolbar
 import android.view.View
 import android.widget.Button
 import android.widget.ImageView
@@ -22,12 +19,18 @@ import com.glodanif.bluetoothchat.R
 import com.glodanif.bluetoothchat.adapter.ConversationsAdapter
 import com.glodanif.bluetoothchat.entity.Conversation
 import com.glodanif.bluetoothchat.extension.getFirstLetter
-import com.glodanif.bluetoothchat.model.*
+import com.glodanif.bluetoothchat.model.BluetoothConnectorImpl
+import com.glodanif.bluetoothchat.model.ConversationsStorageImpl
+import com.glodanif.bluetoothchat.model.SettingsManager
+import com.glodanif.bluetoothchat.model.SettingsManagerImpl
 import com.glodanif.bluetoothchat.presenter.ConversationsPresenter
 import com.glodanif.bluetoothchat.view.ConversationsView
 import com.glodanif.bluetoothchat.view.NotificationView
 import com.glodanif.bluetoothchat.widget.ActionView
 import com.glodanif.bluetoothchat.widget.SettingsPopup
+import com.glodanif.bluetoothchat.widget.ShortcutManager
+import com.glodanif.bluetoothchat.widget.ShortcutManagerImpl
+import java.util.*
 
 class ConversationsActivity : SkeletonActivity(), ConversationsView {
 
@@ -35,8 +38,9 @@ class ConversationsActivity : SkeletonActivity(), ConversationsView {
 
     private lateinit var presenter: ConversationsPresenter
     private lateinit var settings: SettingsManager
-    private val connection: BluetoothConnector = BluetoothConnectorImpl(this)
-    private val storage: ConversationsStorage = ConversationsStorageImpl(this)
+    private lateinit var shortcutsManager: ShortcutManager
+    private val connection = BluetoothConnectorImpl(this)
+    private val storage = ConversationsStorageImpl(this)
 
     private lateinit var conversationsList: RecyclerView
     private lateinit var noConversations: View
@@ -56,15 +60,16 @@ class ConversationsActivity : SkeletonActivity(), ConversationsView {
         setContentView(R.layout.activity_conversations, ActivityType.CUSTOM_TOOLBAR_ACTIVITY)
 
         settings = SettingsManagerImpl(this)
+        shortcutsManager = ShortcutManagerImpl(this)
         presenter = ConversationsPresenter(this, connection, storage, settings)
 
         actions = findViewById<ActionView>(R.id.av_actions)
 
-        userAvatar = findViewById<ImageView>(R.id.iv_avatar)
-        conversationsList = findViewById<RecyclerView>(R.id.rv_conversations)
+        userAvatar = findViewById(R.id.iv_avatar)
+        conversationsList = findViewById(R.id.rv_conversations)
         noConversations = findViewById(R.id.ll_empty_holder)
         optionsButton = findViewById(R.id.ll_options)
-        addButton = findViewById<FloatingActionButton>(R.id.fab_new_conversation)
+        addButton = findViewById(R.id.fab_new_conversation)
 
         conversationsList.layoutManager = LinearLayoutManager(this)
         conversationsList.adapter = adapter
@@ -76,8 +81,7 @@ class ConversationsActivity : SkeletonActivity(), ConversationsView {
         )
 
         adapter.clickListener = { ChatActivity.start(this, it.deviceAddress) }
-        adapter.longClickListener = {
-            conversation, isCurrent ->
+        adapter.longClickListener = { conversation, isCurrent ->
             showContextMenu(conversation, isCurrent)
         }
 
@@ -94,25 +98,40 @@ class ConversationsActivity : SkeletonActivity(), ConversationsView {
 
     private fun showContextMenu(conversation: Conversation, isCurrent: Boolean) {
 
-        val labels = if (!isCurrent) {
-            arrayOf(getString(R.string.conversations__remove))
-        } else {
-            arrayOf(getString(R.string.conversations__remove), getString(R.string.general__disconnect))
+        val labels = ArrayList<String>()
+        labels.add(getString(R.string.conversations__remove))
+        if (isCurrent) {
+            labels.add(getString(R.string.general__disconnect))
+        }
+        if (shortcutsManager.isRequestPinShortcutSupported()) {
+            labels.add(getString(R.string.conversations__pin_to_home_screen))
         }
 
         val builder = AlertDialog.Builder(this)
         builder.setTitle(getString(R.string.conversations__options))
-                .setItems(labels, { _, which ->
+                .setItems(labels.toTypedArray(), { _, which ->
                     when (which) {
                         0 -> {
                             confirmRemoval(conversation)
                         }
                         1 -> {
-                            presenter.disconnect()
+                            if (isCurrent) {
+                                presenter.disconnect()
+                            } else {
+                                requestPinShortcut(conversation)
+                            }
+                        }
+                        2 -> {
+                            requestPinShortcut(conversation)
                         }
                     }
                 })
         builder.create().show()
+    }
+
+    private fun requestPinShortcut(conversation: Conversation) {
+        shortcutsManager.requestPinConversationShortcut(
+                conversation.deviceAddress, conversation.displayName, conversation.color)
     }
 
     private fun confirmRemoval(conversation: Conversation) {
@@ -209,6 +228,10 @@ class ConversationsActivity : SkeletonActivity(), ConversationsView {
         val drawable = TextDrawable.builder().buildRound(name.getFirstLetter(), color)
         userAvatar.setImageDrawable(drawable)
         settingsPopup.populateData(name, color)
+    }
+
+    override fun removeFromShortcuts(address: String) {
+        shortcutsManager.removeConversationShortcut(address)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
