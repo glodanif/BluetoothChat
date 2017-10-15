@@ -6,9 +6,9 @@
     android:layout_height="match_parent"
     android:background="@drawable/background"
     android:clipToPadding="false"
-    tools:context="com.glodanif.bluetoothchat.activity.ChatActivity">
+    tools:context=".ui.activity.ChatActivity">
 
-    <com.glodanif.bluetoothchat.widget.ActionView
+    <com.glodanif.bluetoothchat.ui.widget.ActionView
         android:id="@+id/av_actions"
         android:layout_width="0dp"
         android:layout_height="wrap_content"

@@ -1,8 +1,8 @@
 package com.glodanif.bluetoothchat
 
-import com.glodanif.bluetoothchat.model.SettingsManager
-import com.glodanif.bluetoothchat.presenter.ProfilePresenter
-import com.glodanif.bluetoothchat.view.ProfileView
+import com.glodanif.bluetoothchat.data.model.SettingsManager
+import com.glodanif.bluetoothchat.ui.presenter.ProfilePresenter
+import com.glodanif.bluetoothchat.ui.view.ProfileView
 import com.nhaarman.mockito_kotlin.verify
 import org.junit.Before
 import org.junit.Rule

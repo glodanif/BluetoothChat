@@ -3,9 +3,9 @@ package com.glodanif.bluetoothchat
 import android.app.Activity
 import android.app.Application
 import com.crashlytics.android.Crashlytics
-import com.glodanif.bluetoothchat.activity.ChatActivity
-import com.glodanif.bluetoothchat.activity.ConversationsActivity
-import com.glodanif.bluetoothchat.util.StartStopActivityLifecycleCallbacks
+import com.glodanif.bluetoothchat.ui.activity.ChatActivity
+import com.glodanif.bluetoothchat.ui.activity.ConversationsActivity
+import com.glodanif.bluetoothchat.ui.util.StartStopActivityLifecycleCallbacks
 import io.fabric.sdk.android.Fabric
 import android.os.StrictMode
 

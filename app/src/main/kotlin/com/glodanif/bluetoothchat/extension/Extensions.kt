@@ -13,14 +13,11 @@ import android.graphics.drawable.Drawable
 import android.opengl.ETC1.getHeight
 import android.opengl.ETC1.getWidth
 
-
-
 fun Date.getRelativeTime(context: Context): String {
 
     val resources = context.resources
 
-    val VIEW_FORMAT: DateFormat =
-            SimpleDateFormat(context.getString(R.string.general__time_format), Locale.ENGLISH)
+    val VIEW_FORMAT = SimpleDateFormat(context.getString(R.string.general__time_format), Locale.ENGLISH)
     val SECOND_MILLIS = 1000
     val MINUTE_MILLIS = 60 * SECOND_MILLIS
     val HOUR_MILLIS = 60 * MINUTE_MILLIS

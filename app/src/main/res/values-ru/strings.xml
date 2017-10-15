@@ -116,6 +116,9 @@
     <string name="notification__channel_request">Запрос на соединение</string>
     <string name="notification__channel_message">Новое сообщение</string>
 
+    <string name="contact_chooser__title">Выберете Чат</string>
+    <string name="contact_chooser__no_contacts">Ваш список контактов пуст</string>
+
     <string name="settings__title">Настройки</string>
     <string name="settings__notifications">Уведомления</string>
     <string name="settings__sound">Звук</string>

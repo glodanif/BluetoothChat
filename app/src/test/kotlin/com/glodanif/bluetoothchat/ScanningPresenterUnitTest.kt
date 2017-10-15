@@ -2,12 +2,12 @@ package com.glodanif.bluetoothchat
 
 import android.bluetooth.BluetoothDevice
 import android.net.Uri
-import com.glodanif.bluetoothchat.model.BluetoothConnector
-import com.glodanif.bluetoothchat.model.BluetoothScanner
-import com.glodanif.bluetoothchat.model.BluetoothScanner.ScanningListener
-import com.glodanif.bluetoothchat.model.FileExtractor
-import com.glodanif.bluetoothchat.presenter.ScanPresenter
-import com.glodanif.bluetoothchat.view.ScanView
+import com.glodanif.bluetoothchat.data.model.BluetoothConnector
+import com.glodanif.bluetoothchat.data.model.BluetoothScanner
+import com.glodanif.bluetoothchat.data.model.BluetoothScanner.ScanningListener
+import com.glodanif.bluetoothchat.data.model.FileExtractor
+import com.glodanif.bluetoothchat.ui.presenter.ScanPresenter
+import com.glodanif.bluetoothchat.ui.view.ScanView
 import com.nhaarman.mockito_kotlin.KArgumentCaptor
 import com.nhaarman.mockito_kotlin.argumentCaptor
 import org.junit.Before

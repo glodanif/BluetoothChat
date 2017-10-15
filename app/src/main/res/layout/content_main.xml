@@ -6,10 +6,10 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="com.glodanif.bluetoothchat.activity.ConversationsActivity"
+    tools:context=".ui.activity.ConversationsActivity"
     tools:showIn="@layout/activity_conversations">
 
-    <com.glodanif.bluetoothchat.widget.ActionView
+    <com.glodanif.bluetoothchat.ui.widget.ActionView
         android:id="@+id/av_actions"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

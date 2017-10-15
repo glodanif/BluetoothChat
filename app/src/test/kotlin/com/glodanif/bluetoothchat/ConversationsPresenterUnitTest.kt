@@ -1,10 +1,10 @@
 package com.glodanif.bluetoothchat
 
-import com.glodanif.bluetoothchat.model.BluetoothConnector
-import com.glodanif.bluetoothchat.model.ConversationsStorage
-import com.glodanif.bluetoothchat.model.SettingsManager
-import com.glodanif.bluetoothchat.presenter.ConversationsPresenter
-import com.glodanif.bluetoothchat.view.ConversationsView
+import com.glodanif.bluetoothchat.data.model.BluetoothConnector
+import com.glodanif.bluetoothchat.data.model.ConversationsStorage
+import com.glodanif.bluetoothchat.data.model.SettingsManager
+import com.glodanif.bluetoothchat.ui.presenter.ConversationsPresenter
+import com.glodanif.bluetoothchat.ui.view.ConversationsView
 import com.nhaarman.mockito_kotlin.verify
 import org.junit.Before
 import org.junit.Rule
