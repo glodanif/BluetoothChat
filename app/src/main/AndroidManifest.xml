@@ -61,7 +61,7 @@
             android:name=".ui.activity.ProfileActivity"
             android:label="@string/initial_setup__initial_setup"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme"/>
+            android:theme="@style/AppTheme" />
 
         <activity
             android:name=".ui.activity.SettingsActivity"
@@ -78,6 +78,17 @@
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="b26de0978fcc0fa56349d97da37b554f54e1d034" />
+
+        <provider
+            android:name=".data.file.GenericFileProvider"
+            android:authorities="${applicationId}.provider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/provider_paths" />
+        </provider>
 
     </application>
 

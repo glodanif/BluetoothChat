@@ -3,12 +3,14 @@ package com.glodanif.bluetoothchat.data.model
 import android.content.Context
 import android.content.pm.PackageManager
 import android.net.Uri
+import android.os.Build
 import android.os.Handler
 import com.glodanif.bluetoothchat.BuildConfig
 import java.io.*
 import java.util.zip.ZipEntry
 import java.util.zip.ZipOutputStream
 import kotlin.concurrent.thread
+import android.support.v4.content.FileProvider
 
 class ApkExtractor(private val context: Context) : FileExtractor {
 
@@ -27,9 +29,19 @@ class ApkExtractor(private val context: Context) : FileExtractor {
             thread {
 
                 try {
+
                     val newFile = copyAndZip(file, directory, "BluetoothChat")
+
                     handler.post {
-                        onExtracted.invoke(Uri.fromFile(newFile))
+
+                        val archiveUri = if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
+                            FileProvider.getUriForFile(context,
+                                    context.applicationContext.packageName + ".provider", newFile)
+                        } else {
+                            Uri.fromFile(newFile)
+                        }
+
+                        onExtracted.invoke(archiveUri)
                     }
                 } catch (e: IOException) {
                     onFailed.invoke()

@@ -120,6 +120,7 @@ class ScanActivity : SkeletonActivity(), ScanView {
         val sharingIntent = Intent(Intent.ACTION_SEND)
         sharingIntent.type = "*/*"
         sharingIntent.`package` = "com.android.bluetooth"
+        sharingIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
         sharingIntent.putExtra(Intent.EXTRA_STREAM, uri)
 
         try {

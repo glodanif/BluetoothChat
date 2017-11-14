@@ -16,5 +16,6 @@ data class ChatMessage(
     var uid: Long = 0
     var seenHere: Boolean = false
     var seenThere: Boolean = false
+    var delivered: Boolean = false
     var edited: Boolean = false
 }

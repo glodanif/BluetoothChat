@@ -1,5 +1,5 @@
-def final VERSION_CODE = 7
-def final VERSION_NAME = '1.0.0-beta2'
+def final VERSION_CODE = 8
+def final VERSION_NAME = '1.0.0-beta3'
 
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
@@ -8,7 +8,7 @@ apply plugin: 'io.fabric'
 
 android {
     compileSdkVersion 26
-    buildToolsVersion "25.0.3"
+    buildToolsVersion '26.0.2'
 
     defaultConfig {
         applicationId "com.glodanif.bluetoothchat"
@@ -73,7 +73,7 @@ android {
 dependencies {
 
     def final SUPPORT_VERSION = '26.1.0'
-    def final ARCH_VERSION = '1.0.0-alpha7'
+    def final ARCH_VERSION = '1.0.0'
 
     compile fileTree(dir: 'libs', include: ['*.jar'])
 
@@ -108,7 +108,7 @@ dependencies {
 
 task assembleReleaseAndOpen << {
     Runtime.getRuntime().exec("explorer.exe /select," +
-            buildDir.getAbsolutePath() + "\\outputs\\apk\\app-release.apk")
+            buildDir.getAbsolutePath() + "\\outputs\\apk\\release\\app-release.apk")
 }
 
 assembleReleaseAndOpen.dependsOn 'assembleRelease'

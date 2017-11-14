@@ -539,7 +539,7 @@ class BluetoothConnectionService : Service() {
 
         override fun run() {
             log("BEGIN connectedThread")
-            val buffer = ByteArray(1024)
+            val buffer = ByteArray(4096)
             var bytes: Int?
 
             while (isConnectedOrPending()) {
