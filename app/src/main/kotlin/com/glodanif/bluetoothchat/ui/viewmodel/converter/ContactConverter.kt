@@ -4,7 +4,6 @@ import com.amulyakhare.textdrawable.TextDrawable
 import com.glodanif.bluetoothchat.ui.viewmodel.ContactViewModel
 import com.glodanif.bluetoothchat.data.entity.Conversation
 import com.glodanif.bluetoothchat.extension.getFirstLetter
-import java.util.*
 
 class ContactConverter {
 
@@ -18,10 +17,8 @@ class ContactConverter {
     }
 
     fun transform(conversationCollection: Collection<Conversation>): List<ContactViewModel> {
-        val list = ArrayList<ContactViewModel>()
-        conversationCollection.forEach{
-            list.add(transform(it))
+        return conversationCollection.map {
+            transform(it)
         }
-        return list
     }
 }

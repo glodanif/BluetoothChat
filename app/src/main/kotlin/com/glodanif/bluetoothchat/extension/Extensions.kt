@@ -17,11 +17,11 @@ fun Date.getRelativeTime(context: Context): String {
 
     val resources = context.resources
 
-    val VIEW_FORMAT = SimpleDateFormat(context.getString(R.string.general__time_format), Locale.ENGLISH)
-    val SECOND_MILLIS = 1000
-    val MINUTE_MILLIS = 60 * SECOND_MILLIS
-    val HOUR_MILLIS = 60 * MINUTE_MILLIS
-    val DAY_MILLIS = 24 * HOUR_MILLIS
+    val viewFormat = SimpleDateFormat(context.getString(R.string.general__time_format), Locale.ENGLISH)
+    val secondMillis = 1000
+    val minuteMillis = 60 * secondMillis
+    val hourMillis = 60 * minuteMillis
+    val dayMillis = 24 * hourMillis
 
     var timestamp = this.time
 
@@ -35,28 +35,28 @@ fun Date.getRelativeTime(context: Context): String {
     }
 
     val diff = now - timestamp
-    if (diff < MINUTE_MILLIS) {
+    if (diff < minuteMillis) {
         return context.getString(R.string.general__time_just_now)
-    } else if (diff < 2 * MINUTE_MILLIS) {
+    } else if (diff < 2 * minuteMillis) {
         return context.getString(R.string.general__time_a_minute_ago)
-    } else if (diff < 50 * MINUTE_MILLIS) {
-        val quantity = diff / MINUTE_MILLIS
+    } else if (diff < 50 * minuteMillis) {
+        val quantity = diff / minuteMillis
         return resources.getQuantityString(
                 R.plurals.general__time_minutes_ago, quantity.toInt(), quantity)
-    } else if (diff < 90 * MINUTE_MILLIS) {
+    } else if (diff < 90 * minuteMillis) {
         return context.getString(R.string.general__time_an_hour_ago)
-    } else if (diff < 24 * HOUR_MILLIS) {
-        val quantity = diff / HOUR_MILLIS
+    } else if (diff < 24 * hourMillis) {
+        val quantity = diff / hourMillis
         return resources.getQuantityString(
                 R.plurals.general__time_hours_ago, quantity.toInt(), quantity)
-    } else if (diff < 48 * HOUR_MILLIS) {
+    } else if (diff < 48 * hourMillis) {
         return context.getString(R.string.general__time_yesterday)
-    } else if (diff < 7 * DAY_MILLIS) {
-        val quantity = diff / DAY_MILLIS
+    } else if (diff < 7 * dayMillis) {
+        val quantity = diff / dayMillis
         return resources.getQuantityString(
                 R.plurals.general__time_days_ago, quantity.toInt(), quantity)
     } else {
-        return VIEW_FORMAT.format(this)
+        return viewFormat.format(this)
     }
 }
 
