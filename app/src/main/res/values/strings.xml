@@ -119,6 +119,7 @@
     <string name="settings__vibration">Vibration</string>
 
     <string name="chat__cd__send_button">Send button</string>
+    <string name="chat__cd__pick_image_button">Pick image button</string>
     <string name="profile__cd__avatar_preview">Avatar preview</string>
     <string name="scan__cd__share_apk_file_button">Share .apk file button</string>
     <string name="conversations__cd__settings_button">Settings button</string>

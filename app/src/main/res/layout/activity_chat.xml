@@ -45,17 +45,31 @@
             android:padding="8dp"
             android:textSize="16sp" />
 
-        <ImageButton
-            android:id="@+id/ib_send"
+        <FrameLayout
             android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_gravity="bottom"
             android:layout_weight="0"
-            android:background="?android:attr/selectableItemBackground"
-            android:contentDescription="@string/chat__cd__send_button"
-            android:tint="@color/colorAccent"
-            app:srcCompat="@drawable/ic_send_black_24dp" />
+            android:layout_gravity="bottom"
+            android:layout_height="48dp">
 
+            <ImageButton
+                android:id="@+id/ib_send"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="?android:attr/selectableItemBackground"
+                android:contentDescription="@string/chat__cd__send_button"
+                android:tint="@color/colorAccent"
+                android:visibility="gone"
+                app:srcCompat="@drawable/ic_send_black_24dp" />
+
+            <ImageButton
+                android:id="@+id/ib_image"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="?android:attr/selectableItemBackground"
+                android:contentDescription="@string/chat__cd__send_button"
+                android:tint="@color/colorAccent"
+                app:srcCompat="@drawable/ic_photo_black_24dp" />
+        </FrameLayout>
     </LinearLayout>
 
     <android.support.v7.widget.RecyclerView

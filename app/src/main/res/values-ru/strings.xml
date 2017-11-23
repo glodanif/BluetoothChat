@@ -125,6 +125,7 @@
     <string name="settings__vibration">Вибрация</string>
 
     <string name="chat__cd__send_button">Кнопка отправки</string>
+    <string name="chat__cd__pick_image_button">Кнопка выбора изображения</string>
     <string name="profile__cd__avatar_preview">Вид аватара</string>
     <string name="scan__cd__share_apk_file_button">Кнопка отправки .apk файла</string>
     <string name="conversations__cd__settings_button">Кнопка настроек</string>

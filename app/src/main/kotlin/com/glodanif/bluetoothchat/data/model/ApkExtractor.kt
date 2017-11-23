@@ -73,8 +73,11 @@ class ApkExtractor(private val context: Context) : FileExtractor {
         }
 
         FileInputStream(copiedFile).use {
-            val origin: BufferedInputStream = BufferedInputStream(it, bufferSize)
+
+            val origin = BufferedInputStream(it, bufferSize)
+
             origin.use {
+
                 FileOutputStream(zipFile).use {
                     ZipOutputStream(BufferedOutputStream(it)).use {
 

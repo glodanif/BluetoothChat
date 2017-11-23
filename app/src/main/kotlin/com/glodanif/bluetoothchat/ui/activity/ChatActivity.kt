@@ -11,6 +11,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.transition.Visibility
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -23,10 +24,16 @@ import com.glodanif.bluetoothchat.data.entity.ChatMessage
 import com.glodanif.bluetoothchat.data.entity.Conversation
 import com.glodanif.bluetoothchat.data.model.*
 import com.glodanif.bluetoothchat.ui.presenter.ChatPresenter
+import com.glodanif.bluetoothchat.ui.util.SimpleTextWatcher
 import com.glodanif.bluetoothchat.ui.view.ChatView
 import com.glodanif.bluetoothchat.ui.view.NotificationView
 import com.glodanif.bluetoothchat.ui.widget.ActionView
+import pl.aprilapps.easyphotopicker.DefaultCallback
+import pl.aprilapps.easyphotopicker.EasyImage
 import java.util.*
+import java.io.File
+import java.lang.Exception
+import java.net.URI
 
 class ChatActivity : SkeletonActivity(), ChatView {
 
@@ -40,10 +47,20 @@ class ChatActivity : SkeletonActivity(), ChatView {
     private lateinit var actions: ActionView
     private lateinit var chatList: RecyclerView
     private lateinit var messageField: EditText
+    private lateinit var sendButton: ImageButton
+    private lateinit var imagePickerButton: ImageButton
 
     private val adapter: ChatAdapter = ChatAdapter(this)
 
     private var isStarted = false
+
+    private val textWatcher = object : SimpleTextWatcher() {
+
+        override fun afterTextChanged(text: String) {
+            sendButton.visibility = if (text.isEmpty()) View.GONE else View.VISIBLE
+            imagePickerButton.visibility = if (text.isEmpty()) View.VISIBLE else View.GONE
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,9 +71,16 @@ class ChatActivity : SkeletonActivity(), ChatView {
 
         actions = findViewById(R.id.av_actions)
         messageField = findViewById(R.id.et_message)
+        messageField.addTextChangedListener(textWatcher)
 
-        findViewById<ImageButton>(R.id.ib_send).setOnClickListener {
+        sendButton = findViewById(R.id.ib_send)
+        sendButton.setOnClickListener {
             presenter.sendMessage(messageField.text.toString().trim())
+        }
+
+        imagePickerButton = findViewById(R.id.ib_image)
+        imagePickerButton.setOnClickListener {
+            EasyImage.openChooserWithGallery(this, "chooserTitle", 0)
         }
 
         chatList = findViewById(R.id.rv_chat)
@@ -66,7 +90,7 @@ class ChatActivity : SkeletonActivity(), ChatView {
 
         val deviceAddress: String? = intent.getStringExtra(EXTRA_ADDRESS)
 
-        title = if (deviceAddress.isNullOrEmpty()) getString(R.string.app_name) else  deviceAddress
+        title = if (deviceAddress.isNullOrEmpty()) getString(R.string.app_name) else deviceAddress
         toolbar?.subtitle = getString(R.string.chat__not_connected)
         presenter = ChatPresenter(deviceAddress.toString(),
                 this, scanModel, connectionModel, conversationModel, storageModel)
@@ -281,16 +305,30 @@ class ChatActivity : SkeletonActivity(), ChatView {
             } else {
                 presenter.onBluetoothEnablingFailed()
             }
+        } else {
+
+            EasyImage.handleActivityResult(requestCode, resultCode, data, this, object : DefaultCallback() {
+
+                override fun onImagesPicked(imageFiles: MutableList<File>, source: EasyImage.ImageSource?, type: Int) {
+                    if (imageFiles.isNotEmpty()) {
+                        presenter.sendFile(imageFiles[0])
+                    }
+                }
+
+                override fun onImagePickerError(e: Exception?, source: EasyImage.ImageSource?, type: Int) {
+                    Toast.makeText(this@ChatActivity, "${e?.message}", Toast.LENGTH_LONG).show()
+                }
+            })
         }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
+        return when (item.itemId) {
             R.id.action_disconnect -> {
                 presenter.disconnect()
-                return true
+                true
             }
-            else -> return super.onOptionsItemSelected(item)
+            else -> super.onOptionsItemSelected(item)
         }
     }
 

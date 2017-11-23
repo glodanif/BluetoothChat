@@ -1,10 +1,13 @@
 package com.glodanif.bluetoothchat.ui.presenter
 
+import android.bluetooth.BluetoothDevice
+import android.net.Uri
+import android.util.Log
 import com.glodanif.bluetoothchat.data.entity.ChatMessage
+import com.glodanif.bluetoothchat.data.entity.Conversation
 import com.glodanif.bluetoothchat.data.model.*
 import com.glodanif.bluetoothchat.ui.view.ChatView
-import android.bluetooth.BluetoothDevice
-import com.glodanif.bluetoothchat.data.entity.Conversation
+import java.io.File
 
 class ChatPresenter(private val deviceAddress: String, private val view: ChatView, private val scanModel: BluetoothScanner,
                     private val connectionModel: BluetoothConnector, private val conversations: ConversationsStorage, private val storage: MessagesStorage) {
@@ -189,12 +192,24 @@ class ChatPresenter(private val deviceAddress: String, private val view: ChatVie
             return
         }
 
-        if (message.isNullOrEmpty()) {
+        if (message.isEmpty()) {
             view.showNotValidMessage()
         } else {
             connectionModel.sendMessage(message)
             view.afterMessageSent()
         }
+    }
+
+    fun sendFile(file: File) {
+
+        Log.e("TAG13", file.absolutePath)
+
+        if (!connectionModel.isConnected()) {
+            view.showNotConnectedToSend()
+            return
+        }
+
+        connectionModel.sendFile(file)
     }
 
     fun reconnect() {

@@ -1,6 +1,8 @@
 package com.glodanif.bluetoothchat.data.entity
 
 import android.support.annotation.ColorInt
+import java.io.File
+import java.io.FileInputStream
 
 class Message() {
 
@@ -51,17 +53,23 @@ class Message() {
         this.type = type
     }
 
-    enum class Type(val value : Int) {
+    enum class Type(val value: Int) {
         MESSAGE(0),
         DELIVERY(1),
         CONNECTION_RESPONSE(2),
         CONNECTION_REQUEST(3),
         SEEING(4),
-        EDITING(5);
+        EDITING(5),
+        FILE_START(6),
+        FILE_END(7);
 
         companion object {
             fun from(findValue: Int): Type = Type.values().first { it.value == findValue }
         }
+    }
+
+    enum class FileType(val value: Int) {
+        IMAGE(0)
     }
 
     fun getDecodedMessage(): String {
@@ -83,8 +91,16 @@ class Message() {
             return Message("0", "$name#$color", true, Type.CONNECTION_RESPONSE)
         }
 
-        fun createRejectConnectionMessage(name: String, @ColorInt color: Int) : Message{
+        fun createRejectConnectionMessage(name: String, @ColorInt color: Int): Message {
             return Message("0", "$name#$color", false, Type.CONNECTION_RESPONSE)
+        }
+
+        fun createFileStartMessage(file: File, type: FileType): Message {
+            return Message("0", "${file.name}#${file.length()}#${type.value}", false, Type.FILE_START)
+        }
+
+        fun createFileEndMessage(): Message {
+            return Message("0", "", false, Type.FILE_START)
         }
     }
 }

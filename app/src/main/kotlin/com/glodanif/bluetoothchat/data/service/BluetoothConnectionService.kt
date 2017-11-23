@@ -27,9 +27,7 @@ import com.glodanif.bluetoothchat.ui.view.NotificationView
 import com.glodanif.bluetoothchat.ui.view.NotificationViewImpl
 import com.glodanif.bluetoothchat.ui.widget.ShortcutManager
 import com.glodanif.bluetoothchat.ui.widget.ShortcutManagerImpl
-import java.io.IOException
-import java.io.InputStream
-import java.io.OutputStream
+import java.io.*
 import java.util.*
 import kotlin.concurrent.thread
 
@@ -63,6 +61,7 @@ class BluetoothConnectionService : Service() {
     private var currentConversation: Conversation? = null
 
     private val db: ChatDatabase = Storage.getInstance(this).db
+    private val filesManager: FilesManager = FilesManagerImpl(this)
     private lateinit var preferences: Preferences
     private lateinit var settings: SettingsManager
 
@@ -211,7 +210,11 @@ class BluetoothConnectionService : Service() {
 
         if (isConnectedOrPending()) {
             val disconnect = message.type == Message.Type.CONNECTION_REQUEST && !message.flag
+
             connectedThread?.write(message.getDecodedMessage(), disconnect)
+            if (message.body == "1") {
+
+            }
             if (disconnect) {
                 connectedThread?.cancel(disconnect)
                 connectedThread = null
@@ -228,6 +231,16 @@ class BluetoothConnectionService : Service() {
             }
             notificationView.dismissConnectionNotification()
         }
+    }
+
+    fun sendFile(message: Message, file: File) {
+
+        if (!isConnected()) {
+            return
+        }
+
+        connectedThread?.write(message.getDecodedMessage())
+        connectedThread?.writeFile(file)
     }
 
     private fun onMessageSent(messageBody: String) {
@@ -290,6 +303,16 @@ class BluetoothConnectionService : Service() {
                 disconnect()
                 connectionListener?.onDisconnected()
             }
+        } else if (message.type == Message.Type.FILE_START) {
+
+            connectedThread?.isFileLoading = true
+            connectedThread?.fileName = message.body.substringBefore("#")
+
+        } else if (message.type == Message.Type.FILE_END) {
+
+            connectedThread?.isFileLoading = false
+            connectedThread?.fileName = null
+
         }
     }
 
@@ -519,6 +542,14 @@ class BluetoothConnectionService : Service() {
 
         private var skipEvents = false
 
+        private val buffer = ByteArray(1024)
+        private var bytes: Int? = null
+
+        @Volatile
+        var isFileLoading = false
+        @Volatile
+        var fileName: String? = null
+
         init {
             log("creation of ConnectedThread")
 
@@ -538,16 +569,29 @@ class BluetoothConnectionService : Service() {
         }
 
         override fun run() {
+
             log("BEGIN connectedThread")
-            val buffer = ByteArray(4096)
-            var bytes: Int?
 
             while (isConnectedOrPending()) {
                 try {
-                    bytes = inputStream?.read(buffer)
 
-                    if (bytes != null) {
-                        handler.post { onMessageReceived(String(buffer, 0, bytes!!)) }
+                    if (isFileLoading && inputStream != null && fileName != null) {
+                        filesManager.saveFile(inputStream!!, fileName!!)
+                        Log.e("TAG13", "$fileName")
+                        Log.e("TAG13", "${File(fileName).exists()}")
+                    }
+
+                    val message = readString()
+
+                    if (message != null && message.contains("6#0#0#")) {
+                        isFileLoading = true
+                        fileName = message.replace("6#0#0#", "").substringBefore("#")
+
+                        Log.e("TAG13", fileName)
+                    }
+
+                    if (message != null && message.contains("#")) {
+                        handler.post { onMessageReceived(message) }
                     }
                 } catch (e: IOException) {
                     log("exception during read (disconnected): ${e.message}")
@@ -562,18 +606,43 @@ class BluetoothConnectionService : Service() {
             log("END connectedThread")
         }
 
+        private fun readString(): String? {
+            bytes = inputStream?.read(buffer)
+            return if (bytes != null) String(buffer, 0, bytes!!) else null
+        }
+
         fun write(message: String) {
             write(message, false)
         }
 
         fun write(message: String, skipEvents: Boolean) {
+
             this.skipEvents = skipEvents
+
             try {
                 outputStream?.write(message.toByteArray(Charsets.UTF_8))
+                outputStream?.flush()
                 onMessageSent(message)
             } catch (e: IOException) {
                 log("exception during write: ${e.message}")
             }
+        }
+
+        fun writeFile(file: File) {
+
+            val stream = FileInputStream(file)
+
+            val bufferSize = 1024
+            val buffer = CharArray(bufferSize)
+            val inReader = InputStreamReader(stream, "UTF-8")
+            while (true) {
+                val rsz = inReader.read(buffer, 0, buffer.size)
+                if (rsz < 0)
+                    break
+                outputStream?.write(rsz)
+            }
+
+            outputStream?.flush()
         }
 
         fun cancel() {

@@ -9,6 +9,7 @@ import com.glodanif.bluetoothchat.data.entity.ChatMessage
 import com.glodanif.bluetoothchat.data.entity.Conversation
 import com.glodanif.bluetoothchat.data.entity.Message
 import com.glodanif.bluetoothchat.data.service.BluetoothConnectionService
+import java.io.File
 
 class BluetoothConnectorImpl(private val context: Context) : BluetoothConnector {
 
@@ -154,6 +155,11 @@ class BluetoothConnectorImpl(private val context: Context) : BluetoothConnector 
     override fun sendMessage(message: String) {
         val chatMessage = Message(System.nanoTime().toString(), message, Message.Type.MESSAGE)
         service?.sendMessage(chatMessage)
+    }
+
+    override fun sendFile(file: File) {
+        val chatMessage = Message.createFileStartMessage(file, Message.FileType.IMAGE)
+        service?.sendFile(chatMessage, file)
     }
 
     override fun restart() {
