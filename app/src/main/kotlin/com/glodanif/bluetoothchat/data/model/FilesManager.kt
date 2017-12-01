@@ -5,6 +5,6 @@ import java.io.File
 import java.io.InputStream
 
 interface FilesManager {
-    fun saveFile(stream: InputStream, name: String)
+    fun saveFile(stream: InputStream, name: String, size: Long)
     fun getFileByName(name: String)
 }

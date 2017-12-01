@@ -233,14 +233,18 @@ class BluetoothConnectionService : Service() {
         }
     }
 
-    fun sendFile(message: Message, file: File) {
+    fun sendFile(file: File, type: Message.FileType) {
 
         if (!isConnected()) {
             return
         }
 
-        connectedThread?.write(message.getDecodedMessage())
+        val startMessage = Message.createFileStartMessage(file, Message.FileType.IMAGE)
+        val endMessage = Message.createFileEndMessage()
+
+        connectedThread?.write(startMessage.getDecodedMessage())
         connectedThread?.writeFile(file)
+        connectedThread?.write(endMessage.getDecodedMessage())
     }
 
     private fun onMessageSent(messageBody: String) {
@@ -549,6 +553,7 @@ class BluetoothConnectionService : Service() {
         var isFileLoading = false
         @Volatile
         var fileName: String? = null
+        var fileSize: Long = 0
 
         init {
             log("creation of ConnectedThread")
@@ -575,23 +580,24 @@ class BluetoothConnectionService : Service() {
             while (isConnectedOrPending()) {
                 try {
 
-                    if (isFileLoading && inputStream != null && fileName != null) {
-                        filesManager.saveFile(inputStream!!, fileName!!)
-                        Log.e("TAG13", "$fileName")
-                        Log.e("TAG13", "${File(fileName).exists()}")
-                    }
-
                     val message = readString()
 
                     if (message != null && message.contains("6#0#0#")) {
+
                         isFileLoading = true
                         fileName = message.replace("6#0#0#", "").substringBefore("#")
+                        fileSize = message.replace("6#0#0#", "").substringAfter("#").substringBefore("#").toLong()
 
-                        Log.e("TAG13", fileName)
-                    }
-
-                    if (message != null && message.contains("#")) {
                         handler.post { onMessageReceived(message) }
+
+                        filesManager.saveFile(inputStream!!, fileName!!, fileSize)
+                        Log.e("TAG13", "$fileName")
+                        Log.e("TAG13", "${File(filesDir, fileName).exists()} ${File(filesDir, fileName).length()}")
+
+                    } else {
+                        if (message != null && message.contains("#")) {
+                            handler.post { onMessageReceived(message) }
+                        }
                     }
                 } catch (e: IOException) {
                     log("exception during read (disconnected): ${e.message}")
@@ -630,19 +636,40 @@ class BluetoothConnectionService : Service() {
 
         fun writeFile(file: File) {
 
-            val stream = FileInputStream(file)
+            val fileStream = FileInputStream(file)
+            val bis = BufferedInputStream(fileStream)
+            val bos = BufferedOutputStream(outputStream)
 
-            val bufferSize = 1024
-            val buffer = CharArray(bufferSize)
-            val inReader = InputStreamReader(stream, "UTF-8")
-            while (true) {
-                val rsz = inReader.read(buffer, 0, buffer.size)
-                if (rsz < 0)
-                    break
-                outputStream?.write(rsz)
+            try {
+
+                var sentBytes: Long = 0
+                var len = 0
+                val buffer = ByteArray(1024)
+
+                len = bis.read(buffer)
+                while (len > -1) {
+                    if (len > 0) {
+                        Log.w("F_" + TAG, "BEFORE " + "currentSize : " + sentBytes
+                                + "Len " + len)
+                        bos.write(buffer, 0, len)
+                        bos.flush()
+                        sentBytes += len.toLong()
+                        Log.w("F_" + TAG, "AFTER " + "currentSize : " + sentBytes)
+                    }
+                    len = bis.read(buffer)
+                }
+
+            } catch (e2: Exception) {
+                Log.e(TAG, "Sending problem")
+                throw e2
+            } finally {
+                try {
+                    bis.close()
+                } catch (e: IOException) {
+                    Log.e(TAG, "Stream not closed")
+                }
+
             }
-
-            outputStream?.flush()
         }
 
         fun cancel() {
