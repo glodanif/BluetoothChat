@@ -52,9 +52,11 @@ class BluetoothConnectionService : Service() {
 
     private var acceptThread: AcceptThread? = null
     private var connectThread: ConnectThread? = null
-    private var connectedThread: ConnectedThread? = null
+    private var dataTransferThread: DataTransferThread? = null
 
+    @Volatile
     private var connectionState: ConnectionState = ConnectionState.NOT_CONNECTED
+    @Volatile
     private var connectionType: ConnectionType? = null
 
     private var currentSocket: BluetoothSocket? = null
@@ -122,8 +124,8 @@ class BluetoothConnectionService : Service() {
 
     @Synchronized
     fun disconnect() {
-        connectedThread?.cancel(true)
-        connectedThread = null
+        dataTransferThread?.cancel(true)
+        dataTransferThread = null
         prepareForAccept()
     }
 
@@ -149,9 +151,9 @@ class BluetoothConnectionService : Service() {
             connectThread = null
         }
 
-        connectedThread?.cancel(true)
+        dataTransferThread?.cancel(true)
         acceptThread?.cancel()
-        connectedThread = null
+        dataTransferThread = null
         acceptThread = null
         currentSocket = null
         currentConversation = null
@@ -174,8 +176,45 @@ class BluetoothConnectionService : Service() {
         acceptThread?.cancel()
         acceptThread = null
 
-        connectedThread = ConnectedThread(socket, type)
-        connectedThread!!.start()
+        val transferEventsListener = object : DataTransferThread.TransferEventsListener {
+
+            override fun onMessageReceived(message: String) {
+                handler.post { this@BluetoothConnectionService.onMessageReceived(message) }
+            }
+
+            override fun onMessageSent(message: String) {
+                this@BluetoothConnectionService.onMessageSent(message)
+            }
+
+            override fun onConnectionPrepared(type: ConnectionType) {
+
+                showNotification("Connected to ${socket.remoteDevice.name}")
+                connectionState = ConnectionState.PENDING
+
+                if (type == ConnectionType.OUTCOMING) {
+                    val message = Message.createConnectMessage(settings.getUserName(), settings.getUserColor())
+                    dataTransferThread?.write(message.getDecodedMessage())
+                }
+            }
+
+            override fun onConnectionCanceled() {
+                currentSocket = null
+                currentConversation = null
+            }
+
+            override fun onConnectionLost() {
+                connectionLost()
+            }
+        }
+
+        dataTransferThread = object : DataTransferThread(this, socket, type, transferEventsListener) {
+
+            override fun shouldRun(): Boolean {
+                return isConnectedOrPending()
+            }
+        }
+        dataTransferThread?.prepare()
+        dataTransferThread?.start()
 
         handler.post { connectionListener?.onConnected(socket.remoteDevice) }
 
@@ -199,8 +238,8 @@ class BluetoothConnectionService : Service() {
         log("cancelConnections")
         connectThread?.cancel()
         connectThread = null
-        connectedThread?.cancel()
-        connectedThread = null
+        dataTransferThread?.cancel()
+        dataTransferThread = null
         currentSocket = null
         currentConversation = null
         connectionType = null
@@ -211,13 +250,13 @@ class BluetoothConnectionService : Service() {
         if (isConnectedOrPending()) {
             val disconnect = message.type == Message.Type.CONNECTION_REQUEST && !message.flag
 
-            connectedThread?.write(message.getDecodedMessage(), disconnect)
+            dataTransferThread?.write(message.getDecodedMessage(), disconnect)
             if (message.body == "1") {
 
             }
             if (disconnect) {
-                connectedThread?.cancel(disconnect)
-                connectedThread = null
+                dataTransferThread?.cancel(disconnect)
+                dataTransferThread = null
 
                 prepareForAccept()
             }
@@ -242,9 +281,9 @@ class BluetoothConnectionService : Service() {
         val startMessage = Message.createFileStartMessage(file, Message.FileType.IMAGE)
         val endMessage = Message.createFileEndMessage()
 
-        connectedThread?.write(startMessage.getDecodedMessage())
-        connectedThread?.writeFile(file)
-        connectedThread?.write(endMessage.getDecodedMessage())
+        dataTransferThread?.write(startMessage.getDecodedMessage())
+        dataTransferThread?.writeFile(file)
+        dataTransferThread?.write(endMessage.getDecodedMessage())
     }
 
     private fun onMessageSent(messageBody: String) {
@@ -309,13 +348,13 @@ class BluetoothConnectionService : Service() {
             }
         } else if (message.type == Message.Type.FILE_START) {
 
-            connectedThread?.isFileLoading = true
-            connectedThread?.fileName = message.body.substringBefore("#")
+            dataTransferThread?.isFileLoading = true
+            dataTransferThread?.fileName = message.body.substringBefore("#")
 
         } else if (message.type == Message.Type.FILE_END) {
 
-            connectedThread?.isFileLoading = false
-            connectedThread?.fileName = null
+            dataTransferThread?.isFileLoading = false
+            dataTransferThread?.fileName = null
 
         }
     }
@@ -539,155 +578,6 @@ class BluetoothConnectionService : Service() {
         }
     }
 
-    private inner class ConnectedThread(private val socket: BluetoothSocket, type: ConnectionType) : Thread() {
-
-        private var inputStream: InputStream? = null
-        private var outputStream: OutputStream? = null
-
-        private var skipEvents = false
-
-        private val buffer = ByteArray(1024)
-        private var bytes: Int? = null
-
-        @Volatile
-        var isFileLoading = false
-        @Volatile
-        var fileName: String? = null
-        var fileSize: Long = 0
-
-        init {
-            log("creation of ConnectedThread")
-
-            try {
-                inputStream = socket.inputStream
-                outputStream = socket.outputStream
-            } catch (e: IOException) {
-                log("unable to create socket (ConnectedThread): ${e.message}")
-            }
-
-            showNotification("Connected to ${socket.remoteDevice.name}")
-            connectionState = ConnectionState.PENDING
-            if (type == ConnectionType.OUTCOMING) {
-                val message = Message.createConnectMessage(settings.getUserName(), settings.getUserColor())
-                write(message.getDecodedMessage())
-            }
-        }
-
-        override fun run() {
-
-            log("BEGIN connectedThread")
-
-            while (isConnectedOrPending()) {
-                try {
-
-                    val message = readString()
-
-                    if (message != null && message.contains("6#0#0#")) {
-
-                        isFileLoading = true
-                        fileName = message.replace("6#0#0#", "").substringBefore("#")
-                        fileSize = message.replace("6#0#0#", "").substringAfter("#").substringBefore("#").toLong()
-
-                        handler.post { onMessageReceived(message) }
-
-                        filesManager.saveFile(inputStream!!, fileName!!, fileSize)
-                        Log.e("TAG13", "$fileName")
-                        Log.e("TAG13", "${File(filesDir, fileName).exists()} ${File(filesDir, fileName).length()}")
-
-                    } else {
-                        if (message != null && message.contains("#")) {
-                            handler.post { onMessageReceived(message) }
-                        }
-                    }
-                } catch (e: IOException) {
-                    log("exception during read (disconnected): ${e.message}")
-                    if (!skipEvents) {
-                        connectionLost()
-                        skipEvents = false
-                    }
-                    break
-                }
-            }
-
-            log("END connectedThread")
-        }
-
-        private fun readString(): String? {
-            bytes = inputStream?.read(buffer)
-            return if (bytes != null) String(buffer, 0, bytes!!) else null
-        }
-
-        fun write(message: String) {
-            write(message, false)
-        }
-
-        fun write(message: String, skipEvents: Boolean) {
-
-            this.skipEvents = skipEvents
-
-            try {
-                outputStream?.write(message.toByteArray(Charsets.UTF_8))
-                outputStream?.flush()
-                onMessageSent(message)
-            } catch (e: IOException) {
-                log("exception during write: ${e.message}")
-            }
-        }
-
-        fun writeFile(file: File) {
-
-            val fileStream = FileInputStream(file)
-            val bis = BufferedInputStream(fileStream)
-            val bos = BufferedOutputStream(outputStream)
-
-            try {
-
-                var sentBytes: Long = 0
-                var len = 0
-                val buffer = ByteArray(1024)
-
-                len = bis.read(buffer)
-                while (len > -1) {
-                    if (len > 0) {
-                        Log.w("F_" + TAG, "BEFORE " + "currentSize : " + sentBytes
-                                + "Len " + len)
-                        bos.write(buffer, 0, len)
-                        bos.flush()
-                        sentBytes += len.toLong()
-                        Log.w("F_" + TAG, "AFTER " + "currentSize : " + sentBytes)
-                    }
-                    len = bis.read(buffer)
-                }
-
-            } catch (e2: Exception) {
-                Log.e(TAG, "Sending problem")
-                throw e2
-            } finally {
-                try {
-                    bis.close()
-                } catch (e: IOException) {
-                    Log.e(TAG, "Stream not closed")
-                }
-
-            }
-        }
-
-        fun cancel() {
-            cancel(false)
-        }
-
-        fun cancel(skipEvents: Boolean) {
-            this.skipEvents = skipEvents
-            try {
-                socket.close()
-                currentSocket = null
-                currentConversation = null
-            } catch (e: IOException) {
-                log("cancel() of connected thread failed: ${e.message}")
-            }
-        }
-    }
-
     override fun onDestroy() {
         super.onDestroy()
         isRunning = false
@@ -721,7 +611,7 @@ class BluetoothConnectionService : Service() {
 
     private fun log(text: String) {
         if (BuildConfig.DEBUG) {
-            val logBody = "$text - (State: ${connectionState.name}, Type: ${connectionType?.name}, Conversation: $currentConversation, Threads: A: $acceptThread (running: ${acceptThread?.isAlive}), C: $connectThread (running: ${connectThread?.isAlive}), CD: $connectedThread (running: ${connectedThread?.isAlive}))"
+            val logBody = "$text - (State: ${connectionState.name}, Type: ${connectionType?.name}, Conversation: $currentConversation, Threads: A: $acceptThread (running: ${acceptThread?.isAlive}), C: $connectThread (running: ${connectThread?.isAlive}), CD: $dataTransferThread (running: ${dataTransferThread?.isAlive}))"
             Log.e(TAG, logBody)
         }
     }

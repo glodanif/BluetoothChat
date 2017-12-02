@@ -6,10 +6,10 @@ import com.glodanif.bluetoothchat.ui.util.NotificationSettings
 interface NotificationView {
 
     companion object {
-        val NOTIFICATION_ID_MESSAGE = 7438925
-        val NOTIFICATION_ID_CONNECTION = 5438729
-        val NOTIFICATION_TAG_MESSAGE = "tag.message"
-        val NOTIFICATION_TAG_CONNECTION = "tag.connection"
+        const val NOTIFICATION_ID_MESSAGE = 7438925
+        const val NOTIFICATION_ID_CONNECTION = 5438729
+        const val NOTIFICATION_TAG_MESSAGE = "tag.message"
+        const val NOTIFICATION_TAG_CONNECTION = "tag.connection"
     }
 
     fun getForegroundNotification(message: String): Notification

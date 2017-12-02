@@ -27,17 +27,17 @@
     </plurals>
 
     <plurals name="general__time_hours_ago">
-        <item quantity="one">%d годину</item>
-        <item quantity="few">%d години</item>
-        <item quantity="many">%d годин</item>
-        <item quantity="other">%d годин</item>
+        <item quantity="one">%d годину назад</item>
+        <item quantity="few">%d години назад</item>
+        <item quantity="many">%d годин назад</item>
+        <item quantity="other">%d годин назад</item>
     </plurals>
 
     <plurals name="general__time_days_ago">
-        <item quantity="one">%d день</item>
-        <item quantity="few">%d дні</item>
-        <item quantity="many">%d днів</item>
-        <item quantity="other">%d днів</item>
+        <item quantity="one">%d день назад</item>
+        <item quantity="few">%d дні назад</item>
+        <item quantity="many">%d днів назад</item>
+        <item quantity="other">%d днів назад</item>
     </plurals>
 
     <string name="profile__profile">Профіль</string>

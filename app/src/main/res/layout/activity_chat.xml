@@ -20,70 +20,139 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:visibility="visible" />
 
-    <LinearLayout
-        android:id="@+id/linearLayout"
+    <FrameLayout
+        android:id="@+id/bottomLayout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:background="@android:color/white"
-        android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent">
 
-        <EditText
-            android:id="@+id/et_message"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_weight="1"
-            android:background="@null"
-            android:ems="10"
-            android:hint="@string/chat__message_hint"
-            android:inputType="textLongMessage|textCapSentences|textMultiLine"
-            android:maxLines="4"
-            android:padding="8dp"
-            android:textSize="16sp" />
+            android:background="@android:color/white"
+            android:orientation="horizontal">
 
-        <FrameLayout
-            android:layout_width="48dp"
-            android:layout_weight="0"
-            android:layout_gravity="bottom"
-            android:layout_height="48dp">
+            <EditText
+                android:id="@+id/et_message"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"
+                android:background="@null"
+                android:ems="10"
+                android:hint="@string/chat__message_hint"
+                android:inputType="textLongMessage|textCapSentences|textMultiLine"
+                android:maxLines="4"
+                android:padding="8dp"
+                android:textSize="16sp" />
 
-            <ImageButton
-                android:id="@+id/ib_send"
+            <FrameLayout
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_gravity="bottom"
+                android:layout_weight="0">
+
+                <ImageButton
+                    android:id="@+id/ib_send"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="?android:attr/selectableItemBackground"
+                    android:contentDescription="@string/chat__cd__send_button"
+                    android:tint="@color/colorAccent"
+                    android:visibility="gone"
+                    app:srcCompat="@drawable/ic_send_black_24dp" />
+
+                <ImageButton
+                    android:id="@+id/ib_image"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="?android:attr/selectableItemBackground"
+                    android:contentDescription="@string/chat__cd__send_button"
+                    android:tint="@color/colorAccent"
+                    app:srcCompat="@drawable/ic_photo_black_24dp" />
+            </FrameLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/white"
+            android:orientation="horizontal"
+            android:padding="8dp">
+
+            <ImageView
+                android:layout_width="56dp"
+                android:layout_height="56dp"
+                android:layout_marginEnd="16dp"
+                android:layout_weight="0"
+                tools:src="@mipmap/ic_launcher" />
+
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="?android:attr/selectableItemBackground"
-                android:contentDescription="@string/chat__cd__send_button"
-                android:tint="@color/colorAccent"
-                android:visibility="gone"
-                app:srcCompat="@drawable/ic_send_black_24dp" />
+                android:layout_weight="1"
+                android:orientation="vertical">
 
-            <ImageButton
-                android:id="@+id/ib_image"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="?android:attr/selectableItemBackground"
-                android:contentDescription="@string/chat__cd__send_button"
-                android:tint="@color/colorAccent"
-                app:srcCompat="@drawable/ic_photo_black_24dp" />
-        </FrameLayout>
-    </LinearLayout>
+                <TextView
+                    android:id="@+id/tv_sending_image_label"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    tools:text="Sending image" />
+
+                <TextView
+                    android:id="@+id/tv_file_sending_percentage"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/tv_sending_image_label"
+                    android:fontFamily="sans-serif-light"
+                    tools:text="35%" />
+
+                <TextView
+                    android:id="@+id/tv_file_size"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_below="@+id/tv_sending_image_label"
+                    android:fontFamily="sans-serif-light"
+                    tools:text="100 Mb" />
+
+                <ProgressBar
+                    style="?android:attr/progressBarStyleHorizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/tv_file_sending_percentage"
+                    tools:max="100"
+                    tools:progress="35" />
+            </RelativeLayout>
+
+            <ImageView
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginStart="16dp"
+                android:layout_weight="0"
+                android:padding="8dp"
+                app:srcCompat="@drawable/ic_close" />
+        </LinearLayout>
+
+    </FrameLayout>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rv_chat"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginTop="0dp"
-        app:layout_constraintBottom_toTopOf="@+id/linearLayout"
+        app:layout_constraintBottom_toTopOf="@+id/bottomLayout"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/av_actions"
         app:layout_constraintVertical_bias="1.0"
         app:stackFromEnd="true"
-        tools:listitem="@layout/item_chat_message_foreign" />
+        tools:listitem="@layout/item_message_text_foreign" />
 
 </android.support.constraint.ConstraintLayout>

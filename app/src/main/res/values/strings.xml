@@ -25,13 +25,13 @@
     </plurals>
 
     <plurals name="general__time_hours_ago">
-        <item quantity="one">%d hour</item>
-        <item quantity="other">%d hours</item>
+        <item quantity="one">%d hour ago</item>
+        <item quantity="other">%d hours ago</item>
     </plurals>
 
     <plurals name="general__time_days_ago">
-        <item quantity="one">%d day</item>
-        <item quantity="other">%d days</item>
+        <item quantity="one">%d day ago</item>
+        <item quantity="other">%d days ago</item>
     </plurals>
 
     <string name="profile__profile">Profile</string>

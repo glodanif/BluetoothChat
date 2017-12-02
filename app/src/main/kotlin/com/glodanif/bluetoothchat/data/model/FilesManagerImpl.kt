@@ -1,7 +1,6 @@
 package com.glodanif.bluetoothchat.data.model
 
 import android.content.Context
-import android.os.Environment
 import android.util.Log
 import java.io.*
 
@@ -11,7 +10,7 @@ class FilesManagerImpl(private val context: Context) : FilesManager {
 
     override fun saveFile(stream: InputStream, name: String, size: Long) {
 
-        val file = File(Environment.getExternalStorageDirectory(), name)
+        val file = File(context.filesDir, name)
 
         val bis = BufferedInputStream(stream)
         val bos = BufferedOutputStream(FileOutputStream(file))

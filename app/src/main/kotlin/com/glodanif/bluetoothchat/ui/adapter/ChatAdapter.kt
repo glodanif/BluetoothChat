@@ -38,7 +38,7 @@ class ChatAdapter(private val context: Context) : RecyclerView.Adapter<ChatAdapt
     override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): MessageViewHolder {
 
         val layoutId = if (viewType == OWN_MESSAGE)
-            R.layout.item_chat_message_own else R.layout.item_chat_message_foreign
+            R.layout.item_message_text_own else R.layout.item_message_text_foreign
         val view = LayoutInflater.from(parent?.context).inflate(layoutId, parent, false)
         return MessageViewHolder(view)
     }
