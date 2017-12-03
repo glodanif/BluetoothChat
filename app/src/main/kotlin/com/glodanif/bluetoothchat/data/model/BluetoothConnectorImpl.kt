@@ -16,6 +16,7 @@ class BluetoothConnectorImpl(private val context: Context) : BluetoothConnector 
     private var prepareListener: OnPrepareListener? = null
     private var messageListener: OnMessageListener? = null
     private var connectListener: OnConnectionListener? = null
+    private var fileListener: OnFileListener? = null
 
     private var service: BluetoothConnectionService? = null
     private var bound = false
@@ -26,6 +27,7 @@ class BluetoothConnectorImpl(private val context: Context) : BluetoothConnector 
             service = (binder as BluetoothConnectionService.ConnectionBinder).getService()
             service?.setConnectionListener(connectionListenerInner)
             service?.setMessageListener(messageListenerInner)
+            service?.setFileListener(fileListenerInner)
 
             bound = true
             prepareListener?.onPrepared()
@@ -34,6 +36,7 @@ class BluetoothConnectorImpl(private val context: Context) : BluetoothConnector 
         override fun onServiceDisconnected(className: ComponentName) {
             service?.setConnectionListener(null)
             service?.setMessageListener(null)
+            service?.setFileListener(null)
             service = null
 
             bound = false
@@ -111,6 +114,49 @@ class BluetoothConnectorImpl(private val context: Context) : BluetoothConnector 
         }
     }
 
+    private val fileListenerInner = object : OnFileListener {
+
+        override fun onFileSendingStarted(fileAddress: String?, fileSize: Long) {
+            fileListener?.onFileSendingStarted(fileAddress, fileSize)
+        }
+
+        override fun onFileSendingProgress(sentBytes: Long, totalBytes: Long) {
+            fileListener?.onFileSendingProgress(sentBytes, totalBytes)
+        }
+
+        override fun onFileSendingFinished() {
+            fileListener?.onFileSendingFinished()
+        }
+
+        override fun onFileSendingCanceled() {
+            fileListener?.onFileSendingCanceled()
+        }
+
+        override fun onFileSendingFailed() {
+            fileListener?.onFileSendingFailed()
+        }
+
+        override fun onFileReceivingStarted() {
+            fileListener?.onFileReceivingStarted()
+        }
+
+        override fun onFileReceivingProgress(sentBytes: Long, totalBytes: Long) {
+            fileListener?.onFileReceivingProgress(sentBytes, totalBytes)
+        }
+
+        override fun onFileReceivingFinished() {
+            fileListener?.onFileReceivingFinished()
+        }
+
+        override fun onFileReceivingCanceled() {
+            fileListener?.onFileReceivingCanceled()
+        }
+
+        override fun onFileReceivingFailed() {
+            fileListener?.onFileReceivingFailed()
+        }
+    }
+
     override fun prepare() {
         service = null
         bound = false
@@ -142,6 +188,10 @@ class BluetoothConnectorImpl(private val context: Context) : BluetoothConnector 
 
     override fun setOnMessageListener(listener: OnMessageListener?) {
         this.messageListener = listener
+    }
+
+    override fun setOnFileListener(listener: OnFileListener?) {
+        this.fileListener = listener
     }
 
     override fun connect(device: BluetoothDevice) {

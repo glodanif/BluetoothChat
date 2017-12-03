@@ -42,6 +42,7 @@ class BluetoothConnectionService : Service() {
 
     private var connectionListener: OnConnectionListener? = null
     private var messageListener: OnMessageListener? = null
+    private var fileListener: OnFileListener? = null
 
     private val adapter: BluetoothAdapter? = BluetoothAdapter.getDefaultAdapter()
 
@@ -63,7 +64,6 @@ class BluetoothConnectionService : Service() {
     private var currentConversation: Conversation? = null
 
     private val db: ChatDatabase = Storage.getInstance(this).db
-    private val filesManager: FilesManager = FilesManagerImpl(this)
     private lateinit var preferences: Preferences
     private lateinit var settings: SettingsManager
 
@@ -207,7 +207,55 @@ class BluetoothConnectionService : Service() {
             }
         }
 
-        dataTransferThread = object : DataTransferThread(this, socket, type, transferEventsListener) {
+        val fileEventsListener = object : DataTransferThread.OnFileListener {
+
+            override fun onFileSendingStarted(file: File) {
+                fileListener?.onFileSendingStarted(file.absolutePath, file.length())
+            }
+
+            override fun onFileSendingProgress(sentBytes: Long, totalBytes: Long) {
+                handler.post { fileListener?.onFileSendingProgress(sentBytes, totalBytes) }
+            }
+
+            override fun onFileSendingFinished() {
+
+                val endMessage = Message.createFileEndMessage()
+                dataTransferThread?.write(endMessage.getDecodedMessage())
+
+                handler.post { fileListener?.onFileSendingFinished() }
+            }
+
+            override fun onFileSendingCanceled() {
+                fileListener?.onFileReceivingCanceled()
+            }
+
+            override fun onFileSendingFailed() {
+                fileListener?.onFileSendingFailed()
+            }
+
+            override fun onFileReceivingStarted() {
+                fileListener?.onFileReceivingStarted()
+            }
+
+            override fun onFileReceivingProgress(receivedBytes: Long, totalBytes: Long) {
+                fileListener?.onFileReceivingProgress(receivedBytes, totalBytes)
+            }
+
+            override fun onFileReceivingFinished() {
+                fileListener?.onFileReceivingFailed()
+            }
+
+            override fun onFileReceivingCanceled() {
+                fileListener?.onFileReceivingCanceled()
+            }
+
+            override fun onFileReceivingFailed() {
+                fileListener?.onFileReceivingFailed()
+            }
+
+        }
+
+        dataTransferThread = object : DataTransferThread(this, socket, type, transferEventsListener, fileEventsListener) {
 
             override fun shouldRun(): Boolean {
                 return isConnectedOrPending()
@@ -279,11 +327,9 @@ class BluetoothConnectionService : Service() {
         }
 
         val startMessage = Message.createFileStartMessage(file, Message.FileType.IMAGE)
-        val endMessage = Message.createFileEndMessage()
 
         dataTransferThread?.write(startMessage.getDecodedMessage())
         dataTransferThread?.writeFile(file)
-        dataTransferThread?.write(endMessage.getDecodedMessage())
     }
 
     private fun onMessageSent(messageBody: String) {
@@ -467,6 +513,10 @@ class BluetoothConnectionService : Service() {
 
     fun setMessageListener(listener: OnMessageListener?) {
         this.messageListener = listener
+    }
+
+    fun setFileListener(listener: OnFileListener?) {
+        this.fileListener = listener
     }
 
     private inner class AcceptThread : Thread() {

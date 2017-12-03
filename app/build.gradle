@@ -88,6 +88,7 @@ dependencies {
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
     compile 'com.amulyakhare:com.amulyakhare.textdrawable:1.0.1'
     compile 'com.github.jkwiecien:EasyImage:2.0.4'
+    compile 'com.squareup.picasso:picasso:2.5.2'
     compile 'me.priyesh:chroma:1.0.2'
 
     compile('com.crashlytics.sdk.android:crashlytics:2.6.8@aar') {

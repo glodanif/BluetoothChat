@@ -30,6 +30,7 @@
         app:layout_constraintRight_toRightOf="parent">
 
         <LinearLayout
+            android:id="@+id/ll_text_sending_holder"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@android:color/white"
@@ -77,17 +78,21 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/ll_image_sending_holder"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@android:color/white"
             android:orientation="horizontal"
-            android:padding="8dp">
+            android:padding="8dp"
+            android:visibility="gone">
 
             <ImageView
+                android:id="@+id/iv_transferring_image"
                 android:layout_width="56dp"
                 android:layout_height="56dp"
                 android:layout_marginEnd="16dp"
                 android:layout_weight="0"
+                android:scaleType="centerCrop"
                 tools:src="@mipmap/ic_launcher" />
 
             <RelativeLayout
@@ -121,6 +126,7 @@
                     tools:text="100 Mb" />
 
                 <ProgressBar
+                    android:id="@+id/pb_transferring_progress"
                     style="?android:attr/progressBarStyleHorizontal"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

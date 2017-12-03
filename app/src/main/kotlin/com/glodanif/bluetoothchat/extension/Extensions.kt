@@ -12,6 +12,7 @@ import android.graphics.Canvas
 import android.graphics.drawable.Drawable
 import android.opengl.ETC1.getHeight
 import android.opengl.ETC1.getWidth
+import java.text.DecimalFormat
 
 fun Date.getRelativeTime(context: Context): String {
 
@@ -72,4 +73,12 @@ fun TextDrawable.getBitmap(): Bitmap {
     this.draw(canvas)
 
     return bitmap
+}
+
+fun Long.getReadableFileSize(): String {
+    if (this <= 0) return "0"
+    val units = arrayOf("B", "kB", "MB", "GB", "TB")
+    val digitGroups = (Math.log10(this.toDouble()) / Math.log10(1024.0)).toInt()
+    return DecimalFormat("#,##0.#").format(
+            this / Math.pow(1024.0, digitGroups.toDouble())) + " " + units[digitGroups]
 }

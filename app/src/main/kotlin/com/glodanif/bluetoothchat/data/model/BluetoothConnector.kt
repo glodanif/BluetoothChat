@@ -13,6 +13,7 @@ interface BluetoothConnector {
     fun setOnConnectListener(listener: OnConnectionListener?)
     fun setOnPrepareListener(listener: OnPrepareListener?)
     fun setOnMessageListener(listener: OnMessageListener?)
+    fun setOnFileListener(listener: OnFileListener?)
     fun connect(device: BluetoothDevice)
     fun sendMessage(message: String)
     fun sendFile(file: File)

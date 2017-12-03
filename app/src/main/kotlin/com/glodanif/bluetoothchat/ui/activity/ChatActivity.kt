@@ -15,19 +15,20 @@ import android.transition.Visibility
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.EditText
-import android.widget.ImageButton
-import android.widget.Toast
+import android.view.ViewGroup
+import android.widget.*
 import com.glodanif.bluetoothchat.R
 import com.glodanif.bluetoothchat.ui.adapter.ChatAdapter
 import com.glodanif.bluetoothchat.data.entity.ChatMessage
 import com.glodanif.bluetoothchat.data.entity.Conversation
 import com.glodanif.bluetoothchat.data.model.*
+import com.glodanif.bluetoothchat.extension.getReadableFileSize
 import com.glodanif.bluetoothchat.ui.presenter.ChatPresenter
 import com.glodanif.bluetoothchat.ui.util.SimpleTextWatcher
 import com.glodanif.bluetoothchat.ui.view.ChatView
 import com.glodanif.bluetoothchat.ui.view.NotificationView
 import com.glodanif.bluetoothchat.ui.widget.ActionView
+import com.squareup.picasso.Picasso
 import pl.aprilapps.easyphotopicker.DefaultCallback
 import pl.aprilapps.easyphotopicker.EasyImage
 import java.util.*
@@ -49,6 +50,13 @@ class ChatActivity : SkeletonActivity(), ChatView {
     private lateinit var messageField: EditText
     private lateinit var sendButton: ImageButton
     private lateinit var imagePickerButton: ImageButton
+    private lateinit var transferringImagePreview: ImageView
+    private lateinit var transferringImageSize: TextView
+    private lateinit var transferringImageProgressLabel: TextView
+    private lateinit var transferringImageProgressBar: ProgressBar
+
+    private lateinit var textSendingHolder: ViewGroup
+    private lateinit var imageSendingHolder: ViewGroup
 
     private val adapter: ChatAdapter = ChatAdapter(this)
 
@@ -68,6 +76,14 @@ class ChatActivity : SkeletonActivity(), ChatView {
 
         toolbar?.setTitleTextAppearance(this, R.style.ActionBar_TitleTextStyle)
         toolbar?.setSubtitleTextAppearance(this, R.style.ActionBar_SubTitleTextStyle)
+
+        textSendingHolder = findViewById(R.id.ll_text_sending_holder)
+        imageSendingHolder = findViewById(R.id.ll_image_sending_holder)
+
+        transferringImagePreview = findViewById(R.id.iv_transferring_image)
+        transferringImageSize = findViewById(R.id.tv_file_size)
+        transferringImageProgressLabel = findViewById(R.id.tv_file_sending_percentage)
+        transferringImageProgressBar = findViewById(R.id.pb_transferring_progress)
 
         actions = findViewById(R.id.av_actions)
         messageField = findViewById(R.id.et_message)
@@ -288,6 +304,33 @@ class ChatActivity : SkeletonActivity(), ChatView {
                 .setMessage(getString(R.string.chat__bluetooth_required))
                 .setPositiveButton(getString(R.string.general__ok), null)
                 .show()
+    }
+
+    override fun showImageSendingLayout(fileAddress: String?, fileSize: Long) {
+
+        textSendingHolder.visibility = View.GONE
+        imageSendingHolder.visibility = View.VISIBLE
+
+        if (fileAddress != null) {
+            Picasso.with(this).load("file://$fileAddress").into(transferringImagePreview)
+        }
+        transferringImageSize.text = fileSize.getReadableFileSize()
+        //FIXME should work with Long
+        transferringImageProgressBar.progress = 0
+        transferringImageProgressBar.max = fileSize.toInt()
+    }
+
+    override fun updateImageSendingProgress(transferredBytes: Long, totalBytes: Long) {
+        val percents = transferredBytes.toFloat() / totalBytes * 100
+        transferringImageProgressLabel.text = "${Math.round(percents)}%"
+        //FIXME should work with Long
+        transferringImageProgressBar.progress = transferredBytes.toInt()
+
+    }
+
+    override fun hideImageSendingLayout() {
+        textSendingHolder.visibility = View.VISIBLE
+        imageSendingHolder.visibility = View.GONE
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

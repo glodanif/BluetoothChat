@@ -12,13 +12,21 @@ import java.io.File
 class ChatPresenter(private val deviceAddress: String, private val view: ChatView, private val scanModel: BluetoothScanner,
                     private val connectionModel: BluetoothConnector, private val conversations: ConversationsStorage, private val storage: MessagesStorage) {
 
+    private var fileToSend: File? = null
+
     private val prepareListener = object : OnPrepareListener {
 
         override fun onPrepared() {
             connectionModel.setOnConnectListener(connectionListener)
             connectionModel.setOnMessageListener(messageListener)
+            connectionModel.setOnFileListener(fileListener)
             updateState()
             dismissNotification()
+
+            if (fileToSend != null) {
+                connectionModel.sendFile(fileToSend!!)
+                fileToSend = null
+            }
         }
 
         override fun onError() {
@@ -109,6 +117,49 @@ class ChatPresenter(private val deviceAddress: String, private val view: ChatVie
         }
     }
 
+    private val fileListener = object : OnFileListener {
+
+        override fun onFileSendingStarted(fileAddress: String?, fileSize: Long) {
+            view.showImageSendingLayout(fileAddress, fileSize)
+        }
+
+        override fun onFileSendingProgress(sentBytes: Long, totalBytes: Long) {
+            view.updateImageSendingProgress(sentBytes, totalBytes)
+        }
+
+        override fun onFileSendingFinished() {
+            view.hideImageSendingLayout()
+        }
+
+        override fun onFileSendingCanceled() {
+
+        }
+
+        override fun onFileSendingFailed() {
+
+        }
+
+        override fun onFileReceivingStarted() {
+
+        }
+
+        override fun onFileReceivingProgress(sentBytes: Long, totalBytes: Long) {
+
+        }
+
+        override fun onFileReceivingFinished() {
+
+        }
+
+        override fun onFileReceivingCanceled() {
+
+        }
+
+        override fun onFileReceivingFailed() {
+
+        }
+    }
+
     private fun dismissNotification() {
         val currentConversation: Conversation? = connectionModel.getCurrentConversation()
         if (currentConversation != null && connectionModel.isConnectedOrPending() &&
@@ -128,8 +179,14 @@ class ChatPresenter(private val deviceAddress: String, private val view: ChatVie
             if (connectionModel.isConnectionPrepared()) {
                 connectionModel.setOnConnectListener(connectionListener)
                 connectionModel.setOnMessageListener(messageListener)
+                connectionModel.setOnFileListener(fileListener)
                 updateState()
                 dismissNotification()
+
+                if (fileToSend != null) {
+                    connectionModel.sendFile(fileToSend!!)
+                    fileToSend = null
+                }
             } else {
                 connectionModel.prepare()
             }
@@ -153,6 +210,7 @@ class ChatPresenter(private val deviceAddress: String, private val view: ChatVie
         connectionModel.setOnPrepareListener(null)
         connectionModel.setOnConnectListener(null)
         connectionModel.setOnMessageListener(null)
+        connectionModel.setOnFileListener(null)
 
         if (!connectionModel.isConnectedOrPending()) {
             connectionModel.release()
@@ -202,17 +260,16 @@ class ChatPresenter(private val deviceAddress: String, private val view: ChatVie
 
     fun sendFile(file: File) {
 
-        Log.e("TAG13", file.absolutePath)
-
         if (!connectionModel.isConnected()) {
             view.showNotConnectedToSend()
             return
         }
 
-        connectionModel.sendFile(file)
+        fileToSend = file
     }
 
     fun reconnect() {
+
         if (scanModel.isBluetoothEnabled()) {
             connectToDevice()
             view.showStatusPending()
