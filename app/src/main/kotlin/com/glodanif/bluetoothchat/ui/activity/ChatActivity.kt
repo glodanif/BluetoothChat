@@ -7,6 +7,7 @@ import android.app.Service
 import android.bluetooth.BluetoothAdapter
 import android.content.Context
 import android.content.Intent
+import android.graphics.PorterDuff
 import android.net.Uri
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
@@ -52,6 +53,7 @@ class ChatActivity : SkeletonActivity(), ChatView {
     private lateinit var imagePickerButton: ImageButton
     private lateinit var transferringImagePreview: ImageView
     private lateinit var transferringImageSize: TextView
+    private lateinit var transferringImageHeader: TextView
     private lateinit var transferringImageProgressLabel: TextView
     private lateinit var transferringImageProgressBar: ProgressBar
 
@@ -82,6 +84,7 @@ class ChatActivity : SkeletonActivity(), ChatView {
 
         transferringImagePreview = findViewById(R.id.iv_transferring_image)
         transferringImageSize = findViewById(R.id.tv_file_size)
+        transferringImageHeader = findViewById(R.id.tv_sending_image_label)
         transferringImageProgressLabel = findViewById(R.id.tv_file_sending_percentage)
         transferringImageProgressBar = findViewById(R.id.pb_transferring_progress)
 
@@ -306,13 +309,20 @@ class ChatActivity : SkeletonActivity(), ChatView {
                 .show()
     }
 
-    override fun showImageSendingLayout(fileAddress: String?, fileSize: Long) {
+    override fun showImageTransferLayout(fileAddress: String?, fileSize: Long, transferType: ChatView.FileTransferType) {
 
         textSendingHolder.visibility = View.GONE
         imageSendingHolder.visibility = View.VISIBLE
 
+        transferringImageHeader.text = if (transferType == ChatView.FileTransferType.SENDING)
+            "Sending image" else "Receiving image"
+
         if (fileAddress != null) {
-            Picasso.with(this).load("file://$fileAddress").into(transferringImagePreview)
+            Picasso.with(this)
+                    .load("file://$fileAddress").into(transferringImagePreview)
+        } else {
+            val imagePlaceholder = resources.getDrawable(R.drawable.ic_photo_black_24dp)
+            transferringImagePreview.setImageDrawable(imagePlaceholder)
         }
         transferringImageSize.text = fileSize.getReadableFileSize()
         //FIXME should work with Long
@@ -320,7 +330,7 @@ class ChatActivity : SkeletonActivity(), ChatView {
         transferringImageProgressBar.max = fileSize.toInt()
     }
 
-    override fun updateImageSendingProgress(transferredBytes: Long, totalBytes: Long) {
+    override fun updateImageTransferProgress(transferredBytes: Long, totalBytes: Long) {
         val percents = transferredBytes.toFloat() / totalBytes * 100
         transferringImageProgressLabel.text = "${Math.round(percents)}%"
         //FIXME should work with Long
@@ -328,7 +338,7 @@ class ChatActivity : SkeletonActivity(), ChatView {
 
     }
 
-    override fun hideImageSendingLayout() {
+    override fun hideImageTransferLayout() {
         textSendingHolder.visibility = View.VISIBLE
         imageSendingHolder.visibility = View.GONE
     }

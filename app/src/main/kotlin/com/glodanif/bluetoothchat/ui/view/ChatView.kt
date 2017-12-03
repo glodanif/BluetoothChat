@@ -2,7 +2,6 @@ package com.glodanif.bluetoothchat.ui.view
 
 import com.glodanif.bluetoothchat.data.entity.ChatMessage
 import com.glodanif.bluetoothchat.data.entity.Conversation
-import java.io.File
 
 interface ChatView {
 
@@ -32,7 +31,12 @@ interface ChatView {
     fun requestBluetoothEnabling()
     fun dismissMessageNotification()
 
-    fun showImageSendingLayout(fileAddress: String?, fileSize: Long)
-    fun updateImageSendingProgress(transferredBytes: Long, totalBytes: Long)
-    fun hideImageSendingLayout()
+    fun showImageTransferLayout(fileAddress: String?, fileSize: Long, transferType: FileTransferType)
+    fun updateImageTransferProgress(transferredBytes: Long, totalBytes: Long)
+    fun hideImageTransferLayout()
+
+    enum class FileTransferType {
+        SENDING,
+        RECEIVING
+    }
 }

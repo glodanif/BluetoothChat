@@ -171,7 +171,7 @@ abstract class DataTransferThread(private val context: Context, private val sock
         val bis = BufferedInputStream(stream)
         val bos = BufferedOutputStream(FileOutputStream(file))
 
-        fileListener.onFileReceivingStarted()
+        fileListener.onFileReceivingStarted(size)
 
         try {
 
@@ -186,7 +186,7 @@ abstract class DataTransferThread(private val context: Context, private val sock
                 Log.w("TAG", "BEFORE AVAILABLE " + bytesRead)
                 while (bis.available() == 0 && timeOut < maxTimeOut) {
                     timeOut++
-                    Thread.sleep(250)
+                    Thread.sleep(100)
                 }
 
                 val remainingSize = size - bytesRead
@@ -241,7 +241,7 @@ abstract class DataTransferThread(private val context: Context, private val sock
         fun onFileSendingFinished()
         fun onFileSendingCanceled()
         fun onFileSendingFailed()
-        fun onFileReceivingStarted()
+        fun onFileReceivingStarted(fileSize: Long)
         fun onFileReceivingProgress(receivedBytes: Long, totalBytes: Long)
         fun onFileReceivingFinished()
         fun onFileReceivingCanceled()

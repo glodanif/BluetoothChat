@@ -1,8 +1,6 @@
 package com.glodanif.bluetoothchat.ui.presenter
 
 import android.bluetooth.BluetoothDevice
-import android.net.Uri
-import android.util.Log
 import com.glodanif.bluetoothchat.data.entity.ChatMessage
 import com.glodanif.bluetoothchat.data.entity.Conversation
 import com.glodanif.bluetoothchat.data.model.*
@@ -120,15 +118,15 @@ class ChatPresenter(private val deviceAddress: String, private val view: ChatVie
     private val fileListener = object : OnFileListener {
 
         override fun onFileSendingStarted(fileAddress: String?, fileSize: Long) {
-            view.showImageSendingLayout(fileAddress, fileSize)
+            view.showImageTransferLayout(fileAddress, fileSize, ChatView.FileTransferType.SENDING)
         }
 
         override fun onFileSendingProgress(sentBytes: Long, totalBytes: Long) {
-            view.updateImageSendingProgress(sentBytes, totalBytes)
+            view.updateImageTransferProgress(sentBytes, totalBytes)
         }
 
         override fun onFileSendingFinished() {
-            view.hideImageSendingLayout()
+            view.hideImageTransferLayout()
         }
 
         override fun onFileSendingCanceled() {
@@ -139,16 +137,16 @@ class ChatPresenter(private val deviceAddress: String, private val view: ChatVie
 
         }
 
-        override fun onFileReceivingStarted() {
-
+        override fun onFileReceivingStarted(fileSize: Long) {
+            view.showImageTransferLayout(null, fileSize, ChatView.FileTransferType.RECEIVING)
         }
 
         override fun onFileReceivingProgress(sentBytes: Long, totalBytes: Long) {
-
+            view.updateImageTransferProgress(sentBytes, totalBytes)
         }
 
         override fun onFileReceivingFinished() {
-
+            view.hideImageTransferLayout()
         }
 
         override fun onFileReceivingCanceled() {

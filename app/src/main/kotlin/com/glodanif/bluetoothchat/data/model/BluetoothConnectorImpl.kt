@@ -136,8 +136,8 @@ class BluetoothConnectorImpl(private val context: Context) : BluetoothConnector 
             fileListener?.onFileSendingFailed()
         }
 
-        override fun onFileReceivingStarted() {
-            fileListener?.onFileReceivingStarted()
+        override fun onFileReceivingStarted(fileSize: Long) {
+            fileListener?.onFileReceivingStarted(fileSize)
         }
 
         override fun onFileReceivingProgress(sentBytes: Long, totalBytes: Long) {

@@ -233,16 +233,16 @@ class BluetoothConnectionService : Service() {
                 fileListener?.onFileSendingFailed()
             }
 
-            override fun onFileReceivingStarted() {
-                fileListener?.onFileReceivingStarted()
+            override fun onFileReceivingStarted(fileSize: Long) {
+                handler.post { fileListener?.onFileReceivingStarted(fileSize) }
             }
 
             override fun onFileReceivingProgress(receivedBytes: Long, totalBytes: Long) {
-                fileListener?.onFileReceivingProgress(receivedBytes, totalBytes)
+                handler.post { fileListener?.onFileReceivingProgress(receivedBytes, totalBytes) }
             }
 
             override fun onFileReceivingFinished() {
-                fileListener?.onFileReceivingFailed()
+                handler.post { fileListener?.onFileReceivingFinished() }
             }
 
             override fun onFileReceivingCanceled() {

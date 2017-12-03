@@ -6,7 +6,7 @@ interface OnFileListener {
     fun onFileSendingFinished()
     fun onFileSendingCanceled()
     fun onFileSendingFailed()
-    fun onFileReceivingStarted()
+    fun onFileReceivingStarted(fileSize: Long)
     fun onFileReceivingProgress(sentBytes: Long, totalBytes: Long)
     fun onFileReceivingFinished()
     fun onFileReceivingCanceled()
