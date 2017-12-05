@@ -1,10 +1,13 @@
 package com.glodanif.bluetoothchat.ui.adapter
 
 import android.content.Context
+import android.graphics.Bitmap
 import android.support.v7.widget.RecyclerView
+import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
 import com.glodanif.bluetoothchat.R
@@ -14,12 +17,14 @@ import com.glodanif.bluetoothchat.extension.getRelativeTime
 import com.squareup.picasso.Picasso
 import java.util.*
 
-class ChatAdapter(private val context: Context) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class ChatAdapter(private val context: Context, private val displayMetrics: DisplayMetrics) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private val OWN_TEXT_MESSAGE = 0
     private val OWN_IMAGE_MESSAGE = 1
     private val FOREIGN_TEXT_MESSAGE = 2
     private val FOREIGN_IMAGE_MESSAGE = 3
+
+    val picassoTag = Object()
 
     var messages = LinkedList<ChatMessage>()
 
@@ -29,7 +34,22 @@ class ChatAdapter(private val context: Context) : RecyclerView.Adapter<RecyclerV
 
         if (viewHolder is ImageMessageViewHolder) {
             val holder: ImageMessageViewHolder? = viewHolder
-            Picasso.with(context).load("file://${message.filePath}").into(holder?.image)
+
+            if (!message.fileInfo.isNullOrEmpty() && message.fileInfo!!.contains("x")) {
+                val size = message.fileInfo!!.split("x")
+                if (size.size == 2) {
+                    val viewSize = getScaledSize(size[0].toInt(), size[1].toInt())
+                    holder?.image?.layoutParams =
+                            FrameLayout.LayoutParams(viewSize.first, viewSize.second)
+                    Picasso.with(context)
+                            .load("file://${message.filePath}")
+                            .config(Bitmap.Config.RGB_565)
+                            .tag(picassoTag)
+                            .resize(viewSize.first, viewSize.second)
+                            .into(holder?.image)
+                }
+            }
+
             holder?.date?.text = message.date.getRelativeTime(context)
         } else if (viewHolder is TextMessageViewHolder) {
             val holder: TextMessageViewHolder? = viewHolder
@@ -82,5 +102,53 @@ class ChatAdapter(private val context: Context) : RecyclerView.Adapter<RecyclerV
     class ImageMessageViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val date: TextView = itemView.findViewById(R.id.tv_date)
         val image: ImageView = itemView.findViewById(R.id.iv_image)
+    }
+
+    private fun getScaledSize(imageWidth: Int, imageHeight: Int): Pair<Int, Int> {
+
+        val maxWidth = (displayMetrics.widthPixels * .75).toInt()
+        val maxHeight = (displayMetrics.heightPixels * .5).toInt()
+
+        var viewWidth = imageWidth
+        var viewHeight = imageHeight
+
+        if (imageWidth > maxWidth || imageHeight > maxHeight) {
+
+            if (imageWidth == imageHeight) {
+
+                if (imageHeight > maxHeight) {
+                    viewWidth = maxHeight
+                    viewHeight = maxHeight
+                }
+
+                if (viewWidth > maxWidth) {
+                    viewWidth = maxWidth
+                    viewHeight = maxWidth
+                }
+
+            } else if (imageWidth > maxWidth) {
+
+                viewWidth = maxWidth
+                viewHeight = (maxWidth.toFloat() / imageWidth * imageHeight).toInt()
+
+                if (viewHeight > maxHeight) {
+                    viewHeight = maxHeight
+                    viewWidth = (maxHeight.toFloat() / imageHeight * imageWidth).toInt()
+                }
+
+            } else if (imageHeight > maxHeight) {
+
+                viewHeight = maxHeight
+                viewWidth = (maxHeight.toFloat() / imageHeight * imageWidth).toInt()
+
+                if (viewWidth > maxWidth) {
+                    viewWidth = maxWidth
+                    viewHeight = (maxWidth.toFloat() / imageWidth * imageHeight).toInt()
+                }
+
+            }
+        }
+
+        return Pair(viewWidth, viewHeight)
     }
 }

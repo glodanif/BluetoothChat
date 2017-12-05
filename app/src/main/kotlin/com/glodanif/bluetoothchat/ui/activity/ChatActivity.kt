@@ -13,6 +13,7 @@ import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.transition.Visibility
+import android.util.DisplayMetrics
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -60,7 +61,7 @@ class ChatActivity : SkeletonActivity(), ChatView {
     private lateinit var textSendingHolder: ViewGroup
     private lateinit var imageSendingHolder: ViewGroup
 
-    private val adapter: ChatAdapter = ChatAdapter(this)
+    private lateinit var adapter: ChatAdapter
 
     private var isStarted = false
 
@@ -102,10 +103,27 @@ class ChatActivity : SkeletonActivity(), ChatView {
             EasyImage.openChooserWithGallery(this, "chooserTitle", 0)
         }
 
+        val displayMetrics = DisplayMetrics()
+        windowManager.defaultDisplay.getMetrics(displayMetrics)
+        adapter = ChatAdapter(this, displayMetrics)
+
         chatList = findViewById(R.id.rv_chat)
         layoutManager.reverseLayout = true
         chatList.layoutManager = layoutManager
         chatList.adapter = adapter
+
+        chatList.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+
+            override fun onScrollStateChanged(recyclerView: RecyclerView?, scrollState: Int) {
+
+                val picasso = Picasso.with(this@ChatActivity)
+                if (scrollState == RecyclerView.SCROLL_STATE_IDLE || scrollState == RecyclerView.SCROLL_STATE_DRAGGING) {
+                    picasso.resumeTag(adapter.picassoTag)
+                } else {
+                    picasso.pauseTag(adapter.picassoTag)
+                }
+            }
+        })
 
         val deviceAddress: String? = intent.getStringExtra(EXTRA_ADDRESS)
 

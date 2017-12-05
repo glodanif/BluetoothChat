@@ -36,7 +36,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-                <com.glodanif.bluetoothchat.ui.widget.ChatImageView
+                <ImageView
                     android:id="@+id/iv_image"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
