@@ -13,6 +13,7 @@ import android.widget.TextView
 import com.amulyakhare.textdrawable.TextDrawable
 import com.glodanif.bluetoothchat.R
 import com.glodanif.bluetoothchat.data.entity.Conversation
+import com.glodanif.bluetoothchat.data.entity.MessageType
 import com.glodanif.bluetoothchat.extension.getFirstLetter
 import com.glodanif.bluetoothchat.extension.getRelativeTime
 
@@ -40,11 +41,18 @@ class ConversationsAdapter(private val context: Context) : RecyclerView.Adapter<
         }
         holder.connected.visibility = View.VISIBLE
 
-        if (!conversation.lastMessage.isNullOrEmpty()) {
+        if (!conversation.lastMessage.isNullOrEmpty() || conversation.messageType == MessageType.IMAGE) {
+
             holder.messageContainer.visibility = View.VISIBLE
             holder.time.visibility = View.VISIBLE
+
             holder.lastMessage.text = conversation.lastMessage
+
+            holder.lastMessage.text =
+                    if (conversation.messageType != MessageType.IMAGE) conversation.lastMessage else "\uD83D\uDCCE [Photo]"
+
             holder.time.text = conversation.lastActivity?.getRelativeTime(context)
+
             if (conversation.notSeen > 0) {
                 holder.notSeen.visibility = View.VISIBLE
                 holder.notSeen.text = conversation.notSeen.toString()

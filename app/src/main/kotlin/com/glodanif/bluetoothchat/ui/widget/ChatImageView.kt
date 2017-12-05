@@ -22,8 +22,8 @@ class ChatImageView: ImageView {
             val displayMetrics = DisplayMetrics()
             (context as Activity).windowManager.defaultDisplay.getMetrics(displayMetrics)
 
-            val maxWidth = (displayMetrics.widthPixels * 3f / 4).toInt()
-            val maxHeight = (displayMetrics.heightPixels * 2f / 3).toInt()
+            val maxWidth = (displayMetrics.widthPixels * .75).toInt()
+            val maxHeight = (displayMetrics.heightPixels * .5).toInt()
 
             val imageWidth = drawable.intrinsicWidth
             val imageHeight = drawable.intrinsicHeight
@@ -42,6 +42,7 @@ class ChatImageView: ImageView {
                         viewHeight = height.toInt()
                         viewWidth = (maxHeight.toFloat() / imageHeight * imageWidth).toInt()
                     }
+
                 } else if (imageHeight > maxHeight) {
 
                     viewHeight = maxHeight
