@@ -18,4 +18,8 @@ data class ChatMessage(
     var seenThere: Boolean = false
     var delivered: Boolean = false
     var edited: Boolean = false
+
+    var messageType: MessageType? = null
+    var filePath: String? = null
+    var fileInfo: String? = null
 }

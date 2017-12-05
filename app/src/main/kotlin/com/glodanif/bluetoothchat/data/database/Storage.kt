@@ -18,8 +18,6 @@ class Storage private constructor(context: Context) {
 
             override fun migrate(database: SupportSQLiteDatabase) {
 
-                // updated Room from v1.0.0-alpha7 to v1.0.0, it messed up with nullability of some columns
-
                 database.execSQL("BEGIN TRANSACTION")
 
                 database.execSQL("ALTER TABLE 'message' RENAME TO 'tmp_message'")
@@ -29,6 +27,9 @@ class Storage private constructor(context: Context) {
                         "'date' INTEGER NOT NULL, " +
                         "'own' INTEGER NOT NULL, " +
                         "'text' TEXT NOT NULL, " +
+                        "'messageType' INTEGER, " +
+                        "'filePath' TEXT, " +
+                        "'fileInfo' TEXT, " +
                         "'seenHere' INTEGER NOT NULL DEFAULT 0, " +
                         "'seenThere' INTEGER NOT NULL DEFAULT 0, " +
                         "'delivered' INTEGER NOT NULL DEFAULT 0, " +
@@ -46,6 +47,7 @@ class Storage private constructor(context: Context) {
                         "'color' INTEGER NOT NULL, " +
                         "'date' INTEGER, " +
                         "'text' TEXT, " +
+                        "'messageType' INTEGER, " +
                         "'notSeen' INTEGER NOT NULL DEFAULT 0)")
                 database.execSQL("INSERT INTO 'conversation' " +
                         "(address, deviceName, displayName, color, date, text, notSeen) " +

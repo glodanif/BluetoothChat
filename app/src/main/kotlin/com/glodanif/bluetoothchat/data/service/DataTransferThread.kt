@@ -133,7 +133,7 @@ abstract class DataTransferThread(private val context: Context, private val sock
                     fileListener.onFileSendingProgress(sentBytes, file.length())
                 }
 
-                fileListener.onFileSendingFinished()
+                fileListener.onFileSendingFinished(file.absolutePath)
 
             } catch (e2: Exception) {
                 e2.printStackTrace()
@@ -209,7 +209,7 @@ abstract class DataTransferThread(private val context: Context, private val sock
             }
             bos.flush()
 
-            fileListener.onFileReceivingFinished()
+            fileListener.onFileReceivingFinished(file.absolutePath)
 
         } catch (e: Exception) {
             Log.e("TAG", "Receiving problem")
@@ -238,12 +238,12 @@ abstract class DataTransferThread(private val context: Context, private val sock
     interface OnFileListener {
         fun onFileSendingStarted(file: File)
         fun onFileSendingProgress(sentBytes: Long, totalBytes: Long)
-        fun onFileSendingFinished()
+        fun onFileSendingFinished(filePath: String)
         fun onFileSendingCanceled()
         fun onFileSendingFailed()
         fun onFileReceivingStarted(fileSize: Long)
         fun onFileReceivingProgress(receivedBytes: Long, totalBytes: Long)
-        fun onFileReceivingFinished()
+        fun onFileReceivingFinished(filePath: String)
         fun onFileReceivingCanceled()
         fun onFileReceivingFailed()
     }

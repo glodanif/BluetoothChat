@@ -5,26 +5,37 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import com.glodanif.bluetoothchat.R
 import com.glodanif.bluetoothchat.data.entity.ChatMessage
+import com.glodanif.bluetoothchat.data.entity.MessageType
 import com.glodanif.bluetoothchat.extension.getRelativeTime
+import com.squareup.picasso.Picasso
 import java.util.*
 
-class ChatAdapter(private val context: Context) : RecyclerView.Adapter<ChatAdapter.MessageViewHolder>() {
+class ChatAdapter(private val context: Context) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    private val OWN_MESSAGE = 0
-    private val FOREIGN_MESSAGE = 1
+    private val OWN_TEXT_MESSAGE = 0
+    private val OWN_IMAGE_MESSAGE = 1
+    private val FOREIGN_TEXT_MESSAGE = 2
+    private val FOREIGN_IMAGE_MESSAGE = 3
 
     var messages = LinkedList<ChatMessage>()
 
-    override fun onBindViewHolder(viewHolder: MessageViewHolder?, position: Int) {
+    override fun onBindViewHolder(viewHolder: RecyclerView.ViewHolder?, position: Int) {
 
-        val holder: MessageViewHolder? = viewHolder
         val message = messages[position]
 
-        holder?.date?.text = message.date.getRelativeTime(context)
-        holder?.text?.text = message.text
+        if (viewHolder is ImageMessageViewHolder) {
+            val holder: ImageMessageViewHolder? = viewHolder
+            Picasso.with(context).load("file://${message.filePath}").into(holder?.image)
+            holder?.date?.text = message.date.getRelativeTime(context)
+        } else if (viewHolder is TextMessageViewHolder) {
+            val holder: TextMessageViewHolder? = viewHolder
+            holder?.text?.text = message.text
+            holder?.date?.text = message.date.getRelativeTime(context)
+        }
     }
 
     override fun getItemCount(): Int {
@@ -32,19 +43,44 @@ class ChatAdapter(private val context: Context) : RecyclerView.Adapter<ChatAdapt
     }
 
     override fun getItemViewType(position: Int): Int {
-        return if (messages[position].own) OWN_MESSAGE else FOREIGN_MESSAGE
+        val message = messages[position]
+        return if (messages[position].own) {
+            when (message.messageType) {
+                MessageType.IMAGE -> OWN_IMAGE_MESSAGE
+                else -> OWN_TEXT_MESSAGE
+            }
+        } else {
+            when (message.messageType) {
+                MessageType.IMAGE -> FOREIGN_IMAGE_MESSAGE
+                else -> FOREIGN_TEXT_MESSAGE
+            }
+        }
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): MessageViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): RecyclerView.ViewHolder {
 
-        val layoutId = if (viewType == OWN_MESSAGE)
-            R.layout.item_message_text_own else R.layout.item_message_text_foreign
+        val layoutId = when (viewType) {
+            OWN_TEXT_MESSAGE -> R.layout.item_message_text_own
+            OWN_IMAGE_MESSAGE -> R.layout.item_message_image_own
+            FOREIGN_TEXT_MESSAGE -> R.layout.item_message_text_foreign
+            FOREIGN_IMAGE_MESSAGE -> R.layout.item_message_image_foreign
+            else -> 0
+        }
         val view = LayoutInflater.from(parent?.context).inflate(layoutId, parent, false)
-        return MessageViewHolder(view)
+
+        return when (viewType) {
+            OWN_IMAGE_MESSAGE, FOREIGN_IMAGE_MESSAGE -> ImageMessageViewHolder(view)
+            else -> TextMessageViewHolder(view)
+        }
     }
 
-    class MessageViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    class TextMessageViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val date: TextView = itemView.findViewById(R.id.tv_date)
         val text: TextView = itemView.findViewById(R.id.tv_text)
+    }
+
+    class ImageMessageViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val date: TextView = itemView.findViewById(R.id.tv_date)
+        val image: ImageView = itemView.findViewById(R.id.iv_image)
     }
 }

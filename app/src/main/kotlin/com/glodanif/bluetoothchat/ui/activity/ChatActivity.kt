@@ -319,7 +319,8 @@ class ChatActivity : SkeletonActivity(), ChatView {
 
         if (fileAddress != null) {
             Picasso.with(this)
-                    .load("file://$fileAddress").into(transferringImagePreview)
+                    .load("file://$fileAddress")
+                    .into(transferringImagePreview)
         } else {
             val imagePlaceholder = resources.getDrawable(R.drawable.ic_photo_black_24dp)
             transferringImagePreview.setImageDrawable(imagePlaceholder)

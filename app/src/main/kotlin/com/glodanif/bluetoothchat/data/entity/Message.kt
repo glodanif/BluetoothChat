@@ -54,6 +54,7 @@ class Message() {
     }
 
     enum class Type(val value: Int) {
+
         MESSAGE(0),
         DELIVERY(1),
         CONNECTION_RESPONSE(2),
@@ -68,10 +69,6 @@ class Message() {
         }
     }
 
-    enum class FileType(val value: Int) {
-        IMAGE(0)
-    }
-
     fun getDecodedMessage(): String {
         val flag = if (this.flag) 1 else 0
         return "${type.value}$DIVIDER$uid$DIVIDER$flag$DIVIDER$body"
@@ -79,8 +76,10 @@ class Message() {
 
     companion object {
 
+        const val MESSAGE_CONTRACT_VERSION = 1
+
         fun createConnectMessage(name: String, @ColorInt color: Int): Message {
-            return Message("0", "$name#$color", true, Type.CONNECTION_REQUEST)
+            return Message("0", "$name#$color#$MESSAGE_CONTRACT_VERSION", true, Type.CONNECTION_REQUEST)
         }
 
         fun createDisconnectMessage(): Message {
@@ -95,8 +94,8 @@ class Message() {
             return Message("0", "$name#$color", false, Type.CONNECTION_RESPONSE)
         }
 
-        fun createFileStartMessage(file: File, type: FileType): Message {
-            return Message("0", "${file.name}#${file.length()}#${type.value}", false, Type.FILE_START)
+        fun createFileStartMessage(file: File, type: MessageType): Message {
+            return Message("0", "${file.name.replace("#", "")}#${file.length()}#${type.value}", false, Type.FILE_START)
         }
 
         fun createFileEndMessage(): Message {

@@ -8,6 +8,7 @@ import android.os.IBinder
 import com.glodanif.bluetoothchat.data.entity.ChatMessage
 import com.glodanif.bluetoothchat.data.entity.Conversation
 import com.glodanif.bluetoothchat.data.entity.Message
+import com.glodanif.bluetoothchat.data.entity.MessageType
 import com.glodanif.bluetoothchat.data.service.BluetoothConnectionService
 import java.io.File
 
@@ -208,7 +209,7 @@ class BluetoothConnectorImpl(private val context: Context) : BluetoothConnector 
     }
 
     override fun sendFile(file: File) {
-        service?.sendFile(file, Message.FileType.IMAGE)
+        service?.sendFile(file, MessageType.IMAGE)
     }
 
     override fun restart() {

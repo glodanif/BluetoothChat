@@ -12,7 +12,6 @@
         android:layout_marginEnd="48dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="6dp"
-        android:minWidth="128dp"
         card_view:cardCornerRadius="2dp"
         card_view:cardPreventCornerOverlap="false"
         card_view:elevation="8dp">
@@ -20,7 +19,6 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:minWidth="128dp"
             android:orientation="vertical"
             android:padding="8dp">
 
@@ -36,11 +34,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-                <ImageView
-                    android:layout_marginTop="8dp"
+                <com.glodanif.bluetoothchat.ui.widget.ChatImageView
                     android:id="@+id/iv_image"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:layout_marginTop="8dp"
+                    android:scaleType="centerCrop"
                     tools:src="@mipmap/ic_launcher" />
             </FrameLayout>
 
