@@ -36,7 +36,6 @@ import pl.aprilapps.easyphotopicker.EasyImage
 import java.util.*
 import java.io.File
 import java.lang.Exception
-import java.net.URI
 
 class ChatActivity : SkeletonActivity(), ChatView {
 
@@ -101,6 +100,10 @@ class ChatActivity : SkeletonActivity(), ChatView {
         imagePickerButton = findViewById(R.id.ib_image)
         imagePickerButton.setOnClickListener {
             EasyImage.openChooserWithGallery(this, "chooserTitle", 0)
+        }
+
+        findViewById<ImageButton>(R.id.ib_cancel).setOnClickListener {
+            presenter.cancelFileTransfer()
         }
 
         val displayMetrics = DisplayMetrics()

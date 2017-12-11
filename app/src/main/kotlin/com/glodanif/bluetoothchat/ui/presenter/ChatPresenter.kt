@@ -266,6 +266,10 @@ class ChatPresenter(private val deviceAddress: String, private val view: ChatVie
         fileToSend = file
     }
 
+    fun cancelFileTransfer() {
+        connectionModel.cancelFileTransfer()
+    }
+
     fun reconnect() {
 
         if (scanModel.isBluetoothEnabled()) {

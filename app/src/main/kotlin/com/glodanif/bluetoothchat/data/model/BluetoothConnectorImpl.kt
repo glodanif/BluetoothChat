@@ -212,6 +212,10 @@ class BluetoothConnectorImpl(private val context: Context) : BluetoothConnector 
         service?.sendFile(file, MessageType.IMAGE)
     }
 
+    override fun cancelFileTransfer() {
+        service?.cancelFileTransfer()
+    }
+
     override fun restart() {
         service?.disconnect()
     }

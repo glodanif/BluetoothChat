@@ -321,7 +321,35 @@ class BluetoothConnectionService : Service() {
 
         }
 
-        dataTransferThread = object : DataTransferThread(this, socket, type, transferEventsListener, fileEventsListener) {
+        val eventsStrategy = object : DataTransferThread.EventsStrategy {
+
+            override fun isMessage(message: String?): Boolean {
+                return message != null && message.contains("#")
+            }
+
+            override fun isFileStart(message: String?): DataTransferThread.FileInfo? {
+
+                if (message != null && message.contains("6#0#0#")) {
+                    val info = message.replace("6#0#0#", "")
+                    return DataTransferThread.FileInfo(
+                            info.substringBefore("#"),
+                            info.substringAfter("#").substringBefore("#").toLong()
+                    )
+                }
+
+                return null
+            }
+
+            override fun isFileCanceled(message: String?): Boolean {
+                return message != null && message.contains("8#0#0#")
+            }
+
+            override fun isFileFinish(message: String?): Boolean {
+                return message != null && message.contains("7#0#0#")
+            }
+        }
+
+        dataTransferThread = object : DataTransferThread(this, socket, type, transferEventsListener, fileEventsListener, eventsStrategy) {
 
             override fun shouldRun(): Boolean {
                 return isConnectedOrPending()
@@ -397,6 +425,10 @@ class BluetoothConnectionService : Service() {
         dataTransferThread?.writeFile(file)
     }
 
+    fun cancelFileTransfer() {
+
+    }
+
     private fun onMessageSent(messageBody: String) {
 
         if (currentSocket == null) return
@@ -457,16 +489,6 @@ class BluetoothConnectionService : Service() {
                 disconnect()
                 connectionListener?.onDisconnected()
             }
-        } else if (message.type == Message.Type.FILE_START) {
-
-            dataTransferThread?.isFileLoading = true
-            dataTransferThread?.fileName = message.body.substringBefore("#")
-
-        } else if (message.type == Message.Type.FILE_END) {
-
-            dataTransferThread?.isFileLoading = false
-            dataTransferThread?.fileName = null
-
         }
     }
 

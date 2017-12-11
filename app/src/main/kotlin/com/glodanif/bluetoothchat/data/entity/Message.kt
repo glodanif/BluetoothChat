@@ -62,7 +62,8 @@ class Message() {
         SEEING(4),
         EDITING(5),
         FILE_START(6),
-        FILE_END(7);
+        FILE_END(7),
+        FILE_CANCELED(8);
 
         companion object {
             fun from(findValue: Int): Type = Type.values().first { it.value == findValue }

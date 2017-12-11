@@ -9,20 +9,26 @@ import kotlin.concurrent.thread
 abstract class DataTransferThread(private val context: Context, private val socket: BluetoothSocket,
                                   private val type: BluetoothConnectionService.ConnectionType,
                                   private val transferListener: TransferEventsListener,
-                                  private val fileListener: OnFileListener) : Thread() {
+                                  private val fileListener: OnFileListener, private var eventsStrategy: EventsStrategy) : Thread() {
+
+    private val bufferSize = 1024
 
     private var inputStream: InputStream? = null
     private var outputStream: OutputStream? = null
 
     private var skipEvents = false
 
-    private val buffer = ByteArray(1024)
+    private val buffer = ByteArray(bufferSize)
     private var bytes: Int? = null
 
     private var isConnectionPrepared = false
 
     @Volatile
-    var isFileLoading = false
+    var isFileTransferCanceled = false
+    @Volatile
+    var isFileDownloading = false
+    @Volatile
+    var isFileUploading = false
     @Volatile
     var fileName: String? = null
     var fileSize: Long = 0
@@ -53,22 +59,23 @@ abstract class DataTransferThread(private val context: Context, private val sock
     override fun run() {
 
         while (shouldRun()) {
+
             try {
 
                 val message = readString()
+                val potentialFile = eventsStrategy.isFileStart(message)
 
-                if (message != null && message.contains("6#0#0#")) {
+                if (message != null && potentialFile != null) {
 
-                    isFileLoading = true
-                    fileName = message.replace("6#0#0#", "").substringBefore("#")
-                    fileSize = message.replace("6#0#0#", "").substringAfter("#").substringBefore("#").toLong()
+                    isFileDownloading = true
+                    fileName = potentialFile.name
+                    fileSize = potentialFile.size
 
                     transferListener.onMessageReceived(message)
-
                     readFile(inputStream!!, fileName!!, fileSize)
 
                 } else {
-                    if (message != null && message.contains("#")) {
+                    if (message != null && eventsStrategy.isMessage(message)) {
                         transferListener.onMessageReceived(message)
                     }
                 }
@@ -107,43 +114,43 @@ abstract class DataTransferThread(private val context: Context, private val sock
 
     fun writeFile(file: File) {
 
+        isFileUploading = true
+
         fileListener.onFileSendingStarted(file)
 
         thread {
 
             val fileStream = FileInputStream(file)
-            val bis = BufferedInputStream(fileStream)
-            val bos = BufferedOutputStream(outputStream)
+            BufferedInputStream(fileStream).use {
 
-            try {
+                val bos = BufferedOutputStream(outputStream)
 
-                var sentBytes: Long = 0
-                var length: Int
-                val buffer = ByteArray(1024)
-
-                length = bis.read(buffer)
-                while (length > -1) {
-                    if (length > 0) {
-                        bos.write(buffer, 0, length)
-                        bos.flush()
-                        sentBytes += length.toLong()
-                    }
-                    length = bis.read(buffer)
-
-                    fileListener.onFileSendingProgress(sentBytes, file.length())
-                }
-
-                fileListener.onFileSendingFinished(file.absolutePath)
-
-            } catch (e2: Exception) {
-                e2.printStackTrace()
-                fileListener.onFileSendingFailed()
-                throw e2
-            } finally {
                 try {
-                    bis.close()
-                } catch (e: IOException) {
+
+                    var sentBytes: Long = 0
+                    var length: Int
+                    val buffer = ByteArray(bufferSize)
+
+                    length = it.read(buffer)
+                    while (length > -1) {
+                        if (length > 0) {
+                            bos.write(buffer, 0, length)
+                            bos.flush()
+                            sentBytes += length.toLong()
+                        }
+                        length = it.read(buffer)
+
+                        fileListener.onFileSendingProgress(sentBytes, file.length())
+                    }
+
+                    fileListener.onFileSendingFinished(file.absolutePath)
+
+                } catch (e: Exception) {
                     e.printStackTrace()
+                    fileListener.onFileSendingFailed()
+                    throw e
+                } finally {
+                    isFileUploading = false
                 }
             }
         }
@@ -164,62 +171,82 @@ abstract class DataTransferThread(private val context: Context, private val sock
         }
     }
 
+    fun cancelFileTransfer() {
+        isFileTransferCanceled = true
+    }
+
     private fun readFile(stream: InputStream, name: String, size: Long) {
 
         val file = File(context.filesDir, name)
 
         val bis = BufferedInputStream(stream)
-        val bos = BufferedOutputStream(FileOutputStream(file))
 
-        fileListener.onFileReceivingStarted(size)
+        BufferedOutputStream(FileOutputStream(file)).use {
 
-        try {
+            fileListener.onFileReceivingStarted(size)
 
-            var bytesRead: Long = 0
-            var len = 0
-            val bufSize = 1024
-            val buffer = ByteArray(bufSize)
-            var timeOut = 0
-            val maxTimeOut = 16
-
-            while (bytesRead < size) {
-                Log.w("TAG", "BEFORE AVAILABLE " + bytesRead)
-                while (bis.available() == 0 && timeOut < maxTimeOut) {
-                    timeOut++
-                    Thread.sleep(100)
-                }
-
-                val remainingSize = size - bytesRead
-                val byteCount = Math.min(remainingSize, bufSize.toLong()).toInt()
-                Log.w("TAG", "BEFORE READ " + "currentSize : "
-                        + bytesRead + " byteCount " + byteCount)
-
-                len = bis.read(buffer, 0, byteCount)
-
-                Log.w("TAG", "AFTER READ " + "Len " + len)
-                if (len > 0) {
-                    timeOut = 0
-                    Log.w("TAG", "BEFORE WRITE " + bytesRead)
-                    bos.write(buffer, 0, len)
-                    bytesRead += len.toLong()
-                    Log.w("TAG", "AFTER WRITE " + bytesRead)
-
-                    fileListener.onFileReceivingProgress(bytesRead, size)
-                }
-            }
-            bos.flush()
-
-            fileListener.onFileReceivingFinished(file.absolutePath)
-
-        } catch (e: Exception) {
-            Log.e("TAG", "Receiving problem")
-            fileListener.onFileReceivingFailed()
-            throw e
-        } finally {
             try {
-                Log.i("TAG", "FILE CLOSE")
-                bos.close()
-            } catch (e: IOException) {
+
+                var bytesRead: Long = 0
+                var len = 0
+                val buffer = ByteArray(bufferSize)
+                var timeOut = 0
+                val maxTimeOut = 16
+
+                var isCanceled = false
+
+                while (bytesRead < size) {
+                    Log.w("TAG", "BEFORE AVAILABLE " + bytesRead)
+                    while (bis.available() == 0 && timeOut < maxTimeOut) {
+                        timeOut++
+                        Thread.sleep(250)
+                    }
+
+                    val remainingSize = size - bytesRead
+                    val byteCount = Math.min(remainingSize, bufferSize.toLong()).toInt()
+                    Log.w("TAG", "BEFORE READ " + "currentSize : "
+                            + bytesRead + " byteCount " + byteCount)
+
+                    len = bis.read(buffer, 0, byteCount)
+
+                    val str = String(buffer, 0, byteCount)
+
+                    if (eventsStrategy.isFileFinish(str)) {
+                        break
+                    }
+
+                    if (eventsStrategy.isFileCanceled(str)) {
+                        isCanceled = true
+                        break
+                    }
+
+                    Log.w("TAG", "AFTER READ " + "Len " + len)
+                    if (len > 0) {
+                        timeOut = 0
+                        Log.w("TAG", "BEFORE WRITE " + bytesRead)
+                        it.write(buffer, 0, len)
+                        bytesRead += len.toLong()
+                        Log.w("TAG", "AFTER WRITE " + bytesRead)
+
+                        fileListener.onFileReceivingProgress(bytesRead, size)
+                    }
+                }
+                it.flush()
+
+                if (!isCanceled) {
+                    fileListener.onFileReceivingFinished(file.absolutePath)
+                } else {
+                    fileListener.onFileReceivingCanceled()
+                }
+
+            } catch (e: Exception) {
+                Log.e("TAG", "Receiving problem")
+                fileListener.onFileReceivingFailed()
+                throw e
+            } finally {
+                isFileDownloading = false
+                fileName = null
+                fileSize = 0
             }
         }
     }
@@ -247,4 +274,13 @@ abstract class DataTransferThread(private val context: Context, private val sock
         fun onFileReceivingCanceled()
         fun onFileReceivingFailed()
     }
+
+    interface EventsStrategy {
+        fun isMessage(message: String?): Boolean
+        fun isFileStart(message: String?): FileInfo?
+        fun isFileCanceled(message: String?): Boolean
+        fun isFileFinish(message: String?): Boolean
+    }
+
+    data class FileInfo(val name: String, val size: Long)
 }

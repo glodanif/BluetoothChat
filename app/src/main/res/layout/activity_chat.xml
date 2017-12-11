@@ -135,7 +135,9 @@
                     tools:progress="35" />
             </RelativeLayout>
 
-            <ImageView
+            <ImageButton
+                android:id="@+id/ib_cancel"
+                style="@style/Widget.AppCompat.Button.Borderless"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:layout_gravity="center_vertical"
