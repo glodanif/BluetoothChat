@@ -140,7 +140,9 @@ class BluetoothConnectionService : Service() {
         cancelConnections()
 
         acceptThread = AcceptThread()
-        acceptThread!!.start()
+        acceptThread.let {
+            it?.start()
+        }
         showNotification(getString(R.string.notification__ready_to_connect))
     }
 
@@ -163,7 +165,9 @@ class BluetoothConnectionService : Service() {
         connectionType = null
 
         connectThread = ConnectThread(device)
-        connectThread!!.start()
+        connectThread.let {
+            it?.start()
+        }
         handler.post { connectionListener?.onConnecting() }
     }
 
@@ -257,12 +261,12 @@ class BluetoothConnectionService : Service() {
                 }
             }
 
-            override fun onFileSendingCanceled() {
-                fileListener?.onFileReceivingCanceled()
+            override fun onFileSendingRecall() {
+                handler.post {  fileListener?.onFileSendingCanceled() }
             }
 
             override fun onFileSendingFailed() {
-                fileListener?.onFileSendingFailed()
+                handler.post {  fileListener?.onFileSendingFailed() }
             }
 
             override fun onFileReceivingStarted(fileSize: Long) {
@@ -311,14 +315,13 @@ class BluetoothConnectionService : Service() {
                 }
             }
 
-            override fun onFileReceivingCanceled() {
-                fileListener?.onFileReceivingCanceled()
+            override fun onFileReceivingRejected() {
+                handler.post { fileListener?.onFileReceivingCanceled() }
             }
 
             override fun onFileReceivingFailed() {
                 fileListener?.onFileReceivingFailed()
             }
-
         }
 
         val eventsStrategy = object : DataTransferThread.EventsStrategy {
@@ -331,6 +334,7 @@ class BluetoothConnectionService : Service() {
 
                 if (message != null && message.contains("6#0#0#")) {
                     val info = message.replace("6#0#0#", "")
+                    Log.e(TAG, info)
                     return DataTransferThread.FileInfo(
                             info.substringBefore("#"),
                             info.substringAfter("#").substringBefore("#").toLong()
@@ -426,7 +430,7 @@ class BluetoothConnectionService : Service() {
     }
 
     fun cancelFileTransfer() {
-
+        dataTransferThread?.cancelFileTransfer()
     }
 
     private fun onMessageSent(messageBody: String) {
@@ -489,6 +493,9 @@ class BluetoothConnectionService : Service() {
                 disconnect()
                 connectionListener?.onDisconnected()
             }
+        } else if (message.type == Message.Type.FILE_CANCELED) {
+            handler.post {  fileListener?.onFileSendingCanceled() }
+            handler.post {  fileListener?.onFileReceivingCanceled() }
         }
     }
 

@@ -130,11 +130,13 @@ class ChatPresenter(private val deviceAddress: String, private val view: ChatVie
         }
 
         override fun onFileSendingCanceled() {
-
+            view.hideImageTransferLayout()
+            view.showImageTransferCanceled()
         }
 
         override fun onFileSendingFailed() {
-
+            view.hideImageTransferLayout()
+            view.showImageTransferFailure()
         }
 
         override fun onFileReceivingStarted(fileSize: Long) {
@@ -149,12 +151,14 @@ class ChatPresenter(private val deviceAddress: String, private val view: ChatVie
             view.hideImageTransferLayout()
         }
 
-        override fun onFileReceivingCanceled() {
-
+        override fun onFileReceivingFailed() {
+            view.hideImageTransferLayout()
+            view.showImageTransferFailure()
         }
 
-        override fun onFileReceivingFailed() {
-
+        override fun onFileReceivingCanceled() {
+            view.hideImageTransferLayout()
+            view.showImageTransferCanceled()
         }
     }
 
@@ -268,6 +272,7 @@ class ChatPresenter(private val deviceAddress: String, private val view: ChatVie
 
     fun cancelFileTransfer() {
         connectionModel.cancelFileTransfer()
+        view.hideImageTransferLayout()
     }
 
     fun reconnect() {

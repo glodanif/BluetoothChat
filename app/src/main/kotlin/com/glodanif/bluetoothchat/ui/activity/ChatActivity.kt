@@ -7,12 +7,10 @@ import android.app.Service
 import android.bluetooth.BluetoothAdapter
 import android.content.Context
 import android.content.Intent
-import android.graphics.PorterDuff
 import android.net.Uri
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
-import android.transition.Visibility
 import android.util.DisplayMetrics
 import android.view.Menu
 import android.view.MenuItem
@@ -20,11 +18,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import com.glodanif.bluetoothchat.R
-import com.glodanif.bluetoothchat.ui.adapter.ChatAdapter
 import com.glodanif.bluetoothchat.data.entity.ChatMessage
 import com.glodanif.bluetoothchat.data.entity.Conversation
 import com.glodanif.bluetoothchat.data.model.*
 import com.glodanif.bluetoothchat.extension.getReadableFileSize
+import com.glodanif.bluetoothchat.ui.adapter.ChatAdapter
 import com.glodanif.bluetoothchat.ui.presenter.ChatPresenter
 import com.glodanif.bluetoothchat.ui.util.SimpleTextWatcher
 import com.glodanif.bluetoothchat.ui.view.ChatView
@@ -33,9 +31,9 @@ import com.glodanif.bluetoothchat.ui.widget.ActionView
 import com.squareup.picasso.Picasso
 import pl.aprilapps.easyphotopicker.DefaultCallback
 import pl.aprilapps.easyphotopicker.EasyImage
-import java.util.*
 import java.io.File
 import java.lang.Exception
+import java.util.*
 
 class ChatActivity : SkeletonActivity(), ChatView {
 
@@ -363,6 +361,14 @@ class ChatActivity : SkeletonActivity(), ChatView {
     override fun hideImageTransferLayout() {
         textSendingHolder.visibility = View.VISIBLE
         imageSendingHolder.visibility = View.GONE
+    }
+
+    override fun showImageTransferCanceled() {
+        Toast.makeText(this, "Your partner has canceled image transfer", Toast.LENGTH_LONG).show()
+    }
+
+    override fun showImageTransferFailure() {
+        Toast.makeText(this, "Problem during image transfer", Toast.LENGTH_LONG).show()
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

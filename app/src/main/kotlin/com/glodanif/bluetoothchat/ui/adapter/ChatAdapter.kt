@@ -2,6 +2,7 @@ package com.glodanif.bluetoothchat.ui.adapter
 
 import android.content.Context
 import android.graphics.Bitmap
+import android.net.Uri
 import android.support.v7.widget.RecyclerView
 import android.util.DisplayMetrics
 import android.view.LayoutInflater

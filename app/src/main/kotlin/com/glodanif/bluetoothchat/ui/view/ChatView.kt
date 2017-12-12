@@ -34,6 +34,8 @@ interface ChatView {
     fun showImageTransferLayout(fileAddress: String?, fileSize: Long, transferType: FileTransferType)
     fun updateImageTransferProgress(transferredBytes: Long, totalBytes: Long)
     fun hideImageTransferLayout()
+    fun showImageTransferCanceled()
+    fun showImageTransferFailure()
 
     enum class FileTransferType {
         SENDING,

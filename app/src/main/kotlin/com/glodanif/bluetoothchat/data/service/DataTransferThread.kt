@@ -3,6 +3,7 @@ package com.glodanif.bluetoothchat.data.service
 import android.bluetooth.BluetoothSocket
 import android.content.Context
 import android.util.Log
+import com.glodanif.bluetoothchat.data.entity.Message
 import java.io.*
 import kotlin.concurrent.thread
 
@@ -141,9 +142,18 @@ abstract class DataTransferThread(private val context: Context, private val sock
                         length = it.read(buffer)
 
                         fileListener.onFileSendingProgress(sentBytes, file.length())
+
+                        if (isFileTransferCanceled) {
+                            break
+                        }
                     }
 
-                    fileListener.onFileSendingFinished(file.absolutePath)
+                    if (!isFileTransferCanceled) {
+                        fileListener.onFileSendingFinished(file.absolutePath)
+                    } else {
+                        val canceledMessage = Message.createFileCanceledMessage()
+                        write(canceledMessage.getDecodedMessage())
+                    }
 
                 } catch (e: Exception) {
                     e.printStackTrace()
@@ -151,6 +161,7 @@ abstract class DataTransferThread(private val context: Context, private val sock
                     throw e
                 } finally {
                     isFileUploading = false
+                    isFileTransferCanceled = false
                 }
             }
         }
@@ -196,6 +207,7 @@ abstract class DataTransferThread(private val context: Context, private val sock
                 var isCanceled = false
 
                 while (bytesRead < size) {
+
                     Log.w("TAG", "BEFORE AVAILABLE " + bytesRead)
                     while (bis.available() == 0 && timeOut < maxTimeOut) {
                         timeOut++
@@ -210,6 +222,7 @@ abstract class DataTransferThread(private val context: Context, private val sock
                     len = bis.read(buffer, 0, byteCount)
 
                     val str = String(buffer, 0, byteCount)
+                    Log.w("TAG", "READ STR " + str)
 
                     if (eventsStrategy.isFileFinish(str)) {
                         break
@@ -217,6 +230,8 @@ abstract class DataTransferThread(private val context: Context, private val sock
 
                     if (eventsStrategy.isFileCanceled(str)) {
                         isCanceled = true
+                        fileListener.onFileReceivingRejected()
+                        file.delete()
                         break
                     }
 
@@ -235,8 +250,6 @@ abstract class DataTransferThread(private val context: Context, private val sock
 
                 if (!isCanceled) {
                     fileListener.onFileReceivingFinished(file.absolutePath)
-                } else {
-                    fileListener.onFileReceivingCanceled()
                 }
 
             } catch (e: Exception) {
@@ -266,12 +279,12 @@ abstract class DataTransferThread(private val context: Context, private val sock
         fun onFileSendingStarted(file: File)
         fun onFileSendingProgress(sentBytes: Long, totalBytes: Long)
         fun onFileSendingFinished(filePath: String)
-        fun onFileSendingCanceled()
+        fun onFileSendingRecall()
         fun onFileSendingFailed()
         fun onFileReceivingStarted(fileSize: Long)
         fun onFileReceivingProgress(receivedBytes: Long, totalBytes: Long)
         fun onFileReceivingFinished(filePath: String)
-        fun onFileReceivingCanceled()
+        fun onFileReceivingRejected()
         fun onFileReceivingFailed()
     }
 

@@ -102,5 +102,9 @@ class Message() {
         fun createFileEndMessage(): Message {
             return Message("0", "", false, Type.FILE_START)
         }
+
+        fun createFileCanceledMessage(): Message {
+            return Message("0", "", false, Type.FILE_CANCELED)
+        }
     }
 }
