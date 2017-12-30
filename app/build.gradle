@@ -7,13 +7,13 @@ apply plugin: 'kotlin-kapt'
 apply plugin: 'io.fabric'
 
 android {
-    compileSdkVersion 26
+    compileSdkVersion 27
     buildToolsVersion '26.0.2'
 
     defaultConfig {
         applicationId "com.glodanif.bluetoothchat"
         minSdkVersion 19
-        targetSdkVersion 26
+        targetSdkVersion 27
         versionCode VERSION_CODE
         versionName VERSION_NAME
         vectorDrawables.useSupportLibrary = true

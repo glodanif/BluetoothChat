@@ -25,7 +25,9 @@ abstract class DataTransferThread(private val context: Context, private val sock
     private var isConnectionPrepared = false
 
     @Volatile
-    var isFileTransferCanceled = false
+    private var isFileTransferCanceledByMe = false
+    @Volatile
+    private var isFileTransferCanceledByPartner = false
     @Volatile
     var isFileDownloading = false
     @Volatile
@@ -76,8 +78,16 @@ abstract class DataTransferThread(private val context: Context, private val sock
                     readFile(inputStream!!, fileName!!, fileSize)
 
                 } else {
+
                     if (message != null && eventsStrategy.isMessage(message)) {
-                        transferListener.onMessageReceived(message)
+
+                        val cancelInfo = eventsStrategy.isFileCanceled(message)
+                        if (cancelInfo == null) {
+                            transferListener.onMessageReceived(message)
+                        } else {
+                            fileListener.onFileTransferCanceled(cancelInfo.byPartner)
+                            isFileTransferCanceledByPartner = cancelInfo.byPartner
+                        }
                     }
                 }
             } catch (e: IOException) {
@@ -116,6 +126,8 @@ abstract class DataTransferThread(private val context: Context, private val sock
     fun writeFile(file: File) {
 
         isFileUploading = true
+        isFileTransferCanceledByMe = false
+        isFileTransferCanceledByPartner = false
 
         fileListener.onFileSendingStarted(file)
 
@@ -143,16 +155,18 @@ abstract class DataTransferThread(private val context: Context, private val sock
 
                         fileListener.onFileSendingProgress(sentBytes, file.length())
 
-                        if (isFileTransferCanceled) {
+                        if (isFileTransferCanceledByMe || isFileTransferCanceledByPartner) {
                             break
                         }
                     }
 
-                    if (!isFileTransferCanceled) {
+                    if (!isFileTransferCanceledByMe && !isFileTransferCanceledByPartner) {
                         fileListener.onFileSendingFinished(file.absolutePath)
                     } else {
-                        val canceledMessage = Message.createFileCanceledMessage()
-                        write(canceledMessage.getDecodedMessage())
+                        if (isFileTransferCanceledByMe) {
+                            val canceledMessage = Message.createFileCanceledMessage(true)
+                            write(canceledMessage.getDecodedMessage())
+                        }
                     }
 
                 } catch (e: Exception) {
@@ -161,7 +175,8 @@ abstract class DataTransferThread(private val context: Context, private val sock
                     throw e
                 } finally {
                     isFileUploading = false
-                    isFileTransferCanceled = false
+                    isFileTransferCanceledByMe = false
+                    isFileTransferCanceledByPartner = false
                 }
             }
         }
@@ -183,10 +198,13 @@ abstract class DataTransferThread(private val context: Context, private val sock
     }
 
     fun cancelFileTransfer() {
-        isFileTransferCanceled = true
+        isFileTransferCanceledByMe = true
     }
 
     private fun readFile(stream: InputStream, name: String, size: Long) {
+
+        isFileTransferCanceledByMe = false
+        isFileTransferCanceledByPartner = false
 
         val file = File(context.filesDir, name)
 
@@ -228,10 +246,15 @@ abstract class DataTransferThread(private val context: Context, private val sock
                         break
                     }
 
-                    if (eventsStrategy.isFileCanceled(str)) {
+                    val cancelInfo = eventsStrategy.isFileCanceled(str)
+                    if (cancelInfo != null) {
                         isCanceled = true
-                        fileListener.onFileReceivingRejected()
+                        fileListener.onFileTransferCanceled(cancelInfo.byPartner)
                         file.delete()
+                        break
+                    }
+
+                    if (isFileTransferCanceledByMe || isFileTransferCanceledByPartner) {
                         break
                     }
 
@@ -246,17 +269,25 @@ abstract class DataTransferThread(private val context: Context, private val sock
                         fileListener.onFileReceivingProgress(bytesRead, size)
                     }
                 }
-                it.flush()
 
-                if (!isCanceled) {
+                if (!isCanceled && !isFileTransferCanceledByMe && !isFileTransferCanceledByPartner) {
+                    it.flush()
                     fileListener.onFileReceivingFinished(file.absolutePath)
                 }
 
             } catch (e: Exception) {
-                Log.e("TAG", "Receiving problem")
                 fileListener.onFileReceivingFailed()
                 throw e
             } finally {
+
+                if (isFileTransferCanceledByMe || isFileTransferCanceledByPartner) {
+                    isFileTransferCanceledByMe = false
+                    isFileTransferCanceledByPartner = false
+                    file.delete()
+                    val canceledMessage = Message.createFileCanceledMessage(true)
+                    write(canceledMessage.getDecodedMessage())
+                }
+
                 isFileDownloading = false
                 fileName = null
                 fileSize = 0
@@ -279,21 +310,21 @@ abstract class DataTransferThread(private val context: Context, private val sock
         fun onFileSendingStarted(file: File)
         fun onFileSendingProgress(sentBytes: Long, totalBytes: Long)
         fun onFileSendingFinished(filePath: String)
-        fun onFileSendingRecall()
         fun onFileSendingFailed()
         fun onFileReceivingStarted(fileSize: Long)
         fun onFileReceivingProgress(receivedBytes: Long, totalBytes: Long)
         fun onFileReceivingFinished(filePath: String)
-        fun onFileReceivingRejected()
         fun onFileReceivingFailed()
+        fun onFileTransferCanceled(byPartner: Boolean)
     }
 
     interface EventsStrategy {
         fun isMessage(message: String?): Boolean
         fun isFileStart(message: String?): FileInfo?
-        fun isFileCanceled(message: String?): Boolean
+        fun isFileCanceled(message: String?): CancelInfo?
         fun isFileFinish(message: String?): Boolean
     }
 
     data class FileInfo(val name: String, val size: Long)
+    data class CancelInfo(val byPartner: Boolean)
 }

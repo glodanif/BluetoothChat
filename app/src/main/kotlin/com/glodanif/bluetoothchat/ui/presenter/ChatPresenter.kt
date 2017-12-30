@@ -129,11 +129,6 @@ class ChatPresenter(private val deviceAddress: String, private val view: ChatVie
             view.hideImageTransferLayout()
         }
 
-        override fun onFileSendingCanceled() {
-            view.hideImageTransferLayout()
-            view.showImageTransferCanceled()
-        }
-
         override fun onFileSendingFailed() {
             view.hideImageTransferLayout()
             view.showImageTransferFailure()
@@ -156,9 +151,11 @@ class ChatPresenter(private val deviceAddress: String, private val view: ChatVie
             view.showImageTransferFailure()
         }
 
-        override fun onFileReceivingCanceled() {
+        override fun onFileTransferCanceled(byPartner: Boolean) {
             view.hideImageTransferLayout()
-            view.showImageTransferCanceled()
+            if (byPartner) {
+                view.showImageTransferCanceled()
+            }
         }
     }
 

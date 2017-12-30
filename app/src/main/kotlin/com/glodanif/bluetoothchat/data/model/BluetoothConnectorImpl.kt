@@ -129,10 +129,6 @@ class BluetoothConnectorImpl(private val context: Context) : BluetoothConnector 
             fileListener?.onFileSendingFinished()
         }
 
-        override fun onFileSendingCanceled() {
-            fileListener?.onFileSendingCanceled()
-        }
-
         override fun onFileSendingFailed() {
             fileListener?.onFileSendingFailed()
         }
@@ -149,12 +145,12 @@ class BluetoothConnectorImpl(private val context: Context) : BluetoothConnector 
             fileListener?.onFileReceivingFinished()
         }
 
-        override fun onFileReceivingCanceled() {
-            fileListener?.onFileReceivingCanceled()
-        }
-
         override fun onFileReceivingFailed() {
             fileListener?.onFileReceivingFailed()
+        }
+
+        override fun onFileTransferCanceled(byPartner: Boolean) {
+            fileListener?.onFileTransferCanceled(byPartner)
         }
     }
 

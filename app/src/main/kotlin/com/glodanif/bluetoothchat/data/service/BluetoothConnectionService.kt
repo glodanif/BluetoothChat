@@ -261,12 +261,8 @@ class BluetoothConnectionService : Service() {
                 }
             }
 
-            override fun onFileSendingRecall() {
-                handler.post {  fileListener?.onFileSendingCanceled() }
-            }
-
             override fun onFileSendingFailed() {
-                handler.post {  fileListener?.onFileSendingFailed() }
+                handler.post { fileListener?.onFileSendingFailed() }
             }
 
             override fun onFileReceivingStarted(fileSize: Long) {
@@ -315,37 +311,53 @@ class BluetoothConnectionService : Service() {
                 }
             }
 
-            override fun onFileReceivingRejected() {
-                handler.post { fileListener?.onFileReceivingCanceled() }
+            override fun onFileReceivingFailed() {
+                handler.post { fileListener?.onFileReceivingFailed() }
             }
 
-            override fun onFileReceivingFailed() {
-                fileListener?.onFileReceivingFailed()
+            override fun onFileTransferCanceled(byPartner: Boolean) {
+                handler.post { fileListener?.onFileTransferCanceled(byPartner) }
             }
         }
 
         val eventsStrategy = object : DataTransferThread.EventsStrategy {
 
+            private val regex = Regex("\\d*#\\d*#\\d#*")
+
             override fun isMessage(message: String?): Boolean {
-                return message != null && message.contains("#")
+                return message != null && regex.containsMatchIn(message)
             }
 
             override fun isFileStart(message: String?): DataTransferThread.FileInfo? {
 
                 if (message != null && message.contains("6#0#0#")) {
                     val info = message.replace("6#0#0#", "")
-                    Log.e(TAG, info)
-                    return DataTransferThread.FileInfo(
-                            info.substringBefore("#"),
-                            info.substringAfter("#").substringBefore("#").toLong()
-                    )
+                    return if (info.isEmpty()) {
+                        null
+                    } else {
+                        DataTransferThread.FileInfo(
+                                info.substringBefore("#"),
+                                info.substringAfter("#")
+                                        .substringBefore("#")
+                                        .toLong()
+                        )
+                    }
                 }
 
                 return null
             }
 
-            override fun isFileCanceled(message: String?): Boolean {
-                return message != null && message.contains("8#0#0#")
+            override fun isFileCanceled(message: String?): DataTransferThread.CancelInfo? {
+
+                return if (message != null && (message.contains("8#0#0#") || message.contains("8#0#1#"))) {
+                    val byPartner = message
+                            .substringAfter("8#0#")
+                            .replace("8#0#", "")
+                            .substringBefore("#")
+                    DataTransferThread.CancelInfo(byPartner == "1")
+                } else {
+                    null
+                }
             }
 
             override fun isFileFinish(message: String?): Boolean {
@@ -353,12 +365,13 @@ class BluetoothConnectionService : Service() {
             }
         }
 
-        dataTransferThread = object : DataTransferThread(this, socket, type, transferEventsListener, fileEventsListener, eventsStrategy) {
+        dataTransferThread =
+                object : DataTransferThread(this, socket, type, transferEventsListener, fileEventsListener, eventsStrategy) {
 
-            override fun shouldRun(): Boolean {
-                return isConnectedOrPending()
-            }
-        }
+                    override fun shouldRun(): Boolean {
+                        return isConnectedOrPending()
+                    }
+                }
         dataTransferThread?.prepare()
         dataTransferThread?.start()
 
@@ -494,8 +507,7 @@ class BluetoothConnectionService : Service() {
                 connectionListener?.onDisconnected()
             }
         } else if (message.type == Message.Type.FILE_CANCELED) {
-            handler.post {  fileListener?.onFileSendingCanceled() }
-            handler.post {  fileListener?.onFileReceivingCanceled() }
+            dataTransferThread?.cancelFileTransfer()
         }
     }
 

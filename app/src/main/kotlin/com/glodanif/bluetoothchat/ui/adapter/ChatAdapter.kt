@@ -40,14 +40,17 @@ class ChatAdapter(private val context: Context, private val displayMetrics: Disp
                 val size = message.fileInfo!!.split("x")
                 if (size.size == 2) {
                     val viewSize = getScaledSize(size[0].toInt(), size[1].toInt())
-                    holder?.image?.layoutParams =
-                            FrameLayout.LayoutParams(viewSize.first, viewSize.second)
-                    Picasso.with(context)
-                            .load("file://${message.filePath}")
-                            .config(Bitmap.Config.RGB_565)
-                            .tag(picassoTag)
-                            .resize(viewSize.first, viewSize.second)
-                            .into(holder?.image)
+
+                    if (viewSize.first > 0 && viewSize.second > 0) {
+                        holder?.image?.layoutParams =
+                                FrameLayout.LayoutParams(viewSize.first, viewSize.second)
+                        Picasso.with(context)
+                                .load("file://${message.filePath}")
+                                .config(Bitmap.Config.RGB_565)
+                                .tag(picassoTag)
+                                .resize(viewSize.first, viewSize.second)
+                                .into(holder?.image)
+                    }
                 }
             }
 
