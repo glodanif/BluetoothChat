@@ -107,6 +107,9 @@ class ChatActivity : SkeletonActivity(), ChatView {
         val displayMetrics = DisplayMetrics()
         windowManager.defaultDisplay.getMetrics(displayMetrics)
         adapter = ChatAdapter(this, displayMetrics)
+        adapter.imageClickListener = { view, id, path ->
+            ImagePreviewActivity.start(this, view, id, path)
+        }
 
         chatList = findViewById(R.id.rv_chat)
         layoutManager.reverseLayout = true

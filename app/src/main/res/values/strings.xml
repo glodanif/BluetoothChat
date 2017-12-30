@@ -118,6 +118,11 @@
     <string name="settings__sound">Sound</string>
     <string name="settings__vibration">Vibration</string>
 
+    <string name="images__image">Image</string>
+    <string name="images__save">Save</string>
+    <string name="images__remove">Remove</string>
+    <string name="images__permission_explanation_storage">To be able to save a file this app requires STORAGE permission</string>
+
     <string name="chat__cd__send_button">Send button</string>
     <string name="chat__cd__pick_image_button">Pick image button</string>
     <string name="profile__cd__avatar_preview">Avatar preview</string>

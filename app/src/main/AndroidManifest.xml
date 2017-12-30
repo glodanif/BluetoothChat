@@ -73,6 +73,11 @@
             android:label="@string/contact_chooser__title"
             android:screenOrientation="portrait" />
 
+        <activity
+            android:name=".ui.activity.ImagePreviewActivity"
+            android:label="@string/images__image"
+            android:screenOrientation="portrait" />
+
         <service android:name=".data.service.BluetoothConnectionService" />
 
         <meta-data

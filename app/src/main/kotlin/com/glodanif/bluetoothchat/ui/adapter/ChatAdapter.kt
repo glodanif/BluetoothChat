@@ -29,23 +29,37 @@ class ChatAdapter(private val context: Context, private val displayMetrics: Disp
 
     var messages = LinkedList<ChatMessage>()
 
+    var imageClickListener: ((view: ImageView, id: Long, path: String) -> Unit)? = null
+
     override fun onBindViewHolder(viewHolder: RecyclerView.ViewHolder?, position: Int) {
 
         val message = messages[position]
 
         if (viewHolder is ImageMessageViewHolder) {
-            val holder: ImageMessageViewHolder? = viewHolder
 
-            if (!message.fileInfo.isNullOrEmpty() && message.fileInfo!!.contains("x")) {
-                val size = message.fileInfo!!.split("x")
+            val holder: ImageMessageViewHolder? = viewHolder
+            val info = message.fileInfo
+
+            if (info != null && info.contains("x")) {
+
+                val size = info.split("x")
+                val path = message.filePath
+
                 if (size.size == 2) {
+
                     val viewSize = getScaledSize(size[0].toInt(), size[1].toInt())
 
-                    if (viewSize.first > 0 && viewSize.second > 0) {
+                    if (viewSize.first > 0 && viewSize.second > 0 && path != null) {
+
                         holder?.image?.layoutParams =
                                 FrameLayout.LayoutParams(viewSize.first, viewSize.second)
+
+                        holder?.image?.setOnClickListener {
+                            imageClickListener?.invoke(holder.image, message.uid, path)
+                        }
+
                         Picasso.with(context)
-                                .load("file://${message.filePath}")
+                                .load("file://$path")
                                 .config(Bitmap.Config.RGB_565)
                                 .tag(picassoTag)
                                 .resize(viewSize.first, viewSize.second)

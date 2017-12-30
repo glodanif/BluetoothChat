@@ -31,9 +31,9 @@
                 tools:text="12:07" />
 
             <FrameLayout
-                android:layout_marginTop="8dp"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:layout_marginTop="8dp">
 
                 <ImageView
                     android:id="@+id/iv_image"
@@ -41,6 +41,7 @@
                     android:layout_height="match_parent"
                     android:layout_marginTop="8dp"
                     android:scaleType="centerCrop"
+                    android:transitionName="chatImage"
                     tools:src="@mipmap/ic_launcher" />
             </FrameLayout>
 
