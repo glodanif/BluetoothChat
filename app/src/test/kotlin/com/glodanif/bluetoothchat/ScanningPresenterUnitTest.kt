@@ -5,7 +5,7 @@ import android.net.Uri
 import com.glodanif.bluetoothchat.data.model.BluetoothConnector
 import com.glodanif.bluetoothchat.data.model.BluetoothScanner
 import com.glodanif.bluetoothchat.data.model.BluetoothScanner.ScanningListener
-import com.glodanif.bluetoothchat.data.model.FileExtractor
+import com.glodanif.bluetoothchat.data.model.FileManager
 import com.glodanif.bluetoothchat.ui.presenter.ScanPresenter
 import com.glodanif.bluetoothchat.ui.view.ScanView
 import com.nhaarman.mockito_kotlin.KArgumentCaptor
@@ -29,7 +29,7 @@ class ScanningPresenterUnitTest {
     @Mock
     private lateinit var connectionModel: BluetoothConnector
     @Mock
-    private lateinit var fileModel: FileExtractor
+    private lateinit var fileModel: FileManager
     @Mock
     private lateinit var view: ScanView
     @Mock
@@ -170,7 +170,7 @@ class ScanningPresenterUnitTest {
     /*@Test
     fun apkSharing_success() {
 
-        verify(fileModel).extractFile(extractedCaptor.capture(), failedCaptor.capture())
+        verify(fileModel).extractApkFile(extractedCaptor.capture(), failedCaptor.capture())
         extractedCaptor.firstValue.invoke(Uri.EMPTY)
         //verify(view).shareApk(Uri.EMPTY)
     }*/

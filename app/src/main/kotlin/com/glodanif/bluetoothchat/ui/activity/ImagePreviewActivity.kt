@@ -13,17 +13,24 @@ import android.support.v4.content.ContextCompat
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.ImageView
+import android.widget.Toast
 import com.github.chrisbanes.photoview.PhotoView
 import com.glodanif.bluetoothchat.R
 import com.glodanif.bluetoothchat.data.entity.ChatMessage
-import com.glodanif.bluetoothchat.extension.getReadableFileSize
+import com.glodanif.bluetoothchat.data.model.FileManagerImpl
+import com.glodanif.bluetoothchat.ui.presenter.ImagePreviewPresenter
+import com.glodanif.bluetoothchat.ui.view.ImagePreviewView
 import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso
-import java.io.File
 
-class ImagePreviewActivity : SkeletonActivity() {
+class ImagePreviewActivity : SkeletonActivity(), ImagePreviewView {
+
+    private lateinit var imageView: PhotoView
 
     private lateinit var message: ChatMessage
+
+    private val fileManager = FileManagerImpl(this)
+    private lateinit var presenter: ImagePreviewPresenter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,13 +41,15 @@ class ImagePreviewActivity : SkeletonActivity() {
 
         message = intent.getSerializableExtra(EXTRA_MESSAGE) as ChatMessage
 
-        val file = File(message.filePath)
-        title = file.name
-        toolbar?.subtitle = file.length().getReadableFileSize()
-
-        val imageView = findViewById<PhotoView>(R.id.pv_preview)
+        imageView = findViewById(R.id.pv_preview)
         imageView.minimumScale = .75f
         imageView.maximumScale = 2f
+
+        presenter = ImagePreviewPresenter(message, this, fileManager)
+        presenter.loadData()
+    }
+
+    override fun displayImage(fileUrl: String) {
 
         val callback = object : Callback {
 
@@ -55,10 +64,15 @@ class ImagePreviewActivity : SkeletonActivity() {
 
         ActivityCompat.postponeEnterTransition(this)
         Picasso.with(this)
-                .load("file://${file.absolutePath}")
+                .load(fileUrl)
                 .config(Bitmap.Config.RGB_565)
                 .noFade()
                 .into(imageView, callback)
+    }
+
+    override fun showFileInfo(name: String, readableSize: String) {
+        title = name
+        toolbar?.subtitle = readableSize
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -111,7 +125,11 @@ class ImagePreviewActivity : SkeletonActivity() {
     }
 
     private fun saveImage() {
+        presenter.downloadFile()
+    }
 
+    override fun showFileSavedNotification() {
+        Toast.makeText(this, R.string.images__file_saved, Toast.LENGTH_SHORT).show()
     }
 
     private fun explainAskingStoragePermission() {

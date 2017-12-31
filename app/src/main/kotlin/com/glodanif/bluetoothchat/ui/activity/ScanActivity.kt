@@ -19,7 +19,7 @@ import android.view.View
 import android.widget.*
 import com.glodanif.bluetoothchat.R
 import com.glodanif.bluetoothchat.ui.adapter.DevicesAdapter
-import com.glodanif.bluetoothchat.data.model.ApkExtractor
+import com.glodanif.bluetoothchat.data.model.FileManagerImpl
 import com.glodanif.bluetoothchat.data.model.BluetoothConnectorImpl
 import com.glodanif.bluetoothchat.data.model.BluetoothScannerImpl
 import com.glodanif.bluetoothchat.ui.presenter.ScanPresenter
@@ -57,7 +57,7 @@ class ScanActivity : SkeletonActivity(), ScanView {
         setContentView(R.layout.activity_scan, ActivityType.CHILD_ACTIVITY)
 
         presenter = ScanPresenter(this, BluetoothScannerImpl(this),
-                BluetoothConnectorImpl(this), ApkExtractor(this))
+                BluetoothConnectorImpl(this), FileManagerImpl(this))
 
         container = findViewById(R.id.fl_container)
         turnOnHolder = findViewById(R.id.ll_turn_on)
