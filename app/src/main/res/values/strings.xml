@@ -65,6 +65,7 @@
     <string name="chat__connected_to_another">You are currently connected to %s. You can connect to this device (current connection will be interrupted)?</string>
     <string name="chat__message_hint">Message</string>
     <string name="chat__chat">Chat</string>
+    <string name="chat__too_big_image">This image it too big. Max file size which you can send via Bluetooth Chat is %s</string>
 
     <string name="conversations__no_conversations">You don\'t have any conversations yet\nScan for devices to find your partner</string>
     <string name="conversations__scan">Scan</string>

@@ -1,5 +1,7 @@
 package com.glodanif.bluetoothchat.ui.activity
 
+import android.animation.AnimatorSet
+import android.animation.ObjectAnimator
 import android.app.Activity
 import android.app.AlertDialog
 import android.app.NotificationManager
@@ -8,6 +10,7 @@ import android.bluetooth.BluetoothAdapter
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
@@ -64,9 +67,42 @@ class ChatActivity : SkeletonActivity(), ChatView {
 
     private val textWatcher = object : SimpleTextWatcher() {
 
+        private var previousText: String? = null
+
         override fun afterTextChanged(text: String) {
-            sendButton.visibility = if (text.isEmpty()) View.GONE else View.VISIBLE
-            imagePickerButton.visibility = if (text.isEmpty()) View.VISIBLE else View.GONE
+
+            if (previousText.isNullOrEmpty() && text.isNotEmpty()) {
+
+                val animSetXY = AnimatorSet()
+                animSetXY.playTogether(
+                        ObjectAnimator.ofFloat(imagePickerButton, "scaleX", 1f, 0f),
+                        ObjectAnimator.ofFloat(imagePickerButton, "scaleY", 1f, 0f)
+                )
+                animSetXY.setDuration(250).start()
+
+                animSetXY.playTogether(
+                        ObjectAnimator.ofFloat(sendButton, "scaleX", 0f, 1f),
+                        ObjectAnimator.ofFloat(sendButton, "scaleY", 0f, 1f)
+                )
+                animSetXY.setDuration(250).start()
+
+            } else if (!previousText.isNullOrEmpty() && text.isEmpty()) {
+
+                val animSetXY = AnimatorSet()
+                animSetXY.playTogether(
+                        ObjectAnimator.ofFloat(imagePickerButton, "scaleX", 0f, 1f),
+                        ObjectAnimator.ofFloat(imagePickerButton, "scaleY", 0f, 1f)
+                )
+                animSetXY.setDuration(250).start()
+
+                animSetXY.playTogether(
+                        ObjectAnimator.ofFloat(sendButton, "scaleX", 1f, 0f),
+                        ObjectAnimator.ofFloat(sendButton, "scaleY", 1f, 0f)
+                )
+                animSetXY.setDuration(250).start()
+            }
+
+            previousText = text
         }
     }
 
@@ -97,7 +133,7 @@ class ChatActivity : SkeletonActivity(), ChatView {
 
         imagePickerButton = findViewById(R.id.ib_image)
         imagePickerButton.setOnClickListener {
-            EasyImage.openChooserWithGallery(this, "chooserTitle", 0)
+            presenter.pickImage()
         }
 
         findViewById<ImageButton>(R.id.ib_cancel).setOnClickListener {
@@ -107,8 +143,8 @@ class ChatActivity : SkeletonActivity(), ChatView {
         val displayMetrics = DisplayMetrics()
         windowManager.defaultDisplay.getMetrics(displayMetrics)
         adapter = ChatAdapter(this, displayMetrics)
-        adapter.imageClickListener = { view, id, path ->
-            ImagePreviewActivity.start(this, view, id, path)
+        adapter.imageClickListener = { view, message ->
+            ImagePreviewActivity.start(this, view, message)
         }
 
         chatList = findViewById(R.id.rv_chat)
@@ -331,6 +367,20 @@ class ChatActivity : SkeletonActivity(), ChatView {
                 .show()
     }
 
+    override fun pickImage() {
+        EasyImage.openChooserWithGallery(this, "chooserTitle", 0)
+    }
+
+    override fun showImageTooBig(maxSize: Long) {
+
+        if (!isStarted) return
+
+        AlertDialog.Builder(this)
+                .setMessage(getString(R.string.chat__too_big_image, maxSize.getReadableFileSize()))
+                .setPositiveButton(getString(R.string.general__ok), null)
+                .show()
+    }
+
     override fun showImageTransferLayout(fileAddress: String?, fileSize: Long, transferType: ChatView.FileTransferType) {
 
         textSendingHolder.visibility = View.GONE
@@ -348,6 +398,7 @@ class ChatActivity : SkeletonActivity(), ChatView {
             transferringImagePreview.setImageDrawable(imagePlaceholder)
         }
         transferringImageSize.text = fileSize.getReadableFileSize()
+        transferringImageProgressLabel.text = "0%"
         //FIXME should work with Long
         transferringImageProgressBar.progress = 0
         transferringImageProgressBar.max = fileSize.toInt()

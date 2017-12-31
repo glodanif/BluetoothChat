@@ -31,6 +31,8 @@ interface ChatView {
     fun requestBluetoothEnabling()
     fun dismissMessageNotification()
 
+    fun pickImage()
+    fun showImageTooBig(maxSize: Long)
     fun showImageTransferLayout(fileAddress: String?, fileSize: Long, transferType: FileTransferType)
     fun updateImageTransferProgress(transferredBytes: Long, totalBytes: Long)
     fun hideImageTransferLayout()

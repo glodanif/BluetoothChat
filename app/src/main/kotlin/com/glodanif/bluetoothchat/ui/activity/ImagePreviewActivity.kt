@@ -3,34 +3,27 @@ package com.glodanif.bluetoothchat.ui.activity
 import android.Manifest
 import android.app.Activity
 import android.app.AlertDialog
-import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
-import android.os.Build
 import android.os.Bundle
 import android.support.v4.app.ActivityCompat
+import android.support.v4.app.ActivityOptionsCompat
 import android.support.v4.content.ContextCompat
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.ImageView
 import com.github.chrisbanes.photoview.PhotoView
 import com.glodanif.bluetoothchat.R
+import com.glodanif.bluetoothchat.data.entity.ChatMessage
 import com.glodanif.bluetoothchat.extension.getReadableFileSize
+import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso
 import java.io.File
-import android.support.v4.app.ActivityOptionsCompat
-import android.view.View
-import com.squareup.picasso.Callback
-import android.view.ViewTreeObserver
-
-
-
 
 class ImagePreviewActivity : SkeletonActivity() {
 
-    private lateinit var imagePath: String
-    private var messageId : Long = -1
+    private lateinit var message: ChatMessage
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,10 +32,9 @@ class ImagePreviewActivity : SkeletonActivity() {
         toolbar?.setTitleTextAppearance(this, R.style.ActionBar_TitleTextStyle)
         toolbar?.setSubtitleTextAppearance(this, R.style.ActionBar_SubTitleTextStyle)
 
-        imagePath = intent.getStringExtra(EXTRA_IMAGE_PATH)
-        messageId = intent.getLongExtra(EXTRA_MESSAGE_ID, -1)
+        message = intent.getSerializableExtra(EXTRA_MESSAGE) as ChatMessage
 
-        val file = File(imagePath)
+        val file = File(message.filePath)
         title = file.name
         toolbar?.subtitle = file.length().getReadableFileSize()
 
@@ -53,36 +45,26 @@ class ImagePreviewActivity : SkeletonActivity() {
         val callback = object : Callback {
 
             override fun onSuccess() {
-                scheduleStartPostponedTransition(imageView)
+                ActivityCompat.startPostponedEnterTransition(this@ImagePreviewActivity)
             }
 
             override fun onError() {
+                ActivityCompat.startPostponedEnterTransition(this@ImagePreviewActivity)
             }
         }
 
+        ActivityCompat.postponeEnterTransition(this)
         Picasso.with(this)
-                .load("file://$imagePath")
+                .load("file://${file.absolutePath}")
                 .config(Bitmap.Config.RGB_565)
                 .noFade()
                 .into(imageView, callback)
     }
 
-    private fun scheduleStartPostponedTransition(sharedElement: View) {
-
-        sharedElement.viewTreeObserver.addOnPreDrawListener(
-                object : ViewTreeObserver.OnPreDrawListener {
-                    override fun onPreDraw(): Boolean {
-                        sharedElement.viewTreeObserver.removeOnPreDrawListener(this)
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                            startPostponedEnterTransition()
-                        }
-                        return true
-                    }
-                })
-    }
-
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.menu_image_preview, menu)
+        if (!message.own) {
+            menuInflater.inflate(R.menu.menu_image_preview, menu)
+        }
         return super.onCreateOptionsMenu(menu)
     }
 
@@ -147,15 +129,13 @@ class ImagePreviewActivity : SkeletonActivity() {
 
     companion object {
 
-        val EXTRA_IMAGE_PATH = "extra.image_path"
-        val EXTRA_MESSAGE_ID = "extra.message_id"
+        val EXTRA_MESSAGE = "extra.message"
         private val REQUEST_STORAGE_PERMISSION = 101
 
-        fun start(activity: Activity, transitionView: ImageView, id: Long, path: String) {
+        fun start(activity: Activity, transitionView: ImageView, message: ChatMessage) {
 
             val intent = Intent(activity, ImagePreviewActivity::class.java)
-                    .putExtra(EXTRA_MESSAGE_ID, id)
-                    .putExtra(EXTRA_IMAGE_PATH, path)
+                    .putExtra(EXTRA_MESSAGE, message)
 
             val options = ActivityOptionsCompat
                     .makeSceneTransitionAnimation(activity, transitionView, "chatImage")

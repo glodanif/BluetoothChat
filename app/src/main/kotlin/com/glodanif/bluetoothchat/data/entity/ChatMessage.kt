@@ -2,6 +2,7 @@ package com.glodanif.bluetoothchat.data.entity
 
 import android.arch.persistence.room.Entity
 import android.arch.persistence.room.PrimaryKey
+import java.io.Serializable
 import java.util.*
 
 @Entity(tableName = "message")
@@ -10,7 +11,7 @@ data class ChatMessage(
         var date: Date,
         var own: Boolean,
         var text: String
-) {
+): Serializable {
 
     @PrimaryKey(autoGenerate = true)
     var uid: Long = 0

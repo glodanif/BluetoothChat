@@ -63,7 +63,8 @@
                     android:background="?android:attr/selectableItemBackground"
                     android:contentDescription="@string/chat__cd__send_button"
                     android:tint="@color/colorAccent"
-                    android:visibility="gone"
+                    android:scaleX="0"
+                    android:scaleY="0"
                     app:srcCompat="@drawable/ic_send_black_24dp" />
 
                 <ImageButton

@@ -10,6 +10,8 @@ import java.io.File
 class ChatPresenter(private val deviceAddress: String, private val view: ChatView, private val scanModel: BluetoothScanner,
                     private val connectionModel: BluetoothConnector, private val conversations: ConversationsStorage, private val storage: MessagesStorage) {
 
+    private val maxFileSize = 5_242_880
+
     private var fileToSend: File? = null
 
     private val prepareListener = object : OnPrepareListener {
@@ -22,7 +24,12 @@ class ChatPresenter(private val deviceAddress: String, private val view: ChatVie
             dismissNotification()
 
             if (fileToSend != null) {
-                connectionModel.sendFile(fileToSend!!)
+
+                if (fileToSend!!.length() > maxFileSize) {
+                    view.showImageTooBig(maxFileSize.toLong())
+                } else {
+                    connectionModel.sendFile(fileToSend!!)
+                }
                 fileToSend = null
             }
         }
@@ -183,7 +190,12 @@ class ChatPresenter(private val deviceAddress: String, private val view: ChatVie
                 dismissNotification()
 
                 if (fileToSend != null) {
-                    connectionModel.sendFile(fileToSend!!)
+
+                    if (fileToSend!!.length() > maxFileSize) {
+                        view.showImageTooBig(maxFileSize.toLong())
+                    } else {
+                        connectionModel.sendFile(fileToSend!!)
+                    }
                     fileToSend = null
                 }
             } else {
@@ -265,6 +277,16 @@ class ChatPresenter(private val deviceAddress: String, private val view: ChatVie
         }
 
         fileToSend = file
+    }
+
+    fun pickImage() {
+
+        if (!connectionModel.isConnected()) {
+            view.showNotConnectedToSend()
+            return
+        }
+
+        view.pickImage()
     }
 
     fun cancelFileTransfer() {

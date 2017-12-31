@@ -11,6 +11,7 @@
         <item name="windowNoTitle">true</item>
 
         <item name="android:windowContentTransitions">true</item>
+        <item name="android:windowSharedElementsUseOverlay">false</item>
     </style>
 
 </resources>
