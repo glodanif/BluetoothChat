@@ -174,6 +174,9 @@ abstract class DataTransferThread(private val context: Context, private val sock
                     fileListener.onFileSendingFailed()
                     throw e
                 } finally {
+
+                    fileStream.close()
+
                     isFileUploading = false
                     isFileTransferCanceledByMe = false
                     isFileTransferCanceledByPartner = false

@@ -13,6 +13,9 @@ interface MessagesDao {
     @Query("SELECT * FROM message WHERE deviceAddress = :address ORDER BY date DESC")
     fun getMessagesByDevice(address: String): List<ChatMessage>
 
+    @Query("SELECT * FROM message WHERE deviceAddress = :address AND messageType = 1 AND own = 0")
+    fun getFilesMessagesByDevice(address: String): List<ChatMessage>
+
     @Insert
     fun insert(message: ChatMessage)
 

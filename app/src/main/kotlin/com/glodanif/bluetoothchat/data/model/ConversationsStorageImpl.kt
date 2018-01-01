@@ -2,15 +2,17 @@ package com.glodanif.bluetoothchat.data.model
 
 import android.content.Context
 import android.os.Handler
+import android.util.Log
 import com.glodanif.bluetoothchat.data.database.Storage
 import com.glodanif.bluetoothchat.data.entity.Conversation
+import java.io.File
 import kotlin.concurrent.thread
 
 class ConversationsStorageImpl(context: Context) : ConversationsStorage {
 
     private val handler: Handler = Handler()
-    val dao = Storage.getInstance(context).db.conversationsDao()
-    val messageDao = Storage.getInstance(context).db.messagesDao()
+    private val dao = Storage.getInstance(context).db.conversationsDao()
+    private val messageDao = Storage.getInstance(context).db.messagesDao()
 
     override fun getConversations(listener: (List<Conversation>) -> Unit) {
         thread {
@@ -31,8 +33,17 @@ class ConversationsStorageImpl(context: Context) : ConversationsStorage {
     }
 
     override fun removeConversation(conversation: Conversation) {
+
         thread {
+
             dao.delete(conversation)
+
+            messageDao.getFilesMessagesByDevice(conversation.deviceAddress).forEach {
+                if (it.filePath != null) {
+                    val file = File(it.filePath)
+                    file.delete()
+                }
+            }
             messageDao.deleteAllByDeviceAddress(conversation.deviceAddress)
         }
     }

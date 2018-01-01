@@ -5,9 +5,10 @@ import com.glodanif.bluetoothchat.data.entity.ChatMessage
 import com.glodanif.bluetoothchat.data.entity.Conversation
 import com.glodanif.bluetoothchat.data.model.*
 import com.glodanif.bluetoothchat.ui.view.ConversationsView
+import java.io.File
 
 class ConversationsPresenter(private val view: ConversationsView, private val connection: BluetoothConnector,
-                             private val storage: ConversationsStorage, private val settings: SettingsManager) {
+                             private val conversationStorage: ConversationsStorage, private val settings: SettingsManager) {
 
     private val prepareListener = object : OnPrepareListener {
 
@@ -108,7 +109,7 @@ class ConversationsPresenter(private val view: ConversationsView, private val co
     }
 
     fun loadConversations() {
-        storage.getConversations {
+        conversationStorage.getConversations {
             if (it.isEmpty()) {
                 view.showNoConversations()
             } else {
@@ -146,7 +147,7 @@ class ConversationsPresenter(private val view: ConversationsView, private val co
 
     fun removeConversation(conversation: Conversation) {
         connection.sendDisconnectRequest()
-        storage.removeConversation(conversation)
+        conversationStorage.removeConversation(conversation)
         view.removeFromShortcuts(conversation.deviceAddress)
         loadConversations()
     }
