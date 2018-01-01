@@ -19,6 +19,9 @@ interface MessagesDao {
     @Update
     fun updateMessages(messages: List<ChatMessage>)
 
+    @Update
+    fun updateMessage(message: ChatMessage)
+
     @Delete
     fun delete(message: ChatMessage)
 

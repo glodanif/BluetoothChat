@@ -18,6 +18,8 @@ import com.github.chrisbanes.photoview.PhotoView
 import com.glodanif.bluetoothchat.R
 import com.glodanif.bluetoothchat.data.entity.ChatMessage
 import com.glodanif.bluetoothchat.data.model.FileManagerImpl
+import com.glodanif.bluetoothchat.data.model.MessagesStorage
+import com.glodanif.bluetoothchat.data.model.MessagesStorageImpl
 import com.glodanif.bluetoothchat.ui.presenter.ImagePreviewPresenter
 import com.glodanif.bluetoothchat.ui.view.ImagePreviewView
 import com.squareup.picasso.Callback
@@ -30,6 +32,7 @@ class ImagePreviewActivity : SkeletonActivity(), ImagePreviewView {
     private lateinit var message: ChatMessage
 
     private val fileManager = FileManagerImpl(this)
+    private val storageModel: MessagesStorage = MessagesStorageImpl(this)
     private lateinit var presenter: ImagePreviewPresenter
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -45,7 +48,7 @@ class ImagePreviewActivity : SkeletonActivity(), ImagePreviewView {
         imageView.minimumScale = .75f
         imageView.maximumScale = 2f
 
-        presenter = ImagePreviewPresenter(message, this, fileManager)
+        presenter = ImagePreviewPresenter(message, this, fileManager, storageModel)
         presenter.loadData()
     }
 
@@ -91,11 +94,23 @@ class ImagePreviewActivity : SkeletonActivity(), ImagePreviewView {
                 true
             }
             R.id.action_remove -> {
-
+                confirmFileRemoval()
                 true
             }
             else -> super.onOptionsItemSelected(item)
         }
+    }
+
+    private fun confirmFileRemoval() {
+
+        AlertDialog.Builder(this)
+                .setMessage(getString(R.string.images__removal_confirmation))
+                .setPositiveButton(getString(R.string.general__yes), { _, _ ->
+                    presenter.removeFile()
+                    finish()
+                })
+                .setNegativeButton(getString(R.string.general__no), null)
+                .show()
     }
 
     private fun checkWriteStoragePermission() {

@@ -36,6 +36,14 @@
                 android:layout_height="match_parent"
                 android:layout_marginTop="8dp">
 
+                <TextView
+                    android:id="@+id/tv_missing_file"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@android:color/darker_gray"
+                    android:padding="8dp"
+                    android:visibility="gone" />
+
                 <ImageView
                     android:id="@+id/iv_image"
                     android:layout_width="match_parent"

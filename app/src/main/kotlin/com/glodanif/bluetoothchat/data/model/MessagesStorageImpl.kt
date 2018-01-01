@@ -23,6 +23,10 @@ class MessagesStorageImpl(val context: Context) : MessagesStorage {
         }
     }
 
+    override fun updateMessage(message: ChatMessage) {
+        thread { dao.updateMessage(message) }
+    }
+
     override fun updateMessages(messages: List<ChatMessage>) {
         thread { dao.updateMessages(messages) }
     }

@@ -6,5 +6,6 @@ interface MessagesStorage {
 
     fun getMessagesByDevice(address: String, listener: (List<ChatMessage>) -> Unit)
     fun insertMessage(message: ChatMessage)
+    fun updateMessage(message: ChatMessage)
     fun updateMessages(messages: List<ChatMessage>)
 }

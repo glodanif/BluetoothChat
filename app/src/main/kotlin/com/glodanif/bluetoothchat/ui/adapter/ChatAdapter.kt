@@ -16,6 +16,7 @@ import com.glodanif.bluetoothchat.data.entity.ChatMessage
 import com.glodanif.bluetoothchat.data.entity.MessageType
 import com.glodanif.bluetoothchat.extension.getRelativeTime
 import com.squareup.picasso.Picasso
+import java.io.File
 import java.util.*
 
 class ChatAdapter(private val context: Context, private val displayMetrics: DisplayMetrics) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
@@ -40,30 +41,48 @@ class ChatAdapter(private val context: Context, private val displayMetrics: Disp
             val holder: ImageMessageViewHolder? = viewHolder
             val info = message.fileInfo
 
-            if (info != null && info.contains("x")) {
+            if (message.filePath == null) {
 
-                val size = info.split("x")
-                val path = message.filePath
+                holder?.image?.visibility = View.GONE
+                holder?.missingLabel?.visibility = View.VISIBLE
+                holder?.missingLabel?.setText(R.string.chat__removed_image)
 
-                if (size.size == 2) {
+            } else if (!File(message.filePath).exists()) {
 
-                    val viewSize = getScaledSize(size[0].toInt(), size[1].toInt())
+                holder?.image?.visibility = View.GONE
+                holder?.missingLabel?.visibility = View.VISIBLE
+                holder?.missingLabel?.setText(R.string.chat__missing_image)
 
-                    if (viewSize.first > 0 && viewSize.second > 0 && path != null) {
+            } else {
 
-                        holder?.image?.layoutParams =
-                                FrameLayout.LayoutParams(viewSize.first, viewSize.second)
+                holder?.image?.visibility = View.VISIBLE
+                holder?.missingLabel?.visibility = View.GONE
 
-                        holder?.image?.setOnClickListener {
-                            imageClickListener?.invoke(holder.image, message)
+                if (info != null && info.contains("x")) {
+
+                    val size = info.split("x")
+                    val path = message.filePath
+
+                    if (size.size == 2) {
+
+                        val viewSize = getScaledSize(size[0].toInt(), size[1].toInt())
+
+                        if (viewSize.first > 0 && viewSize.second > 0 && path != null) {
+
+                            holder?.image?.layoutParams =
+                                    FrameLayout.LayoutParams(viewSize.first, viewSize.second)
+
+                            holder?.image?.setOnClickListener {
+                                imageClickListener?.invoke(holder.image, message)
+                            }
+
+                            Picasso.with(context)
+                                    .load("file://$path")
+                                    .config(Bitmap.Config.RGB_565)
+                                    .tag(picassoTag)
+                                    .resize(viewSize.first, viewSize.second)
+                                    .into(holder?.image)
                         }
-
-                        Picasso.with(context)
-                                .load("file://$path")
-                                .config(Bitmap.Config.RGB_565)
-                                .tag(picassoTag)
-                                .resize(viewSize.first, viewSize.second)
-                                .into(holder?.image)
                     }
                 }
             }
@@ -120,6 +139,7 @@ class ChatAdapter(private val context: Context, private val displayMetrics: Disp
     class ImageMessageViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val date: TextView = itemView.findViewById(R.id.tv_date)
         val image: ImageView = itemView.findViewById(R.id.iv_image)
+        val missingLabel: TextView = itemView.findViewById(R.id.tv_missing_file)
     }
 
     private fun getScaledSize(imageWidth: Int, imageHeight: Int): Pair<Int, Int> {
