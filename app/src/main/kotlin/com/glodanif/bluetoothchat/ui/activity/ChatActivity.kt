@@ -392,6 +392,8 @@ class ChatActivity : SkeletonActivity(), ChatView {
         if (fileAddress != null) {
             Picasso.with(this)
                     .load("file://$fileAddress")
+                    .placeholder(R.drawable.ic_photo_black_24dp)
+                    .error(R.drawable.ic_photo_black_24dp)
                     .into(transferringImagePreview)
         } else {
             val imagePlaceholder = resources.getDrawable(R.drawable.ic_photo_black_24dp)
@@ -405,6 +407,7 @@ class ChatActivity : SkeletonActivity(), ChatView {
     }
 
     override fun updateImageTransferProgress(transferredBytes: Long, totalBytes: Long) {
+
         val percents = transferredBytes.toFloat() / totalBytes * 100
         transferringImageProgressLabel.text = "${Math.round(percents)}%"
         //FIXME should work with Long

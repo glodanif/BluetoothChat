@@ -3,6 +3,7 @@ package com.glodanif.bluetoothchat.ui.presenter
 import android.bluetooth.BluetoothDevice
 import com.glodanif.bluetoothchat.data.entity.ChatMessage
 import com.glodanif.bluetoothchat.data.entity.Conversation
+import com.glodanif.bluetoothchat.data.entity.TransferringFile
 import com.glodanif.bluetoothchat.data.model.*
 import com.glodanif.bluetoothchat.ui.view.ChatView
 import java.io.File
@@ -331,7 +332,18 @@ class ChatPresenter(private val deviceAddress: String, private val view: ChatVie
     }
 
     private fun updateState() {
+
+        val transferringFile = connectionModel.getTransferringFile()
+        if (transferringFile != null) {
+            val type = if (transferringFile.transferType == TransferringFile.TransferType.RECEIVING)
+                ChatView.FileTransferType.RECEIVING else ChatView.FileTransferType.SENDING
+            view.showImageTransferLayout(transferringFile.name, transferringFile.size, type)
+        } else {
+            view.hideImageTransferLayout()
+        }
+
         val currentConversation: Conversation? = connectionModel.getCurrentConversation()
+
         if (currentConversation == null) {
             if (connectionModel.isPending()) {
                 view.showStatusPending()

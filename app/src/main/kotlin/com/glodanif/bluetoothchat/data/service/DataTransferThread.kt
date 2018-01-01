@@ -4,6 +4,7 @@ import android.bluetooth.BluetoothSocket
 import android.content.Context
 import android.util.Log
 import com.glodanif.bluetoothchat.data.entity.Message
+import com.glodanif.bluetoothchat.data.entity.TransferringFile
 import java.io.*
 import kotlin.concurrent.thread
 
@@ -125,6 +126,9 @@ abstract class DataTransferThread(private val context: Context, private val sock
 
     fun writeFile(file: File) {
 
+        fileName = file.absolutePath
+        fileSize = file.length()
+
         isFileUploading = true
         isFileTransferCanceledByMe = false
         isFileTransferCanceledByPartner = false
@@ -180,6 +184,9 @@ abstract class DataTransferThread(private val context: Context, private val sock
                     isFileUploading = false
                     isFileTransferCanceledByMe = false
                     isFileTransferCanceledByPartner = false
+
+                    fileName = null
+                    fileSize = 0
                 }
             }
         }
@@ -202,6 +209,17 @@ abstract class DataTransferThread(private val context: Context, private val sock
 
     fun cancelFileTransfer() {
         isFileTransferCanceledByMe = true
+    }
+
+    fun getTransferringFile(): TransferringFile? {
+
+        return if (fileName != null && isFileDownloading) {
+            TransferringFile(fileName!!, fileSize, TransferringFile.TransferType.RECEIVING)
+        } else if (fileName != null && isFileUploading) {
+            TransferringFile(fileName!!, fileSize, TransferringFile.TransferType.SENDING)
+        } else {
+            null
+        }
     }
 
     private fun readFile(stream: InputStream, name: String, size: Long) {

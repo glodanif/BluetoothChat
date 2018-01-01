@@ -2,6 +2,7 @@ package com.glodanif.bluetoothchat.data.model
 
 import android.bluetooth.BluetoothDevice
 import com.glodanif.bluetoothchat.data.entity.Conversation
+import com.glodanif.bluetoothchat.data.entity.TransferringFile
 import java.io.File
 
 interface BluetoothConnector {
@@ -23,6 +24,7 @@ interface BluetoothConnector {
     fun isPending(): Boolean
     fun isConnectionPrepared(): Boolean
     fun getCurrentConversation(): Conversation?
+    fun getTransferringFile(): TransferringFile?
     fun acceptConnection()
     fun rejectConnection()
     fun sendDisconnectRequest()
