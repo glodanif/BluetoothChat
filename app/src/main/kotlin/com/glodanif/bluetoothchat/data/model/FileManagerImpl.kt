@@ -123,6 +123,7 @@ class FileManagerImpl(private val context: Context) : FileManager {
     }
 
     private fun getUniqueFileName(directory: String, name: String): String =
+
             if (File(directory, name).exists()) {
                 val fileName = FilenameUtils.removeExtension(name)
                 val extension = FilenameUtils.getExtension(name)

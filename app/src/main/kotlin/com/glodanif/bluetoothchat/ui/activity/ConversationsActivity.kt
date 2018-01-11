@@ -1,16 +1,21 @@
 package com.glodanif.bluetoothchat.ui.activity
 
+import android.Manifest
 import android.app.Activity
-import android.app.AlertDialog
 import android.app.NotificationManager
 import android.app.Service
 import android.bluetooth.BluetoothDevice
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.support.design.widget.FloatingActionButton
+import android.support.v4.app.ActivityCompat
+import android.support.v4.content.ContextCompat
+import android.support.v7.app.AlertDialog
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.view.LayoutInflater
 import android.view.View
 import android.widget.Button
 import android.widget.ImageView
@@ -50,10 +55,9 @@ class ConversationsActivity : SkeletonActivity(), ConversationsView {
     private lateinit var optionsButton: View
 
     private lateinit var settingsPopup: SettingsPopup
+    private lateinit var storagePermissionDialog: AlertDialog
 
     private val adapter: ConversationsAdapter = ConversationsAdapter(this)
-
-    private var isStarted = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -98,6 +102,16 @@ class ConversationsActivity : SkeletonActivity(), ConversationsView {
         if (intent.action == Intent.ACTION_SEND) {
             ContactChooserActivity.start(this, intent.getStringExtra(Intent.EXTRA_TEXT))
         }
+
+        storagePermissionDialog = AlertDialog.Builder(this)
+                .setView(R.layout.dialog_storage_permission)
+                .setPositiveButton(R.string.general__ok) { _, _ ->
+                    ActivityCompat.requestPermissions(this,
+                            arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), REQUEST_STORAGE_PERMISSION)
+                }
+                .setNegativeButton(R.string.general__exit, { _, _ -> finish() })
+                .setCancelable(false)
+                .create()
 
         ShortcutManagerImpl(this).addSearchShortcut()
     }
@@ -151,7 +165,11 @@ class ConversationsActivity : SkeletonActivity(), ConversationsView {
 
     override fun onStart() {
         super.onStart()
-        isStarted = true
+
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED && !storagePermissionDialog.isShowing) {
+            storagePermissionDialog.show()
+        }
 
         presenter.prepareConnection()
         presenter.loadUserProfile()
@@ -164,7 +182,6 @@ class ConversationsActivity : SkeletonActivity(), ConversationsView {
 
     override fun onStop() {
         super.onStop()
-        isStarted = false
         presenter.releaseConnection()
     }
 
@@ -189,7 +206,7 @@ class ConversationsActivity : SkeletonActivity(), ConversationsView {
 
     override fun showServiceDestroyed() {
 
-        if (!isStarted) return
+        if (!isStarted()) return
 
         AlertDialog.Builder(this)
                 .setMessage(getString(R.string.general__service_lost))
@@ -217,7 +234,7 @@ class ConversationsActivity : SkeletonActivity(), ConversationsView {
 
     override fun showRejectedNotification(conversation: Conversation) {
 
-        if (!isStarted) return
+        if (!isStarted()) return
 
         AlertDialog.Builder(this)
                 .setMessage(getString(R.string.conversations__connection_rejected,
@@ -254,7 +271,18 @@ class ConversationsActivity : SkeletonActivity(), ConversationsView {
         }
     }
 
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+
+        if (requestCode == REQUEST_STORAGE_PERMISSION) {
+            if (grantResults.isNotEmpty() && grantResults[0] != PackageManager.PERMISSION_GRANTED && !storagePermissionDialog.isShowing) {
+                storagePermissionDialog.show()
+            }
+        }
+    }
+
     companion object {
+
+        private val REQUEST_STORAGE_PERMISSION = 101
 
         fun start(context: Context) =
                 context.startActivity(Intent(context, ConversationsActivity::class.java))

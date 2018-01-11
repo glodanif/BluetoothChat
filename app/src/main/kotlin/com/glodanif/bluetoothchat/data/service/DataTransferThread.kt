@@ -11,6 +11,7 @@ import kotlin.concurrent.thread
 abstract class DataTransferThread(private val context: Context, private val socket: BluetoothSocket,
                                   private val type: BluetoothConnectionService.ConnectionType,
                                   private val transferListener: TransferEventsListener,
+                                  private val filesDirectory: File,
                                   private val fileListener: OnFileListener, private var eventsStrategy: EventsStrategy) : Thread() {
 
     private val bufferSize = 1024
@@ -227,13 +228,18 @@ abstract class DataTransferThread(private val context: Context, private val sock
         isFileTransferCanceledByMe = false
         isFileTransferCanceledByPartner = false
 
-        val file = File(context.filesDir, name)
+        if (!filesDirectory.exists()) {
+            filesDirectory.mkdirs()
+        }
+
+        val file = File(filesDirectory, name)
 
         val bis = BufferedInputStream(stream)
 
         BufferedOutputStream(FileOutputStream(file)).use {
 
-            fileListener.onFileReceivingStarted(size)
+            val transferringFile = TransferringFile(name, size, TransferringFile.TransferType.RECEIVING)
+            fileListener.onFileReceivingStarted(transferringFile)
 
             try {
 
@@ -287,7 +293,7 @@ abstract class DataTransferThread(private val context: Context, private val sock
                         bytesRead += len.toLong()
                         Log.w("TAG", "AFTER WRITE " + bytesRead)
 
-                        fileListener.onFileReceivingProgress(bytesRead, size)
+                        fileListener.onFileReceivingProgress(transferringFile, bytesRead)
                     }
                 }
 
@@ -332,8 +338,8 @@ abstract class DataTransferThread(private val context: Context, private val sock
         fun onFileSendingProgress(sentBytes: Long, totalBytes: Long)
         fun onFileSendingFinished(filePath: String)
         fun onFileSendingFailed()
-        fun onFileReceivingStarted(fileSize: Long)
-        fun onFileReceivingProgress(receivedBytes: Long, totalBytes: Long)
+        fun onFileReceivingStarted(file: TransferringFile)
+        fun onFileReceivingProgress(file: TransferringFile, receivedBytes: Long)
         fun onFileReceivingFinished(filePath: String)
         fun onFileReceivingFailed()
         fun onFileTransferCanceled(byPartner: Boolean)

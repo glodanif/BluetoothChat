@@ -73,6 +73,7 @@ class ProfileActivity : SkeletonActivity(), ProfileView {
     override fun onStop() {
         super.onStop()
         nameField.removeTextChangedListener(textWatcher)
+        hideKeyboard()
     }
 
     override fun showUserData(name: String, color: Int) {

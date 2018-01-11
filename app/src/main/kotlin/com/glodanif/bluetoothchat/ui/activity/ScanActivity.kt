@@ -31,7 +31,6 @@ class ScanActivity : SkeletonActivity(), ScanView {
     private val REQUEST_ENABLE_BLUETOOTH = 101
     private val REQUEST_MAKE_DISCOVERABLE = 102
     private val REQUEST_LOCATION_PERMISSION = 103
-    private val REQUEST_STORAGE_PERMISSION = 104
 
     private lateinit var container: View
     private lateinit var turnOnHolder: View
@@ -49,8 +48,6 @@ class ScanActivity : SkeletonActivity(), ScanView {
     private val adapter: DevicesAdapter = DevicesAdapter(this)
 
     private lateinit var presenter: ScanPresenter
-
-    private var isStarted = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -101,17 +98,7 @@ class ScanActivity : SkeletonActivity(), ScanView {
         }
 
         findViewById<ImageView>(R.id.iv_share).setOnClickListener {
-            if (ContextCompat.checkSelfPermission(this,
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
-                presenter.shareApk()
-            } else {
-                if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-                    explainAskingStoragePermission()
-                } else {
-                    ActivityCompat.requestPermissions(this,
-                            arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), REQUEST_STORAGE_PERMISSION)
-                }
-            }
+            presenter.shareApk()
         }
     }
 
@@ -218,7 +205,7 @@ class ScanActivity : SkeletonActivity(), ScanView {
     override fun showServiceUnavailable() {
         progress.visibility = View.GONE
 
-        if (!isStarted) return
+        if (!isStarted()) return
 
         AlertDialog.Builder(this)
                 .setMessage(getString(R.string.scan__unable_to_connect_service))
@@ -229,7 +216,7 @@ class ScanActivity : SkeletonActivity(), ScanView {
     override fun showUnableToConnect() {
         progress.visibility = View.GONE
 
-        if (!isStarted) return
+        if (!isStarted()) return
 
         AlertDialog.Builder(this)
                 .setMessage(getString(R.string.scan__unable_to_connect))
@@ -267,12 +254,6 @@ class ScanActivity : SkeletonActivity(), ScanView {
             } else {
                 explainAskingLocationPermission()
             }
-        } else if (requestCode == REQUEST_STORAGE_PERMISSION) {
-            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                presenter.shareApk()
-            } else {
-                explainAskingStoragePermission()
-            }
         }
     }
 
@@ -286,16 +267,6 @@ class ScanActivity : SkeletonActivity(), ScanView {
                 .show()
     }
 
-    private fun explainAskingStoragePermission() {
-        AlertDialog.Builder(this)
-                .setMessage(getString(R.string.scan__permission_explanation_storage))
-                .setPositiveButton(getString(R.string.general__ok), { _, _ ->
-                    ActivityCompat.requestPermissions(this,
-                            arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), REQUEST_STORAGE_PERMISSION)
-                })
-                .show()
-    }
-
     override fun showExtractionApkFailureMessage() {
         AlertDialog.Builder(this)
                 .setMessage(getString(R.string.scan__unable_to_fetch_apk))
@@ -303,14 +274,8 @@ class ScanActivity : SkeletonActivity(), ScanView {
                 .show()
     }
 
-    override fun onStart() {
-        super.onStart()
-        isStarted = true
-    }
-
     override fun onStop() {
         super.onStop()
-        isStarted = false
         presenter.cancelScanning()
     }
 

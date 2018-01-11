@@ -8,10 +8,6 @@ import android.bluetooth.BluetoothSocket
 import android.content.Context
 import android.content.Intent
 import android.content.ServiceConnection
-import android.os.Binder
-import android.os.Build
-import android.os.Handler
-import android.os.IBinder
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import com.glodanif.bluetoothchat.BuildConfig
@@ -28,7 +24,9 @@ import java.io.*
 import java.util.*
 import kotlin.concurrent.thread
 import android.graphics.BitmapFactory
+import android.os.*
 import com.glodanif.bluetoothchat.data.entity.*
+import com.glodanif.bluetoothchat.data.entity.Message
 
 
 class BluetoothConnectionService : Service() {
@@ -192,7 +190,7 @@ class BluetoothConnectionService : Service() {
 
             override fun onConnectionPrepared(type: ConnectionType) {
 
-                showNotification("Connected to ${socket.remoteDevice.name}")
+                showNotification(getString(R.string.notification__connected_to, socket.remoteDevice.name))
                 connectionState = ConnectionState.PENDING
 
                 if (type == ConnectionType.OUTCOMING) {
@@ -262,12 +260,31 @@ class BluetoothConnectionService : Service() {
                 handler.post { fileListener?.onFileSendingFailed() }
             }
 
-            override fun onFileReceivingStarted(fileSize: Long) {
-                handler.post { fileListener?.onFileReceivingStarted(fileSize) }
+            override fun onFileReceivingStarted(file: TransferringFile) {
+
+                handler.post {
+
+                    fileListener?.onFileReceivingStarted(file.size)
+
+                    if (currentConversation != null) {
+                        notificationView.showFileTransferNotification(currentConversation!!.displayName,
+                                currentConversation!!.deviceName, currentConversation!!.deviceAddress, file,
+                                0, preferences.getSettings())
+                    }
+
+                }
             }
 
-            override fun onFileReceivingProgress(receivedBytes: Long, totalBytes: Long) {
-                handler.post { fileListener?.onFileReceivingProgress(receivedBytes, totalBytes) }
+            override fun onFileReceivingProgress(file: TransferringFile, receivedBytes: Long) {
+
+                handler.post {
+
+                    fileListener?.onFileReceivingProgress(receivedBytes, file.size)
+
+                    if (currentConversation != null) {
+                        notificationView.updateFileTransferNotification(receivedBytes, file.size)
+                    }
+                }
             }
 
             override fun onFileReceivingFinished(filePath: String) {
@@ -362,8 +379,10 @@ class BluetoothConnectionService : Service() {
             }
         }
 
+        val filesDirectory = File(Environment.getExternalStorageDirectory(), getString(R.string.app_name))
+
         dataTransferThread =
-                object : DataTransferThread(this, socket, type, transferEventsListener, fileEventsListener, eventsStrategy) {
+                object : DataTransferThread(this, socket, type, transferEventsListener, filesDirectory, fileEventsListener, eventsStrategy) {
 
                     override fun shouldRun(): Boolean {
                         return isConnectedOrPending()

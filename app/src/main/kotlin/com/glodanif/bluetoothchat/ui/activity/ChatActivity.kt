@@ -15,6 +15,7 @@ import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.util.DisplayMetrics
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -52,6 +53,7 @@ class ChatActivity : SkeletonActivity(), ChatView {
     private lateinit var messageField: EditText
     private lateinit var sendButton: ImageButton
     private lateinit var imagePickerButton: ImageButton
+    private lateinit var sendButtonsSwitcher: ViewSwitcher
     private lateinit var transferringImagePreview: ImageView
     private lateinit var transferringImageSize: TextView
     private lateinit var transferringImageHeader: TextView
@@ -63,8 +65,6 @@ class ChatActivity : SkeletonActivity(), ChatView {
 
     private lateinit var adapter: ChatAdapter
 
-    private var isStarted = false
-
     private val textWatcher = object : SimpleTextWatcher() {
 
         private var previousText: String? = null
@@ -72,36 +72,10 @@ class ChatActivity : SkeletonActivity(), ChatView {
         override fun afterTextChanged(text: String) {
 
             if (previousText.isNullOrEmpty() && text.isNotEmpty()) {
-
-                val animSetXY = AnimatorSet()
-                animSetXY.playTogether(
-                        ObjectAnimator.ofFloat(imagePickerButton, "scaleX", 1f, 0f),
-                        ObjectAnimator.ofFloat(imagePickerButton, "scaleY", 1f, 0f)
-                )
-                animSetXY.setDuration(250).start()
-
-                animSetXY.playTogether(
-                        ObjectAnimator.ofFloat(sendButton, "scaleX", 0f, 1f),
-                        ObjectAnimator.ofFloat(sendButton, "scaleY", 0f, 1f)
-                )
-                animSetXY.setDuration(250).start()
-
+                sendButtonsSwitcher.showNext()
             } else if (!previousText.isNullOrEmpty() && text.isEmpty()) {
-
-                val animSetXY = AnimatorSet()
-                animSetXY.playTogether(
-                        ObjectAnimator.ofFloat(imagePickerButton, "scaleX", 0f, 1f),
-                        ObjectAnimator.ofFloat(imagePickerButton, "scaleY", 0f, 1f)
-                )
-                animSetXY.setDuration(250).start()
-
-                animSetXY.playTogether(
-                        ObjectAnimator.ofFloat(sendButton, "scaleX", 1f, 0f),
-                        ObjectAnimator.ofFloat(sendButton, "scaleY", 1f, 0f)
-                )
-                animSetXY.setDuration(250).start()
+                sendButtonsSwitcher.showPrevious()
             }
-
             previousText = text
         }
     }
@@ -115,6 +89,7 @@ class ChatActivity : SkeletonActivity(), ChatView {
 
         textSendingHolder = findViewById(R.id.ll_text_sending_holder)
         imageSendingHolder = findViewById(R.id.ll_image_sending_holder)
+        sendButtonsSwitcher = findViewById(R.id.vs_send_buttons)
 
         transferringImagePreview = findViewById(R.id.iv_transferring_image)
         transferringImageSize = findViewById(R.id.tv_file_size)
@@ -179,13 +154,11 @@ class ChatActivity : SkeletonActivity(), ChatView {
 
     override fun onStart() {
         super.onStart()
-        isStarted = true
         presenter.prepareConnection()
     }
 
     override fun onStop() {
         super.onStop()
-        isStarted = false
         presenter.releaseConnection()
     }
 
@@ -255,7 +228,7 @@ class ChatActivity : SkeletonActivity(), ChatView {
 
     override fun showServiceDestroyed() {
 
-        if (!isStarted) return
+        if (!isStarted()) return
 
         AlertDialog.Builder(this)
                 .setMessage(getString(R.string.general__service_lost))
@@ -287,7 +260,7 @@ class ChatActivity : SkeletonActivity(), ChatView {
 
     override fun showRejectedConnection() {
 
-        if (!isStarted) return
+        if (!isStarted()) return
 
         AlertDialog.Builder(this)
                 .setMessage(getString(R.string.chat__connection_rejected))
@@ -306,7 +279,7 @@ class ChatActivity : SkeletonActivity(), ChatView {
 
     override fun showLostConnection() {
 
-        if (!isStarted) return
+        if (!isStarted()) return
 
         AlertDialog.Builder(this)
                 .setMessage(getString(R.string.chat__connection_lost))
@@ -318,7 +291,7 @@ class ChatActivity : SkeletonActivity(), ChatView {
 
     override fun showDisconnected() {
 
-        if (!isStarted) return
+        if (!isStarted()) return
 
         AlertDialog.Builder(this)
                 .setMessage(getString(R.string.chat__partner_disconnected))
@@ -330,7 +303,7 @@ class ChatActivity : SkeletonActivity(), ChatView {
 
     override fun showFailedConnection() {
 
-        if (!isStarted) return
+        if (!isStarted()) return
 
         AlertDialog.Builder(this)
                 .setMessage(getString(R.string.chat__unable_to_connect))
@@ -347,7 +320,7 @@ class ChatActivity : SkeletonActivity(), ChatView {
 
     override fun showDeviceIsNotAvailable() {
 
-        if (!isStarted) return
+        if (!isStarted()) return
 
         AlertDialog.Builder(this)
                 .setMessage(getString(R.string.chat__device_is_not_available))
@@ -373,7 +346,7 @@ class ChatActivity : SkeletonActivity(), ChatView {
 
     override fun showImageTooBig(maxSize: Long) {
 
-        if (!isStarted) return
+        if (!isStarted()) return
 
         AlertDialog.Builder(this)
                 .setMessage(getString(R.string.chat__too_big_image, maxSize.getReadableFileSize()))

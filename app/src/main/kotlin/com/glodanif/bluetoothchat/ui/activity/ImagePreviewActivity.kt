@@ -4,12 +4,10 @@ import android.Manifest
 import android.app.Activity
 import android.app.AlertDialog
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.os.Bundle
 import android.support.v4.app.ActivityCompat
 import android.support.v4.app.ActivityOptionsCompat
-import android.support.v4.content.ContextCompat
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.ImageView
@@ -17,7 +15,6 @@ import android.widget.Toast
 import com.github.chrisbanes.photoview.PhotoView
 import com.glodanif.bluetoothchat.R
 import com.glodanif.bluetoothchat.data.entity.ChatMessage
-import com.glodanif.bluetoothchat.data.model.FileManagerImpl
 import com.glodanif.bluetoothchat.data.model.MessagesStorage
 import com.glodanif.bluetoothchat.data.model.MessagesStorageImpl
 import com.glodanif.bluetoothchat.ui.presenter.ImagePreviewPresenter
@@ -31,7 +28,6 @@ class ImagePreviewActivity : SkeletonActivity(), ImagePreviewView {
 
     private lateinit var message: ChatMessage
 
-    private val fileManager = FileManagerImpl(this)
     private val storageModel: MessagesStorage = MessagesStorageImpl(this)
     private lateinit var presenter: ImagePreviewPresenter
 
@@ -48,7 +44,7 @@ class ImagePreviewActivity : SkeletonActivity(), ImagePreviewView {
         imageView.minimumScale = .75f
         imageView.maximumScale = 2f
 
-        presenter = ImagePreviewPresenter(message, this, fileManager, storageModel)
+        presenter = ImagePreviewPresenter(message, this, storageModel)
         presenter.loadData()
     }
 
@@ -88,11 +84,6 @@ class ImagePreviewActivity : SkeletonActivity(), ImagePreviewView {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
 
         return when (item.itemId) {
-
-            R.id.action_save -> {
-                checkWriteStoragePermission()
-                true
-            }
             R.id.action_remove -> {
                 confirmFileRemoval()
                 true
@@ -111,36 +102,6 @@ class ImagePreviewActivity : SkeletonActivity(), ImagePreviewView {
                 })
                 .setNegativeButton(getString(R.string.general__no), null)
                 .show()
-    }
-
-    private fun checkWriteStoragePermission() {
-
-        if (ContextCompat.checkSelfPermission(this,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
-            saveImage()
-        } else {
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-                explainAskingStoragePermission()
-            } else {
-                ActivityCompat.requestPermissions(this,
-                        arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), REQUEST_STORAGE_PERMISSION)
-            }
-        }
-    }
-
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
-
-        if (requestCode == REQUEST_STORAGE_PERMISSION) {
-            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                saveImage()
-            } else {
-                explainAskingStoragePermission()
-            }
-        }
-    }
-
-    private fun saveImage() {
-        presenter.downloadFile()
     }
 
     override fun showFileSavedNotification() {

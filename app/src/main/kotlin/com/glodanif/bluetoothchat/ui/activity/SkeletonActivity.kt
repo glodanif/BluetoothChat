@@ -8,6 +8,9 @@ import android.support.v7.widget.Toolbar
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.glodanif.bluetoothchat.R
+import android.content.Context.INPUT_METHOD_SERVICE
+import android.view.inputmethod.InputMethodManager
+
 
 open class SkeletonActivity : AppCompatActivity() {
 
@@ -15,9 +18,21 @@ open class SkeletonActivity : AppCompatActivity() {
 
     protected var toolbar: Toolbar? = null
 
+    private var isStarted = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true)
+    }
+
+    override fun onStart() {
+        super.onStart()
+        isStarted = true
+    }
+
+    override fun onStop() {
+        super.onStop()
+        isStarted = false
     }
 
     protected fun setContentView(@LayoutRes layoutId: Int, type: ActivityType) {
@@ -42,5 +57,16 @@ open class SkeletonActivity : AppCompatActivity() {
     override fun onSupportNavigateUp(): Boolean {
         onBackPressed()
         return true
+    }
+
+    fun hideKeyboard() {
+        val inputManager = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+        if (currentFocus != null) {
+            inputManager.hideSoftInputFromWindow(currentFocus?.windowToken, InputMethodManager.HIDE_NOT_ALWAYS)
+        }
+    }
+
+    fun isStarted(): Boolean {
+        return isStarted
     }
 }

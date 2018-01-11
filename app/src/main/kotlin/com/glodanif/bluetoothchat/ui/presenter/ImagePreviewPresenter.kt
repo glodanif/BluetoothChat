@@ -7,20 +7,13 @@ import com.glodanif.bluetoothchat.extension.getReadableFileSize
 import com.glodanif.bluetoothchat.ui.view.ImagePreviewView
 import java.io.File
 
-class ImagePreviewPresenter(private val message: ChatMessage, private val view: ImagePreviewView, private val fileManager: FileManager, private val storageModel: MessagesStorage) {
+class ImagePreviewPresenter(private val message: ChatMessage, private val view: ImagePreviewView, private val storageModel: MessagesStorage) {
 
     private val file = File(message.filePath)
 
     fun loadData() {
         view.showFileInfo(file.name, file.length().getReadableFileSize())
         view.displayImage("file://${file.absolutePath}")
-    }
-
-    fun downloadFile() {
-
-        fileManager.saveFileToDownloads(file) {
-            view.showFileSavedNotification()
-        }
     }
 
     fun removeFile() {
