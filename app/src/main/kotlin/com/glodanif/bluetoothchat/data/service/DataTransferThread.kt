@@ -134,7 +134,8 @@ abstract class DataTransferThread(private val context: Context, private val sock
         isFileTransferCanceledByMe = false
         isFileTransferCanceledByPartner = false
 
-        fileListener.onFileSendingStarted(file)
+        val transferringFile = TransferringFile(fileName, fileSize, TransferringFile.TransferType.SENDING)
+        fileListener.onFileSendingStarted(transferringFile)
 
         thread {
 
@@ -158,12 +159,14 @@ abstract class DataTransferThread(private val context: Context, private val sock
                         }
                         length = it.read(buffer)
 
-                        fileListener.onFileSendingProgress(sentBytes, file.length())
+                        fileListener.onFileSendingProgress(transferringFile, sentBytes)
 
                         if (isFileTransferCanceledByMe || isFileTransferCanceledByPartner) {
                             break
                         }
                     }
+
+                    Thread.sleep(250)
 
                     if (!isFileTransferCanceledByMe && !isFileTransferCanceledByPartner) {
                         fileListener.onFileSendingFinished(file.absolutePath)
@@ -297,6 +300,8 @@ abstract class DataTransferThread(private val context: Context, private val sock
                     }
                 }
 
+                Thread.sleep(250)
+
                 if (!isCanceled && !isFileTransferCanceledByMe && !isFileTransferCanceledByPartner) {
                     it.flush()
                     fileListener.onFileReceivingFinished(file.absolutePath)
@@ -334,8 +339,8 @@ abstract class DataTransferThread(private val context: Context, private val sock
     }
 
     interface OnFileListener {
-        fun onFileSendingStarted(file: File)
-        fun onFileSendingProgress(sentBytes: Long, totalBytes: Long)
+        fun onFileSendingStarted(file: TransferringFile)
+        fun onFileSendingProgress(file: TransferringFile, sentBytes: Long)
         fun onFileSendingFinished(filePath: String)
         fun onFileSendingFailed()
         fun onFileReceivingStarted(file: TransferringFile)

@@ -65,7 +65,6 @@
                     android:layout_height="match_parent"
                     android:background="?android:attr/selectableItemBackground"
                     android:contentDescription="@string/chat__cd__send_image_button"
-                    android:tint="@color/colorAccent"
                     app:srcCompat="@drawable/ic_photo_black_24dp" />
 
                 <ImageButton
@@ -74,7 +73,6 @@
                     android:layout_height="match_parent"
                     android:background="?android:attr/selectableItemBackground"
                     android:contentDescription="@string/chat__cd__send_text_button"
-                    android:tint="@color/colorAccent"
                     app:srcCompat="@drawable/ic_send_black_24dp" />
 
             </ViewSwitcher>

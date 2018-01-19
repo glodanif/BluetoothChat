@@ -6,7 +6,24 @@ import java.io.FileInputStream
 
 class Message() {
 
-    val DIVIDER = "#"
+    private val DIVIDER = "#"
+
+    enum class Type(val value: Int) {
+
+        MESSAGE(0),
+        DELIVERY(1),
+        CONNECTION_RESPONSE(2),
+        CONNECTION_REQUEST(3),
+        SEEING(4),
+        EDITING(5),
+        FILE_START(6),
+        FILE_END(7),
+        FILE_CANCELED(8);
+
+        companion object {
+            fun from(findValue: Int): Type = Type.values().first { it.value == findValue }
+        }
+    }
 
     var type: Type = Type.MESSAGE
     var uid: String = ""
@@ -51,23 +68,6 @@ class Message() {
     constructor(flag: Boolean, type: Type) : this() {
         this.flag = flag
         this.type = type
-    }
-
-    enum class Type(val value: Int) {
-
-        MESSAGE(0),
-        DELIVERY(1),
-        CONNECTION_RESPONSE(2),
-        CONNECTION_REQUEST(3),
-        SEEING(4),
-        EDITING(5),
-        FILE_START(6),
-        FILE_END(7),
-        FILE_CANCELED(8);
-
-        companion object {
-            fun from(findValue: Int): Type = Type.values().first { it.value == findValue }
-        }
     }
 
     fun getDecodedMessage(): String {

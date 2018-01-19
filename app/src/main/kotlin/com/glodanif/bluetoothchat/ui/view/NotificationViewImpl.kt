@@ -137,7 +137,7 @@ class NotificationViewImpl(private val context: Context) : NotificationView {
 
     private var transferBuilder: NotificationCompat.Builder? = null
 
-    override fun showFileTransferNotification(displayName: String?, deviceName: String, address: String, file: TransferringFile, transferredBytes: Long, settings: NotificationSettings) {
+    override fun showFileTransferNotification(displayName: String?, deviceName: String, address: String, file: TransferringFile, transferredBytes: Long, silently: Boolean, settings: NotificationSettings) {
 
         val notificationIntent = Intent(context, ChatActivity::class.java)
                 .putExtra(ChatActivity.EXTRA_ADDRESS, address)
@@ -145,22 +145,24 @@ class NotificationViewImpl(private val context: Context) : NotificationView {
         val pendingIntent = PendingIntent.getActivity(context, 0, notificationIntent, 0)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val channel = NotificationChannel(CHANNEL_FILE, context.getString(R.string.notification__channel_file), NotificationManager.IMPORTANCE_MAX)
+            val priority = if (silently) NotificationManager.IMPORTANCE_LOW else NotificationManager.IMPORTANCE_MAX
+            val channel = NotificationChannel(CHANNEL_FILE, context.getString(R.string.notification__channel_file), priority)
             notificationManager.createNotificationChannel(channel)
         }
 
+        val priority = if (silently) NotificationCompat.PRIORITY_LOW else NotificationCompat.PRIORITY_MAX
         val builder = NotificationCompat.Builder(context, CHANNEL_REQUEST)
                 .setContentTitle(context.getString(
                         if (file.transferType == TransferringFile.TransferType.SENDING)
                             R.string.notification__file_sending else R.string.notification__file_receiving, displayName))
                 .setContentText(file.size.getReadableFileSize())
                 .setLights(Color.BLUE, 3000, 3000)
-                .setSmallIcon(R.drawable.ic_photo_black_24dp)
+                .setSmallIcon(R.drawable.ic_mms_black_24dp)
                 .setOnlyAlertOnce(true)
                 .setProgress(file.size.toInt(), transferredBytes.toInt(), false)
                 .setContentIntent(pendingIntent)
                 .setAutoCancel(false)
-                .setPriority(NotificationCompat.PRIORITY_MAX)
+                .setPriority(priority)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             builder.color = resources.getColor(R.color.colorPrimary)
@@ -168,10 +170,10 @@ class NotificationViewImpl(private val context: Context) : NotificationView {
 
         val notification = builder.build()
 
-        if (settings.soundEnabled) {
+        if (settings.soundEnabled && !silently) {
             notification.defaults = notification.defaults or Notification.DEFAULT_SOUND
         }
-        if (settings.vibrationEnabled) {
+        if (settings.vibrationEnabled && !silently) {
             notification.defaults = notification.defaults or Notification.DEFAULT_VIBRATE
         }
 
@@ -198,5 +200,11 @@ class NotificationViewImpl(private val context: Context) : NotificationView {
     override fun dismissConnectionNotification() {
         notificationManager.cancel(
                 NotificationView.NOTIFICATION_TAG_CONNECTION, NotificationView.NOTIFICATION_ID_CONNECTION)
+    }
+
+    override fun dismissFileTransferNotification() {
+        notificationManager.cancel(
+                NotificationView.NOTIFICATION_TAG_FILE, NotificationView.NOTIFICATION_ID_FILE)
+        transferBuilder = null
     }
 }

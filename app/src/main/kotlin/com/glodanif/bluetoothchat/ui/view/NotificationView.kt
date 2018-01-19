@@ -18,8 +18,9 @@ interface NotificationView {
     fun getForegroundNotification(message: String): Notification
     fun showNewMessageNotification(message: String, displayName: String?, deviceName: String, address: String, settings: NotificationSettings)
     fun showConnectionRequestNotification(deviceName: String, settings: NotificationSettings)
-    fun showFileTransferNotification(displayName: String?, deviceName: String, address: String, file: TransferringFile, transferredBytes: Long, settings: NotificationSettings)
+    fun showFileTransferNotification(displayName: String?, deviceName: String, address: String, file: TransferringFile, transferredBytes: Long, silently: Boolean, settings: NotificationSettings)
     fun updateFileTransferNotification(transferredBytes: Long, totalBytes: Long)
     fun dismissMessageNotification()
     fun dismissConnectionNotification()
+    fun dismissFileTransferNotification()
 }

@@ -2,7 +2,6 @@ package com.glodanif.bluetoothchat.ui.activity
 
 import android.Manifest
 import android.app.Activity
-import android.app.AlertDialog
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
 import android.content.ActivityNotFoundException
@@ -13,6 +12,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
+import android.support.v7.app.AlertDialog
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.View
@@ -31,6 +31,7 @@ class ScanActivity : SkeletonActivity(), ScanView {
     private val REQUEST_ENABLE_BLUETOOTH = 101
     private val REQUEST_MAKE_DISCOVERABLE = 102
     private val REQUEST_LOCATION_PERMISSION = 103
+    private val REQUEST_STORAGE_PERMISSION = 104
 
     private lateinit var container: View
     private lateinit var turnOnHolder: View
@@ -98,7 +99,17 @@ class ScanActivity : SkeletonActivity(), ScanView {
         }
 
         findViewById<ImageView>(R.id.iv_share).setOnClickListener {
-            presenter.shareApk()
+            if (ContextCompat.checkSelfPermission(this,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+                presenter.shareApk()
+            } else {
+                if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+                    explainAskingStoragePermission()
+                } else {
+                    ActivityCompat.requestPermissions(this,
+                            arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), REQUEST_STORAGE_PERMISSION)
+                }
+            }
         }
     }
 
@@ -153,15 +164,15 @@ class ScanActivity : SkeletonActivity(), ScanView {
 
     override fun showBluetoothIsNotAvailableMessage() {
         AlertDialog.Builder(this)
-                .setMessage(getString(R.string.scan__no_access_to_bluetooth))
-                .setPositiveButton(getString(R.string.general__ok), { _, _ -> finish() })
+                .setMessage(R.string.scan__no_access_to_bluetooth)
+                .setPositiveButton(R.string.general__ok, { _, _ -> finish() })
                 .show()
     }
 
     override fun showBluetoothEnablingFailed() {
         AlertDialog.Builder(this)
-                .setMessage(getString(R.string.scan__bluetooth_disabled))
-                .setPositiveButton(getString(R.string.general__ok), null)
+                .setMessage(R.string.scan__bluetooth_disabled)
+                .setPositiveButton(R.string.general__ok, null)
                 .show()
     }
 
@@ -197,8 +208,8 @@ class ScanActivity : SkeletonActivity(), ScanView {
 
     override fun showBluetoothDiscoverableFailure() {
         AlertDialog.Builder(this)
-                .setMessage(getString(R.string.scan__unable_to_make_discoverable))
-                .setPositiveButton(getString(R.string.general__ok), null)
+                .setMessage(R.string.scan__unable_to_make_discoverable)
+                .setPositiveButton(R.string.general__ok, null)
                 .show()
     }
 
@@ -208,8 +219,8 @@ class ScanActivity : SkeletonActivity(), ScanView {
         if (!isStarted()) return
 
         AlertDialog.Builder(this)
-                .setMessage(getString(R.string.scan__unable_to_connect_service))
-                .setPositiveButton(getString(R.string.general__ok), null)
+                .setMessage(R.string.scan__unable_to_connect_service)
+                .setPositiveButton(R.string.general__ok, null)
                 .show()
     }
 
@@ -219,8 +230,8 @@ class ScanActivity : SkeletonActivity(), ScanView {
         if (!isStarted()) return
 
         AlertDialog.Builder(this)
-                .setMessage(getString(R.string.scan__unable_to_connect))
-                .setPositiveButton(getString(R.string.general__ok), null)
+                .setMessage(R.string.scan__unable_to_connect)
+                .setPositiveButton(R.string.general__ok, null)
                 .show()
     }
 
@@ -254,23 +265,39 @@ class ScanActivity : SkeletonActivity(), ScanView {
             } else {
                 explainAskingLocationPermission()
             }
+        } else if (requestCode == REQUEST_STORAGE_PERMISSION) {
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                presenter.shareApk()
+            } else {
+                explainAskingStoragePermission()
+            }
         }
     }
 
     private fun explainAskingLocationPermission() {
         AlertDialog.Builder(this)
-                .setMessage(getString(R.string.scan__permission_explanation_location))
-                .setPositiveButton(getString(R.string.general__ok), { _, _ ->
+                .setMessage(R.string.scan__permission_explanation_location)
+                .setPositiveButton(R.string.general__ok, { _, _ ->
                     ActivityCompat.requestPermissions(this,
                             arrayOf(Manifest.permission.ACCESS_COARSE_LOCATION), REQUEST_LOCATION_PERMISSION)
                 })
                 .show()
     }
 
+    private fun explainAskingStoragePermission() {
+        AlertDialog.Builder(this)
+                .setMessage(R.string.scan__permission_explanation_storage)
+                .setPositiveButton(R.string.general__ok, { _, _ ->
+                    ActivityCompat.requestPermissions(this,
+                            arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), REQUEST_STORAGE_PERMISSION)
+                })
+                .show()
+    }
+
     override fun showExtractionApkFailureMessage() {
         AlertDialog.Builder(this)
-                .setMessage(getString(R.string.scan__unable_to_fetch_apk))
-                .setPositiveButton(getString(R.string.general__ok), null)
+                .setMessage(R.string.scan__unable_to_fetch_apk)
+                .setPositiveButton(R.string.general__ok, null)
                 .show()
     }
 

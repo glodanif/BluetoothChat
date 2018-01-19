@@ -8,13 +8,17 @@ import android.bluetooth.BluetoothDevice
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.provider.Settings
 import android.support.design.widget.FloatingActionButton
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AlertDialog
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.text.Html
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.Button
@@ -273,8 +277,26 @@ class ConversationsActivity : SkeletonActivity(), ConversationsView {
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
 
-        if (requestCode == REQUEST_STORAGE_PERMISSION) {
-            if (grantResults.isNotEmpty() && grantResults[0] != PackageManager.PERMISSION_GRANTED && !storagePermissionDialog.isShowing) {
+        if (requestCode == REQUEST_STORAGE_PERMISSION && grantResults.isNotEmpty() && grantResults[0] != PackageManager.PERMISSION_GRANTED && !storagePermissionDialog.isShowing) {
+
+            if (Build.VERSION.SDK_INT >= 23 && !shouldShowRequestPermissionRationale(permissions[0])) {
+
+                AlertDialog.Builder(this)
+                        .setMessage(Html.fromHtml("Go to Settings and grant the <b>STORAGE</b> permission to use this app."))
+                        .setPositiveButton("Settings") { _, _ ->
+
+                            val intent = Intent()
+                                    .setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+                                    .addCategory(Intent.CATEGORY_DEFAULT)
+                                    .setData(Uri.parse("package:" + packageName))
+                                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                                    .addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY)
+                                    .addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS)
+                            startActivity(intent)
+                        }
+                        .setCancelable(false)
+                        .show()
+            } else {
                 storagePermissionDialog.show()
             }
         }
