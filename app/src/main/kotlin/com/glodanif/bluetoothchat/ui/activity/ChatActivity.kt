@@ -1,7 +1,5 @@
 package com.glodanif.bluetoothchat.ui.activity
 
-import android.animation.AnimatorSet
-import android.animation.ObjectAnimator
 import android.app.Activity
 import android.app.AlertDialog
 import android.app.NotificationManager
@@ -10,12 +8,10 @@ import android.bluetooth.BluetoothAdapter
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.util.DisplayMetrics
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -25,7 +21,7 @@ import com.glodanif.bluetoothchat.R
 import com.glodanif.bluetoothchat.data.entity.ChatMessage
 import com.glodanif.bluetoothchat.data.entity.Conversation
 import com.glodanif.bluetoothchat.data.model.*
-import com.glodanif.bluetoothchat.extension.getReadableFileSize
+import com.glodanif.bluetoothchat.extension.toReadableFileSize
 import com.glodanif.bluetoothchat.ui.adapter.ChatAdapter
 import com.glodanif.bluetoothchat.ui.presenter.ChatPresenter
 import com.glodanif.bluetoothchat.ui.util.SimpleTextWatcher
@@ -349,7 +345,7 @@ class ChatActivity : SkeletonActivity(), ChatView {
         if (!isStarted()) return
 
         AlertDialog.Builder(this)
-                .setMessage(getString(R.string.chat__too_big_image, maxSize.getReadableFileSize()))
+                .setMessage(getString(R.string.chat__too_big_image, maxSize.toReadableFileSize()))
                 .setPositiveButton(getString(R.string.general__ok), null)
                 .show()
     }
@@ -372,7 +368,7 @@ class ChatActivity : SkeletonActivity(), ChatView {
             val imagePlaceholder = resources.getDrawable(R.drawable.ic_photo_black_24dp)
             transferringImagePreview.setImageDrawable(imagePlaceholder)
         }
-        transferringImageSize.text = fileSize.getReadableFileSize()
+        transferringImageSize.text = fileSize.toReadableFileSize()
         transferringImageProgressLabel.text = "0%"
         //FIXME should work with Long
         transferringImageProgressBar.progress = 0

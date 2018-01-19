@@ -11,7 +11,7 @@ import com.glodanif.bluetoothchat.data.entity.TransferringFile
 import com.glodanif.bluetoothchat.ui.activity.ChatActivity
 import com.glodanif.bluetoothchat.ui.activity.ConversationsActivity
 import com.glodanif.bluetoothchat.data.service.BluetoothConnectionService
-import com.glodanif.bluetoothchat.extension.getReadableFileSize
+import com.glodanif.bluetoothchat.extension.toReadableFileSize
 import com.glodanif.bluetoothchat.ui.util.NotificationSettings
 
 class NotificationViewImpl(private val context: Context) : NotificationView {
@@ -145,24 +145,23 @@ class NotificationViewImpl(private val context: Context) : NotificationView {
         val pendingIntent = PendingIntent.getActivity(context, 0, notificationIntent, 0)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val priority = if (silently) NotificationManager.IMPORTANCE_LOW else NotificationManager.IMPORTANCE_MAX
-            val channel = NotificationChannel(CHANNEL_FILE, context.getString(R.string.notification__channel_file), priority)
+            val channel = NotificationChannel(CHANNEL_FILE,
+                    context.getString(R.string.notification__channel_file), NotificationManager.IMPORTANCE_LOW)
             notificationManager.createNotificationChannel(channel)
         }
 
-        val priority = if (silently) NotificationCompat.PRIORITY_LOW else NotificationCompat.PRIORITY_MAX
-        val builder = NotificationCompat.Builder(context, CHANNEL_REQUEST)
+        val builder = NotificationCompat.Builder(context, CHANNEL_FILE)
                 .setContentTitle(context.getString(
                         if (file.transferType == TransferringFile.TransferType.SENDING)
                             R.string.notification__file_sending else R.string.notification__file_receiving, displayName))
-                .setContentText(file.size.getReadableFileSize())
+                .setContentText(file.size.toReadableFileSize())
                 .setLights(Color.BLUE, 3000, 3000)
                 .setSmallIcon(R.drawable.ic_mms_black_24dp)
                 .setOnlyAlertOnce(true)
                 .setProgress(file.size.toInt(), transferredBytes.toInt(), false)
                 .setContentIntent(pendingIntent)
                 .setAutoCancel(false)
-                .setPriority(priority)
+                .setPriority(NotificationCompat.PRIORITY_LOW)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             builder.color = resources.getColor(R.color.colorPrimary)

@@ -75,7 +75,7 @@ fun TextDrawable.getBitmap(): Bitmap {
     return bitmap
 }
 
-fun Long.getReadableFileSize(): String {
+fun Long.toReadableFileSize(): String {
     if (this <= 0) return "0"
     val units = arrayOf("B", "kB", "MB", "GB", "TB")
     val digitGroups = (Math.log10(this.toDouble()) / Math.log10(1024.0)).toInt()
