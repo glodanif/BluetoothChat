@@ -85,6 +85,7 @@ class ConversationsActivity : SkeletonActivity(), ConversationsView {
         settingsPopup = SettingsPopup(this)
         settingsPopup.setCallbacks(
                 profileClickListener = { ProfileActivity.start(context = this, editMode = true) },
+                imagesClickListener = { ReceivedImagesActivity.start(context = this, address = null) },
                 settingsClickListener = { SettingsActivity.start(context = this) }
         )
 

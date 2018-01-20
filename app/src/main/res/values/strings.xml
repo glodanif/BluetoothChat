@@ -134,6 +134,9 @@
     <string name="images__file_saved">This file has been saved to \"Downloads\" directory</string>
     <string name="images__removal_confirmation">Do you really want to remove this image?</string>
 
+    <string name="received_images__received_images">Received Images</string>
+    <string name="received_images__no_images">You haven\'t received any images yet</string>
+
     <string name="chat__cd__send_text_button">Text send button</string>
     <string name="chat__cd__send_image_button">Image send button</string>
     <string name="chat__cd__pick_image_button">Pick image button</string>

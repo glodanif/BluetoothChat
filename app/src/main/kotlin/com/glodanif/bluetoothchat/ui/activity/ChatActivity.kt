@@ -61,6 +61,8 @@ class ChatActivity : SkeletonActivity(), ChatView {
 
     private lateinit var adapter: ChatAdapter
 
+    private var deviceAddress: String? = null
+
     private val textWatcher = object : SimpleTextWatcher() {
 
         private var previousText: String? = null
@@ -136,7 +138,7 @@ class ChatActivity : SkeletonActivity(), ChatView {
             }
         })
 
-        val deviceAddress: String? = intent.getStringExtra(EXTRA_ADDRESS)
+        deviceAddress = intent.getStringExtra(EXTRA_ADDRESS)
 
         title = if (deviceAddress.isNullOrEmpty()) getString(R.string.app_name) else deviceAddress
         toolbar?.subtitle = getString(R.string.chat__not_connected)
@@ -361,11 +363,11 @@ class ChatActivity : SkeletonActivity(), ChatView {
         if (fileAddress != null) {
             Picasso.with(this)
                     .load("file://$fileAddress")
-                    .placeholder(R.drawable.ic_photo_black_24dp)
-                    .error(R.drawable.ic_photo_black_24dp)
+                    .placeholder(R.drawable.ic_photo)
+                    .error(R.drawable.ic_photo)
                     .into(transferringImagePreview)
         } else {
-            val imagePlaceholder = resources.getDrawable(R.drawable.ic_photo_black_24dp)
+            val imagePlaceholder = resources.getDrawable(R.drawable.ic_photo)
             transferringImagePreview.setImageDrawable(imagePlaceholder)
         }
         transferringImageSize.text = fileSize.toReadableFileSize()
@@ -431,6 +433,10 @@ class ChatActivity : SkeletonActivity(), ChatView {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
+            R.id.action_images -> {
+                ReceivedImagesActivity.start(this, deviceAddress)
+                true
+            }
             R.id.action_disconnect -> {
                 presenter.disconnect()
                 true

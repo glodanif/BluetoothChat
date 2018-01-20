@@ -79,6 +79,8 @@ class ChatAdapter(private val context: Context, private val displayMetrics: Disp
                             Picasso.with(context)
                                     .load("file://$path")
                                     .config(Bitmap.Config.RGB_565)
+                                    .error(R.color.background_image)
+                                    .placeholder(R.color.background_image)
                                     .tag(picassoTag)
                                     .resize(viewSize.first, viewSize.second)
                                     .into(holder?.image)

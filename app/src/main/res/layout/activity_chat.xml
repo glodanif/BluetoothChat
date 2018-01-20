@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/background"
+    android:background="#ADD8C5"
     android:clipToPadding="false"
     tools:context=".ui.activity.ChatActivity">
 
@@ -65,7 +65,7 @@
                     android:layout_height="match_parent"
                     android:background="?android:attr/selectableItemBackground"
                     android:contentDescription="@string/chat__cd__send_image_button"
-                    app:srcCompat="@drawable/ic_photo_black_24dp" />
+                    app:srcCompat="@drawable/ic_photo" />
 
                 <ImageButton
                     android:id="@+id/ib_send"

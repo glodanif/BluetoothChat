@@ -23,9 +23,11 @@ class MessagesStorageImpl(val context: Context) : MessagesStorage {
         }
     }
 
-    override fun getFilesMessagesByDevice(address: String, listener: (List<ChatMessage>) -> Unit) {
+    override fun getFilesMessagesByDevice(address: String?, listener: (List<ChatMessage>) -> Unit) {
         thread {
-            val messages: List<ChatMessage> = dao.getFilesMessagesByDevice(address)
+            val messages: List<ChatMessage> = (if (address != null)
+                dao.getFilesMessagesByDevice(address) else dao.getAllFilesMessages())
+                    .filter { !it.filePath.isNullOrEmpty() }
             handler.post { listener.invoke(messages) }
         }
     }

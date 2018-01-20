@@ -33,6 +33,7 @@ class SettingsPopup(context: Context) : PopupWindow() {
     private var userName = ""
     private var profileClickListener: (() -> (Unit))? = null
     private var settingsClickListener: (() -> (Unit))? = null
+    private var imagesClickListener: (() -> (Unit))? = null
 
     private var rootView: View
     private var container: View
@@ -46,8 +47,9 @@ class SettingsPopup(context: Context) : PopupWindow() {
         this.color = color
     }
 
-    fun setCallbacks(profileClickListener: () -> (Unit), settingsClickListener: () -> (Unit)) {
+    fun setCallbacks(profileClickListener: () -> (Unit), imagesClickListener: () -> (Unit), settingsClickListener: () -> (Unit)) {
         this.profileClickListener = profileClickListener
+        this.imagesClickListener = imagesClickListener
         this.settingsClickListener = settingsClickListener
     }
 
@@ -58,12 +60,17 @@ class SettingsPopup(context: Context) : PopupWindow() {
         @SuppressLint("InflateParams")
         rootView = inflater.inflate(R.layout.popup_settings, null)
         container = rootView.findViewById(R.id.fl_container)
-        avatar = rootView.findViewById<ImageView>(R.id.iv_avatar)
-        userNameLabel = rootView.findViewById<TextView>(R.id.tv_username)
+        avatar = rootView.findViewById(R.id.iv_avatar)
+        userNameLabel = rootView.findViewById(R.id.tv_username)
 
         rootView.findViewById<View>(R.id.ll_user_profile_container).setOnClickListener({
             dismiss()
             profileClickListener?.invoke()
+        })
+
+        rootView.findViewById<View>(R.id.ll_images_button).setOnClickListener({
+            dismiss()
+            imagesClickListener?.invoke()
         })
 
         rootView.findViewById<View>(R.id.ll_settings_button).setOnClickListener({

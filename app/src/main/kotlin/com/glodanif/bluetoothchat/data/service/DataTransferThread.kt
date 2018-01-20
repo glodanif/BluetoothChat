@@ -153,8 +153,14 @@ abstract class DataTransferThread(private val context: Context, private val sock
                     length = it.read(buffer)
                     while (length > -1) {
                         if (length > 0) {
-                            bos.write(buffer, 0, length)
-                            bos.flush()
+                            try {
+                                bos.write(buffer, 0, length)
+                                bos.flush()
+                            } catch (e: IOException) {
+                                Thread.sleep(250)
+                                fileListener.onFileSendingFailed()
+                                break
+                            }
                             sentBytes += length.toLong()
                         }
                         length = it.read(buffer)

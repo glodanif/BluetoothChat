@@ -22,7 +22,7 @@ class ContactChooserActivity : SkeletonActivity(), ContactChooserView {
     private lateinit var contactsList: RecyclerView
     private lateinit var noContactsLabel: TextView
 
-    private val adapter: ContactsAdapter = ContactsAdapter()
+    private val adapter = ContactsAdapter()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
