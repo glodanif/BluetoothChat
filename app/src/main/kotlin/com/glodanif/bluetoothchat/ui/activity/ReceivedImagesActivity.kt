@@ -44,6 +44,10 @@ class ReceivedImagesActivity : SkeletonActivity(), ReceivedImagesView {
         }
 
         presenter = ReceivedImagesPresenter(address, this, storageModel)
+    }
+
+    override fun onStart() {
+        super.onStart()
         presenter.loadImages()
     }
 

@@ -71,7 +71,7 @@
     <string name="chat__removed_image">Removed image</string>
     <string name="chat__missing_image">Missing image</string>
 
-    <string name="conversations__no_conversations">You don\'t have any conversations yet\nScan for devices to find your partner</string>
+    <string name="conversations__no_conversations">You don\'t have any conversationsStorage yet\nScan for devices to find your partner</string>
     <string name="conversations__scan">Scan</string>
     <string name="conversations__options">Conversation options</string>
     <string name="conversations__remove">Remove</string>

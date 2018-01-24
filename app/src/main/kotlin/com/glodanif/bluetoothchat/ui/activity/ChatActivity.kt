@@ -17,6 +17,7 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import com.glodanif.bluetoothchat.ChatApplication
 import com.glodanif.bluetoothchat.R
 import com.glodanif.bluetoothchat.data.entity.ChatMessage
 import com.glodanif.bluetoothchat.data.entity.Conversation
@@ -34,14 +35,13 @@ import pl.aprilapps.easyphotopicker.EasyImage
 import java.io.File
 import java.lang.Exception
 import java.util.*
+import javax.inject.Inject
 
 class ChatActivity : SkeletonActivity(), ChatView {
 
     private lateinit var presenter: ChatPresenter
     private val connectionModel: BluetoothConnector = BluetoothConnectorImpl(this)
     private val scanModel: BluetoothScanner = BluetoothScannerImpl(this)
-    private val storageModel: MessagesStorage = MessagesStorageImpl(this)
-    private val conversationModel: ConversationsStorage = ConversationsStorageImpl(this)
 
     private val layoutManager = LinearLayoutManager(this)
     private lateinit var actions: ActionView
@@ -142,8 +142,7 @@ class ChatActivity : SkeletonActivity(), ChatView {
 
         title = if (deviceAddress.isNullOrEmpty()) getString(R.string.app_name) else deviceAddress
         toolbar?.subtitle = getString(R.string.chat__not_connected)
-        presenter = ChatPresenter(deviceAddress.toString(),
-                this, scanModel, connectionModel, conversationModel, storageModel)
+        presenter = ChatPresenter(deviceAddress.toString(),this, scanModel, connectionModel)
 
         if (intent.action == Intent.ACTION_SEND) {
             messageField.setText(intent.data.toString().trim())

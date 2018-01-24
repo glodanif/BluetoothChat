@@ -4,11 +4,20 @@ import android.bluetooth.BluetoothDevice
 import com.glodanif.bluetoothchat.data.entity.ChatMessage
 import com.glodanif.bluetoothchat.data.entity.Conversation
 import com.glodanif.bluetoothchat.data.model.*
+import com.glodanif.bluetoothchat.di.module.ComponentsManager
 import com.glodanif.bluetoothchat.ui.view.ConversationsView
-import java.io.File
+import javax.inject.Inject
 
-class ConversationsPresenter(private val view: ConversationsView, private val connection: BluetoothConnector,
-                             private val conversationStorage: ConversationsStorage, private val settings: SettingsManager) {
+class ConversationsPresenter(private val view: ConversationsView, private val connection: BluetoothConnector) {
+
+    @Inject
+    lateinit var conversationStorage: ConversationsStorage
+    @Inject
+    lateinit var settings: SettingsManager
+
+    init {
+        ComponentsManager.getDataSourceComponent().inject(this)
+    }
 
     private val prepareListener = object : OnPrepareListener {
 

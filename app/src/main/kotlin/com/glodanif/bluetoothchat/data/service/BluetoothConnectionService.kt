@@ -216,7 +216,6 @@ class BluetoothConnectionService : Service() {
                 fileListener?.onFileSendingStarted(file.name, file.size)
 
                 if (currentConversation != null) {
-                    Log.e("TAG18", "onFileSendingStarted")
 
                     val silently = application.currentChat != null && currentSocket != null &&
                             application.currentChat.equals(currentSocket!!.remoteDevice.address)
@@ -234,7 +233,6 @@ class BluetoothConnectionService : Service() {
                     fileListener?.onFileSendingProgress(sentBytes, file.size)
 
                     if (currentConversation != null) {
-                        Log.e("TAG18", "onFileSendingProgress")
                         notificationView.updateFileTransferNotification(sentBytes, file.size)
                     }
                 }
@@ -253,7 +251,6 @@ class BluetoothConnectionService : Service() {
                 sentMessage.messageType = MessageType.IMAGE
                 sentMessage.filePath = filePath
 
-                Log.e("TAG18", "onFileSendingFinished")
                 notificationView.dismissFileTransferNotification()
 
                 thread {
@@ -284,7 +281,6 @@ class BluetoothConnectionService : Service() {
 
                 handler.post {
                     fileListener?.onFileSendingFailed()
-                    Log.e("TAG18", "onFileSendingFailed")
                     notificationView.dismissFileTransferNotification()
                 }
             }
@@ -296,7 +292,6 @@ class BluetoothConnectionService : Service() {
                     fileListener?.onFileReceivingStarted(file.size)
 
                     if (currentConversation != null) {
-                        Log.e("TAG18", "onFileReceivingStarted")
 
                         val silently = application.currentChat != null && currentSocket != null &&
                                 application.currentChat.equals(currentSocket!!.remoteDevice.address)
@@ -315,7 +310,6 @@ class BluetoothConnectionService : Service() {
                     fileListener?.onFileReceivingProgress(receivedBytes, file.size)
 
                     if (currentConversation != null) {
-                        Log.e("TAG18", "onFileReceivingProgress")
                         notificationView.updateFileTransferNotification(receivedBytes, file.size)
                     }
                 }
@@ -335,7 +329,7 @@ class BluetoothConnectionService : Service() {
                 } else {
                     receivedMessage.seenHere = true
                 }
-                Log.e("TAG18", "onFileReceivingFinished")
+
                 notificationView.dismissFileTransferNotification()
 
                 thread {
@@ -364,7 +358,6 @@ class BluetoothConnectionService : Service() {
             override fun onFileReceivingFailed() {
                 handler.post {
                     fileListener?.onFileReceivingFailed()
-                    Log.e("TAG18", "onFileReceivingFailed")
                     notificationView.dismissFileTransferNotification()
                 }
             }
@@ -372,7 +365,6 @@ class BluetoothConnectionService : Service() {
             override fun onFileTransferCanceled(byPartner: Boolean) {
                 handler.post {
                     fileListener?.onFileTransferCanceled(byPartner)
-                    Log.e("TAG18", "onFileTransferCanceled")
                     notificationView.dismissFileTransferNotification()
                 }
             }

@@ -5,11 +5,22 @@ import com.glodanif.bluetoothchat.data.entity.ChatMessage
 import com.glodanif.bluetoothchat.data.entity.Conversation
 import com.glodanif.bluetoothchat.data.entity.TransferringFile
 import com.glodanif.bluetoothchat.data.model.*
+import com.glodanif.bluetoothchat.di.module.ComponentsManager
 import com.glodanif.bluetoothchat.ui.view.ChatView
 import java.io.File
+import javax.inject.Inject
 
 class ChatPresenter(private val deviceAddress: String, private val view: ChatView, private val scanModel: BluetoothScanner,
-                    private val connectionModel: BluetoothConnector, private val conversations: ConversationsStorage, private val storage: MessagesStorage) {
+                    private val connectionModel: BluetoothConnector) {
+
+    @Inject
+    lateinit var conversationsStorage: ConversationsStorage
+    @Inject
+    lateinit var messagesStorage: MessagesStorage
+
+    init {
+        ComponentsManager.getDataSourceComponent().inject(this)
+    }
 
     private val maxFileSize = 5_242_880
 
@@ -58,7 +69,7 @@ class ChatPresenter(private val deviceAddress: String, private val view: ChatVie
             view.showStatusConnected()
             view.hideActions()
 
-            conversations.getConversationByAddress(deviceAddress) {
+            conversationsStorage.getConversationByAddress(deviceAddress) {
                 if (it != null) {
                     view.showPartnerName(it.displayName, it.deviceName)
                 }
@@ -204,13 +215,13 @@ class ChatPresenter(private val deviceAddress: String, private val view: ChatVie
             }
         }
 
-        storage.getMessagesByDevice(deviceAddress) {
+        messagesStorage.getMessagesByDevice(deviceAddress) {
             it.forEach { it.seenHere = true }
-            storage.updateMessages(it)
+            messagesStorage.updateMessages(it)
             view.showMessagesHistory(it)
         }
 
-        conversations.getConversationByAddress(deviceAddress) {
+        conversationsStorage.getConversationByAddress(deviceAddress) {
             if (it != null) {
                 view.showPartnerName(it.displayName, it.deviceName)
             }

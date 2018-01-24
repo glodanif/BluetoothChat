@@ -16,7 +16,8 @@
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:layout_marginEnd="12dp"
-        android:contentDescription="@string/conversations__cd__partners_avatar" />
+        android:contentDescription="@string/conversations__cd__partners_avatar"
+        tools:src="@tools:sample/avatars" />
 
     <TextView
         android:id="@+id/tv_name"
@@ -25,5 +26,5 @@
         android:ellipsize="end"
         android:maxLines="1"
         android:textColor="#333333"
-        tools:text="Android Devise HTC G1" />
+        tools:text="@tools:sample/full_names" />
 </LinearLayout>

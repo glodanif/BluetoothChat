@@ -35,7 +35,7 @@
                     android:layout_width="56dp"
                     android:layout_height="56dp"
                     android:contentDescription="@string/conversations__cd__users_avatar"
-                    tools:src="@color/colorAccent" />
+                    tools:src="@tools:sample/avatars" />
 
                 <TextView
                     android:id="@+id/tv_username"
@@ -43,7 +43,7 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="4dp"
                     android:textSize="16sp"
-                    tools:text="Artur Shopenhauer" />
+                    tools:text="@tools:sample/full_names" />
 
             </LinearLayout>
 

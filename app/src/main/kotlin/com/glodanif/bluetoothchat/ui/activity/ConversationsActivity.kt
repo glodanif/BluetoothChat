@@ -19,19 +19,17 @@ import android.support.v7.app.AlertDialog
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.text.Html
-import android.view.LayoutInflater
 import android.view.View
 import android.widget.Button
 import android.widget.ImageView
 import com.amulyakhare.textdrawable.TextDrawable
 import com.glodanif.bluetoothchat.R
-import com.glodanif.bluetoothchat.ui.adapter.ConversationsAdapter
 import com.glodanif.bluetoothchat.data.entity.Conversation
-import com.glodanif.bluetoothchat.extension.getFirstLetter
 import com.glodanif.bluetoothchat.data.model.BluetoothConnectorImpl
-import com.glodanif.bluetoothchat.data.model.ConversationsStorageImpl
 import com.glodanif.bluetoothchat.data.model.SettingsManager
 import com.glodanif.bluetoothchat.data.model.SettingsManagerImpl
+import com.glodanif.bluetoothchat.extension.getFirstLetter
+import com.glodanif.bluetoothchat.ui.adapter.ConversationsAdapter
 import com.glodanif.bluetoothchat.ui.presenter.ConversationsPresenter
 import com.glodanif.bluetoothchat.ui.view.ConversationsView
 import com.glodanif.bluetoothchat.ui.view.NotificationView
@@ -46,10 +44,8 @@ class ConversationsActivity : SkeletonActivity(), ConversationsView {
     private val REQUEST_SCAN = 101
 
     private lateinit var presenter: ConversationsPresenter
-    private lateinit var settings: SettingsManager
     private lateinit var shortcutsManager: ShortcutManager
     private val connection = BluetoothConnectorImpl(this)
-    private val storage = ConversationsStorageImpl(this)
 
     private lateinit var conversationsList: RecyclerView
     private lateinit var noConversations: View
@@ -67,9 +63,8 @@ class ConversationsActivity : SkeletonActivity(), ConversationsView {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_conversations, ActivityType.CUSTOM_TOOLBAR_ACTIVITY)
 
-        settings = SettingsManagerImpl(this)
         shortcutsManager = ShortcutManagerImpl(this)
-        presenter = ConversationsPresenter(this, connection, storage, settings)
+        presenter = ConversationsPresenter(this, connection)
 
         actions = findViewById(R.id.av_actions)
 
@@ -305,7 +300,7 @@ class ConversationsActivity : SkeletonActivity(), ConversationsView {
 
     companion object {
 
-        private val REQUEST_STORAGE_PERMISSION = 101
+        private const val REQUEST_STORAGE_PERMISSION = 101
 
         fun start(context: Context) =
                 context.startActivity(Intent(context, ConversationsActivity::class.java))

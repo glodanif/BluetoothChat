@@ -8,7 +8,12 @@ class ReceivedImagesPresenter(private val address: String?, private val view: Re
     fun loadImages() {
 
         model.getFilesMessagesByDevice(address) {
-            view.displayImages(it)
+
+            if (it.isNotEmpty()) {
+                view.displayImages(it)
+            } else {
+                view.showNoImages()
+            }
         }
     }
 }

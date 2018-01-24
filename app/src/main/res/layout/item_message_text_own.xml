@@ -43,7 +43,7 @@
                 android:linksClickable="true"
                 android:textColor="#222"
                 android:textIsSelectable="true"
-                tools:text="Lorem Ipsum" />
+                tools:text="@tools:sample/lorem" />
 
         </LinearLayout>
 

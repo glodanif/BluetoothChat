@@ -101,6 +101,9 @@ dependencies {
 
     compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$KOTLIN_VERSION"
 
+    compile 'com.google.dagger:dagger:2.4'
+    kapt 'com.google.dagger:dagger-compiler:2.4'
+
     testCompile "org.jetbrains.kotlin:kotlin-stdlib:$KOTLIN_VERSION"
     testCompile "org.jetbrains.kotlin:kotlin-test-junit:$KOTLIN_VERSION"
     testCompile 'org.mockito:mockito-core:2.8.9'

@@ -19,5 +19,4 @@
         android:gravity="center"
         android:textColor="#222222"
         android:text="@string/general__storage_permission"/>
-
 </LinearLayout>

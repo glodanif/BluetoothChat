@@ -17,7 +17,8 @@
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:layout_marginEnd="12dp"
-        android:contentDescription="@string/conversations__cd__partners_avatar" />
+        android:contentDescription="@string/conversations__cd__partners_avatar"
+        tools:src="@tools:sample/avatars" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -38,19 +39,19 @@
                 android:layout_gravity="center_vertical"
                 android:layout_marginEnd="4dp"
                 android:layout_weight="0"
+                android:contentDescription="@string/conversations__cd__connected_indicator"
                 android:tint="@color/colorAccent"
-                app:srcCompat="@drawable/ic_link_black_24dp"
-                android:contentDescription="@string/conversations__cd__connected_indicator"/>
+                app:srcCompat="@drawable/ic_link_black_24dp" />
 
             <TextView
                 android:id="@+id/tv_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:textColor="#333333"
-                android:maxLines="1"
                 android:ellipsize="end"
-                tools:text="Android Devise HTC G1" />
+                android:maxLines="1"
+                android:textColor="#333333"
+                tools:text="@tools:sample/full_names" />
 
             <TextView
                 android:id="@+id/tv_time"
@@ -63,7 +64,7 @@
                 android:textColor="#aaa"
                 android:textSize="12sp"
                 android:visibility="gone"
-                tools:text="11:21"
+                tools:text="@tools:sample/date/ddmmyy"
                 tools:visibility="visible" />
         </LinearLayout>
 
@@ -86,7 +87,7 @@
                 android:lines="1"
                 android:textColor="#aaa"
                 android:textSize="12sp"
-                tools:text="Lorem Ipsum is simply dummy text of the printing and typesetting industry." />
+                tools:text="@tools:sample/lorem" />
 
             <TextView
                 android:id="@+id/tv_not_seen"
