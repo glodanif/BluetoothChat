@@ -4,7 +4,7 @@ import android.app.Activity
 import android.app.Application
 import android.os.StrictMode
 import com.crashlytics.android.Crashlytics
-import com.glodanif.bluetoothchat.di.module.ComponentsManager
+import com.glodanif.bluetoothchat.di.ComponentsManager
 import com.glodanif.bluetoothchat.ui.activity.ChatActivity
 import com.glodanif.bluetoothchat.ui.activity.ConversationsActivity
 import com.glodanif.bluetoothchat.ui.util.StartStopActivityLifecycleCallbacks

@@ -4,7 +4,7 @@ import android.bluetooth.BluetoothDevice
 import com.glodanif.bluetoothchat.data.entity.ChatMessage
 import com.glodanif.bluetoothchat.data.entity.Conversation
 import com.glodanif.bluetoothchat.data.model.*
-import com.glodanif.bluetoothchat.di.module.ComponentsManager
+import com.glodanif.bluetoothchat.di.ComponentsManager
 import com.glodanif.bluetoothchat.ui.view.ConversationsView
 import javax.inject.Inject
 

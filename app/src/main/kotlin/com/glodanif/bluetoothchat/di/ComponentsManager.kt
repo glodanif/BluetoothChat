@@ -1,6 +1,9 @@
-package com.glodanif.bluetoothchat.di.module
+package com.glodanif.bluetoothchat.di
 
 import android.content.Context
+import com.glodanif.bluetoothchat.di.component.DaggerDataSourceComponent
+import com.glodanif.bluetoothchat.di.component.DataSourceComponent
+import com.glodanif.bluetoothchat.di.module.DataSourceModule
 
 class ComponentsManager {
 

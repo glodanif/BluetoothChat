@@ -24,7 +24,6 @@ import me.priyesh.chroma.ColorSelectListener
 class ProfileActivity : SkeletonActivity(), ProfileView {
 
     private lateinit var presenter: ProfilePresenter
-    private lateinit var settings: SettingsManager
 
     private lateinit var nameField: EditText
     private lateinit var nameLabel: TextView
@@ -46,8 +45,7 @@ class ProfileActivity : SkeletonActivity(), ProfileView {
             window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN)
         }
 
-        settings = SettingsManagerImpl(this)
-        presenter = ProfilePresenter(this, settings)
+        presenter = ProfilePresenter(this)
 
         colorPicker = findViewById(R.id.v_color)
         nameField = findViewById(R.id.et_name)
