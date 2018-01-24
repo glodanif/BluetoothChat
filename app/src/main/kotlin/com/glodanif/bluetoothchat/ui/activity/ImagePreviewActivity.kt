@@ -1,6 +1,5 @@
 package com.glodanif.bluetoothchat.ui.activity
 
-import android.Manifest
 import android.app.Activity
 import android.app.AlertDialog
 import android.content.Intent
@@ -11,7 +10,6 @@ import android.support.v4.app.ActivityOptionsCompat
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.ImageView
-import android.widget.Toast
 import com.github.chrisbanes.photoview.PhotoView
 import com.glodanif.bluetoothchat.R
 import com.glodanif.bluetoothchat.data.entity.ChatMessage
@@ -104,27 +102,9 @@ class ImagePreviewActivity : SkeletonActivity(), ImagePreviewView {
                 .show()
     }
 
-    override fun showFileSavedNotification() {
-        Toast.makeText(this, R.string.images__file_saved, Toast.LENGTH_SHORT).show()
-    }
-
-    private fun explainAskingStoragePermission() {
-
-        AlertDialog.Builder(this)
-                .setMessage(getString(R.string.images__permission_explanation_storage))
-                .setPositiveButton(getString(R.string.general__ok), { _, _ ->
-                    ActivityCompat.requestPermissions(this@ImagePreviewActivity,
-                            arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
-                            REQUEST_STORAGE_PERMISSION
-                    )
-                })
-                .show()
-    }
-
     companion object {
 
         val EXTRA_MESSAGE = "extra.message"
-        private val REQUEST_STORAGE_PERMISSION = 101
 
         fun start(activity: Activity, transitionView: ImageView, message: ChatMessage) {
 

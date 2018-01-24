@@ -65,7 +65,7 @@ class ScanningPresenterUnitTest {
         `when`(scannerModel.isBluetoothEnabled()).thenReturn(true)
         `when`(scannerModel.isDiscoverable()).thenReturn(true)
         presenter.checkBluetoothEnabling()
-        verify(view).showPairedDevices(ArrayList<BluetoothDevice>())
+        verify(view).showPairedDevices(ArrayList())
         verify(view).showDiscoverableProcess()
     }
 
@@ -74,7 +74,7 @@ class ScanningPresenterUnitTest {
         `when`(scannerModel.isBluetoothEnabled()).thenReturn(true)
         `when`(scannerModel.isDiscoverable()).thenReturn(false)
         presenter.checkBluetoothEnabling()
-        verify(view).showPairedDevices(ArrayList<BluetoothDevice>())
+        verify(view).showPairedDevices(ArrayList())
         verify(view).showDiscoverableFinished()
     }
 

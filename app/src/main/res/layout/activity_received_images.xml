@@ -18,6 +18,6 @@
         android:layout_gravity="center"
         android:gravity="center"
         android:visibility="gone"
-        android:text="@string/received_images__no_images" />
+        android:text="@string/images__no_images" />
 
 </FrameLayout>

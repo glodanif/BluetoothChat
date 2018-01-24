@@ -26,8 +26,6 @@ import com.amulyakhare.textdrawable.TextDrawable
 import com.glodanif.bluetoothchat.R
 import com.glodanif.bluetoothchat.data.entity.Conversation
 import com.glodanif.bluetoothchat.data.model.BluetoothConnectorImpl
-import com.glodanif.bluetoothchat.data.model.SettingsManager
-import com.glodanif.bluetoothchat.data.model.SettingsManagerImpl
 import com.glodanif.bluetoothchat.extension.getFirstLetter
 import com.glodanif.bluetoothchat.ui.adapter.ConversationsAdapter
 import com.glodanif.bluetoothchat.ui.presenter.ConversationsPresenter

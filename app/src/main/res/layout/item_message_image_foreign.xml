@@ -49,7 +49,8 @@
                     android:layout_height="match_parent"
                     android:layout_marginTop="8dp"
                     android:scaleType="centerCrop"
-                    android:transitionName="chatImage"
+                    android:contentDescription="@string/chat__cd__received_image"
+                    android:transitionName="@string/id_transition_image"
                     tools:src="@mipmap/ic_launcher" />
             </FrameLayout>
 

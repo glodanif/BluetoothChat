@@ -80,7 +80,7 @@
 
         <activity
             android:name=".ui.activity.ReceivedImagesActivity"
-            android:label="@string/received_images__received_images"
+            android:label="@string/images__received_images"
             android:screenOrientation="portrait" />
 
         <service android:name=".data.service.BluetoothConnectionService" />

@@ -1,5 +1,6 @@
 package com.glodanif.bluetoothchat.ui.activity
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.AlertDialog
 import android.app.NotificationManager
@@ -17,11 +18,13 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
-import com.glodanif.bluetoothchat.ChatApplication
 import com.glodanif.bluetoothchat.R
 import com.glodanif.bluetoothchat.data.entity.ChatMessage
 import com.glodanif.bluetoothchat.data.entity.Conversation
-import com.glodanif.bluetoothchat.data.model.*
+import com.glodanif.bluetoothchat.data.model.BluetoothConnector
+import com.glodanif.bluetoothchat.data.model.BluetoothConnectorImpl
+import com.glodanif.bluetoothchat.data.model.BluetoothScanner
+import com.glodanif.bluetoothchat.data.model.BluetoothScannerImpl
 import com.glodanif.bluetoothchat.extension.toReadableFileSize
 import com.glodanif.bluetoothchat.ui.adapter.ChatAdapter
 import com.glodanif.bluetoothchat.ui.presenter.ChatPresenter
@@ -35,7 +38,6 @@ import pl.aprilapps.easyphotopicker.EasyImage
 import java.io.File
 import java.lang.Exception
 import java.util.*
-import javax.inject.Inject
 
 class ChatActivity : SkeletonActivity(), ChatView {
 
@@ -376,6 +378,7 @@ class ChatActivity : SkeletonActivity(), ChatView {
         transferringImageProgressBar.max = fileSize.toInt()
     }
 
+    @SuppressLint("SetTextI18n")
     override fun updateImageTransferProgress(transferredBytes: Long, totalBytes: Long) {
 
         val percents = transferredBytes.toFloat() / totalBytes * 100

@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#ADD8C5"
+    android:background="#ADE9C5"
     android:clipToPadding="false"
     tools:context=".ui.activity.ChatActivity">
 
@@ -55,9 +55,9 @@
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:layout_gravity="bottom"
+                android:layout_weight="0"
                 android:inAnimation="@anim/switcher_scale_in"
-                android:outAnimation="@anim/switcher_scale_out"
-                android:layout_weight="0">
+                android:outAnimation="@anim/switcher_scale_out">
 
                 <ImageButton
                     android:id="@+id/ib_image"
@@ -93,6 +93,7 @@
                 android:layout_height="56dp"
                 android:layout_marginEnd="16dp"
                 android:layout_weight="0"
+                android:contentDescription="@string/chat__cd__transferring_image"
                 android:scaleType="centerInside"
                 tools:src="@mipmap/ic_launcher" />
 
@@ -144,6 +145,7 @@
                 android:layout_gravity="center_vertical"
                 android:layout_marginStart="16dp"
                 android:layout_weight="0"
+                android:contentDescription="@string/chat__cd__cancel_image_transfer"
                 android:padding="8dp"
                 app:srcCompat="@drawable/ic_close" />
         </LinearLayout>

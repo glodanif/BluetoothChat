@@ -2,7 +2,6 @@ package com.glodanif.bluetoothchat.data.model
 
 import android.content.Context
 import android.os.Handler
-import android.util.Log
 import com.glodanif.bluetoothchat.data.database.Storage
 import com.glodanif.bluetoothchat.data.entity.Conversation
 import java.io.File

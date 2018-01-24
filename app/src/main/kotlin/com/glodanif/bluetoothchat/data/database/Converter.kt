@@ -1,7 +1,6 @@
 package com.glodanif.bluetoothchat.data.database
 
 import android.arch.persistence.room.TypeConverter
-import com.glodanif.bluetoothchat.data.entity.Message
 import com.glodanif.bluetoothchat.data.entity.MessageType
 import java.util.*
 

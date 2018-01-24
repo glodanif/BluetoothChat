@@ -1,6 +1,7 @@
 <resources>
 
-    <string name="app_name">Bluetooth Chat</string>
+    <string name="app_name" translatable="false">Bluetooth Chat</string>
+    <string name="id_transition_image" translatable="false">chatImage</string>
 
     <string name="general__ok">OK</string>
     <string name="general__cancel">Cancel</string>
@@ -128,18 +129,18 @@
     <string name="settings__vibration">Vibration</string>
 
     <string name="images__image">Image</string>
-    <string name="images__save">Save</string>
     <string name="images__remove">Remove</string>
-    <string name="images__permission_explanation_storage">To be able to save a file this app requires STORAGE permission</string>
-    <string name="images__file_saved">This file has been saved to \"Downloads\" directory</string>
     <string name="images__removal_confirmation">Do you really want to remove this image?</string>
-
-    <string name="received_images__received_images">Received Images</string>
-    <string name="received_images__no_images">You haven\'t received any images yet</string>
+    <string name="images__received_images">Received Images</string>
+    <string name="images__no_images">You haven\'t received any images yet</string>
 
     <string name="chat__cd__send_text_button">Text send button</string>
     <string name="chat__cd__send_image_button">Image send button</string>
-    <string name="chat__cd__pick_image_button">Pick image button</string>
+    <string name="chat__cd__transferring_image">Transferring image</string>
+    <string name="chat__cd__cancel_image_transfer">Cancel image transfer</string>
+    <string name="chat__cd__received_image">Received image</string>
+    <string name="chat__cd__sent_image">Sent image</string>
+    <string name="image__cd__image_preview">Image preview</string>
     <string name="profile__cd__avatar_preview">Avatar preview</string>
     <string name="scan__cd__share_apk_file_button">Share .apk file button</string>
     <string name="conversations__cd__settings_button">Settings button</string>

@@ -7,10 +7,8 @@ import android.support.v7.app.AppCompatDelegate
 import android.support.v7.widget.Toolbar
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import com.glodanif.bluetoothchat.R
-import android.content.Context.INPUT_METHOD_SERVICE
 import android.view.inputmethod.InputMethodManager
-
+import com.glodanif.bluetoothchat.R
 
 open class SkeletonActivity : AppCompatActivity() {
 
@@ -42,7 +40,7 @@ open class SkeletonActivity : AppCompatActivity() {
             ActivityType.CHILD_ACTIVITY -> super.setContentView(R.layout.activity_skeleton)
         }
 
-        toolbar = findViewById<Toolbar>(R.id.tb_toolbar)
+        toolbar = findViewById(R.id.tb_toolbar)
         setSupportActionBar(toolbar)
 
         val rootView = findViewById<ViewGroup>(R.id.fl_content_container)

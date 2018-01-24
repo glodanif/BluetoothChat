@@ -17,7 +17,6 @@ import com.glodanif.bluetoothchat.data.model.SettingsManagerImpl
 import com.glodanif.bluetoothchat.ui.presenter.ProfilePresenter
 import com.glodanif.bluetoothchat.ui.util.SimpleTextWatcher
 import com.glodanif.bluetoothchat.ui.view.ProfileView
-import com.glodanif.bluetoothchat.ui.widget.ShortcutManagerImpl
 import me.priyesh.chroma.ChromaDialog
 import me.priyesh.chroma.ColorMode
 import me.priyesh.chroma.ColorSelectListener
@@ -51,9 +50,9 @@ class ProfileActivity : SkeletonActivity(), ProfileView {
         presenter = ProfilePresenter(this, settings)
 
         colorPicker = findViewById(R.id.v_color)
-        nameField = findViewById<EditText>(R.id.et_name)
-        nameLabel = findViewById<TextView>(R.id.tv_name)
-        avatar = findViewById<ImageView>(R.id.iv_avatar)
+        nameField = findViewById(R.id.et_name)
+        nameLabel = findViewById(R.id.tv_name)
+        avatar = findViewById(R.id.iv_avatar)
 
         colorPicker.setOnClickListener {
             presenter.prepareColorPicker()

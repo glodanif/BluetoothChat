@@ -7,5 +7,5 @@
         android:id="@+id/pv_preview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:transitionName="chatImage" />
+        android:transitionName="@string/id_transition_image" />
 </FrameLayout>

@@ -6,7 +6,7 @@
     <item
         android:id="@+id/action_images"
         android:orderInCategory="99"
-        android:title="@string/received_images__received_images"
+        android:title="@string/images__received_images"
         app:showAsAction="never" />
 
     <item

@@ -1,14 +1,13 @@
 package com.glodanif.bluetoothchat.data.service
 
 import android.bluetooth.BluetoothSocket
-import android.content.Context
 import android.util.Log
 import com.glodanif.bluetoothchat.data.entity.Message
 import com.glodanif.bluetoothchat.data.entity.TransferringFile
 import java.io.*
 import kotlin.concurrent.thread
 
-abstract class DataTransferThread(private val context: Context, private val socket: BluetoothSocket,
+abstract class DataTransferThread(private val socket: BluetoothSocket,
                                   private val type: BluetoothConnectionService.ConnectionType,
                                   private val transferListener: TransferEventsListener,
                                   private val filesDirectory: File,

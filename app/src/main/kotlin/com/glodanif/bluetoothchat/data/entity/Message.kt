@@ -2,7 +2,6 @@ package com.glodanif.bluetoothchat.data.entity
 
 import android.support.annotation.ColorInt
 import java.io.File
-import java.io.FileInputStream
 
 class Message() {
 

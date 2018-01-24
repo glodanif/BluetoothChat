@@ -11,6 +11,8 @@
     <string name="general__no">Нет</string>
     <string name="general__service_lost">Bluetooth Chat сервис был остановлен, перезапустите сервис для корректной работы приложения</string>
     <string name="general__disconnect">Отключиться</string>
+    <string name="general__exit">Выйти</string>
+    <string name="general__storage_permission">Bluetooth Chat дает вам возможность делиться изображениями. Эта функция требует разришения <b>STORAGE</b> для корректной работы</string>
 
     <string name="general__time_format">dd MMM, yyyy</string>
     <string name="general__time_unknown">неизвестно</string>
@@ -71,6 +73,8 @@
     <string name="chat__connected_to_another">Сейчас вы соеденины с %s. Вы можете подключиться к этому устройству (текущее соединение будет прервано)?</string>
     <string name="chat__message_hint">Сообщение</string>
     <string name="chat__chat">Чат</string>
+    <string name="chat__removed_image">Изображение удалено</string>
+    <string name="chat__missing_image">Изображение не найдено</string>
 
     <string name="conversations__no_conversations">У вас пока что нет ни одного разговора\nНачните сканирование чтобы найти вашего партнера</string>
     <string name="conversations__scan">Сканировать</string>
@@ -115,6 +119,10 @@
     <string name="notification__channel_background">Фоновый сервис</string>
     <string name="notification__channel_request">Запрос на соединение</string>
     <string name="notification__channel_message">Новое сообщение</string>
+    <string name="notification__connected_to">Соединение с %s</string>
+    <string name="notification__file_sending">Отправка файла к %s</string>
+    <string name="notification__file_receiving">Получение файла от %s</string>
+    <string name="notification__channel_file">Передача файлов</string>
 
     <string name="contact_chooser__title">Выберете Чат</string>
     <string name="contact_chooser__no_contacts">Ваш список контактов пуст</string>
@@ -124,13 +132,24 @@
     <string name="settings__sound">Звук</string>
     <string name="settings__vibration">Вибрация</string>
 
-    <string name="chat__cd__send_button">Кнопка отправки</string>
-    <string name="chat__cd__pick_image_button">Кнопка выбора изображения</string>
+    <string name="images__removal_confirmation">Вы уверенны что хотите удалить это изображение?</string>
+    <string name="images__no_images">Вы еще не приняли ни одного изображения</string>
+    <string name="images__image">Изображение</string>
+    <string name="images__remove">Удалить</string>
+    <string name="images__received_images">Полученые изображения</string>
+
     <string name="profile__cd__avatar_preview">Вид аватара</string>
     <string name="scan__cd__share_apk_file_button">Кнопка отправки .apk файла</string>
     <string name="conversations__cd__settings_button">Кнопка настроек</string>
     <string name="conversations__cd__partners_avatar">Аватар партнера</string>
     <string name="conversations__cd__connected_indicator">Индикатор подключения</string>
     <string name="conversations__cd__users_avatar">Аватар пользователя</string>
+    <string name="chat__cd__send_text_button">Кнопка отправки текста</string>
+    <string name="chat__cd__send_image_button">Кнопка отправки изображения</string>
+    <string name="chat__cd__cancel_image_transfer">Отменить передачу файла</string>
+    <string name="chat__cd__received_image">Полученое изображение</string>
+    <string name="chat__cd__sent_image">Отосланое изображение</string>
+    <string name="chat__cd__transferring_image">Передающееся изображение</string>
+    <string name="chat__too_big_image">Это изображение слишком большое. Максимальный размер файла, который вы можете отправить с помощью Blooetooth Chat составляет %s.</string>
 
 </resources>

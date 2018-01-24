@@ -128,7 +128,7 @@ class BluetoothConnectionService : Service() {
     }
 
     @Synchronized
-    fun prepareForAccept() {
+    private fun prepareForAccept() {
 
         Log.d(TAG, "start")
 
@@ -418,7 +418,7 @@ class BluetoothConnectionService : Service() {
         val filesDirectory = File(Environment.getExternalStorageDirectory(), getString(R.string.app_name))
 
         dataTransferThread =
-                object : DataTransferThread(this, socket, type, transferEventsListener, filesDirectory, fileEventsListener, eventsStrategy) {
+                object : DataTransferThread(socket, type, transferEventsListener, filesDirectory, fileEventsListener, eventsStrategy) {
 
                     override fun shouldRun(): Boolean {
                         return isConnectedOrPending()
@@ -821,7 +821,6 @@ class BluetoothConnectionService : Service() {
             } else {
                 context.startService(intent)
             }
-            context.startService(intent)
         }
 
         fun bind(context: Context, connection: ServiceConnection) {
