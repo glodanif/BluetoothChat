@@ -1,7 +1,5 @@
 <resources>
 
-    <string name="app_name">Bluetooth Chat</string>
-
     <string name="general__ok">ОК</string>
     <string name="general__cancel">Отмена</string>
     <string name="general__try_again">Попробовать еще</string>
@@ -75,6 +73,11 @@
     <string name="chat__chat">Чат</string>
     <string name="chat__removed_image">Изображение удалено</string>
     <string name="chat__missing_image">Изображение не найдено</string>
+    <string name="chat__partner_canceled_image_transfer">Ваш партнер отменил передачу файла</string>
+    <string name="chat__problem_during_file_transfer">Произошла ошибка во время передачи файла</string>
+    <string name="chat__sending_image">Отправка изображения</string>
+    <string name="chat__receiving_images">Прием изображения</string>
+    <string name="chat__partner_unable_to_receive_images">Ваш партнер изпользует старую версию Bluetooth Chat, которая не может принимать изображения.</string>
 
     <string name="conversations__no_conversations">У вас пока что нет ни одного разговора\nНачните сканирование чтобы найти вашего партнера</string>
     <string name="conversations__scan">Сканировать</string>
@@ -138,6 +141,7 @@
     <string name="images__remove">Удалить</string>
     <string name="images__received_images">Полученые изображения</string>
 
+    <string name="image__cd__image_preview">Вид изображения</string>
     <string name="profile__cd__avatar_preview">Вид аватара</string>
     <string name="scan__cd__share_apk_file_button">Кнопка отправки .apk файла</string>
     <string name="conversations__cd__settings_button">Кнопка настроек</string>

@@ -358,8 +358,8 @@ class ChatActivity : SkeletonActivity(), ChatView {
         textSendingHolder.visibility = View.GONE
         imageSendingHolder.visibility = View.VISIBLE
 
-        transferringImageHeader.text = if (transferType == ChatView.FileTransferType.SENDING)
-            "Sending image" else "Receiving image"
+        transferringImageHeader.text = getString(if (transferType == ChatView.FileTransferType.SENDING)
+            R.string.chat__sending_image else R.string.chat__receiving_images)
 
         if (fileAddress != null) {
             Picasso.with(this)
@@ -394,11 +394,21 @@ class ChatActivity : SkeletonActivity(), ChatView {
     }
 
     override fun showImageTransferCanceled() {
-        Toast.makeText(this, "Your partner has canceled image transfer", Toast.LENGTH_LONG).show()
+        Toast.makeText(this, R.string.chat__partner_canceled_image_transfer, Toast.LENGTH_LONG).show()
     }
 
     override fun showImageTransferFailure() {
-        Toast.makeText(this, "Problem during image transfer", Toast.LENGTH_LONG).show()
+        Toast.makeText(this, R.string.chat__problem_during_file_transfer, Toast.LENGTH_LONG).show()
+    }
+
+    override fun showReceiverUnableToReceiveImages() {
+
+        if (!isStarted()) return
+
+        AlertDialog.Builder(this)
+                .setMessage(R.string.chat__partner_unable_to_receive_images)
+                .setPositiveButton(R.string.general__ok, null)
+                .show()
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

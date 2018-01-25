@@ -1,6 +1,7 @@
 package com.glodanif.bluetoothchat.ui.presenter
 
 import android.bluetooth.BluetoothDevice
+import android.util.Log
 import com.glodanif.bluetoothchat.data.entity.ChatMessage
 import com.glodanif.bluetoothchat.data.entity.Conversation
 import com.glodanif.bluetoothchat.data.entity.TransferringFile
@@ -285,20 +286,22 @@ class ChatPresenter(private val deviceAddress: String, private val view: ChatVie
 
         if (!connectionModel.isConnected()) {
             view.showNotConnectedToSend()
-            return
+        } else {
+            fileToSend = file
         }
-
-        fileToSend = file
     }
 
     fun pickImage() {
 
+        val currentConversation: Conversation? = connectionModel.getCurrentConversation()
+
         if (!connectionModel.isConnected()) {
             view.showNotConnectedToSend()
-            return
+        } else if (currentConversation != null && currentConversation.messageContractVersion < 1) {
+            view.showReceiverUnableToReceiveImages()
+        } else {
+            view.pickImage()
         }
-
-        view.pickImage()
     }
 
     fun cancelFileTransfer() {

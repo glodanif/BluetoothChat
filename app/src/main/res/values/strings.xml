@@ -71,6 +71,11 @@
     <string name="chat__too_big_image">This image it too big. Max file size which you can send via Bluetooth Chat is %s</string>
     <string name="chat__removed_image">Removed image</string>
     <string name="chat__missing_image">Missing image</string>
+    <string name="chat__partner_canceled_image_transfer">Your partner has canceled image transfer</string>
+    <string name="chat__problem_during_file_transfer">Problem during image transfer</string>
+    <string name="chat__sending_image">Sending image</string>
+    <string name="chat__receiving_images">Receiving image</string>
+    <string name="chat__partner_unable_to_receive_images">Your partner uses an old version of Bluetooth Chat which is not able to receive images.</string>
 
     <string name="conversations__no_conversations">You don\'t have any conversationsStorage yet\nScan for devices to find your partner</string>
     <string name="conversations__scan">Scan</string>

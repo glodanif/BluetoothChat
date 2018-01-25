@@ -28,7 +28,6 @@ import android.os.*
 import com.glodanif.bluetoothchat.data.entity.*
 import com.glodanif.bluetoothchat.data.entity.Message
 
-
 class BluetoothConnectionService : Service() {
 
     private val TAG = "BCS"
@@ -500,6 +499,7 @@ class BluetoothConnectionService : Service() {
 
     fun cancelFileTransfer() {
         dataTransferThread?.cancelFileTransfer()
+        notificationView.dismissFileTransferNotification()
     }
 
     private fun onMessageSent(messageBody: String) {

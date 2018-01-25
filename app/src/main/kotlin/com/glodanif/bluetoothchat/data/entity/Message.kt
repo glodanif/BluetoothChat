@@ -87,11 +87,11 @@ class Message() {
         }
 
         fun createAcceptConnectionMessage(name: String, @ColorInt color: Int): Message {
-            return Message("0", "$name#$color", true, Type.CONNECTION_RESPONSE)
+            return Message("0", "$name#$color#$MESSAGE_CONTRACT_VERSION", true, Type.CONNECTION_RESPONSE)
         }
 
         fun createRejectConnectionMessage(name: String, @ColorInt color: Int): Message {
-            return Message("0", "$name#$color", false, Type.CONNECTION_RESPONSE)
+            return Message("0", "$name#$color#$MESSAGE_CONTRACT_VERSION", false, Type.CONNECTION_RESPONSE)
         }
 
         fun createFileStartMessage(file: File, type: MessageType): Message {

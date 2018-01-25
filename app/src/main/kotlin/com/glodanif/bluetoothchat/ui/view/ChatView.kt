@@ -18,6 +18,7 @@ interface ChatView {
     fun showNotConnectedToThisDevice(currentDevice: String)
     fun showNotValidMessage()
     fun showNotConnectedToSend()
+    fun showReceiverUnableToReceiveImages()
     fun showDeviceIsNotAvailable()
     fun showWainingForOpponent()
     fun hideActions()
