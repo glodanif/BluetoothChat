@@ -27,6 +27,7 @@ import android.graphics.BitmapFactory
 import android.os.*
 import com.glodanif.bluetoothchat.data.entity.*
 import com.glodanif.bluetoothchat.data.entity.Message
+import com.glodanif.bluetoothchat.extension.isNumber
 
 class BluetoothConnectionService : Service() {
 
@@ -384,12 +385,16 @@ class BluetoothConnectionService : Service() {
                     return if (info.isEmpty()) {
                         null
                     } else {
-                        DataTransferThread.FileInfo(
-                                info.substringBefore("#"),
-                                info.substringAfter("#")
-                                        .substringBefore("#")
-                                        .toLong()
-                        )
+                        val size = info.substringAfter("#").substringBefore("#")
+                        if (size.isNumber()) {
+                            DataTransferThread.FileInfo(
+                                    info.substringBefore("#"),
+                                    size.toLong()
+                            )
+                        } else {
+                            null
+                        }
+
                     }
                 }
 

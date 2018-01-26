@@ -13,7 +13,7 @@ abstract class DataTransferThread(private val socket: BluetoothSocket,
                                   private val filesDirectory: File,
                                   private val fileListener: OnFileListener, private var eventsStrategy: EventsStrategy) : Thread() {
 
-    private val bufferSize = 1024
+    private val bufferSize = 2048
 
     private var inputStream: InputStream? = null
     private var outputStream: OutputStream? = null
@@ -30,12 +30,12 @@ abstract class DataTransferThread(private val socket: BluetoothSocket,
     @Volatile
     private var isFileTransferCanceledByPartner = false
     @Volatile
-    var isFileDownloading = false
+    private var isFileDownloading = false
     @Volatile
-    var isFileUploading = false
+    private var isFileUploading = false
     @Volatile
-    var fileName: String? = null
-    var fileSize: Long = 0
+    private var fileName: String? = null
+    private var fileSize: Long = 0
 
     fun prepare() {
 
@@ -261,7 +261,6 @@ abstract class DataTransferThread(private val socket: BluetoothSocket,
 
                 while (bytesRead < size) {
 
-                    Log.w("TAG", "BEFORE AVAILABLE " + bytesRead)
                     while (bis.available() == 0 && timeOut < maxTimeOut) {
                         timeOut++
                         Thread.sleep(250)
@@ -269,13 +268,10 @@ abstract class DataTransferThread(private val socket: BluetoothSocket,
 
                     val remainingSize = size - bytesRead
                     val byteCount = Math.min(remainingSize, bufferSize.toLong()).toInt()
-                    Log.w("TAG", "BEFORE READ " + "currentSize : "
-                            + bytesRead + " byteCount " + byteCount)
 
                     len = bis.read(buffer, 0, byteCount)
 
                     val str = String(buffer, 0, byteCount)
-                    Log.w("TAG", "READ STR " + str)
 
                     if (eventsStrategy.isFileFinish(str)) {
                         break
@@ -293,13 +289,10 @@ abstract class DataTransferThread(private val socket: BluetoothSocket,
                         break
                     }
 
-                    Log.w("TAG", "AFTER READ " + "Len " + len)
                     if (len > 0) {
                         timeOut = 0
-                        Log.w("TAG", "BEFORE WRITE " + bytesRead)
                         it.write(buffer, 0, len)
                         bytesRead += len.toLong()
-                        Log.w("TAG", "AFTER WRITE " + bytesRead)
 
                         fileListener.onFileReceivingProgress(transferringFile, bytesRead)
                     }

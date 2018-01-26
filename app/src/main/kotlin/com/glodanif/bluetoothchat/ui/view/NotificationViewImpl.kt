@@ -156,7 +156,7 @@ class NotificationViewImpl(private val context: Context) : NotificationView {
                             R.string.notification__file_sending else R.string.notification__file_receiving, displayName))
                 .setContentText(file.size.toReadableFileSize())
                 .setLights(Color.BLUE, 3000, 3000)
-                .setSmallIcon(R.drawable.ic_mms_black_24dp)
+                .setSmallIcon(R.drawable.ic_image_transfer)
                 .setOnlyAlertOnce(true)
                 .setProgress(file.size.toInt(), transferredBytes.toInt(), false)
                 .setContentIntent(pendingIntent)

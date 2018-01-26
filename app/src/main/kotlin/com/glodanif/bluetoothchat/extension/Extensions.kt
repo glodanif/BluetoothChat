@@ -80,3 +80,13 @@ fun Long.toReadableFileSize(): String {
     return DecimalFormat("#,##0.#").format(
             this / Math.pow(1024.0, digitGroups.toDouble())) + " " + units[digitGroups]
 }
+
+fun String.isNumber(): Boolean {
+
+    return try {
+        this.toLong()
+        true
+    } catch (e: NumberFormatException) {
+        false
+    }
+}

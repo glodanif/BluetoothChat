@@ -364,12 +364,9 @@ class ChatActivity : SkeletonActivity(), ChatView {
         if (fileAddress != null) {
             Picasso.with(this)
                     .load("file://$fileAddress")
-                    .placeholder(R.drawable.ic_photo)
-                    .error(R.drawable.ic_photo)
                     .into(transferringImagePreview)
         } else {
-            val imagePlaceholder = resources.getDrawable(R.drawable.ic_photo)
-            transferringImagePreview.setImageDrawable(imagePlaceholder)
+            transferringImagePreview.setImageResource(R.drawable.ic_photo)
         }
         transferringImageSize.text = fileSize.toReadableFileSize()
         transferringImageProgressLabel.text = "0%"
