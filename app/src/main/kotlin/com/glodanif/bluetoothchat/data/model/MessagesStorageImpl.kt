@@ -5,6 +5,7 @@ import android.os.Handler
 import com.glodanif.bluetoothchat.data.database.Storage
 import com.glodanif.bluetoothchat.data.database.MessagesDao
 import com.glodanif.bluetoothchat.data.entity.ChatMessage
+import java.io.File
 import kotlin.concurrent.thread
 
 class MessagesStorageImpl(val context: Context) : MessagesStorage {
@@ -28,6 +29,7 @@ class MessagesStorageImpl(val context: Context) : MessagesStorage {
             val messages: List<ChatMessage> = (if (address != null)
                 dao.getFilesMessagesByDevice(address) else dao.getAllFilesMessages())
                     .filter { !it.filePath.isNullOrEmpty() }
+                    .filter { File(it.filePath).exists() }
             handler.post { listener.invoke(messages) }
         }
     }

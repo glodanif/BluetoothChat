@@ -1,5 +1,5 @@
-def final VERSION_CODE = 9
-def final VERSION_NAME = '1.0.0-beta4'
+def final VERSION_CODE = 10
+def final VERSION_NAME = '1.0.0-beta5'
 
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
@@ -74,6 +74,7 @@ dependencies {
 
     def final SUPPORT_VERSION = '27.0.2'
     def final ARCH_VERSION = '1.0.0'
+    def final DAGGER_VERSION = '2.4'
 
     compile fileTree(dir: 'libs', include: ['*.jar'])
 
@@ -101,8 +102,8 @@ dependencies {
 
     compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$KOTLIN_VERSION"
 
-    compile 'com.google.dagger:dagger:2.4'
-    kapt 'com.google.dagger:dagger-compiler:2.4'
+    compile "com.google.dagger:dagger:$DAGGER_VERSION"
+    kapt "com.google.dagger:dagger-compiler:$DAGGER_VERSION"
 
     testCompile "org.jetbrains.kotlin:kotlin-stdlib:$KOTLIN_VERSION"
     testCompile "org.jetbrains.kotlin:kotlin-test-junit:$KOTLIN_VERSION"

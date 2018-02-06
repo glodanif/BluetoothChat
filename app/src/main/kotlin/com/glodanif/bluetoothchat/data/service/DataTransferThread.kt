@@ -293,6 +293,7 @@ abstract class DataTransferThread(private val socket: BluetoothSocket,
                     if (len > 0) {
                         timeOut = 0
                         it.write(buffer, 0, len)
+                        it.flush()
                         bytesRead += len.toLong()
 
                         fileListener.onFileReceivingProgress(transferringFile, bytesRead)
@@ -302,7 +303,6 @@ abstract class DataTransferThread(private val socket: BluetoothSocket,
                 Thread.sleep(250)
 
                 if (!isCanceled && !isFileTransferCanceledByMe && !isFileTransferCanceledByPartner) {
-                    it.flush()
                     fileListener.onFileReceivingFinished(file.absolutePath)
                 }
 
