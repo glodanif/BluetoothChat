@@ -98,7 +98,8 @@ class ConversationsActivity : SkeletonActivity(), ConversationsView {
         }
 
         if (intent.action == Intent.ACTION_SEND) {
-            ContactChooserActivity.start(this, intent.getStringExtra(Intent.EXTRA_TEXT))
+            val text = intent.getStringExtra(Intent.EXTRA_TEXT)
+            ContactChooserActivity.start(this, if (text.isNullOrEmpty()) "" else text)
         }
 
         storagePermissionDialog = AlertDialog.Builder(this)

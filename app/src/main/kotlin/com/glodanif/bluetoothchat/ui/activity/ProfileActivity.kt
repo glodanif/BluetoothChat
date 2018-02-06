@@ -14,6 +14,7 @@ import com.amulyakhare.textdrawable.TextDrawable
 import com.glodanif.bluetoothchat.R
 import com.glodanif.bluetoothchat.data.model.SettingsManager
 import com.glodanif.bluetoothchat.data.model.SettingsManagerImpl
+import com.glodanif.bluetoothchat.extension.getFirstLetter
 import com.glodanif.bluetoothchat.ui.presenter.ProfilePresenter
 import com.glodanif.bluetoothchat.ui.util.SimpleTextWatcher
 import com.glodanif.bluetoothchat.ui.view.ProfileView
@@ -74,11 +75,10 @@ class ProfileActivity : SkeletonActivity(), ProfileView {
     }
 
     override fun showUserData(name: String, color: Int) {
-        val symbol = if (name.isEmpty()) "?" else name[0].toString().toUpperCase()
         nameLabel.text = if (name.isEmpty()) getString(R.string.profile__your_name) else name
         nameLabel.setTextColor(resources.getColor(
                 if (name.isEmpty()) R.color.text_light else R.color.text_dark))
-        val drawable = TextDrawable.builder().buildRound(symbol, color)
+        val drawable = TextDrawable.builder().buildRound(name.getFirstLetter(), color)
         avatar.setImageDrawable(drawable)
         colorPicker.setBackgroundColor(color)
     }

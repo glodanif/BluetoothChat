@@ -324,7 +324,7 @@ class BluetoothConnectionService : Service() {
                 receivedMessage.filePath = filePath
 
                 if (messageListener == null || application.currentChat == null || !application.currentChat.equals(device.address)) {
-                    notificationView.showNewMessageNotification("\uD83D\uDCCE [Photo]", currentConversation?.displayName,
+                    notificationView.showNewMessageNotification(getString(R.string.chat__image_message), currentConversation?.displayName,
                             device.name, device.address, preferences.getSettings())
                 } else {
                     receivedMessage.seenHere = true

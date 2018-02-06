@@ -11,7 +11,8 @@ abstract class DataTransferThread(private val socket: BluetoothSocket,
                                   private val type: BluetoothConnectionService.ConnectionType,
                                   private val transferListener: TransferEventsListener,
                                   private val filesDirectory: File,
-                                  private val fileListener: OnFileListener, private var eventsStrategy: EventsStrategy) : Thread() {
+                                  private val fileListener: OnFileListener,
+                                  private val eventsStrategy: EventsStrategy) : Thread() {
 
     private val bufferSize = 2048
 

@@ -14,6 +14,7 @@ import java.util.zip.ZipEntry
 import java.util.zip.ZipOutputStream
 import kotlin.concurrent.thread
 import android.support.v4.content.FileProvider
+import com.glodanif.bluetoothchat.R
 import org.apache.commons.io.FilenameUtils
 
 class FileManagerImpl(private val context: Context) : FileManager {
@@ -24,7 +25,7 @@ class FileManagerImpl(private val context: Context) : FileManager {
 
         val application = context.packageManager
                 .getPackageInfo(BuildConfig.APPLICATION_ID, PackageManager.GET_SHARED_LIBRARY_FILES)
-        val directory = context.externalCacheDir
+        val directory = File(Environment.getExternalStorageDirectory(), context.getString(R.string.app_name))
 
         if (application != null) {
 

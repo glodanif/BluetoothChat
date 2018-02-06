@@ -112,7 +112,7 @@ class ImagePreviewActivity : SkeletonActivity(), ImagePreviewView {
                     .putExtra(EXTRA_MESSAGE, message)
 
             val options = ActivityOptionsCompat
-                    .makeSceneTransitionAnimation(activity, transitionView, "chatImage")
+                    .makeSceneTransitionAnimation(activity, transitionView, activity.getString(R.string.id_transition_image))
             activity.startActivity(intent, options.toBundle())
         }
     }
