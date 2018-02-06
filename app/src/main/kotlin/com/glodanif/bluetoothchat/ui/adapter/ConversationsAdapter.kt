@@ -50,7 +50,7 @@ class ConversationsAdapter(private val context: Context) : RecyclerView.Adapter<
 
             holder.lastMessage.text =
                     if (conversation.messageType != MessageType.IMAGE)
-                        conversation.lastMessage else context.getString(R.string.chat__image_message)
+                        conversation.lastMessage else context.getString(R.string.chat__image_message, "\uD83D\uDCCE")
 
             holder.time.text = conversation.lastActivity?.getRelativeTime(context)
 

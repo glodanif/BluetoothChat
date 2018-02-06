@@ -78,7 +78,7 @@
     <string name="chat__sending_image">Отправка изображения</string>
     <string name="chat__receiving_images">Прием изображения</string>
     <string name="chat__partner_unable_to_receive_images">Ваш партнер изпользует старую версию Bluetooth Chat, которая не может принимать изображения.</string>
-    <string name="chat__image_message">📎 [Изображение]</string>
+    <string name="chat__image_message">%s [Изображение]</string>
 
     <string name="conversations__no_conversations">У вас пока что нет ни одного разговора\nНачните сканирование чтобы найти вашего партнера</string>
     <string name="conversations__scan">Сканировать</string>

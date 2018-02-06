@@ -14,7 +14,9 @@ import java.util.zip.ZipEntry
 import java.util.zip.ZipOutputStream
 import kotlin.concurrent.thread
 import android.support.v4.content.FileProvider
+import com.crashlytics.android.Crashlytics
 import com.glodanif.bluetoothchat.R
+import io.fabric.sdk.android.Fabric
 import org.apache.commons.io.FilenameUtils
 
 class FileManagerImpl(private val context: Context) : FileManager {
@@ -25,9 +27,10 @@ class FileManagerImpl(private val context: Context) : FileManager {
 
         val application = context.packageManager
                 .getPackageInfo(BuildConfig.APPLICATION_ID, PackageManager.GET_SHARED_LIBRARY_FILES)
-        val directory = File(Environment.getExternalStorageDirectory(), context.getString(R.string.app_name))
+        val directory = if (context.externalCacheDir != null) context.externalCacheDir else
+                File(Environment.getExternalStorageDirectory(), context.getString(R.string.app_name))
 
-        if (application != null) {
+        if (application != null && directory != null) {
 
             val file = File(application.applicationInfo.publicSourceDir)
 
@@ -49,7 +52,13 @@ class FileManagerImpl(private val context: Context) : FileManager {
                         onExtracted.invoke(archiveUri)
                     }
                 } catch (e: IOException) {
-                    onFailed.invoke()
+                    handler.post {
+                        if (Fabric.isInitialized()) {
+                            val ex = IOException("${e.message} (file: $file)")
+                            Crashlytics.getInstance().core.logException(ex)
+                        }
+                        onFailed.invoke()
+                    }
                 }
             }
 
