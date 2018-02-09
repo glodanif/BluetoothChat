@@ -372,7 +372,7 @@ class BluetoothConnectionService : Service() {
 
         val eventsStrategy = object : DataTransferThread.EventsStrategy {
 
-            private val regex = Regex("\\d*#\\d*#\\d#*")
+            private val regex = Regex("\\d+#\\d+#\\d+#*")
 
             override fun isMessage(message: String?): Boolean {
                 return message != null && regex.containsMatchIn(message)
