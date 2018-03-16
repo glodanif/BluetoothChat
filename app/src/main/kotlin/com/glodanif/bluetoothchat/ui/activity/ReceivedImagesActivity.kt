@@ -18,7 +18,6 @@ import com.glodanif.bluetoothchat.ui.view.ReceivedImagesView
 class ReceivedImagesActivity : SkeletonActivity(), ReceivedImagesView {
 
     private lateinit var presenter: ReceivedImagesPresenter
-    private val storageModel: MessagesStorage = MessagesStorageImpl(this)
 
     private var address: String? = null
 
@@ -43,7 +42,7 @@ class ReceivedImagesActivity : SkeletonActivity(), ReceivedImagesView {
             ImagePreviewActivity.start(this, view, message)
         }
 
-        presenter = ReceivedImagesPresenter(address, this, storageModel)
+        presenter = ReceivedImagesPresenter(address, this)
     }
 
     override fun onStart() {

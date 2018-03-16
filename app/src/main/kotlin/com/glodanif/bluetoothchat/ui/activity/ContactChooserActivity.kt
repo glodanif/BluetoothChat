@@ -10,14 +10,12 @@ import android.widget.TextView
 import com.glodanif.bluetoothchat.R
 import com.glodanif.bluetoothchat.ui.adapter.ContactsAdapter
 import com.glodanif.bluetoothchat.ui.viewmodel.ContactViewModel
-import com.glodanif.bluetoothchat.data.model.ConversationsStorageImpl
 import com.glodanif.bluetoothchat.ui.presenter.ContactChooserPresenter
 import com.glodanif.bluetoothchat.ui.view.ContactChooserView
 
 class ContactChooserActivity : SkeletonActivity(), ContactChooserView {
 
     private lateinit var presenter: ContactChooserPresenter
-    private val storage = ConversationsStorageImpl(this)
 
     private lateinit var contactsList: RecyclerView
     private lateinit var noContactsLabel: TextView
@@ -40,7 +38,7 @@ class ContactChooserActivity : SkeletonActivity(), ContactChooserView {
             finish()
         }
 
-        presenter = ContactChooserPresenter(this, storage)
+        presenter = ContactChooserPresenter(this)
     }
 
     override fun onStart() {

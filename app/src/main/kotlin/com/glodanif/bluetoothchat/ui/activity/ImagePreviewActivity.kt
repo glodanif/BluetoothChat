@@ -13,8 +13,6 @@ import android.widget.ImageView
 import com.github.chrisbanes.photoview.PhotoView
 import com.glodanif.bluetoothchat.R
 import com.glodanif.bluetoothchat.data.entity.ChatMessage
-import com.glodanif.bluetoothchat.data.model.MessagesStorage
-import com.glodanif.bluetoothchat.data.model.MessagesStorageImpl
 import com.glodanif.bluetoothchat.ui.presenter.ImagePreviewPresenter
 import com.glodanif.bluetoothchat.ui.view.ImagePreviewView
 import com.squareup.picasso.Callback
@@ -26,7 +24,6 @@ class ImagePreviewActivity : SkeletonActivity(), ImagePreviewView {
 
     private lateinit var message: ChatMessage
 
-    private val storageModel: MessagesStorage = MessagesStorageImpl(this)
     private lateinit var presenter: ImagePreviewPresenter
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -42,7 +39,7 @@ class ImagePreviewActivity : SkeletonActivity(), ImagePreviewView {
         imageView.minimumScale = .75f
         imageView.maximumScale = 2f
 
-        presenter = ImagePreviewPresenter(message, this, storageModel)
+        presenter = ImagePreviewPresenter(message, this)
         presenter.loadData()
     }
 

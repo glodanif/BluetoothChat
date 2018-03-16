@@ -36,11 +36,6 @@ class Message() {
 
         var messageText = message
 
-        if (!messageText.substring(0, messageText.indexOf(DIVIDER)).isNumber() && Fabric.isInitialized()) {
-            val ex = IllegalArgumentException("Incorrect message format: $message")
-            Crashlytics.getInstance().core.logException(ex)
-        }
-
         type = Type.from(messageText.substring(0, messageText.indexOf(DIVIDER)).toInt())
         messageText = messageText.substring(messageText.indexOf(DIVIDER) + 1, messageText.length)
 

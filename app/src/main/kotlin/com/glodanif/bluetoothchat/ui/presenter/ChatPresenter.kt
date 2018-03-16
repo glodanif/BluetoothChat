@@ -1,6 +1,7 @@
 package com.glodanif.bluetoothchat.ui.presenter
 
 import android.bluetooth.BluetoothDevice
+import android.os.Handler
 import android.util.Log
 import com.glodanif.bluetoothchat.data.entity.ChatMessage
 import com.glodanif.bluetoothchat.data.entity.Conversation
@@ -8,6 +9,7 @@ import com.glodanif.bluetoothchat.data.entity.TransferringFile
 import com.glodanif.bluetoothchat.data.model.*
 import com.glodanif.bluetoothchat.di.ComponentsManager
 import com.glodanif.bluetoothchat.ui.view.ChatView
+import kotlinx.coroutines.experimental.launch
 import java.io.File
 import javax.inject.Inject
 
@@ -22,6 +24,8 @@ class ChatPresenter(private val deviceAddress: String, private val view: ChatVie
     init {
         ComponentsManager.getDataSourceComponent().inject(this)
     }
+
+    private val handler = Handler()
 
     private val maxFileSize = 5_242_880
 
@@ -70,9 +74,12 @@ class ChatPresenter(private val deviceAddress: String, private val view: ChatVie
             view.showStatusConnected()
             view.hideActions()
 
-            conversationsStorage.getConversationByAddress(deviceAddress) {
-                if (it != null) {
-                    view.showPartnerName(it.displayName, it.deviceName)
+            launch {
+                val conversation = conversationsStorage.getConversationByAddress(deviceAddress)
+                if (conversation != null) {
+                    handler.post {
+                        view.showPartnerName(conversation.displayName, conversation.deviceName)
+                    }
                 }
             }
         }
@@ -216,16 +223,20 @@ class ChatPresenter(private val deviceAddress: String, private val view: ChatVie
             }
         }
 
-        messagesStorage.getMessagesByDevice(deviceAddress) {
-            it.forEach { it.seenHere = true }
-            messagesStorage.updateMessages(it)
-            view.showMessagesHistory(it)
-        }
+        launch {
 
-        conversationsStorage.getConversationByAddress(deviceAddress) {
-            if (it != null) {
-                view.showPartnerName(it.displayName, it.deviceName)
+            val messages = messagesStorage.getMessagesByDevice(deviceAddress)
+            val conversation = conversationsStorage.getConversationByAddress(deviceAddress)
+
+            handler.post {
+                messages.forEach { it.seenHere = true }
+                view.showMessagesHistory(messages)
+                if (conversation != null) {
+                    view.showPartnerName(conversation.displayName, conversation.deviceName)
+                }
             }
+
+            messagesStorage.updateMessages(messages)
         }
     }
 

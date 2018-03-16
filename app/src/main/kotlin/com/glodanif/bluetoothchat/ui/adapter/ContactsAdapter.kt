@@ -16,9 +16,7 @@ class ContactsAdapter : RecyclerView.Adapter<ContactsAdapter.ContactViewHolder>(
     var conversations: ArrayList<ContactViewModel> = ArrayList()
 
     @SuppressLint("SetTextI18n")
-    override fun onBindViewHolder(holder: ContactViewHolder?, position: Int) {
-
-        if (holder == null) return
+    override fun onBindViewHolder(holder: ContactViewHolder, position: Int) {
 
         val contact = conversations[position]
 
@@ -31,8 +29,8 @@ class ContactsAdapter : RecyclerView.Adapter<ContactsAdapter.ContactViewHolder>(
         return conversations.size
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): ContactViewHolder {
-        val view = LayoutInflater.from(parent?.context)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ContactViewHolder {
+        val view = LayoutInflater.from(parent.context)
                 .inflate(R.layout.item_contact, parent, false)
         return ContactViewHolder(view)
     }

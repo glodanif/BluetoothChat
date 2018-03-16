@@ -26,6 +26,12 @@ android {
         androidTest.java.srcDirs += 'src/androidTest/kotlin'
     }
 
+    kotlin {
+        experimental {
+            coroutines 'enable'
+        }
+    }
+
     signingConfigs {
 
         release {
@@ -72,7 +78,7 @@ android {
 
 dependencies {
 
-    def final SUPPORT_VERSION = '27.0.2'
+    def final SUPPORT_VERSION = '27.1.0'
     def final ARCH_VERSION = '1.0.0'
     def final DAGGER_VERSION = '2.4'
 
@@ -100,7 +106,8 @@ dependencies {
         transitive = true
     }
 
-    compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$KOTLIN_VERSION"
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$KOTLIN_VERSION"
+    compile 'org.jetbrains.kotlinx:kotlinx-coroutines-core:0.21'
 
     compile "com.google.dagger:dagger:$DAGGER_VERSION"
     kapt "com.google.dagger:dagger-compiler:$DAGGER_VERSION"
@@ -108,7 +115,8 @@ dependencies {
     testCompile "org.jetbrains.kotlin:kotlin-stdlib:$KOTLIN_VERSION"
     testCompile "org.jetbrains.kotlin:kotlin-test-junit:$KOTLIN_VERSION"
     testCompile 'org.mockito:mockito-core:2.8.9'
-    testCompile "com.nhaarman:mockito-kotlin-kt1.1:1.5.0"
+    testCompile 'com.nhaarman:mockito-kotlin-kt1.1:1.5.0'
+    //testCompile 'io.mockk:mockk:1.7.10'
     testCompile 'junit:junit:4.12'
 
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {

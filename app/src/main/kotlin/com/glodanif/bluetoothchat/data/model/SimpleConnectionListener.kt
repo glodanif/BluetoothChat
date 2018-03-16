@@ -7,15 +7,15 @@ abstract class SimpleConnectionListener : OnConnectionListener {
 
     override fun onConnecting() {}
 
-    override abstract fun onConnected(device: BluetoothDevice)
+    abstract override fun onConnected(device: BluetoothDevice)
 
     override fun onConnectedIn(conversation: Conversation) {}
 
     override fun onConnectedOut(conversation: Conversation) {}
 
-    override abstract fun onConnectionLost()
+    abstract override fun onConnectionLost()
 
-    override abstract fun onConnectionFailed()
+    abstract override fun onConnectionFailed()
 
     override fun onConnectionDestroyed() {}
 

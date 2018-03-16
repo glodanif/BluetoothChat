@@ -16,9 +16,7 @@ class ImagesAdapter(private val context: Context) : RecyclerView.Adapter<ImagesA
     var clickListener: ((ImageView, ChatMessage) -> Unit)? = null
     var images: ArrayList<ChatMessage> = ArrayList()
 
-    override fun onBindViewHolder(holder: ImageViewHolder?, position: Int) {
-
-        if (holder == null) return
+    override fun onBindViewHolder(holder: ImageViewHolder, position: Int) {
 
         val image = images[position]
 
@@ -35,8 +33,8 @@ class ImagesAdapter(private val context: Context) : RecyclerView.Adapter<ImagesA
         return images.size
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): ImageViewHolder {
-        val view = LayoutInflater.from(parent?.context)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ImageViewHolder {
+        val view = LayoutInflater.from(parent.context)
                 .inflate(R.layout.item_image_grid, parent, false)
         return ImageViewHolder(view)
     }

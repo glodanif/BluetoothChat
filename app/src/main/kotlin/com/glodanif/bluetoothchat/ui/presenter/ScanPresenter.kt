@@ -1,13 +1,16 @@
 package com.glodanif.bluetoothchat.ui.presenter
 
 import android.bluetooth.BluetoothDevice
+import android.os.Handler
 import com.glodanif.bluetoothchat.data.model.*
 import com.glodanif.bluetoothchat.ui.view.ScanView
+import kotlinx.coroutines.experimental.launch
 
 class ScanPresenter(private val view: ScanView, private val scanner: BluetoothScanner,
                     private val connection: BluetoothConnector, private val fileManager: FileManager) {
 
     private val SCAN_DURATION_SECONDS = 30
+    private val handler = Handler()
 
     init {
         scanner.setScanningListener(object : BluetoothScanner.ScanningListener {
@@ -145,9 +148,17 @@ class ScanPresenter(private val view: ScanView, private val scanner: BluetoothSc
 
     fun shareApk() {
 
-        fileManager.extractApkFile(
-                onExtracted = { view.shareApk(it) },
-                onFailed = { view.showExtractionApkFailureMessage() }
-        )
+        launch {
+
+            val uri = fileManager.extractApkFile()
+
+            handler.post {
+                if (uri != null) {
+                    view.shareApk(uri)
+                } else {
+                    view.showExtractionApkFailureMessage()
+                }
+            }
+        }
     }
 }

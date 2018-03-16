@@ -19,7 +19,7 @@ class DevicesAdapter(private val context: Context) : RecyclerView.Adapter<Recycl
     var pairedList = ArrayList<BluetoothDevice>()
     var availableList = ArrayList<BluetoothDevice>()
 
-    override fun onBindViewHolder(viewHolder: RecyclerView.ViewHolder?, position: Int) {
+    override fun onBindViewHolder(viewHolder: RecyclerView.ViewHolder, position: Int) {
 
         if (viewHolder is HeaderViewHolder) {
 
@@ -59,15 +59,15 @@ class DevicesAdapter(private val context: Context) : RecyclerView.Adapter<Recycl
         return pairedList.size + availableList.size + 2
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): RecyclerView.ViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
 
         if (viewType == TYPE_ITEM) {
-            val view = LayoutInflater.from(parent?.context)
+            val view = LayoutInflater.from(parent.context)
                     .inflate(R.layout.item_paired_device, parent, false)
             return DeviceViewHolder(view)
         }
 
-        val view = LayoutInflater.from(parent?.context)
+        val view = LayoutInflater.from(parent.context)
                 .inflate(R.layout.item_header_devices, parent, false)
         return HeaderViewHolder(view)
     }

@@ -1,11 +1,13 @@
 package com.glodanif.bluetoothchat.ui.presenter
 
 import android.bluetooth.BluetoothDevice
+import android.os.Handler
 import com.glodanif.bluetoothchat.data.entity.ChatMessage
 import com.glodanif.bluetoothchat.data.entity.Conversation
 import com.glodanif.bluetoothchat.data.model.*
 import com.glodanif.bluetoothchat.di.ComponentsManager
 import com.glodanif.bluetoothchat.ui.view.ConversationsView
+import kotlinx.coroutines.experimental.launch
 import javax.inject.Inject
 
 class ConversationsPresenter(private val view: ConversationsView, private val connection: BluetoothConnector) {
@@ -18,6 +20,8 @@ class ConversationsPresenter(private val view: ConversationsView, private val co
     init {
         ComponentsManager.getDataSourceComponent().inject(this)
     }
+
+    private val handler = Handler()
 
     private val prepareListener = object : OnPrepareListener {
 
@@ -118,13 +122,18 @@ class ConversationsPresenter(private val view: ConversationsView, private val co
     }
 
     fun loadConversations() {
-        conversationStorage.getConversations {
-            if (it.isEmpty()) {
-                view.showNoConversations()
-            } else {
-                val connectedDevice = if (connection.isConnected())
-                    connection.getCurrentConversation()?.deviceAddress else null
-                view.showConversations(it, connectedDevice)
+
+        launch {
+            val conversations = conversationStorage.getConversations()
+
+            handler.post {
+                if (conversations.isEmpty()) {
+                    view.showNoConversations()
+                } else {
+                    val connectedDevice = if (connection.isConnected())
+                        connection.getCurrentConversation()?.deviceAddress else null
+                    view.showConversations(conversations, connectedDevice)
+                }
             }
         }
     }
@@ -156,7 +165,9 @@ class ConversationsPresenter(private val view: ConversationsView, private val co
 
     fun removeConversation(conversation: Conversation) {
         connection.sendDisconnectRequest()
-        conversationStorage.removeConversation(conversation)
+        launch {
+            conversationStorage.removeConversation(conversation)
+        }
         view.removeFromShortcuts(conversation.deviceAddress)
         loadConversations()
     }

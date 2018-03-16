@@ -10,35 +10,28 @@ import kotlin.concurrent.thread
 
 class MessagesStorageImpl(val context: Context) : MessagesStorage {
 
-    private val handler: Handler = Handler()
     private val dao: MessagesDao = Storage.getInstance(context).db.messagesDao()
 
-    override fun insertMessage(message: ChatMessage) {
-        thread { dao.insert(message) }
+    override suspend fun insertMessage(message: ChatMessage) {
+        dao.insert(message)
     }
 
-    override fun getMessagesByDevice(address: String, listener: (List<ChatMessage>) -> Unit) {
-        thread {
-            val messages: List<ChatMessage> = dao.getMessagesByDevice(address)
-            handler.post { listener.invoke(messages) }
-        }
+    override suspend fun getMessagesByDevice(address: String): List<ChatMessage> {
+        return dao.getMessagesByDevice(address)
     }
 
-    override fun getFilesMessagesByDevice(address: String?, listener: (List<ChatMessage>) -> Unit) {
-        thread {
-            val messages: List<ChatMessage> = (if (address != null)
-                dao.getFilesMessagesByDevice(address) else dao.getAllFilesMessages())
-                    .filter { !it.filePath.isNullOrEmpty() }
-                    .filter { File(it.filePath).exists() }
-            handler.post { listener.invoke(messages) }
-        }
+    override suspend fun getFilesMessagesByDevice(address: String?): List<ChatMessage> {
+        return (if (address != null)
+            dao.getFilesMessagesByDevice(address) else dao.getAllFilesMessages())
+                .filter { !it.filePath.isNullOrEmpty() }
+                .filter { File(it.filePath).exists() }
     }
 
-    override fun updateMessage(message: ChatMessage) {
-        thread { dao.updateMessage(message) }
+    override suspend fun updateMessage(message: ChatMessage) {
+        dao.updateMessage(message)
     }
 
-    override fun updateMessages(messages: List<ChatMessage>) {
-        thread { dao.updateMessages(messages) }
+    override suspend fun updateMessages(messages: List<ChatMessage>) {
+        dao.updateMessages(messages)
     }
 }

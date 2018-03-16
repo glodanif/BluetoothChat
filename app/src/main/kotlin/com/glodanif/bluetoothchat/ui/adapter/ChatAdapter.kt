@@ -31,7 +31,7 @@ class ChatAdapter(private val context: Context, private val displayMetrics: Disp
 
     var imageClickListener: ((view: ImageView, message: ChatMessage) -> Unit)? = null
 
-    override fun onBindViewHolder(viewHolder: RecyclerView.ViewHolder?, position: Int) {
+    override fun onBindViewHolder(viewHolder: RecyclerView.ViewHolder, position: Int) {
 
         val message = messages[position]
 
@@ -115,7 +115,7 @@ class ChatAdapter(private val context: Context, private val displayMetrics: Disp
         }
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): RecyclerView.ViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
 
         val layoutId = when (viewType) {
             OWN_TEXT_MESSAGE -> R.layout.item_message_text_own
@@ -124,7 +124,7 @@ class ChatAdapter(private val context: Context, private val displayMetrics: Disp
             FOREIGN_IMAGE_MESSAGE -> R.layout.item_message_image_foreign
             else -> 0
         }
-        val view = LayoutInflater.from(parent?.context).inflate(layoutId, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(layoutId, parent, false)
 
         return when (viewType) {
             OWN_IMAGE_MESSAGE, FOREIGN_IMAGE_MESSAGE -> ImageMessageViewHolder(view)

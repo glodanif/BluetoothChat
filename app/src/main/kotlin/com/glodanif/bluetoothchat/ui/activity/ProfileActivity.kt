@@ -12,8 +12,6 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.amulyakhare.textdrawable.TextDrawable
 import com.glodanif.bluetoothchat.R
-import com.glodanif.bluetoothchat.data.model.SettingsManager
-import com.glodanif.bluetoothchat.data.model.SettingsManagerImpl
 import com.glodanif.bluetoothchat.extension.getFirstLetter
 import com.glodanif.bluetoothchat.ui.presenter.ProfilePresenter
 import com.glodanif.bluetoothchat.ui.util.SimpleTextWatcher

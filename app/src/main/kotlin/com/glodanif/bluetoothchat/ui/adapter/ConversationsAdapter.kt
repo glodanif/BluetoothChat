@@ -26,9 +26,7 @@ class ConversationsAdapter(private val context: Context) : RecyclerView.Adapter<
     private var conversations: ArrayList<Conversation> = ArrayList()
 
     @SuppressLint("SetTextI18n")
-    override fun onBindViewHolder(holder: ConversationViewHolder?, position: Int) {
-
-        if (holder == null) return
+    override fun onBindViewHolder(holder: ConversationViewHolder, position: Int) {
 
         val conversation = conversations[position]
 
@@ -93,8 +91,8 @@ class ConversationsAdapter(private val context: Context) : RecyclerView.Adapter<
         conversations.addAll(sortedList)
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): ConversationViewHolder {
-        val view = LayoutInflater.from(parent?.context)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ConversationViewHolder {
+        val view = LayoutInflater.from(parent.context)
                 .inflate(R.layout.item_conversation, parent, false)
         return ConversationViewHolder(view)
     }
