@@ -26,6 +26,7 @@ import com.amulyakhare.textdrawable.TextDrawable
 import com.glodanif.bluetoothchat.R
 import com.glodanif.bluetoothchat.data.entity.Conversation
 import com.glodanif.bluetoothchat.data.model.BluetoothConnectorImpl
+import com.glodanif.bluetoothchat.di.ComponentsManager
 import com.glodanif.bluetoothchat.extension.getFirstLetter
 import com.glodanif.bluetoothchat.ui.adapter.ConversationsAdapter
 import com.glodanif.bluetoothchat.ui.presenter.ConversationsPresenter
@@ -36,14 +37,15 @@ import com.glodanif.bluetoothchat.ui.widget.SettingsPopup
 import com.glodanif.bluetoothchat.ui.widget.ShortcutManager
 import com.glodanif.bluetoothchat.ui.widget.ShortcutManagerImpl
 import java.util.*
+import javax.inject.Inject
 
 class ConversationsActivity : SkeletonActivity(), ConversationsView {
 
     private val REQUEST_SCAN = 101
 
-    private lateinit var presenter: ConversationsPresenter
+    @Inject
+    lateinit var presenter: ConversationsPresenter
     private lateinit var shortcutsManager: ShortcutManager
-    private val connection = BluetoothConnectorImpl(this)
 
     private lateinit var conversationsList: RecyclerView
     private lateinit var noConversations: View
@@ -60,9 +62,9 @@ class ConversationsActivity : SkeletonActivity(), ConversationsView {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_conversations, ActivityType.CUSTOM_TOOLBAR_ACTIVITY)
+        ComponentsManager.injectConversations(this)
 
         shortcutsManager = ShortcutManagerImpl(this)
-        presenter = ConversationsPresenter(this, connection)
 
         actions = findViewById(R.id.av_actions)
 

@@ -1,31 +1,21 @@
 package com.glodanif.bluetoothchat.ui.presenter
 
 import android.bluetooth.BluetoothDevice
-import android.os.Handler
-import android.util.Log
 import com.glodanif.bluetoothchat.data.entity.ChatMessage
 import com.glodanif.bluetoothchat.data.entity.Conversation
 import com.glodanif.bluetoothchat.data.entity.TransferringFile
 import com.glodanif.bluetoothchat.data.model.*
 import com.glodanif.bluetoothchat.di.ComponentsManager
 import com.glodanif.bluetoothchat.ui.view.ChatView
+import kotlinx.coroutines.experimental.CommonPool
+import kotlinx.coroutines.experimental.android.UI
+import kotlinx.coroutines.experimental.async
 import kotlinx.coroutines.experimental.launch
 import java.io.File
 import javax.inject.Inject
 
-class ChatPresenter(private val deviceAddress: String, private val view: ChatView, private val scanModel: BluetoothScanner,
-                    private val connectionModel: BluetoothConnector) {
-
-    @Inject
-    lateinit var conversationsStorage: ConversationsStorage
-    @Inject
-    lateinit var messagesStorage: MessagesStorage
-
-    init {
-        ComponentsManager.getDataSourceComponent().inject(this)
-    }
-
-    private val handler = Handler()
+class ChatPresenter(private val deviceAddress: String, private val view: ChatView, private val conversationsStorage: ConversationsStorage,
+                   private val messagesStorage: MessagesStorage, private val scanModel: BluetoothScanner,  private val connectionModel: BluetoothConnector) {
 
     private val maxFileSize = 5_242_880
 
@@ -71,15 +61,14 @@ class ChatPresenter(private val deviceAddress: String, private val view: ChatVie
         }
 
         override fun onConnectionAccepted() {
+
             view.showStatusConnected()
             view.hideActions()
 
-            launch {
-                val conversation = conversationsStorage.getConversationByAddress(deviceAddress)
+            launch(UI) {
+                val conversation = async(CommonPool) { conversationsStorage.getConversationByAddress(deviceAddress) }.await()
                 if (conversation != null) {
-                    handler.post {
-                        view.showPartnerName(conversation.displayName, conversation.deviceName)
-                    }
+                    view.showPartnerName(conversation.displayName, conversation.deviceName)
                 }
             }
         }
@@ -223,20 +212,20 @@ class ChatPresenter(private val deviceAddress: String, private val view: ChatVie
             }
         }
 
-        launch {
+        launch(UI) {
 
-            val messages = messagesStorage.getMessagesByDevice(deviceAddress)
-            val conversation = conversationsStorage.getConversationByAddress(deviceAddress)
+            val messages = async(CommonPool) { messagesStorage.getMessagesByDevice(deviceAddress) }.await()
+            val conversation = async(CommonPool) { conversationsStorage.getConversationByAddress(deviceAddress) }.await()
 
-            handler.post {
-                messages.forEach { it.seenHere = true }
-                view.showMessagesHistory(messages)
-                if (conversation != null) {
-                    view.showPartnerName(conversation.displayName, conversation.deviceName)
-                }
+            messages.forEach { it.seenHere = true }
+            view.showMessagesHistory(messages)
+            if (conversation != null) {
+                view.showPartnerName(conversation.displayName, conversation.deviceName)
             }
 
-            messagesStorage.updateMessages(messages)
+            launch(CommonPool) {
+                messagesStorage.updateMessages(messages)
+            }
         }
     }
 

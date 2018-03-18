@@ -28,7 +28,7 @@ class ConversationsStorageImpl(context: Context) : ConversationsStorage {
 
         dao.delete(conversation)
 
-        messageDao.getFilesMessagesByDevice(conversation.deviceAddress).forEach {
+        messageDao.getFileMessagesByDevice(conversation.deviceAddress).forEach {
             if (it.filePath != null) {
                 val file = File(it.filePath)
                 file.delete()

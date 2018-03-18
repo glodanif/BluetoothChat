@@ -1,35 +1,24 @@
 package com.glodanif.bluetoothchat.ui.presenter
 
-import android.os.Handler
 import com.glodanif.bluetoothchat.data.model.MessagesStorage
-import com.glodanif.bluetoothchat.di.ComponentsManager
 import com.glodanif.bluetoothchat.ui.view.ReceivedImagesView
+import kotlinx.coroutines.experimental.CommonPool
+import kotlinx.coroutines.experimental.android.UI
+import kotlinx.coroutines.experimental.async
 import kotlinx.coroutines.experimental.launch
-import javax.inject.Inject
+import kotlin.coroutines.experimental.CoroutineContext
 
-class ReceivedImagesPresenter(private val address: String?, private val view: ReceivedImagesView) {
-
-    @Inject
-    lateinit var model: MessagesStorage
-
-    private val handler = Handler()
-
-    init {
-        ComponentsManager.getDataSourceComponent().inject(this)
-    }
+class ReceivedImagesPresenter(private val address: String?, private val view: ReceivedImagesView, private var model: MessagesStorage,
+                              private val uiContext: CoroutineContext = UI, private val bgContext: CoroutineContext = CommonPool) {
 
     fun loadImages() {
 
-        launch {
-
-            val messages = model.getFilesMessagesByDevice(address)
-
-            handler.post {
-                if (messages.isNotEmpty()) {
-                    view.displayImages(messages)
-                } else {
-                    view.showNoImages()
-                }
+        launch(uiContext) {
+            val messages = async(bgContext) { model.getFileMessagesByDevice(address) }.await()
+            if (messages.isNotEmpty()) {
+                view.displayImages(messages)
+            } else {
+                view.showNoImages()
             }
         }
     }

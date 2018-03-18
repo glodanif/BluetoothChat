@@ -8,14 +8,17 @@ import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.widget.TextView
 import com.glodanif.bluetoothchat.R
+import com.glodanif.bluetoothchat.di.ComponentsManager
 import com.glodanif.bluetoothchat.ui.adapter.ContactsAdapter
 import com.glodanif.bluetoothchat.ui.viewmodel.ContactViewModel
 import com.glodanif.bluetoothchat.ui.presenter.ContactChooserPresenter
 import com.glodanif.bluetoothchat.ui.view.ContactChooserView
+import javax.inject.Inject
 
 class ContactChooserActivity : SkeletonActivity(), ContactChooserView {
 
-    private lateinit var presenter: ContactChooserPresenter
+    @Inject
+    lateinit var presenter: ContactChooserPresenter
 
     private lateinit var contactsList: RecyclerView
     private lateinit var noContactsLabel: TextView
@@ -25,6 +28,7 @@ class ContactChooserActivity : SkeletonActivity(), ContactChooserView {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_contact_chooser, ActivityType.CHILD_ACTIVITY)
+        ComponentsManager.injectContactChooser(this)
 
         contactsList = findViewById(R.id.rv_contacts)
         noContactsLabel = findViewById(R.id.tv_no_contacts)
@@ -37,8 +41,6 @@ class ContactChooserActivity : SkeletonActivity(), ContactChooserView {
             ChatActivity.start(this, it.address, message)
             finish()
         }
-
-        presenter = ContactChooserPresenter(this)
     }
 
     override fun onStart() {

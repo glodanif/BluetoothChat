@@ -12,6 +12,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.amulyakhare.textdrawable.TextDrawable
 import com.glodanif.bluetoothchat.R
+import com.glodanif.bluetoothchat.di.ComponentsManager
 import com.glodanif.bluetoothchat.extension.getFirstLetter
 import com.glodanif.bluetoothchat.ui.presenter.ProfilePresenter
 import com.glodanif.bluetoothchat.ui.util.SimpleTextWatcher
@@ -19,10 +20,12 @@ import com.glodanif.bluetoothchat.ui.view.ProfileView
 import me.priyesh.chroma.ChromaDialog
 import me.priyesh.chroma.ColorMode
 import me.priyesh.chroma.ColorSelectListener
+import javax.inject.Inject
 
 class ProfileActivity : SkeletonActivity(), ProfileView {
 
-    private lateinit var presenter: ProfilePresenter
+    @Inject
+    lateinit var presenter: ProfilePresenter
 
     private lateinit var nameField: EditText
     private lateinit var nameLabel: TextView
@@ -34,6 +37,7 @@ class ProfileActivity : SkeletonActivity(), ProfileView {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_profile, ActivityType.CHILD_ACTIVITY)
+        ComponentsManager.injectProfile(this)
 
         editMode = intent.getBooleanExtra(EXTRA_EDIT_MODE, false)
         supportActionBar?.setDisplayHomeAsUpEnabled(editMode)
@@ -43,8 +47,6 @@ class ProfileActivity : SkeletonActivity(), ProfileView {
             title = getString(R.string.profile__profile)
             window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN)
         }
-
-        presenter = ProfilePresenter(this)
 
         colorPicker = findViewById(R.id.v_color)
         nameField = findViewById(R.id.et_name)

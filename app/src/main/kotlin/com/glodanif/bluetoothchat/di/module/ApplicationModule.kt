@@ -7,7 +7,7 @@ import dagger.Provides
 import javax.inject.Singleton
 
 @Module
-class DataSourceModule(private val context: Context) {
+class ApplicationModule(private val context: Context) {
 
     @Provides
     @Singleton

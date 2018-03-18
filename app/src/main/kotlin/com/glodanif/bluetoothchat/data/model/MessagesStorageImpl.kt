@@ -17,14 +17,19 @@ class MessagesStorageImpl(val context: Context) : MessagesStorage {
     }
 
     override suspend fun getMessagesByDevice(address: String): List<ChatMessage> {
-        return dao.getMessagesByDevice(address)
+        val messages = dao.getMessagesByDevice(address)
+        messages.forEach {
+            if (it.filePath != null) {
+                it.fileExists = File(it.filePath).exists()
+            }
+        }
+        return messages
     }
 
-    override suspend fun getFilesMessagesByDevice(address: String?): List<ChatMessage> {
+    override suspend fun getFileMessagesByDevice(address: String?): List<ChatMessage> {
         return (if (address != null)
-            dao.getFilesMessagesByDevice(address) else dao.getAllFilesMessages())
-                .filter { !it.filePath.isNullOrEmpty() }
-                .filter { File(it.filePath).exists() }
+            dao.getFileMessagesByDevice(address) else dao.getAllFilesMessages())
+                .filter { !it.filePath.isNullOrEmpty() && File(it.filePath).exists() }
     }
 
     override suspend fun updateMessage(message: ChatMessage) {

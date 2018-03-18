@@ -25,6 +25,7 @@ import com.glodanif.bluetoothchat.data.model.BluetoothConnector
 import com.glodanif.bluetoothchat.data.model.BluetoothConnectorImpl
 import com.glodanif.bluetoothchat.data.model.BluetoothScanner
 import com.glodanif.bluetoothchat.data.model.BluetoothScannerImpl
+import com.glodanif.bluetoothchat.di.ComponentsManager
 import com.glodanif.bluetoothchat.extension.toReadableFileSize
 import com.glodanif.bluetoothchat.ui.adapter.ChatAdapter
 import com.glodanif.bluetoothchat.ui.presenter.ChatPresenter
@@ -38,12 +39,12 @@ import pl.aprilapps.easyphotopicker.EasyImage
 import java.io.File
 import java.lang.Exception
 import java.util.*
+import javax.inject.Inject
 
 class ChatActivity : SkeletonActivity(), ChatView {
 
-    private lateinit var presenter: ChatPresenter
-    private val connectionModel: BluetoothConnector = BluetoothConnectorImpl(this)
-    private val scanModel: BluetoothScanner = BluetoothScannerImpl(this)
+    @Inject
+    lateinit var presenter: ChatPresenter
 
     private val layoutManager = LinearLayoutManager(this)
     private lateinit var actions: ActionView
@@ -83,6 +84,10 @@ class ChatActivity : SkeletonActivity(), ChatView {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_chat, ActivityType.CHILD_ACTIVITY)
+
+        deviceAddress = intent.getStringExtra(EXTRA_ADDRESS)
+
+        ComponentsManager.injectChat(this, deviceAddress.toString())
 
         toolbar?.setTitleTextAppearance(this, R.style.ActionBar_TitleTextStyle)
         toolbar?.setSubtitleTextAppearance(this, R.style.ActionBar_SubTitleTextStyle)
@@ -140,11 +145,8 @@ class ChatActivity : SkeletonActivity(), ChatView {
             }
         })
 
-        deviceAddress = intent.getStringExtra(EXTRA_ADDRESS)
-
         title = if (deviceAddress.isNullOrEmpty()) getString(R.string.app_name) else deviceAddress
         toolbar?.subtitle = getString(R.string.chat__not_connected)
-        presenter = ChatPresenter(deviceAddress.toString(),this, scanModel, connectionModel)
 
         if (intent.action == Intent.ACTION_SEND) {
             messageField.setText(intent.data.toString().trim())

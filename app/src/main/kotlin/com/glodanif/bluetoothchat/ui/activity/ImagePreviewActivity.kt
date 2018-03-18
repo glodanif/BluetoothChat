@@ -13,10 +13,12 @@ import android.widget.ImageView
 import com.github.chrisbanes.photoview.PhotoView
 import com.glodanif.bluetoothchat.R
 import com.glodanif.bluetoothchat.data.entity.ChatMessage
+import com.glodanif.bluetoothchat.di.ComponentsManager
 import com.glodanif.bluetoothchat.ui.presenter.ImagePreviewPresenter
 import com.glodanif.bluetoothchat.ui.view.ImagePreviewView
 import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso
+import javax.inject.Inject
 
 class ImagePreviewActivity : SkeletonActivity(), ImagePreviewView {
 
@@ -24,22 +26,24 @@ class ImagePreviewActivity : SkeletonActivity(), ImagePreviewView {
 
     private lateinit var message: ChatMessage
 
-    private lateinit var presenter: ImagePreviewPresenter
+    @Inject
+    lateinit var presenter: ImagePreviewPresenter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_image_preview, ActivityType.CHILD_ACTIVITY)
 
+        message = intent.getSerializableExtra(EXTRA_MESSAGE) as ChatMessage
+
+        ComponentsManager.injectImagePreview(this, message)
+
         toolbar?.setTitleTextAppearance(this, R.style.ActionBar_TitleTextStyle)
         toolbar?.setSubtitleTextAppearance(this, R.style.ActionBar_SubTitleTextStyle)
-
-        message = intent.getSerializableExtra(EXTRA_MESSAGE) as ChatMessage
 
         imageView = findViewById(R.id.pv_preview)
         imageView.minimumScale = .75f
         imageView.maximumScale = 2f
 
-        presenter = ImagePreviewPresenter(message, this)
         presenter.loadData()
     }
 
@@ -101,7 +105,7 @@ class ImagePreviewActivity : SkeletonActivity(), ImagePreviewView {
 
     companion object {
 
-        val EXTRA_MESSAGE = "extra.message"
+        const val EXTRA_MESSAGE = "extra.message"
 
         fun start(activity: Activity, transitionView: ImageView, message: ChatMessage) {
 

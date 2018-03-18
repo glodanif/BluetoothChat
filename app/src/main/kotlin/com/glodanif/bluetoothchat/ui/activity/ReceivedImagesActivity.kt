@@ -9,15 +9,16 @@ import android.view.View
 import android.widget.TextView
 import com.glodanif.bluetoothchat.R
 import com.glodanif.bluetoothchat.data.entity.ChatMessage
-import com.glodanif.bluetoothchat.data.model.MessagesStorage
-import com.glodanif.bluetoothchat.data.model.MessagesStorageImpl
+import com.glodanif.bluetoothchat.di.ComponentsManager
 import com.glodanif.bluetoothchat.ui.adapter.ImagesAdapter
 import com.glodanif.bluetoothchat.ui.presenter.ReceivedImagesPresenter
 import com.glodanif.bluetoothchat.ui.view.ReceivedImagesView
+import javax.inject.Inject
 
 class ReceivedImagesActivity : SkeletonActivity(), ReceivedImagesView {
 
-    private lateinit var presenter: ReceivedImagesPresenter
+    @Inject
+    lateinit var presenter: ReceivedImagesPresenter
 
     private var address: String? = null
 
@@ -32,6 +33,8 @@ class ReceivedImagesActivity : SkeletonActivity(), ReceivedImagesView {
 
         address = intent.getStringExtra(EXTRA_ADDRESS)
 
+        ComponentsManager.injectReceivedImages(this, address)
+
         imagesGrid = findViewById(R.id.rv_images)
         noImagesLabel = findViewById(R.id.tv_no_images)
 
@@ -41,8 +44,6 @@ class ReceivedImagesActivity : SkeletonActivity(), ReceivedImagesView {
         adapter.clickListener = { view, message ->
             ImagePreviewActivity.start(this, view, message)
         }
-
-        presenter = ReceivedImagesPresenter(address, this)
     }
 
     override fun onStart() {

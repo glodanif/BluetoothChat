@@ -1,8 +1,11 @@
 package com.glodanif.bluetoothchat.extension
 
 import android.content.Context
+import android.content.res.Resources
 import android.graphics.Bitmap
 import android.graphics.Canvas
+import android.support.annotation.PluralsRes
+import android.support.annotation.StringRes
 import com.amulyakhare.textdrawable.TextDrawable
 import com.glodanif.bluetoothchat.R
 import java.text.DecimalFormat
@@ -31,33 +34,27 @@ fun Date.getRelativeTime(context: Context): String {
     }
 
     val diff = now - timestamp
-    when {
+    return when {
         diff < minuteMillis ->
-            return context.getString(R.string.general__time_just_now)
+            context.getString(R.string.general__time_just_now)
         diff < 2 * minuteMillis ->
-            return context.getString(R.string.general__time_a_minute_ago)
-        diff < 50 * minuteMillis -> {
-            val quantity = diff / minuteMillis
-            return resources.getQuantityString(
-                    R.plurals.general__time_minutes_ago, quantity.toInt(), quantity)
-        }
+            context.getString(R.string.general__time_a_minute_ago)
+        diff < 50 * minuteMillis ->
+            getQuantityString(resources, R.plurals.general__time_minutes_ago, diff / minuteMillis)
         diff < 90 * minuteMillis ->
-            return context.getString(R.string.general__time_an_hour_ago)
-        diff < 24 * hourMillis -> {
-            val quantity = diff / hourMillis
-            return resources.getQuantityString(
-                    R.plurals.general__time_hours_ago, quantity.toInt(), quantity)
-        }
+            context.getString(R.string.general__time_an_hour_ago)
+        diff < 24 * hourMillis ->
+            getQuantityString(resources, R.plurals.general__time_hours_ago, diff / hourMillis)
         diff < 48 * hourMillis ->
-            return context.getString(R.string.general__time_yesterday)
-        diff < 7 * dayMillis -> {
-            val quantity = diff / dayMillis
-            return resources.getQuantityString(
-                    R.plurals.general__time_days_ago, quantity.toInt(), quantity)
-        }
-        else -> return viewFormat.format(this)
+            context.getString(R.string.general__time_yesterday)
+        diff < 7 * dayMillis ->
+            getQuantityString(resources, R.plurals.general__time_days_ago, diff / dayMillis)
+        else -> viewFormat.format(this)
     }
 }
+
+private fun getQuantityString(resources: Resources, @PluralsRes string: Int, quantity: Long) =
+        resources.getQuantityString(string, quantity.toInt(), quantity)
 
 fun String.getFirstLetter(): String {
     return if (this.isEmpty()) "?" else this[0].toString().toUpperCase()
@@ -81,12 +78,11 @@ fun Long.toReadableFileSize(): String {
             this / Math.pow(1024.0, digitGroups.toDouble())) + " " + units[digitGroups]
 }
 
-fun String.isNumber(): Boolean {
+fun String.isNumber(): Boolean =
+        try {
+            this.toLong()
+            true
+        } catch (e: NumberFormatException) {
+            false
+        }
 
-    return try {
-        this.toLong()
-        true
-    } catch (e: NumberFormatException) {
-        false
-    }
-}

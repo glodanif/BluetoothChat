@@ -6,14 +6,7 @@ import com.glodanif.bluetoothchat.di.ComponentsManager
 import com.glodanif.bluetoothchat.ui.view.ProfileView
 import javax.inject.Inject
 
-class ProfilePresenter(private val view: ProfileView) {
-
-    @Inject
-    lateinit var settings: SettingsManager
-
-    init {
-        ComponentsManager.getDataSourceComponent().inject(this)
-    }
+class ProfilePresenter(private val view: ProfileView, private val settings: SettingsManager) {
 
     @ColorInt
     private var currentColor = settings.getUserColor()

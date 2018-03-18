@@ -14,7 +14,7 @@ interface MessagesDao {
     fun getMessagesByDevice(address: String): List<ChatMessage>
 
     @Query("SELECT * FROM message WHERE deviceAddress = :address AND messageType = 1 AND own = 0 ORDER BY date DESC")
-    fun getFilesMessagesByDevice(address: String): List<ChatMessage>
+    fun getFileMessagesByDevice(address: String): List<ChatMessage>
 
     @Query("SELECT * FROM message WHERE messageType = 1 AND own = 0 ORDER BY date DESC")
     fun getAllFilesMessages(): List<ChatMessage>

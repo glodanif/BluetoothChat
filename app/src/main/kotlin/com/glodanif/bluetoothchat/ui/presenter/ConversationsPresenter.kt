@@ -7,21 +7,14 @@ import com.glodanif.bluetoothchat.data.entity.Conversation
 import com.glodanif.bluetoothchat.data.model.*
 import com.glodanif.bluetoothchat.di.ComponentsManager
 import com.glodanif.bluetoothchat.ui.view.ConversationsView
+import kotlinx.coroutines.experimental.CommonPool
+import kotlinx.coroutines.experimental.android.UI
+import kotlinx.coroutines.experimental.async
 import kotlinx.coroutines.experimental.launch
 import javax.inject.Inject
 
-class ConversationsPresenter(private val view: ConversationsView, private val connection: BluetoothConnector) {
-
-    @Inject
-    lateinit var conversationStorage: ConversationsStorage
-    @Inject
-    lateinit var settings: SettingsManager
-
-    init {
-        ComponentsManager.getDataSourceComponent().inject(this)
-    }
-
-    private val handler = Handler()
+class ConversationsPresenter(private val view: ConversationsView, private val connection: BluetoothConnector,
+                             private val conversationStorage: ConversationsStorage, private val settings: SettingsManager) {
 
     private val prepareListener = object : OnPrepareListener {
 
@@ -123,17 +116,16 @@ class ConversationsPresenter(private val view: ConversationsView, private val co
 
     fun loadConversations() {
 
-        launch {
-            val conversations = conversationStorage.getConversations()
+        launch(UI) {
 
-            handler.post {
-                if (conversations.isEmpty()) {
-                    view.showNoConversations()
-                } else {
-                    val connectedDevice = if (connection.isConnected())
-                        connection.getCurrentConversation()?.deviceAddress else null
-                    view.showConversations(conversations, connectedDevice)
-                }
+            val conversations = async(CommonPool) { conversationStorage.getConversations() }.await()
+
+            if (conversations.isEmpty()) {
+                view.showNoConversations()
+            } else {
+                val connectedDevice = if (connection.isConnected())
+                    connection.getCurrentConversation()?.deviceAddress else null
+                view.showConversations(conversations, connectedDevice)
             }
         }
     }

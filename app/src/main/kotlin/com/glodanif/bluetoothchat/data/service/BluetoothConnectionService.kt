@@ -262,6 +262,7 @@ class BluetoothConnectionService : Service() {
                     val width = options.outWidth
                     val height = options.outHeight
                     sentMessage.fileInfo = "${width}x$height"
+                    sentMessage.fileExists = true
 
                     db.messagesDao().insert(sentMessage)
 
@@ -341,6 +342,7 @@ class BluetoothConnectionService : Service() {
                     val width = options.outWidth
                     val height = options.outHeight
                     receivedMessage.fileInfo = "${width}x$height"
+                    receivedMessage.fileExists = true
 
                     db.messagesDao().insert(receivedMessage)
 
@@ -370,60 +372,11 @@ class BluetoothConnectionService : Service() {
             }
         }
 
-        val eventsStrategy = object : DataTransferThread.EventsStrategy {
-
-            private val regex = Regex("\\d+#\\d+#\\d+#*")
-
-            override fun isMessage(message: String?): Boolean {
-                return message != null && regex.containsMatchIn(message)
-            }
-
-            override fun isFileStart(message: String?): DataTransferThread.FileInfo? {
-
-                if (message != null && message.contains("6#0#0#")) {
-                    val info = message.replace("6#0#0#", "")
-                    return if (info.isEmpty()) {
-                        null
-                    } else {
-                        val size = info.substringAfter("#").substringBefore("#")
-                        if (size.isNumber()) {
-                            DataTransferThread.FileInfo(
-                                    info.substringBefore("#"),
-                                    size.toLong()
-                            )
-                        } else {
-                            null
-                        }
-
-                    }
-                }
-
-                return null
-            }
-
-            override fun isFileCanceled(message: String?): DataTransferThread.CancelInfo? {
-
-                return if (message != null && (message.contains("8#0#0#") || message.contains("8#0#1#"))) {
-                    val byPartner = message
-                            .substringAfter("8#0#")
-                            .replace("8#0#", "")
-                            .substringBefore("#")
-                    DataTransferThread.CancelInfo(byPartner == "1")
-                } else {
-                    null
-                }
-            }
-
-            override fun isFileFinish(message: String?): Boolean {
-                return message != null && message.contains("7#0#0#")
-            }
-        }
-
+        val eventsStrategy = TransferEventStrategy()
         val filesDirectory = File(Environment.getExternalStorageDirectory(), getString(R.string.app_name))
 
         dataTransferThread =
                 object : DataTransferThread(socket, type, transferEventsListener, filesDirectory, fileEventsListener, eventsStrategy) {
-
                     override fun shouldRun(): Boolean {
                         return isConnectedOrPending()
                     }

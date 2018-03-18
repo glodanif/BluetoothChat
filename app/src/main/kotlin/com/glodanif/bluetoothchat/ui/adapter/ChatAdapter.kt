@@ -46,7 +46,7 @@ class ChatAdapter(private val context: Context, private val displayMetrics: Disp
                 holder?.missingLabel?.visibility = View.VISIBLE
                 holder?.missingLabel?.setText(R.string.chat__removed_image)
 
-            } else if (!File(message.filePath).exists()) {
+            } else if (!message.fileExists) {
 
                 holder?.image?.visibility = View.GONE
                 holder?.missingLabel?.visibility = View.VISIBLE
