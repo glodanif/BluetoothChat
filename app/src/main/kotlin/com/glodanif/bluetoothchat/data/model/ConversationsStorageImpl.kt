@@ -24,16 +24,16 @@ class ConversationsStorageImpl(context: Context) : ConversationsStorage {
         dao.insert(conversation)
     }
 
-    override suspend fun removeConversation(conversation: Conversation) {
+    override suspend fun removeConversationByAddress(address: String) {
 
-        dao.delete(conversation)
+        dao.delete(address)
 
-        messageDao.getFileMessagesByDevice(conversation.deviceAddress).forEach {
+        messageDao.getFileMessagesByDevice(address).forEach {
             if (it.filePath != null) {
                 val file = File(it.filePath)
                 file.delete()
             }
         }
-        messageDao.deleteAllByDeviceAddress(conversation.deviceAddress)
+        messageDao.deleteAllByDeviceAddress(address)
     }
 }

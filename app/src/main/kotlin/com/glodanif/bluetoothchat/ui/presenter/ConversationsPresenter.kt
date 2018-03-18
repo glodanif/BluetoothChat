@@ -155,12 +155,12 @@ class ConversationsPresenter(private val view: ConversationsView, private val co
         connection.rejectConnection()
     }
 
-    fun removeConversation(conversation: Conversation) {
+    fun removeConversation(address: String) {
         connection.sendDisconnectRequest()
         launch {
-            conversationStorage.removeConversation(conversation)
+            conversationStorage.removeConversationByAddress(address)
         }
-        view.removeFromShortcuts(conversation.deviceAddress)
+        view.removeFromShortcuts(address)
         loadConversations()
     }
 

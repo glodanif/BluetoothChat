@@ -26,7 +26,6 @@ class TransferEventStrategy: DataTransferThread.EventsStrategy {
                 } else {
                     null
                 }
-
             }
         }
 

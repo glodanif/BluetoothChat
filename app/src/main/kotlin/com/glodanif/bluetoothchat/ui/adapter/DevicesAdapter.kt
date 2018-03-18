@@ -11,8 +11,8 @@ import com.glodanif.bluetoothchat.R
 
 class DevicesAdapter(private val context: Context) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    private val TYPE_ITEM = 0
-    private val TYPE_HEADER = 1
+    private val typeItem = 0
+    private val typeHeader = 1
 
     var listener: ((BluetoothDevice) -> Unit)? = null
 
@@ -49,9 +49,9 @@ class DevicesAdapter(private val context: Context) : RecyclerView.Adapter<Recycl
 
     override fun getItemViewType(position: Int): Int {
         return when (position) {
-            0 -> TYPE_HEADER
-            pairedList.size + 1 -> TYPE_HEADER
-            else -> TYPE_ITEM
+            0 -> typeHeader
+            pairedList.size + 1 -> typeHeader
+            else -> typeItem
         }
     }
 
@@ -61,7 +61,7 @@ class DevicesAdapter(private val context: Context) : RecyclerView.Adapter<Recycl
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
 
-        if (viewType == TYPE_ITEM) {
+        if (viewType == typeItem) {
             val view = LayoutInflater.from(parent.context)
                     .inflate(R.layout.item_paired_device, parent, false)
             return DeviceViewHolder(view)

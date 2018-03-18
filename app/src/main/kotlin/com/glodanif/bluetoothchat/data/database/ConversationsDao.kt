@@ -22,6 +22,6 @@ interface ConversationsDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(conversations: Conversation)
 
-    @Delete
-    fun delete(conversations: Conversation)
+    @Query("DELETE FROM conversation WHERE address = :address")
+    fun delete(address: String)
 }

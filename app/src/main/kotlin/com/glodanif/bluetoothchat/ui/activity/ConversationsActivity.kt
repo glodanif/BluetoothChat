@@ -25,19 +25,21 @@ import android.widget.ImageView
 import com.amulyakhare.textdrawable.TextDrawable
 import com.glodanif.bluetoothchat.R
 import com.glodanif.bluetoothchat.data.entity.Conversation
-import com.glodanif.bluetoothchat.data.model.BluetoothConnectorImpl
 import com.glodanif.bluetoothchat.di.ComponentsManager
 import com.glodanif.bluetoothchat.extension.getFirstLetter
 import com.glodanif.bluetoothchat.ui.adapter.ConversationsAdapter
 import com.glodanif.bluetoothchat.ui.presenter.ConversationsPresenter
 import com.glodanif.bluetoothchat.ui.view.ConversationsView
 import com.glodanif.bluetoothchat.ui.view.NotificationView
+import com.glodanif.bluetoothchat.ui.viewmodel.ConversationViewModel
+import com.glodanif.bluetoothchat.ui.viewmodel.converter.ConversationConverter
 import com.glodanif.bluetoothchat.ui.widget.ActionView
 import com.glodanif.bluetoothchat.ui.widget.SettingsPopup
 import com.glodanif.bluetoothchat.ui.widget.ShortcutManager
 import com.glodanif.bluetoothchat.ui.widget.ShortcutManagerImpl
 import java.util.*
 import javax.inject.Inject
+import kotlin.collections.ArrayList
 
 class ConversationsActivity : SkeletonActivity(), ConversationsView {
 
@@ -57,7 +59,8 @@ class ConversationsActivity : SkeletonActivity(), ConversationsView {
     private lateinit var settingsPopup: SettingsPopup
     private lateinit var storagePermissionDialog: AlertDialog
 
-    private val adapter: ConversationsAdapter = ConversationsAdapter(this)
+    private val adapter = ConversationsAdapter()
+    private val converter = ConversationConverter(this);
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -84,7 +87,7 @@ class ConversationsActivity : SkeletonActivity(), ConversationsView {
                 settingsClickListener = { SettingsActivity.start(context = this) }
         )
 
-        adapter.clickListener = { ChatActivity.start(this, it.deviceAddress) }
+        adapter.clickListener = { ChatActivity.start(this, it.address) }
         adapter.longClickListener = { conversation, isCurrent ->
             showContextMenu(conversation, isCurrent)
         }
@@ -117,7 +120,7 @@ class ConversationsActivity : SkeletonActivity(), ConversationsView {
         ShortcutManagerImpl(this).addSearchShortcut()
     }
 
-    private fun showContextMenu(conversation: Conversation, isCurrent: Boolean) {
+    private fun showContextMenu(conversation: ConversationViewModel, isCurrent: Boolean) {
 
         val labels = ArrayList<String>()
         labels.add(getString(R.string.conversations__remove))
@@ -133,7 +136,7 @@ class ConversationsActivity : SkeletonActivity(), ConversationsView {
                 .setItems(labels.toTypedArray(), { _, which ->
                     when (which) {
                         0 -> {
-                            confirmRemoval(conversation)
+                            confirmRemoval(conversation.address)
                         }
                         1 -> {
                             if (isCurrent) {
@@ -150,16 +153,16 @@ class ConversationsActivity : SkeletonActivity(), ConversationsView {
         builder.create().show()
     }
 
-    private fun requestPinShortcut(conversation: Conversation) {
+    private fun requestPinShortcut(conversation: ConversationViewModel) {
         shortcutsManager.requestPinConversationShortcut(
-                conversation.deviceAddress, conversation.displayName, conversation.color)
+                conversation.address, conversation.name, conversation.color)
     }
 
-    private fun confirmRemoval(conversation: Conversation) {
+    private fun confirmRemoval(address: String) {
 
         AlertDialog.Builder(this)
                 .setMessage(getString(R.string.conversations__removal_confirmation))
-                .setPositiveButton(getString(R.string.general__yes), { _, _ -> presenter.removeConversation(conversation) })
+                .setPositiveButton(getString(R.string.general__yes), { _, _ -> presenter.removeConversation(address) })
                 .setNegativeButton(getString(R.string.general__no), null)
                 .show()
     }
@@ -201,7 +204,8 @@ class ConversationsActivity : SkeletonActivity(), ConversationsView {
         addButton.visibility = View.VISIBLE
         noConversations.visibility = View.GONE
 
-        adapter.setData(ArrayList(conversations), connected)
+        val list = converter.transform(conversations)
+        adapter.setData(ArrayList(list), connected)
         adapter.notifyDataSetChanged()
     }
 

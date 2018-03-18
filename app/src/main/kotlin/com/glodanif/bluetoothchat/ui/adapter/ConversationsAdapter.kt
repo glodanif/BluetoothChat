@@ -1,8 +1,5 @@
 package com.glodanif.bluetoothchat.ui.adapter
 
-import android.annotation.SuppressLint
-import android.content.Context
-import android.graphics.Color
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -10,66 +7,57 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
-import com.amulyakhare.textdrawable.TextDrawable
 import com.glodanif.bluetoothchat.R
-import com.glodanif.bluetoothchat.data.entity.Conversation
-import com.glodanif.bluetoothchat.data.entity.MessageType
-import com.glodanif.bluetoothchat.extension.getFirstLetter
-import com.glodanif.bluetoothchat.extension.getRelativeTime
+import com.glodanif.bluetoothchat.ui.viewmodel.ConversationViewModel
 
-class ConversationsAdapter(private val context: Context) : RecyclerView.Adapter<ConversationsAdapter.ConversationViewHolder>() {
+class ConversationsAdapter : RecyclerView.Adapter<ConversationsAdapter.ConversationViewHolder>() {
 
-    var clickListener: ((Conversation) -> Unit)? = null
-    var longClickListener: ((Conversation, Boolean) -> Unit)? = null
+    var clickListener: ((ConversationViewModel) -> Unit)? = null
+    var longClickListener: ((ConversationViewModel, Boolean) -> Unit)? = null
 
     private var isConnected: Boolean = false
-    private var conversations: ArrayList<Conversation> = ArrayList()
+    private var conversations: ArrayList<ConversationViewModel> = ArrayList()
 
-    @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: ConversationViewHolder, position: Int) {
 
         val conversation = conversations[position]
 
-        holder.name.text = "${conversation.displayName} (${conversation.deviceName})"
-        holder.itemView?.setOnClickListener { clickListener?.invoke(conversation) }
+        holder.name.text = conversation.displayName
+        holder.itemView?.setOnClickListener {
+            clickListener?.invoke(conversation)
+        }
         holder.itemView?.setOnLongClickListener {
             val isCurrent = isConnected && position == 0
             longClickListener?.invoke(conversation, isCurrent)
             return@setOnLongClickListener true
         }
-        holder.connected.visibility = View.VISIBLE
 
-        if (!conversation.lastMessage.isNullOrEmpty() || conversation.messageType == MessageType.IMAGE) {
-
+        if (conversation.lastMessage != null) {
             holder.messageContainer.visibility = View.VISIBLE
-            holder.time.visibility = View.VISIBLE
-
             holder.lastMessage.text = conversation.lastMessage
-
-            holder.lastMessage.text =
-                    if (conversation.messageType != MessageType.IMAGE)
-                        conversation.lastMessage else context.getString(R.string.chat__image_message, "\uD83D\uDCCE")
-
-            holder.time.text = conversation.lastActivity?.getRelativeTime(context)
-
-            if (conversation.notSeen > 0) {
-                holder.notSeen.visibility = View.VISIBLE
-                holder.notSeen.text = conversation.notSeen.toString()
-            } else {
-                holder.notSeen.visibility = View.GONE
-            }
         } else {
             holder.messageContainer.visibility = View.GONE
+        }
+
+        if (conversation.lastActivity != null) {
+            holder.time.visibility = View.VISIBLE
+            holder.time.text = conversation.lastActivity
+        } else {
             holder.time.visibility = View.GONE
         }
 
-        var color = conversation.color
-        if (!isConnected || position > 0) {
-            holder.connected.visibility = View.GONE
-            color = Color.LTGRAY
+        if (conversation.notSeen > 0) {
+            holder.notSeen.visibility = View.VISIBLE
+            holder.notSeen.text = conversation.notSeen.toString()
+        } else {
+            holder.notSeen.visibility = View.GONE
         }
 
-        val drawable = TextDrawable.builder().buildRound(conversation.displayName.getFirstLetter(), color)
+        val isNotConnected = !isConnected || position > 0
+
+        holder.connected.visibility = if (isNotConnected) View.GONE else View.VISIBLE
+        val drawable = if (isNotConnected)
+            conversation.getGrayedAvatar() else conversation.getColoredAvatar()
         holder.avatar.setImageDrawable(drawable)
     }
 
@@ -77,7 +65,7 @@ class ConversationsAdapter(private val context: Context) : RecyclerView.Adapter<
         return conversations.size
     }
 
-    fun setData(items: ArrayList<Conversation>, connected: String?) {
+    fun setData(items: ArrayList<ConversationViewModel>, connected: String?) {
         conversations = items
         setCurrentConversation(connected)
     }
@@ -85,7 +73,7 @@ class ConversationsAdapter(private val context: Context) : RecyclerView.Adapter<
     fun setCurrentConversation(connected: String?) {
         isConnected = connected != null
         val sortedList = conversations.sortedWith(
-                compareByDescending<Conversation> { it.deviceAddress == connected }
+                compareByDescending<ConversationViewModel> { it.address == connected }
                         .thenByDescending { it.lastActivity })
         conversations = ArrayList()
         conversations.addAll(sortedList)

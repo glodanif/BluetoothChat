@@ -12,8 +12,6 @@ class ComponentsManager {
 
         private lateinit var dsComponent: ApplicationComponent
 
-        fun getDataSourceComponent(): ApplicationComponent = dsComponent
-
         fun initialize(context: Context) {
             dsComponent = DaggerApplicationComponent.builder()
                     .applicationModule(ApplicationModule(context))
@@ -21,42 +19,48 @@ class ComponentsManager {
         }
 
         fun injectConversations(activity: ConversationsActivity) {
-            DaggerConversationsComponent.builder().applicationComponent(dsComponent)
+            DaggerConversationsComponent.builder()
+                    .applicationComponent(dsComponent)
                     .conversationsModule(ConversationsModule(activity))
                     .build()
                     .inject(activity)
         }
 
         fun injectChat(activity: ChatActivity, address: String) {
-            DaggerChatComponent.builder().applicationComponent(dsComponent)
+            DaggerChatComponent.builder()
+                    .applicationComponent(dsComponent)
                     .chatModule(ChatModule(address, activity))
                     .build()
                     .inject(activity)
         }
 
         fun injectProfile(activity: ProfileActivity) {
-            DaggerProfileComponent.builder().applicationComponent(dsComponent)
+            DaggerProfileComponent.builder()
+                    .applicationComponent(dsComponent)
                     .profileModule(ProfileModule(activity))
                     .build()
                     .inject(activity)
         }
 
         fun injectReceivedImages(activity: ReceivedImagesActivity, address: String?) {
-            DaggerReceivedImagesComponent.builder().applicationComponent(dsComponent)
+            DaggerReceivedImagesComponent.builder()
+                    .applicationComponent(dsComponent)
                     .receivedImagesModule(ReceivedImagesModule(address, activity))
                     .build()
                     .inject(activity)
         }
 
         fun injectImagePreview(activity: ImagePreviewActivity, message: ChatMessage) {
-            DaggerImagePreviewComponent.builder().applicationComponent(dsComponent)
+            DaggerImagePreviewComponent.builder()
+                    .applicationComponent(dsComponent)
                     .imagePreviewModule(ImagePreviewModule(message, activity))
                     .build()
                     .inject(activity)
         }
 
         fun injectContactChooser(activity: ContactChooserActivity) {
-            DaggerContactChooserComponent.builder().applicationComponent(dsComponent)
+            DaggerContactChooserComponent.builder()
+                    .applicationComponent(dsComponent)
                     .contactChooserModule(ContactChooserModule(activity))
                     .build()
                     .inject(activity)
