@@ -1,26 +1,26 @@
 package com.glodanif.bluetoothchat.di
 
 import android.content.Context
-import com.glodanif.bluetoothchat.data.entity.ChatMessage
 import com.glodanif.bluetoothchat.di.component.*
 import com.glodanif.bluetoothchat.di.module.*
 import com.glodanif.bluetoothchat.ui.activity.*
+import java.io.File
 
 class ComponentsManager {
 
     companion object {
 
-        private lateinit var dsComponent: ApplicationComponent
+        private lateinit var appComponent: ApplicationComponent
 
         fun initialize(context: Context) {
-            dsComponent = DaggerApplicationComponent.builder()
+            appComponent = DaggerApplicationComponent.builder()
                     .applicationModule(ApplicationModule(context))
                     .build()
         }
 
         fun injectConversations(activity: ConversationsActivity) {
             DaggerConversationsComponent.builder()
-                    .applicationComponent(dsComponent)
+                    .applicationComponent(appComponent)
                     .conversationsModule(ConversationsModule(activity))
                     .build()
                     .inject(activity)
@@ -28,7 +28,7 @@ class ComponentsManager {
 
         fun injectChat(activity: ChatActivity, address: String) {
             DaggerChatComponent.builder()
-                    .applicationComponent(dsComponent)
+                    .applicationComponent(appComponent)
                     .chatModule(ChatModule(address, activity))
                     .build()
                     .inject(activity)
@@ -36,7 +36,7 @@ class ComponentsManager {
 
         fun injectProfile(activity: ProfileActivity) {
             DaggerProfileComponent.builder()
-                    .applicationComponent(dsComponent)
+                    .applicationComponent(appComponent)
                     .profileModule(ProfileModule(activity))
                     .build()
                     .inject(activity)
@@ -44,23 +44,23 @@ class ComponentsManager {
 
         fun injectReceivedImages(activity: ReceivedImagesActivity, address: String?) {
             DaggerReceivedImagesComponent.builder()
-                    .applicationComponent(dsComponent)
+                    .applicationComponent(appComponent)
                     .receivedImagesModule(ReceivedImagesModule(address, activity))
                     .build()
                     .inject(activity)
         }
 
-        fun injectImagePreview(activity: ImagePreviewActivity, message: ChatMessage) {
+        fun injectImagePreview(activity: ImagePreviewActivity, messageId: Long, image: File) {
             DaggerImagePreviewComponent.builder()
-                    .applicationComponent(dsComponent)
-                    .imagePreviewModule(ImagePreviewModule(message, activity))
+                    .applicationComponent(appComponent)
+                    .imagePreviewModule(ImagePreviewModule(messageId, image, activity))
                     .build()
                     .inject(activity)
         }
 
         fun injectContactChooser(activity: ContactChooserActivity) {
             DaggerContactChooserComponent.builder()
-                    .applicationComponent(dsComponent)
+                    .applicationComponent(appComponent)
                     .contactChooserModule(ContactChooserModule(activity))
                     .build()
                     .inject(activity)

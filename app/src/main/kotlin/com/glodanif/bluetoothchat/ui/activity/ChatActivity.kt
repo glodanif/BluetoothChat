@@ -32,6 +32,7 @@ import com.glodanif.bluetoothchat.ui.presenter.ChatPresenter
 import com.glodanif.bluetoothchat.ui.util.SimpleTextWatcher
 import com.glodanif.bluetoothchat.ui.view.ChatView
 import com.glodanif.bluetoothchat.ui.view.NotificationView
+import com.glodanif.bluetoothchat.ui.viewmodel.converter.ChatMessageConverter
 import com.glodanif.bluetoothchat.ui.widget.ActionView
 import com.squareup.picasso.Picasso
 import pl.aprilapps.easyphotopicker.DefaultCallback
@@ -62,6 +63,7 @@ class ChatActivity : SkeletonActivity(), ChatView {
     private lateinit var textSendingHolder: ViewGroup
     private lateinit var imageSendingHolder: ViewGroup
 
+    private lateinit var converter: ChatMessageConverter
     private lateinit var adapter: ChatAdapter
 
     private var deviceAddress: String? = null
@@ -122,9 +124,10 @@ class ChatActivity : SkeletonActivity(), ChatView {
 
         val displayMetrics = DisplayMetrics()
         windowManager.defaultDisplay.getMetrics(displayMetrics)
-        adapter = ChatAdapter(this, displayMetrics)
-        adapter.imageClickListener = { view, message ->
-            ImagePreviewActivity.start(this, view, message)
+        converter = ChatMessageConverter(this, displayMetrics)
+        adapter = ChatAdapter(this)
+        adapter.imageClickListener = { view, message, path, own ->
+            ImagePreviewActivity.start(this, view, message, path, own)
         }
 
         chatList = findViewById(R.id.rv_chat)
@@ -243,18 +246,18 @@ class ChatActivity : SkeletonActivity(), ChatView {
     }
 
     override fun showMessagesHistory(messages: List<ChatMessage>) {
-        adapter.messages = LinkedList(messages)
+        adapter.messages = LinkedList(converter.transform(messages))
         adapter.notifyDataSetChanged()
     }
 
     override fun showReceivedMessage(message: ChatMessage) {
-        adapter.messages.addFirst(message)
+        adapter.messages.addFirst(converter.transform(message))
         adapter.notifyItemInserted(0)
         layoutManager.scrollToPosition(0)
     }
 
     override fun showSentMessage(message: ChatMessage) {
-        adapter.messages.addFirst(message)
+        adapter.messages.addFirst(converter.transform(message))
         adapter.notifyItemInserted(0)
         layoutManager.scrollToPosition(0)
     }

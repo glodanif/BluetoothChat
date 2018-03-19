@@ -37,13 +37,10 @@ import com.glodanif.bluetoothchat.ui.widget.ActionView
 import com.glodanif.bluetoothchat.ui.widget.SettingsPopup
 import com.glodanif.bluetoothchat.ui.widget.ShortcutManager
 import com.glodanif.bluetoothchat.ui.widget.ShortcutManagerImpl
-import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
 
 class ConversationsActivity : SkeletonActivity(), ConversationsView {
-
-    private val REQUEST_SCAN = 101
 
     @Inject
     lateinit var presenter: ConversationsPresenter
@@ -280,7 +277,7 @@ class ConversationsActivity : SkeletonActivity(), ConversationsView {
 
         if (requestCode == REQUEST_STORAGE_PERMISSION && grantResults.isNotEmpty() && grantResults[0] != PackageManager.PERMISSION_GRANTED && !storagePermissionDialog.isShowing) {
 
-            if (Build.VERSION.SDK_INT >= 23 && !shouldShowRequestPermissionRationale(permissions[0])) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !shouldShowRequestPermissionRationale(permissions[0])) {
 
                 AlertDialog.Builder(this)
                         .setMessage(Html.fromHtml("Go to Settings and grant the <b>STORAGE</b> permission to use this app."))
@@ -306,6 +303,7 @@ class ConversationsActivity : SkeletonActivity(), ConversationsView {
     companion object {
 
         private const val REQUEST_STORAGE_PERMISSION = 101
+        private const val REQUEST_SCAN = 102
 
         fun start(context: Context) =
                 context.startActivity(Intent(context, ConversationsActivity::class.java))

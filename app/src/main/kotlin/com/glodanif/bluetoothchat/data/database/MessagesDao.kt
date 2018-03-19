@@ -16,6 +16,9 @@ interface MessagesDao {
     @Query("SELECT * FROM message WHERE deviceAddress = :address AND messageType = 1 AND own = 0 ORDER BY date DESC")
     fun getFileMessagesByDevice(address: String): List<ChatMessage>
 
+    @Query("SELECT * FROM message WHERE uid = :uid")
+    fun getFileMessageById(uid: Long): ChatMessage?
+
     @Query("SELECT * FROM message WHERE messageType = 1 AND own = 0 ORDER BY date DESC")
     fun getAllFilesMessages(): List<ChatMessage>
 
@@ -33,4 +36,7 @@ interface MessagesDao {
 
     @Query("DELETE FROM message WHERE deviceAddress = :address")
     fun deleteAllByDeviceAddress(address: String)
+
+    @Query("UPDATE message SET fileInfo = null, filePath = null WHERE uid = :messageId")
+    fun removeFileInfo(messageId: Long)
 }

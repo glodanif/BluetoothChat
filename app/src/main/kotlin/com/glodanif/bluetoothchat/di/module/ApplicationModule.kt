@@ -11,13 +11,13 @@ class ApplicationModule(private val context: Context) {
 
     @Provides
     @Singleton
-    fun provideMessagesStorage(): MessagesStorage = MessagesStorageImpl(context)
+    internal fun provideMessagesStorage(): MessagesStorage = MessagesStorageImpl(context)
 
     @Provides
     @Singleton
-    fun provideConversationsStorage(): ConversationsStorage = ConversationsStorageImpl(context)
+    internal fun provideConversationsStorage(): ConversationsStorage = ConversationsStorageImpl(context)
 
     @Provides
     @Singleton
-    fun provideSettingsManager(): SettingsManager = SettingsManagerImpl(context)
+    internal fun provideSettingsManager(): SettingsManager = SettingsManagerImpl(context)
 }

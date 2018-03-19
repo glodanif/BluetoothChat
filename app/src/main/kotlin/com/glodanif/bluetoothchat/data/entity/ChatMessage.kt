@@ -12,7 +12,7 @@ data class ChatMessage(
         var date: Date,
         var own: Boolean,
         var text: String
-): Serializable {
+) {
 
     @PrimaryKey(autoGenerate = true)
     var uid: Long = 0

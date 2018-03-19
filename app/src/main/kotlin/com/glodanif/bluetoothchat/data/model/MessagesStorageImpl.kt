@@ -26,6 +26,10 @@ class MessagesStorageImpl(val context: Context) : MessagesStorage {
         return messages
     }
 
+    override suspend fun getMessageById(uid: Long): ChatMessage? {
+        return dao.getFileMessageById(uid)
+    }
+
     override suspend fun getFileMessagesByDevice(address: String?): List<ChatMessage> {
         return (if (address != null)
             dao.getFileMessagesByDevice(address) else dao.getAllFilesMessages())
@@ -38,5 +42,9 @@ class MessagesStorageImpl(val context: Context) : MessagesStorage {
 
     override suspend fun updateMessages(messages: List<ChatMessage>) {
         dao.updateMessages(messages)
+    }
+
+    override suspend fun removeFileInfo(messageId: Long) {
+        dao.removeFileInfo(messageId)
     }
 }

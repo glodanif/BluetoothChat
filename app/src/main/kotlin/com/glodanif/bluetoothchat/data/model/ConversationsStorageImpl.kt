@@ -28,12 +28,12 @@ class ConversationsStorageImpl(context: Context) : ConversationsStorage {
 
         dao.delete(address)
 
-        messageDao.getFileMessagesByDevice(address).forEach {
+        /*messageDao.getFileMessagesByDevice(address).forEach {
             if (it.filePath != null) {
                 val file = File(it.filePath)
                 file.delete()
             }
-        }
+        }*/
         messageDao.deleteAllByDeviceAddress(address)
     }
 }
