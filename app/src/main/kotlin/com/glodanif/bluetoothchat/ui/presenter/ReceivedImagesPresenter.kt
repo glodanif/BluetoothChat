@@ -11,15 +11,12 @@ import kotlin.coroutines.experimental.CoroutineContext
 class ReceivedImagesPresenter(private val address: String?, private val view: ReceivedImagesView, private val model: MessagesStorage,
                               private val uiContext: CoroutineContext = UI, private val bgContext: CoroutineContext = CommonPool) {
 
-    fun loadImages() {
-
-        launch(uiContext) {
-            val messages = async(bgContext) { model.getFileMessagesByDevice(address) }.await()
-            if (messages.isNotEmpty()) {
-                view.displayImages(messages)
-            } else {
-                view.showNoImages()
-            }
+    fun loadImages() = launch(uiContext) {
+        val messages = async(bgContext) { model.getFileMessagesByDevice(address) }.await()
+        if (messages.isNotEmpty()) {
+            view.displayImages(messages)
+        } else {
+            view.showNoImages()
         }
     }
 }

@@ -114,19 +114,16 @@ class ConversationsPresenter(private val view: ConversationsView, private val co
         }
     }
 
-    fun loadConversations() {
+    fun loadConversations() = launch(UI) {
 
-        launch(UI) {
+        val conversations = async(CommonPool) { conversationStorage.getConversations() }.await()
 
-            val conversations = async(CommonPool) { conversationStorage.getConversations() }.await()
-
-            if (conversations.isEmpty()) {
-                view.showNoConversations()
-            } else {
-                val connectedDevice = if (connection.isConnected())
-                    connection.getCurrentConversation()?.deviceAddress else null
-                view.showConversations(converter.transform(conversations), connectedDevice)
-            }
+        if (conversations.isEmpty()) {
+            view.showNoConversations()
+        } else {
+            val connectedDevice = if (connection.isConnected())
+                connection.getCurrentConversation()?.deviceAddress else null
+            view.showConversations(converter.transform(conversations), connectedDevice)
         }
     }
 

@@ -12,16 +12,15 @@ import kotlin.coroutines.experimental.CoroutineContext
 class ContactChooserPresenter(private val view: ContactChooserView, private val model: ConversationsStorage, private val converter: ContactConverter,
                               private val uiContext: CoroutineContext = UI, private val bgContext: CoroutineContext = CommonPool) {
 
-    fun loadContacts() {
+    fun loadContacts() = launch(uiContext) {
 
-        launch(uiContext) {
-            val contacts = async(bgContext) { model.getConversations() }.await()
-            if (contacts.isNotEmpty()) {
-                val viewModels = converter.transform(contacts)
-                view.showContacts(viewModels)
-            } else {
-                view.showNoContacts()
-            }
+        val contacts = async(bgContext) { model.getConversations() }.await()
+
+        if (contacts.isNotEmpty()) {
+            val viewModels = converter.transform(contacts)
+            view.showContacts(viewModels)
+        } else {
+            view.showNoContacts()
         }
     }
 }

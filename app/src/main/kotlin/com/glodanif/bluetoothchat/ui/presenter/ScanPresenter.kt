@@ -152,15 +152,12 @@ class ScanPresenter(private val view: ScanView, private val scanner: BluetoothSc
         scanner.stopScanning()
     }
 
-    fun shareApk() {
-
-        launch(uiContext) {
-            val uri = async(bgContext) { fileManager.extractApkFile() }.await()
-            if (uri != null) {
-                view.shareApk(uri)
-            } else {
-                view.showExtractionApkFailureMessage()
-            }
+    fun shareApk() = launch(uiContext) {
+        val uri = async(bgContext) { fileManager.extractApkFile() }.await()
+        if (uri != null) {
+            view.shareApk(uri)
+        } else {
+            view.showExtractionApkFailureMessage()
         }
     }
 }
