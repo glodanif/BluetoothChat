@@ -29,9 +29,10 @@ class ConversationConverter(private val context: Context) {
 
         return ConversationViewModel(
                 conversation.deviceAddress,
+                conversation.deviceName,
                 conversation.displayName,
-                conversation.color,
                 "${conversation.displayName} (${conversation.deviceName})",
+                conversation.color,
                 lastMessage,
                 lastActivity,
                 conversation.notSeen

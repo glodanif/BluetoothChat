@@ -12,19 +12,13 @@ import android.net.Uri
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
-import android.util.DisplayMetrics
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import com.glodanif.bluetoothchat.R
-import com.glodanif.bluetoothchat.data.entity.ChatMessage
 import com.glodanif.bluetoothchat.data.entity.Conversation
-import com.glodanif.bluetoothchat.data.model.BluetoothConnector
-import com.glodanif.bluetoothchat.data.model.BluetoothConnectorImpl
-import com.glodanif.bluetoothchat.data.model.BluetoothScanner
-import com.glodanif.bluetoothchat.data.model.BluetoothScannerImpl
 import com.glodanif.bluetoothchat.di.ComponentsManager
 import com.glodanif.bluetoothchat.extension.toReadableFileSize
 import com.glodanif.bluetoothchat.ui.adapter.ChatAdapter
@@ -32,7 +26,7 @@ import com.glodanif.bluetoothchat.ui.presenter.ChatPresenter
 import com.glodanif.bluetoothchat.ui.util.SimpleTextWatcher
 import com.glodanif.bluetoothchat.ui.view.ChatView
 import com.glodanif.bluetoothchat.ui.view.NotificationView
-import com.glodanif.bluetoothchat.ui.viewmodel.converter.ChatMessageConverter
+import com.glodanif.bluetoothchat.ui.viewmodel.ChatMessageViewModel
 import com.glodanif.bluetoothchat.ui.widget.ActionView
 import com.squareup.picasso.Picasso
 import pl.aprilapps.easyphotopicker.DefaultCallback
@@ -63,7 +57,6 @@ class ChatActivity : SkeletonActivity(), ChatView {
     private lateinit var textSendingHolder: ViewGroup
     private lateinit var imageSendingHolder: ViewGroup
 
-    private lateinit var converter: ChatMessageConverter
     private lateinit var adapter: ChatAdapter
 
     private var deviceAddress: String? = null
@@ -122,12 +115,9 @@ class ChatActivity : SkeletonActivity(), ChatView {
             presenter.cancelFileTransfer()
         }
 
-        val displayMetrics = DisplayMetrics()
-        windowManager.defaultDisplay.getMetrics(displayMetrics)
-        converter = ChatMessageConverter(this, displayMetrics)
         adapter = ChatAdapter(this)
-        adapter.imageClickListener = { view, message, path, own ->
-            ImagePreviewActivity.start(this, view, message, path, own)
+        adapter.imageClickListener = { view, message ->
+            ImagePreviewActivity.start(this, view, message)
         }
 
         chatList = findViewById(R.id.rv_chat)
@@ -245,19 +235,19 @@ class ChatActivity : SkeletonActivity(), ChatView {
         actions.visibility = View.GONE
     }
 
-    override fun showMessagesHistory(messages: List<ChatMessage>) {
-        adapter.messages = LinkedList(converter.transform(messages))
+    override fun showMessagesHistory(messages: List<ChatMessageViewModel>) {
+        adapter.messages = LinkedList(messages)
         adapter.notifyDataSetChanged()
     }
 
-    override fun showReceivedMessage(message: ChatMessage) {
-        adapter.messages.addFirst(converter.transform(message))
+    override fun showReceivedMessage(message: ChatMessageViewModel) {
+        adapter.messages.addFirst(message)
         adapter.notifyItemInserted(0)
         layoutManager.scrollToPosition(0)
     }
 
-    override fun showSentMessage(message: ChatMessage) {
-        adapter.messages.addFirst(converter.transform(message))
+    override fun showSentMessage(message: ChatMessageViewModel) {
+        adapter.messages.addFirst(message)
         adapter.notifyItemInserted(0)
         layoutManager.scrollToPosition(0)
     }

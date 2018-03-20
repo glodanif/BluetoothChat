@@ -6,9 +6,10 @@ import com.glodanif.bluetoothchat.extension.getFirstLetter
 
 data class ConversationViewModel(
         val address: String,
-        val name: String,
-        val color: Int,
+        val deviceName: String,
         val displayName: String,
+        val fullName: String,
+        val color: Int,
         val lastMessage: String?,
         val lastActivity: String?,
         val notSeen: Int
@@ -19,5 +20,5 @@ data class ConversationViewModel(
     fun getGrayedAvatar() = textDrawable(Color.LTGRAY)
 
     private fun textDrawable(color: Int): TextDrawable =
-            TextDrawable.builder().buildRound(name.getFirstLetter(), color)
+            TextDrawable.builder().buildRound(displayName.getFirstLetter(), color)
 }

@@ -1,20 +1,20 @@
 package com.glodanif.bluetoothchat.ui.presenter
 
 import android.bluetooth.BluetoothDevice
-import android.os.Handler
 import com.glodanif.bluetoothchat.data.entity.ChatMessage
 import com.glodanif.bluetoothchat.data.entity.Conversation
 import com.glodanif.bluetoothchat.data.model.*
-import com.glodanif.bluetoothchat.di.ComponentsManager
 import com.glodanif.bluetoothchat.ui.view.ConversationsView
+import com.glodanif.bluetoothchat.ui.viewmodel.ConversationViewModel
+import com.glodanif.bluetoothchat.ui.viewmodel.converter.ConversationConverter
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.async
 import kotlinx.coroutines.experimental.launch
-import javax.inject.Inject
 
 class ConversationsPresenter(private val view: ConversationsView, private val connection: BluetoothConnector,
-                             private val conversationStorage: ConversationsStorage, private val settings: SettingsManager) {
+                             private val conversationStorage: ConversationsStorage, private val settings: SettingsManager,
+                             private val converter: ConversationConverter) {
 
     private val prepareListener = object : OnPrepareListener {
 
@@ -28,7 +28,7 @@ class ConversationsPresenter(private val view: ConversationsView, private val co
             val device = connection.getCurrentConversation()
 
             if (device != null && connection.isPending()) {
-                view.notifyAboutConnectedDevice(device)
+                view.notifyAboutConnectedDevice(converter.transform(device))
             } else {
                 view.hideActions()
             }
@@ -64,11 +64,11 @@ class ConversationsPresenter(private val view: ConversationsView, private val co
         }
 
         override fun onConnectedIn(conversation: Conversation) {
-            view.notifyAboutConnectedDevice(conversation)
+            view.notifyAboutConnectedDevice(converter.transform(conversation))
         }
 
         override fun onConnectedOut(conversation: Conversation) {
-            view.redirectToChat(conversation)
+            view.redirectToChat(converter.transform(conversation))
         }
 
         override fun onConnecting() {
@@ -125,7 +125,7 @@ class ConversationsPresenter(private val view: ConversationsView, private val co
             } else {
                 val connectedDevice = if (connection.isConnected())
                     connection.getCurrentConversation()?.deviceAddress else null
-                view.showConversations(conversations, connectedDevice)
+                view.showConversations(converter.transform(conversations), connectedDevice)
             }
         }
     }
@@ -144,7 +144,7 @@ class ConversationsPresenter(private val view: ConversationsView, private val co
         connection.release()
     }
 
-    fun startChat(conversation: Conversation) {
+    fun startChat(conversation: ConversationViewModel) {
         connection.acceptConnection()
         view.hideActions()
         view.redirectToChat(conversation)

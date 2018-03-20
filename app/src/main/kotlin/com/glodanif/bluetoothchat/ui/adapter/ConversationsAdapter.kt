@@ -22,7 +22,7 @@ class ConversationsAdapter : RecyclerView.Adapter<ConversationsAdapter.Conversat
 
         val conversation = conversations[position]
 
-        holder.name.text = conversation.displayName
+        holder.name.text = conversation.fullName
         holder.itemView?.setOnClickListener {
             clickListener?.invoke(conversation)
         }

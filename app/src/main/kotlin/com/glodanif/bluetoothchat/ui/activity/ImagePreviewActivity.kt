@@ -12,9 +12,11 @@ import android.view.MenuItem
 import android.widget.ImageView
 import com.github.chrisbanes.photoview.PhotoView
 import com.glodanif.bluetoothchat.R
+import com.glodanif.bluetoothchat.data.entity.ChatMessage
 import com.glodanif.bluetoothchat.di.ComponentsManager
 import com.glodanif.bluetoothchat.ui.presenter.ImagePreviewPresenter
 import com.glodanif.bluetoothchat.ui.view.ImagePreviewView
+import com.glodanif.bluetoothchat.ui.viewmodel.ChatMessageViewModel
 import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso
 import java.io.File
@@ -112,6 +114,14 @@ class ImagePreviewActivity : SkeletonActivity(), ImagePreviewView {
         const val EXTRA_MESSAGE_ID = "extra.message_id"
         const val EXTRA_IMAGE_PATH = "extra.image_path"
         const val EXTRA_OWN = "extra.own"
+
+        fun start(activity: Activity, transitionView: ImageView, message: ChatMessage) {
+            start(activity, transitionView, message.uid, message.filePath ?: "unknown", message.own)
+        }
+
+        fun start(activity: Activity, transitionView: ImageView, message: ChatMessageViewModel) {
+            start(activity, transitionView, message.uid, message.imagePath ?: "unknown", message.own)
+        }
 
         fun start(activity: Activity, transitionView: ImageView, messageId: Long, imagePath: String, ownMessage: Boolean) {
 

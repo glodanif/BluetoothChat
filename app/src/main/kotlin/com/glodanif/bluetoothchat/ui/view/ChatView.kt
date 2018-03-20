@@ -2,12 +2,13 @@ package com.glodanif.bluetoothchat.ui.view
 
 import com.glodanif.bluetoothchat.data.entity.ChatMessage
 import com.glodanif.bluetoothchat.data.entity.Conversation
+import com.glodanif.bluetoothchat.ui.viewmodel.ChatMessageViewModel
 
 interface ChatView {
 
-    fun showMessagesHistory(messages: List<ChatMessage>)
-    fun showReceivedMessage(message: ChatMessage)
-    fun showSentMessage(message: ChatMessage)
+    fun showMessagesHistory(messages: List<ChatMessageViewModel>)
+    fun showReceivedMessage(message: ChatMessageViewModel)
+    fun showSentMessage(message: ChatMessageViewModel)
     fun showServiceDestroyed()
     fun showRejectedConnection()
     fun showConnectionRequest(conversation: Conversation)

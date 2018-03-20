@@ -7,6 +7,7 @@ import com.glodanif.bluetoothchat.data.model.SettingsManager
 import com.glodanif.bluetoothchat.di.PerActivity
 import com.glodanif.bluetoothchat.ui.activity.ConversationsActivity
 import com.glodanif.bluetoothchat.ui.presenter.ConversationsPresenter
+import com.glodanif.bluetoothchat.ui.viewmodel.converter.ConversationConverter
 import dagger.Module
 import dagger.Provides
 
@@ -15,8 +16,9 @@ class ConversationsModule(private val activity: ConversationsActivity) {
 
     @Provides
     @PerActivity
-    internal fun providePresenter(connector: BluetoothConnector, storage: ConversationsStorage,settings: SettingsManager): ConversationsPresenter =
-            ConversationsPresenter(activity, connector, storage, settings)
+    internal fun providePresenter(connector: BluetoothConnector, storage: ConversationsStorage,
+                                  settings: SettingsManager, converter: ConversationConverter): ConversationsPresenter =
+            ConversationsPresenter(activity, connector, storage, settings, converter)
 
     @Provides
     @PerActivity

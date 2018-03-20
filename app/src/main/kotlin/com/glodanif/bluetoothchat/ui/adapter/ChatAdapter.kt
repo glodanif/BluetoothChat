@@ -26,7 +26,7 @@ class ChatAdapter(private val context: Context) : RecyclerView.Adapter<RecyclerV
 
     var messages = LinkedList<ChatMessageViewModel>()
 
-    var imageClickListener: ((view: ImageView, messageId: Long, imagePath: String, own: Boolean) -> Unit)? = null
+    var imageClickListener: ((view: ImageView, message: ChatMessageViewModel) -> Unit)? = null
 
     override fun onBindViewHolder(viewHolder: RecyclerView.ViewHolder, position: Int) {
 
@@ -52,8 +52,7 @@ class ChatAdapter(private val context: Context) : RecyclerView.Adapter<RecyclerV
                     val size = message.imageSize
                     holder?.image?.layoutParams = FrameLayout.LayoutParams(size.width, size.height)
                     holder?.image?.setOnClickListener {
-                        imageClickListener?.invoke(holder.image, message.uid,
-                                message.imagePath ?: "unknown", message.own)
+                        imageClickListener?.invoke(holder.image, message)
                     }
 
                     Picasso.with(context)

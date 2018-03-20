@@ -7,6 +7,7 @@ import com.glodanif.bluetoothchat.data.entity.TransferringFile
 import com.glodanif.bluetoothchat.data.model.*
 import com.glodanif.bluetoothchat.di.ComponentsManager
 import com.glodanif.bluetoothchat.ui.view.ChatView
+import com.glodanif.bluetoothchat.ui.viewmodel.converter.ChatMessageConverter
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.async
@@ -15,7 +16,8 @@ import java.io.File
 import javax.inject.Inject
 
 class ChatPresenter(private val deviceAddress: String, private val view: ChatView, private val conversationsStorage: ConversationsStorage,
-                   private val messagesStorage: MessagesStorage, private val scanModel: BluetoothScanner,  private val connectionModel: BluetoothConnector) {
+                    private val messagesStorage: MessagesStorage, private val scanModel: BluetoothScanner, private val connectionModel: BluetoothConnector,
+                    private val converter: ChatMessageConverter) {
 
     private val maxFileSize = 5_242_880
 
@@ -111,11 +113,11 @@ class ChatPresenter(private val deviceAddress: String, private val view: ChatVie
     private val messageListener = object : OnMessageListener {
 
         override fun onMessageReceived(message: ChatMessage) {
-            view.showReceivedMessage(message)
+            view.showReceivedMessage(converter.transform(message))
         }
 
         override fun onMessageSent(message: ChatMessage) {
-            view.showSentMessage(message)
+            view.showSentMessage(converter.transform(message))
         }
 
         override fun onMessageDelivered(id: String) {
@@ -213,19 +215,22 @@ class ChatPresenter(private val deviceAddress: String, private val view: ChatVie
         }
 
         launch(UI) {
+            val messagesDef = async(CommonPool) { messagesStorage.getMessagesByDevice(deviceAddress) }
+            val conversationDef = async(CommonPool) { conversationsStorage.getConversationByAddress(deviceAddress) }
+            displayInfo(messagesDef.await(), conversationDef.await())
+        }
+    }
 
-            val messages = async(CommonPool) { messagesStorage.getMessagesByDevice(deviceAddress) }.await()
-            val conversation = async(CommonPool) { conversationsStorage.getConversationByAddress(deviceAddress) }.await()
+    private fun displayInfo(messages: List<ChatMessage>, partner: Conversation?) {
 
-            messages.forEach { it.seenHere = true }
-            view.showMessagesHistory(messages)
-            if (conversation != null) {
-                view.showPartnerName(conversation.displayName, conversation.deviceName)
-            }
+        messages.forEach { it.seenHere = true }
+        view.showMessagesHistory(converter.transform(messages))
+        if (partner != null) {
+            view.showPartnerName(partner.displayName, partner.deviceName)
+        }
 
-            launch(CommonPool) {
-                messagesStorage.updateMessages(messages)
-            }
+        launch(CommonPool) {
+            messagesStorage.updateMessages(messages)
         }
     }
 

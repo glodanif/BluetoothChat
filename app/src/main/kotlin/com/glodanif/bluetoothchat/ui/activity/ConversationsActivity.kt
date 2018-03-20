@@ -24,7 +24,6 @@ import android.widget.Button
 import android.widget.ImageView
 import com.amulyakhare.textdrawable.TextDrawable
 import com.glodanif.bluetoothchat.R
-import com.glodanif.bluetoothchat.data.entity.Conversation
 import com.glodanif.bluetoothchat.di.ComponentsManager
 import com.glodanif.bluetoothchat.extension.getFirstLetter
 import com.glodanif.bluetoothchat.ui.adapter.ConversationsAdapter
@@ -32,13 +31,11 @@ import com.glodanif.bluetoothchat.ui.presenter.ConversationsPresenter
 import com.glodanif.bluetoothchat.ui.view.ConversationsView
 import com.glodanif.bluetoothchat.ui.view.NotificationView
 import com.glodanif.bluetoothchat.ui.viewmodel.ConversationViewModel
-import com.glodanif.bluetoothchat.ui.viewmodel.converter.ConversationConverter
 import com.glodanif.bluetoothchat.ui.widget.ActionView
 import com.glodanif.bluetoothchat.ui.widget.SettingsPopup
 import com.glodanif.bluetoothchat.ui.widget.ShortcutManager
 import com.glodanif.bluetoothchat.ui.widget.ShortcutManagerImpl
 import javax.inject.Inject
-import kotlin.collections.ArrayList
 
 class ConversationsActivity : SkeletonActivity(), ConversationsView {
 
@@ -57,7 +54,6 @@ class ConversationsActivity : SkeletonActivity(), ConversationsView {
     private lateinit var storagePermissionDialog: AlertDialog
 
     private val adapter = ConversationsAdapter()
-    private val converter = ConversationConverter(this);
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -152,7 +148,7 @@ class ConversationsActivity : SkeletonActivity(), ConversationsView {
 
     private fun requestPinShortcut(conversation: ConversationViewModel) {
         shortcutsManager.requestPinConversationShortcut(
-                conversation.address, conversation.name, conversation.color)
+                conversation.address, conversation.displayName, conversation.color)
     }
 
     private fun confirmRemoval(address: String) {
@@ -196,13 +192,12 @@ class ConversationsActivity : SkeletonActivity(), ConversationsView {
         noConversations.visibility = View.VISIBLE
     }
 
-    override fun showConversations(conversations: List<Conversation>, connected: String?) {
+    override fun showConversations(conversations: List<ConversationViewModel>, connected: String?) {
         conversationsList.visibility = View.VISIBLE
         addButton.visibility = View.VISIBLE
         noConversations.visibility = View.GONE
 
-        val list = converter.transform(conversations)
-        adapter.setData(ArrayList(list), connected)
+        adapter.setData(ArrayList(conversations), connected)
         adapter.notifyDataSetChanged()
     }
 
@@ -225,7 +220,7 @@ class ConversationsActivity : SkeletonActivity(), ConversationsView {
         adapter.notifyDataSetChanged()
     }
 
-    override fun notifyAboutConnectedDevice(conversation: Conversation) {
+    override fun notifyAboutConnectedDevice(conversation: ConversationViewModel) {
 
         actions.visibility = View.VISIBLE
         actions.setActions(getString(R.string.conversations__connection_request, conversation.displayName, conversation.deviceName),
@@ -234,7 +229,7 @@ class ConversationsActivity : SkeletonActivity(), ConversationsView {
         )
     }
 
-    override fun showRejectedNotification(conversation: Conversation) {
+    override fun showRejectedNotification(conversation: ConversationViewModel) {
 
         if (!isStarted()) return
 
@@ -246,8 +241,8 @@ class ConversationsActivity : SkeletonActivity(), ConversationsView {
                 .show()
     }
 
-    override fun redirectToChat(conversation: Conversation) {
-        ChatActivity.start(this, conversation.deviceAddress)
+    override fun redirectToChat(conversation: ConversationViewModel) {
+        ChatActivity.start(this, conversation.address)
     }
 
     override fun showUserProfile(name: String, color: Int) {

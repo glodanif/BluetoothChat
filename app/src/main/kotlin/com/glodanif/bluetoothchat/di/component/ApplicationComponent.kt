@@ -5,6 +5,9 @@ import com.glodanif.bluetoothchat.data.model.MessagesStorage
 import com.glodanif.bluetoothchat.data.model.SettingsManager
 import com.glodanif.bluetoothchat.di.module.ApplicationModule
 import com.glodanif.bluetoothchat.ui.presenter.*
+import com.glodanif.bluetoothchat.ui.viewmodel.converter.ChatMessageConverter
+import com.glodanif.bluetoothchat.ui.viewmodel.converter.ContactConverter
+import com.glodanif.bluetoothchat.ui.viewmodel.converter.ConversationConverter
 import dagger.Component
 import javax.inject.Singleton
 
@@ -12,11 +15,11 @@ import javax.inject.Singleton
 @Component(modules = arrayOf(ApplicationModule::class))
 interface ApplicationComponent {
 
-    fun inject(presenter: ContactChooserPresenter)
-    fun inject(presenter: ImagePreviewPresenter)
-    fun inject(presenter: ReceivedImagesPresenter)
-
     fun conversationsStorage(): ConversationsStorage
     fun messagesStorage(): MessagesStorage
     fun settingsManager(): SettingsManager
+
+    fun contactConverter(): ContactConverter
+    fun conversationConverter(): ConversationConverter
+    fun chatMessageConverter(): ChatMessageConverter
 }

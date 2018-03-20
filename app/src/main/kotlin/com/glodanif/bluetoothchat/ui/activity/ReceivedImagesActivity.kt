@@ -42,8 +42,7 @@ class ReceivedImagesActivity : SkeletonActivity(), ReceivedImagesView {
         imagesGrid.adapter = adapter
 
         adapter.clickListener = { view, message ->
-            ImagePreviewActivity.start(this, view, message.uid,
-                    message.filePath ?: "unknown", message.own)
+            ImagePreviewActivity.start(this, view, message)
         }
     }
 
