@@ -17,7 +17,6 @@ import java.text.DecimalFormat
 import java.text.SimpleDateFormat
 import java.util.*
 
-
 fun Date.getRelativeTime(context: Context): String {
 
     val resources = context.resources
@@ -87,19 +86,14 @@ fun Uri.getFilePath(context: Context): String? {
             val split = docId.split(":".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
             val type = split[0]
 
-            val contentUri: Uri? = when (type) {
+            val contentUri = when (type) {
                 "image" -> MediaStore.Images.Media.EXTERNAL_CONTENT_URI
                 "video" -> MediaStore.Video.Media.EXTERNAL_CONTENT_URI
                 "audio" -> MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
                 else -> null
             }
-
-            val selection = "_id=?"
-            val selectionArgs = arrayOf(split[1])
-
-            return getDataColumn(context, contentUri, selection, selectionArgs)
-        }// MediaProvider
-        // DownloadsProvider
+            return getDataColumn(context, contentUri, "_id=?", arrayOf(split[1]))
+        }
     } else if ("content".equals(this.scheme, ignoreCase = true)) {
         return getDataColumn(context, this, null, null)
     } else if ("file".equals(this.scheme, ignoreCase = true)) {
@@ -121,8 +115,7 @@ private fun getDataColumn(context: Context, uri: Uri?, selection: String?, selec
             return cursor.getString(columnIndex)
         }
     } finally {
-        if (cursor != null)
-            cursor.close()
+        cursor?.close()
     }
     return null
 }

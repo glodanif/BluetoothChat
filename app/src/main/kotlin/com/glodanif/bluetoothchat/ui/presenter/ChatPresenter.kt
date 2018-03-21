@@ -198,16 +198,7 @@ class ChatPresenter(private val deviceAddress: String, private val view: ChatVie
                 connectionModel.setOnFileListener(fileListener)
                 updateState()
                 dismissNotification()
-
-                if (fileToSend != null) {
-
-                    if (fileToSend!!.length() > maxFileSize) {
-                        view.showImageTooBig(maxFileSize.toLong())
-                    } else {
-                        connectionModel.sendFile(fileToSend!!)
-                    }
-                    fileToSend = null
-                }
+                sendFileIfPrepared()
             } else {
                 connectionModel.prepare()
             }
@@ -217,6 +208,19 @@ class ChatPresenter(private val deviceAddress: String, private val view: ChatVie
             val messagesDef = async(CommonPool) { messagesStorage.getMessagesByDevice(deviceAddress) }
             val conversationDef = async(CommonPool) { conversationsStorage.getConversationByAddress(deviceAddress) }
             displayInfo(messagesDef.await(), conversationDef.await())
+        }
+    }
+
+    private fun sendFileIfPrepared() {
+
+        if (fileToSend != null) {
+
+            if (fileToSend!!.length() > maxFileSize) {
+                view.showImageTooBig(maxFileSize.toLong())
+            } else {
+                connectionModel.sendFile(fileToSend!!)
+            }
+            fileToSend = null
         }
     }
 
@@ -293,6 +297,9 @@ class ChatPresenter(private val deviceAddress: String, private val view: ChatVie
             filePresharing = file
         } else {
             fileToSend = file
+            if (connectionModel.isConnectedOrPending()) {
+                sendFileIfPrepared()
+            }
         }
     }
 

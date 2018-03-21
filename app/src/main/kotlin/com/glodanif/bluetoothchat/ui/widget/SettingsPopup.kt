@@ -16,7 +16,7 @@ import android.widget.TextView
 import com.amulyakhare.textdrawable.TextDrawable
 import com.glodanif.bluetoothchat.R
 import com.glodanif.bluetoothchat.extension.getFirstLetter
-import com.glodanif.bluetoothchat.ui.util.StartEndAnimatorListener
+import com.glodanif.bluetoothchat.ui.util.EmptyAnimatorListener
 
 class SettingsPopup(context: Context) : PopupWindow() {
 
@@ -123,7 +123,7 @@ class SettingsPopup(context: Context) : PopupWindow() {
             val animator = ViewAnimationUtils.createCircularReveal(container,
                     container.width, 0, container.measuredWidth.toFloat(), 0f)
             container.visibility = View.VISIBLE
-            animator.addListener(object : StartEndAnimatorListener() {
+            animator.addListener(object : EmptyAnimatorListener() {
 
                 override fun onAnimationStart(animation: Animator?) {
                     isDismissing = true

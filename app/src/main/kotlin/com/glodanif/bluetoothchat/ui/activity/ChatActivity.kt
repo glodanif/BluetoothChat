@@ -10,6 +10,7 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.os.Handler
 import android.support.v7.widget.CardView
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
@@ -17,6 +18,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AnimationUtils
 import android.widget.*
 import com.glodanif.bluetoothchat.R
 import com.glodanif.bluetoothchat.data.entity.Conversation
@@ -64,6 +66,11 @@ class ChatActivity : SkeletonActivity(), ChatView {
     private lateinit var adapter: ChatAdapter
 
     private var deviceAddress: String? = null
+
+    private val showAnimation =
+            lazy {  AnimationUtils.loadAnimation(this, R.anim.anime_fade_slide_in) }
+    private val hideAnimation =
+            lazy { AnimationUtils.loadAnimation(this, R.anim.anime_fade_slide_out) }
 
     private val textWatcher = object : SimpleTextWatcher() {
 
@@ -123,12 +130,16 @@ class ChatActivity : SkeletonActivity(), ChatView {
         }
 
         findViewById<Button>(R.id.btn_retry).setOnClickListener {
-            presharingContainer.visibility = View.GONE
+            val animation = hideAnimation.value
+            animation.fillAfter = true
+            presharingContainer.startAnimation(animation)
             presenter.proceedPresharing()
         }
 
         findViewById<Button>(R.id.btn_cancel).setOnClickListener {
-            presharingContainer.visibility = View.GONE
+            val animation = hideAnimation.value
+            animation.fillAfter = true
+            presharingContainer.startAnimation(animation)
             presenter.cancelPresharing()
         }
 
@@ -166,8 +177,12 @@ class ChatActivity : SkeletonActivity(), ChatView {
             if (textToShare != null) {
                 messageField.setText(textToShare)
             } else if (fileToShare != null) {
-                presenter.sendFile(File(fileToShare))
+                Handler().postDelayed({
+                    presenter.sendFile(File(fileToShare))
+                }, 1000)
             }
+
+            intent.action = Intent.ACTION_VIEW
         }
     }
 
@@ -371,7 +386,11 @@ class ChatActivity : SkeletonActivity(), ChatView {
 
     override fun showPresharingImage(path: String) {
 
+        val animation = showAnimation.value
+        animation.fillAfter = true
         presharingContainer.visibility = View.VISIBLE
+        presharingContainer.startAnimation(animation)
+
         Picasso.with(this)
                 .load("file://$path")
                 .into(presharingImage)

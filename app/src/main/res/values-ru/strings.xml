@@ -79,6 +79,9 @@
     <string name="chat__receiving_images">Прием изображения</string>
     <string name="chat__partner_unable_to_receive_images">Ваш партнер изпользует старую версию Bluetooth Chat, которая не может принимать изображения.</string>
     <string name="chat__image_message">%s [Изображение]</string>
+    <string name="chat__too_big_image">Это изображение слишком большое. Максимальный размер файла, который вы можете отправить с помощью Blooetooth Chat составляет %s.</string>
+    <string name="chat__presharing">Сейчас вы не подключены к этому устройству, соединитесь и попробуйте еще раз.</string>
+    <string name="chat__presharing_share">Отправить</string>
 
     <string name="conversations__no_conversations">У вас пока что нет ни одного разговора\nНачните сканирование чтобы найти вашего партнера</string>
     <string name="conversations__scan">Сканировать</string>
@@ -155,6 +158,6 @@
     <string name="chat__cd__received_image">Полученое изображение</string>
     <string name="chat__cd__sent_image">Отосланое изображение</string>
     <string name="chat__cd__transferring_image">Передающееся изображение</string>
-    <string name="chat__too_big_image">Это изображение слишком большое. Максимальный размер файла, который вы можете отправить с помощью Blooetooth Chat составляет %s.</string>
+    <string name="chat__cd__preshare_image">Изображение, которое вы собираетесь отправить</string>
 
 </resources>

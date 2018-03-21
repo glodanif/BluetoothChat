@@ -78,7 +78,6 @@
     <string name="chat__partner_unable_to_receive_images">Your partner uses an old version of Bluetooth Chat which is not able to receive images.</string>
     <string name="chat__image_message">%s [Image]</string>
     <string name="chat__presharing">You are not connected to this device, please connect and try again.</string>
-    <string name="chat__presharing_cancel">Cancel</string>
     <string name="chat__presharing_share">Share</string>
 
     <string name="conversations__no_conversations">You don\'t have any conversationsStorage yet\nScan for devices to find your partner</string>
