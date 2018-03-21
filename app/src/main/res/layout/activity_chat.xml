@@ -175,6 +175,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:visibility="gone"
+        app:cardElevation="16dp"
         app:layout_constraintBottom_toTopOf="@+id/bottomLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -188,6 +189,8 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="124dp"
+            android:background="#22009688"
+            android:clickable="true"
             android:padding="8dp">
 
             <ImageView
