@@ -10,6 +10,7 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.support.v7.widget.CardView
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.Menu
@@ -54,6 +55,9 @@ class ChatActivity : SkeletonActivity(), ChatView {
     private lateinit var transferringImageProgressLabel: TextView
     private lateinit var transferringImageProgressBar: ProgressBar
 
+    private lateinit var presharingContainer: CardView
+    private lateinit var presharingImage: ImageView
+
     private lateinit var textSendingHolder: ViewGroup
     private lateinit var imageSendingHolder: ViewGroup
 
@@ -97,6 +101,9 @@ class ChatActivity : SkeletonActivity(), ChatView {
         transferringImageProgressLabel = findViewById(R.id.tv_file_sending_percentage)
         transferringImageProgressBar = findViewById(R.id.pb_transferring_progress)
 
+        presharingContainer = findViewById(R.id.cv_presharing_image_holder)
+        presharingImage = findViewById(R.id.iv_presharing_image)
+
         actions = findViewById(R.id.av_actions)
         messageField = findViewById(R.id.et_message)
         messageField.addTextChangedListener(textWatcher)
@@ -108,11 +115,21 @@ class ChatActivity : SkeletonActivity(), ChatView {
 
         imagePickerButton = findViewById(R.id.ib_image)
         imagePickerButton.setOnClickListener {
-            presenter.pickImage()
+            EasyImage.openChooserWithGallery(this, "chooserTitle", 0)
         }
 
         findViewById<ImageButton>(R.id.ib_cancel).setOnClickListener {
             presenter.cancelFileTransfer()
+        }
+
+        findViewById<Button>(R.id.btn_retry).setOnClickListener {
+            presharingContainer.visibility = View.GONE
+            presenter.proceedPresharing()
+        }
+
+        findViewById<Button>(R.id.btn_cancel).setOnClickListener {
+            presharingContainer.visibility = View.GONE
+            presenter.cancelPresharing()
         }
 
         adapter = ChatAdapter(this)
@@ -141,8 +158,16 @@ class ChatActivity : SkeletonActivity(), ChatView {
         title = if (deviceAddress.isNullOrEmpty()) getString(R.string.app_name) else deviceAddress
         toolbar?.subtitle = getString(R.string.chat__not_connected)
 
-        if (intent.action == Intent.ACTION_SEND) {
-            messageField.setText(intent.data.toString().trim())
+        if (Intent.ACTION_SEND == intent.action) {
+
+            val textToShare = intent.getStringExtra(EXTRA_MESSAGE)
+            val fileToShare = intent.getStringExtra(EXTRA_FILE_PATH)
+
+            if (textToShare != null) {
+                messageField.setText(textToShare)
+            } else if (fileToShare != null) {
+                presenter.sendFile(File(fileToShare))
+            }
         }
     }
 
@@ -334,10 +359,6 @@ class ChatActivity : SkeletonActivity(), ChatView {
                 .show()
     }
 
-    override fun pickImage() {
-        EasyImage.openChooserWithGallery(this, "chooserTitle", 0)
-    }
-
     override fun showImageTooBig(maxSize: Long) {
 
         if (!isStarted()) return
@@ -346,6 +367,14 @@ class ChatActivity : SkeletonActivity(), ChatView {
                 .setMessage(getString(R.string.chat__too_big_image, maxSize.toReadableFileSize()))
                 .setPositiveButton(getString(R.string.general__ok), null)
                 .show()
+    }
+
+    override fun showPresharingImage(path: String) {
+
+        presharingContainer.visibility = View.VISIBLE
+        Picasso.with(this)
+                .load("file://$path")
+                .into(presharingImage)
     }
 
     override fun showImageTransferLayout(fileAddress: String?, fileSize: Long, transferType: ChatView.FileTransferType) {
@@ -454,6 +483,8 @@ class ChatActivity : SkeletonActivity(), ChatView {
         private const val REQUEST_ENABLE_BLUETOOTH = 101
 
         const val EXTRA_ADDRESS = "extra.address"
+        const val EXTRA_MESSAGE = "extra.message"
+        const val EXTRA_FILE_PATH = "extra.file_path"
 
         fun start(context: Context, address: String) {
             val intent: Intent = Intent(context, ChatActivity::class.java)
@@ -461,11 +492,12 @@ class ChatActivity : SkeletonActivity(), ChatView {
             context.startActivity(intent)
         }
 
-        fun start(context: Context, address: String, message: String) {
+        fun start(context: Context, address: String, message: String?, filePath: String?) {
             val intent: Intent = Intent(context, ChatActivity::class.java)
                     .setAction(Intent.ACTION_SEND)
-                    .setData(Uri.parse(message))
                     .putExtra(EXTRA_ADDRESS, address)
+                    .putExtra(EXTRA_MESSAGE, message)
+                    .putExtra(EXTRA_FILE_PATH, filePath)
             context.startActivity(intent)
         }
     }

@@ -5,7 +5,6 @@ import com.glodanif.bluetoothchat.data.entity.ChatMessage
 import com.glodanif.bluetoothchat.data.entity.Conversation
 import com.glodanif.bluetoothchat.data.entity.TransferringFile
 import com.glodanif.bluetoothchat.data.model.*
-import com.glodanif.bluetoothchat.di.ComponentsManager
 import com.glodanif.bluetoothchat.ui.view.ChatView
 import com.glodanif.bluetoothchat.ui.viewmodel.converter.ChatMessageConverter
 import kotlinx.coroutines.experimental.CommonPool
@@ -13,7 +12,6 @@ import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.async
 import kotlinx.coroutines.experimental.launch
 import java.io.File
-import javax.inject.Inject
 
 class ChatPresenter(private val deviceAddress: String, private val view: ChatView, private val conversationsStorage: ConversationsStorage,
                     private val messagesStorage: MessagesStorage, private val scanModel: BluetoothScanner, private val connectionModel: BluetoothConnector,
@@ -22,6 +20,7 @@ class ChatPresenter(private val deviceAddress: String, private val view: ChatVie
     private val maxFileSize = 5_242_880
 
     private var fileToSend: File? = null
+    private var filePresharing: File? = null
 
     private val prepareListener = object : OnPrepareListener {
 
@@ -290,22 +289,33 @@ class ChatPresenter(private val deviceAddress: String, private val view: ChatVie
     fun sendFile(file: File) {
 
         if (!connectionModel.isConnected()) {
-            view.showNotConnectedToSend()
+            view.showPresharingImage(file.absolutePath)
+            filePresharing = file
         } else {
             fileToSend = file
         }
     }
 
-    fun pickImage() {
+    fun cancelPresharing() {
+        filePresharing = null
+    }
 
-        val currentConversation: Conversation? = connectionModel.getCurrentConversation()
+    fun proceedPresharing() {
 
-        if (!connectionModel.isConnected()) {
-            view.showNotConnectedToSend()
-        } else if (currentConversation != null && currentConversation.messageContractVersion < 1) {
-            view.showReceiverUnableToReceiveImages()
-        } else {
-            view.pickImage()
+        if (filePresharing != null) {
+
+            val currentConversation: Conversation? = connectionModel.getCurrentConversation()
+
+            if (!connectionModel.isConnected()) {
+                view.showPresharingImage(filePresharing!!.absolutePath)
+            } else if (currentConversation != null && currentConversation.messageContractVersion < 1) {
+                view.showReceiverUnableToReceiveImages()
+            } else if (filePresharing!!.length() > maxFileSize) {
+                view.showImageTooBig(maxFileSize.toLong())
+            } else {
+                connectionModel.sendFile(filePresharing!!)
+                filePresharing = null
+            }
         }
     }
 

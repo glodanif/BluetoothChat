@@ -37,8 +37,9 @@ class ContactChooserActivity : SkeletonActivity(), ContactChooserView {
         contactsList.adapter = adapter
 
         val message = intent.getStringExtra(EXTRA_MESSAGE)
+        val filePath = intent.getStringExtra(EXTRA_FILE_PATH)
         adapter.clickListener = {
-            ChatActivity.start(this, it.address, message)
+            ChatActivity.start(this, it.address, message, filePath)
             finish()
         }
     }
@@ -61,10 +62,13 @@ class ContactChooserActivity : SkeletonActivity(), ContactChooserView {
     companion object {
 
         const val EXTRA_MESSAGE = "extra.message"
+        const val EXTRA_FILE_PATH = "extra.file_path"
 
-        fun start(context: Context, message: String) {
+        fun start(context: Context, message: String?, filePath: String?) {
             val intent = Intent(context, ContactChooserActivity::class.java)
                     .putExtra(EXTRA_MESSAGE, message)
+                    .putExtra(EXTRA_FILE_PATH, filePath)
+
             context.startActivity(intent)
         }
     }

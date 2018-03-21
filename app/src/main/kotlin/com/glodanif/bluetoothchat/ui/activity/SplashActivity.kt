@@ -1,6 +1,7 @@
 package com.glodanif.bluetoothchat.ui.activity
 
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.support.v7.app.AppCompatActivity
@@ -18,16 +19,18 @@ class SplashActivity : AppCompatActivity() {
         Handler().postDelayed({
 
             val settings = SettingsManagerImpl(this)
-            val intent = Intent(this,
+            val newIntent = Intent(this,
                     if (settings.getUserName().isEmpty())
                         ProfileActivity::class.java else ConversationsActivity::class.java)
 
-            if (getIntent().action == Intent.ACTION_SEND) {
-                intent.action = Intent.ACTION_SEND
-                intent.putExtra(Intent.EXTRA_TEXT, getIntent().getStringExtra(Intent.EXTRA_TEXT))
+            if (intent.action == Intent.ACTION_SEND) {
+                newIntent.action = Intent.ACTION_SEND
+                newIntent.type = intent.type
+                newIntent.putExtra(Intent.EXTRA_TEXT, intent.getStringExtra(Intent.EXTRA_TEXT))
+                newIntent.putExtra(Intent.EXTRA_STREAM, intent.getParcelableExtra<Uri>(Intent.EXTRA_STREAM))
             }
 
-            startActivity(intent)
+            startActivity(newIntent)
 
             finish()
         }, 500)

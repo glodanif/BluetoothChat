@@ -25,6 +25,7 @@ import android.widget.ImageView
 import com.amulyakhare.textdrawable.TextDrawable
 import com.glodanif.bluetoothchat.R
 import com.glodanif.bluetoothchat.di.ComponentsManager
+import com.glodanif.bluetoothchat.extension.getFilePath
 import com.glodanif.bluetoothchat.extension.getFirstLetter
 import com.glodanif.bluetoothchat.ui.adapter.ConversationsAdapter
 import com.glodanif.bluetoothchat.ui.presenter.ConversationsPresenter
@@ -35,6 +36,7 @@ import com.glodanif.bluetoothchat.ui.widget.ActionView
 import com.glodanif.bluetoothchat.ui.widget.SettingsPopup
 import com.glodanif.bluetoothchat.ui.widget.ShortcutManager
 import com.glodanif.bluetoothchat.ui.widget.ShortcutManagerImpl
+import java.io.File
 import javax.inject.Inject
 
 class ConversationsActivity : SkeletonActivity(), ConversationsView {
@@ -96,8 +98,18 @@ class ConversationsActivity : SkeletonActivity(), ConversationsView {
         }
 
         if (intent.action == Intent.ACTION_SEND) {
-            val text = intent.getStringExtra(Intent.EXTRA_TEXT)
-            ContactChooserActivity.start(this, if (text.isNullOrEmpty()) "" else text)
+
+            var textToShare: String? = null
+            var fileToShare: String? = null
+
+            if ("text/plain" == intent.type) {
+                textToShare = intent.getStringExtra(Intent.EXTRA_TEXT).trim()
+            } else if (intent.type.startsWith("image/")) {
+                val imageUri = intent.getParcelableExtra(Intent.EXTRA_STREAM) as Uri
+                fileToShare = imageUri.getFilePath(this)
+            }
+
+            ContactChooserActivity.start(this, textToShare, fileToShare)
         }
 
         storagePermissionDialog = AlertDialog.Builder(this)

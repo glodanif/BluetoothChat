@@ -77,6 +77,9 @@
     <string name="chat__receiving_images">Receiving image</string>
     <string name="chat__partner_unable_to_receive_images">Your partner uses an old version of Bluetooth Chat which is not able to receive images.</string>
     <string name="chat__image_message">%s [Image]</string>
+    <string name="chat__presharing">You are not connected to this device, please connect and try again.</string>
+    <string name="chat__presharing_cancel">Cancel</string>
+    <string name="chat__presharing_share">Share</string>
 
     <string name="conversations__no_conversations">You don\'t have any conversationsStorage yet\nScan for devices to find your partner</string>
     <string name="conversations__scan">Scan</string>
@@ -146,6 +149,7 @@
     <string name="chat__cd__cancel_image_transfer">Cancel image transfer</string>
     <string name="chat__cd__received_image">Received image</string>
     <string name="chat__cd__sent_image">Sent image</string>
+    <string name="chat__cd__preshare_image">Image you want to sahre</string>
     <string name="image__cd__image_preview">Image preview</string>
     <string name="profile__cd__avatar_preview">Avatar preview</string>
     <string name="scan__cd__share_apk_file_button">Share .apk file button</string>
