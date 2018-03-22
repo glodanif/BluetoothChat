@@ -79,9 +79,7 @@
                     tools:background="@android:color/holo_green_light" />
 
             </LinearLayout>
-
         </LinearLayout>
-
     </ScrollView>
 
     <Button
@@ -94,4 +92,5 @@
         android:background="@drawable/button_accept_background"
         android:text="@string/profile__save"
         android:textColor="@android:color/white" />
+
 </LinearLayout>

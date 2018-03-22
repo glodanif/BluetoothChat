@@ -7,5 +7,4 @@
         android:icon="@drawable/ic_delete"
         android:title="@string/images__remove"
         app:showAsAction="always" />
-
 </menu>

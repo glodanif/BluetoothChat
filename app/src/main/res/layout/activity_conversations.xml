@@ -57,9 +57,6 @@
                     app:srcCompat="@drawable/ic_more_vert_black_24dp" />
 
             </LinearLayout>
-
         </android.support.v7.widget.Toolbar>
-
     </android.support.design.widget.AppBarLayout>
-
 </android.support.design.widget.CoordinatorLayout>

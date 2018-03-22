@@ -49,6 +49,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/conversations__scan"
                 android:textColor="@drawable/button_text_color" />
+
         </LinearLayout>
     </FrameLayout>
 </LinearLayout>

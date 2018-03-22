@@ -11,7 +11,7 @@ interface ChatView {
     fun showSentMessage(message: ChatMessageViewModel)
     fun showServiceDestroyed()
     fun showRejectedConnection()
-    fun showConnectionRequest(conversation: Conversation)
+    fun showConnectionRequest(displayName: String, deviceName: String)
     fun showLostConnection()
     fun showFailedConnection()
     fun showDisconnected()

@@ -251,10 +251,10 @@ class ChatActivity : SkeletonActivity(), ChatView {
         )
     }
 
-    override fun showConnectionRequest(conversation: Conversation) {
+    override fun showConnectionRequest(displayName: String, deviceName: String) {
 
         actions.visibility = View.VISIBLE
-        actions.setActions(getString(R.string.chat__connection_request, conversation.displayName, conversation.deviceName),
+        actions.setActions(getString(R.string.chat__connection_request, displayName, deviceName),
                 ActionView.Action(getString(R.string.general__start_chat)) { presenter.acceptConnection() },
                 ActionView.Action(getString(R.string.chat__disconnect)) { presenter.rejectConnection() }
         )

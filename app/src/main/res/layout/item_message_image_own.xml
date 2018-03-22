@@ -53,11 +53,9 @@
                     android:scaleType="centerCrop"
                     android:contentDescription="@string/chat__cd__sent_image"
                     android:transitionName="@string/id_transition_image"
-                    tools:src="@mipmap/ic_launcher" />
+                    tools:src="@tools:sample/avatars" />
             </FrameLayout>
 
         </LinearLayout>
-
     </android.support.v7.widget.CardView>
-
 </FrameLayout>

@@ -200,6 +200,5 @@
                 app:srcCompat="@drawable/ic_share_black_24dp" />
 
         </LinearLayout>
-
     </LinearLayout>
 </android.support.constraint.ConstraintLayout>

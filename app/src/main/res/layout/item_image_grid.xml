@@ -12,4 +12,5 @@
         android:contentDescription="@string/image__cd__image_preview"
         android:scaleType="centerCrop"
         android:transitionName="@string/id_transition_image" />
+
 </com.glodanif.bluetoothchat.ui.widget.SquareImageFrameLayout>
