@@ -24,8 +24,8 @@ abstract class DataTransferThread(private val socket: BluetoothSocket,
     private val buffer = ByteArray(bufferSize)
     private var bytes: Int? = null
 
+    @Volatile
     private var isConnectionPrepared = false
-
     @Volatile
     private var isFileTransferCanceledByMe = false
     @Volatile
