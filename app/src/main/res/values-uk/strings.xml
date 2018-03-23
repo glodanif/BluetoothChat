@@ -76,13 +76,13 @@
     <string name="chat__partner_canceled_image_transfer">Ваш партнер відмінив передачу файлу</string>
     <string name="chat__problem_during_file_transfer">Сталася помилка під час передачі файлу</string>
     <string name="chat__sending_image">Відправлення зображення</string>
-    <string name="chat__receiving_images">Прийом зображення</string>
+    <string name="chat__receiving_images">Отримання зображення</string>
     <string name="chat__partner_unable_to_receive_images">Ваш партнер використовує стару версію Bluetooth Chat, яка не може приймати зображення.</string>
     <string name="chat__image_message">%s [Зображення]</string>
     <string name="chat__presharing_share">Відправити</string>
     <string name="chat__presharing">Зараз ви не підєднані до даного пристрою, підєднайтесь і спробуйте ще раз.</string>
 
-    <string name="conversations__no_conversations">У вас пока что нет ни одного разговора\nНачните сканирование чтобы найти вашего партнера</string>
+    <string name="conversations__no_conversations">У вас поки що немає жодної розмови\nПочніть сканування щоб знайти вашого пратнера</string>
     <string name="conversations__scan">Сканувати</string>
     <string name="conversations__options">Опції розмови</string>
     <string name="conversations__remove">Видалити</string>
