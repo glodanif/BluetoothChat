@@ -21,11 +21,14 @@ class ChatMessageConverter(private val context: Context, private val displayMetr
 
         val info = message.fileInfo
         val actualSize = info?.split("x")
-        var width = (displayMetrics.widthPixels * .5).toInt()
+        var width = displayMetrics.widthPixels / 2
         var height = width
-        if (info != null && actualSize != null && actualSize.size == 2 && actualSize[0].toInt() >= 0 && actualSize[1].toInt() >= 0) {
-            width = actualSize[0].toInt()
-            height = actualSize[1].toInt()
+        if (info != null && actualSize != null && actualSize.size == 2) {
+            val scaledSize = getScaledSize(actualSize[0].toInt(), actualSize[1].toInt())
+            if (scaledSize.width >= 0 && scaledSize.height >= 0) {
+                width = scaledSize.width
+                height = scaledSize.height
+            }
         }
 
         return ChatMessageViewModel(
