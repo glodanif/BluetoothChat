@@ -10,7 +10,7 @@
 
 <img src="graphics/featured.png"/>
 
-## Third Party Libraries
+### Third Party Libraries
 [TextDrawable](https://github.com/amulyakhare/TextDrawable)
 
 [EasyImage](https://github.com/jkwiecien/EasyImage)
