@@ -47,23 +47,20 @@ class ChatAdapter(private val context: Context) : RecyclerView.Adapter<RecyclerV
                 holder?.image?.visibility = View.VISIBLE
                 holder?.missingLabel?.visibility = View.GONE
 
-                if (message.imageSize != null) {
-
-                    val size = message.imageSize
-                    holder?.image?.layoutParams = FrameLayout.LayoutParams(size.width, size.height)
-                    holder?.image?.setOnClickListener {
-                        imageClickListener?.invoke(holder.image, message)
-                    }
-
-                    Picasso.with(context)
-                            .load(message.imageUri)
-                            .config(Bitmap.Config.RGB_565)
-                            .error(R.color.background_image)
-                            .placeholder(R.color.background_image)
-                            .tag(picassoTag)
-                            .resize(size.width, size.height)
-                            .into(holder?.image)
+                val size = message.imageSize
+                holder?.image?.layoutParams = FrameLayout.LayoutParams(size.width, size.height)
+                holder?.image?.setOnClickListener {
+                    imageClickListener?.invoke(holder.image, message)
                 }
+
+                Picasso.with(context)
+                        .load(message.imageUri)
+                        .config(Bitmap.Config.RGB_565)
+                        .error(R.color.background_image)
+                        .placeholder(R.color.background_image)
+                        .tag(picassoTag)
+                        .resize(size.width, size.height)
+                        .into(holder?.image)
             }
 
             holder?.date?.text = message.date

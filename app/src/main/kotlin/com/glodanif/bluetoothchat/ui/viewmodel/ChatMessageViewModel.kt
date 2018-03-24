@@ -12,7 +12,7 @@ data class ChatMessageViewModel(
         val isImageAvailable: Boolean,
         @StringRes
         val imageProblemText: Int,
-        val imageSize: Size?,
+        val imageSize: Size,
         val imagePath: String?,
         val imageUri: String?
 )

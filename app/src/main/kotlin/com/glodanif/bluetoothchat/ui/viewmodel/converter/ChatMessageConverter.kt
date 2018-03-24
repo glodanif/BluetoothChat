@@ -21,9 +21,11 @@ class ChatMessageConverter(private val context: Context, private val displayMetr
 
         val info = message.fileInfo
         val actualSize = info?.split("x")
-        var size: Size? = null
-        if (info != null && actualSize != null && actualSize.size == 2) {
-            size = getScaledSize(actualSize[0].toInt(), actualSize[1].toInt())
+        var width = (displayMetrics.widthPixels * .5).toInt()
+        var height = width
+        if (info != null && actualSize != null && actualSize.size == 2 && actualSize[0].toInt() >= 0 && actualSize[1].toInt() >= 0) {
+            width = actualSize[0].toInt()
+            height = actualSize[1].toInt()
         }
 
         return ChatMessageViewModel(
@@ -34,7 +36,7 @@ class ChatMessageConverter(private val context: Context, private val displayMetr
                 message.messageType,
                 isImageAvailable,
                 problemString,
-                size,
+                Size(width, height),
                 message.filePath,
                 "file://${message.filePath}"
         )
