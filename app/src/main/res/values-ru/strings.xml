@@ -10,7 +10,7 @@
     <string name="general__service_lost">Bluetooth Chat сервис был остановлен, перезапустите сервис для корректной работы приложения</string>
     <string name="general__disconnect">Отключиться</string>
     <string name="general__exit">Выйти</string>
-    <string name="general__storage_permission">Bluetooth Chat дает вам возможность делиться изображениями. Эта функция требует разришения <b>STORAGE</b> для корректной работы</string>
+    <string name="general__storage_permission">Bluetooth Chat дает вам возможность делиться изображениями. Эта функция требует разришения <b>\"ПАМЯТЬ\"</b> для корректной работы</string>
 
     <string name="general__time_format">dd MMM, yyyy</string>
     <string name="general__time_unknown">неизвестно</string>
@@ -92,6 +92,8 @@
     <string name="conversations__connection_request">%1$s (%2$s) хочет соедениться с вами</string>
     <string name="conversations__settings">Настройки</string>
     <string name="conversations__pin_to_home_screen">Добавить на начальный экран</string>
+    <string name="conversations__permissions_settings">Настройки</string>
+    <string name="conversations__storage_permission"><![CDATA[Перейдите в настройки и предоставте разрешение <b>\"ПАМЯТЬ\"</b> для использования этого приложения.]]></string>
 
     <string name="scan__no_devices">Устройств не найдено</string>
     <string name="scan__scan_for_devices">Поиск устройств</string>
@@ -109,8 +111,8 @@
     <string name="scan__unable_to_connect_service">Не удается установить свьязь с этим устройством, попробуйте перезапустить приложение</string>
     <string name="scan__unable_to_connect">Не удается подключиться к этому устройству</string>
     <string name="scan__unable_to_fetch_apk">Не удается извлечь .apk файл</string>
-    <string name="scan__permission_explanation_location">Для начала поиска это приложение требует LOCATION разрешение</string>
-    <string name="scan__permission_explanation_storage">Для извлечения файла это приложение требует STORAGE разрешение</string>
+    <string name="scan__permission_explanation_location">Для начала поиска это приложение требует разрешение \"МЕСТОПОЛОЖЕНИЕ"\</string>
+    <string name="scan__permission_explanation_storage">Для извлечения файла это приложение требует разрешение \"ПАМЯТЬ\"</string>
     <string name="scan__share_intent">Отправить .apk</string>
     <string name="scan__paired_devices">Подключенные устройства</string>
     <string name="scan__available_devices">Доступные устройства</string>
@@ -143,7 +145,7 @@
     <string name="images__no_images">Вы еще не приняли ни одного изображения</string>
     <string name="images__image">Изображение</string>
     <string name="images__remove">Удалить</string>
-    <string name="images__received_images">Полученые изображения</string>
+    <string name="images__received_images">Полученные изображения</string>
 
     <string name="image__cd__image_preview">Вид изображения</string>
     <string name="profile__cd__avatar_preview">Вид аватара</string>
@@ -155,7 +157,7 @@
     <string name="chat__cd__send_text_button">Кнопка отправки текста</string>
     <string name="chat__cd__send_image_button">Кнопка отправки изображения</string>
     <string name="chat__cd__cancel_image_transfer">Отменить передачу файла</string>
-    <string name="chat__cd__received_image">Полученое изображение</string>
+    <string name="chat__cd__received_image">Полученное изображение</string>
     <string name="chat__cd__sent_image">Отосланое изображение</string>
     <string name="chat__cd__transferring_image">Передающееся изображение</string>
     <string name="chat__cd__preshare_image">Изображение, которое вы собираетесь отправить</string>

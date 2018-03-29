@@ -61,7 +61,6 @@ class ConversationsActivity : SkeletonActivity(), ConversationsView {
         ComponentsManager.injectConversations(this)
 
         actions = findViewById(R.id.av_actions)
-
         userAvatar = findViewById(R.id.iv_avatar)
 
         conversationsList = findViewById<RecyclerView>(R.id.rv_conversations).apply {
@@ -286,8 +285,8 @@ class ConversationsActivity : SkeletonActivity(), ConversationsView {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !shouldShowRequestPermissionRationale(permissions[0])) {
 
                 AlertDialog.Builder(this)
-                        .setMessage(Html.fromHtml("Go to Settings and grant the <b>STORAGE</b> permission to use this app."))
-                        .setPositiveButton("Settings") { _, _ ->
+                        .setMessage(Html.fromHtml(getString(R.string.conversations__storage_permission)))
+                        .setPositiveButton(getString(R.string.conversations__permissions_settings)) { _, _ ->
 
                             val intent = Intent()
                                     .setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)

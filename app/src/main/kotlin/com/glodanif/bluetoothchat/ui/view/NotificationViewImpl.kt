@@ -13,6 +13,7 @@ import com.glodanif.bluetoothchat.ui.activity.ConversationsActivity
 import com.glodanif.bluetoothchat.data.service.BluetoothConnectionService
 import com.glodanif.bluetoothchat.extension.toReadableFileSize
 import com.glodanif.bluetoothchat.ui.util.NotificationSettings
+import java.util.*
 
 class NotificationViewImpl(private val context: Context) : NotificationView {
 
@@ -35,7 +36,8 @@ class NotificationViewImpl(private val context: Context) : NotificationView {
         val stopIntent = Intent(context, BluetoothConnectionService::class.java).apply {
             action = BluetoothConnectionService.ACTION_STOP
         }
-        val stopPendingIntent = PendingIntent.getService(context, 0, stopIntent, 0)
+        val requestCode = (System.currentTimeMillis() / 1000).toInt()
+        val stopPendingIntent = PendingIntent.getService(context, requestCode, stopIntent, 0)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel(CHANNEL_FOREGROUND, context.getString(R.string.notification__channel_background), NotificationManager.IMPORTANCE_LOW)
@@ -64,7 +66,8 @@ class NotificationViewImpl(private val context: Context) : NotificationView {
             putExtra(ChatActivity.EXTRA_ADDRESS, address)
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         }
-        val pendingIntent = PendingIntent.getActivity(context, 0, notificationIntent, 0)
+        val requestCode = (System.currentTimeMillis() / 1000).toInt()
+        val pendingIntent = PendingIntent.getActivity(context, requestCode, notificationIntent, 0)
 
         val name = if (displayName.isNullOrEmpty()) deviceName else "$displayName ($deviceName)"
 
@@ -106,7 +109,8 @@ class NotificationViewImpl(private val context: Context) : NotificationView {
         val notificationIntent = Intent(context, ConversationsActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         }
-        val pendingIntent = PendingIntent.getActivity(context, 0, notificationIntent, 0)
+        val requestCode = (System.currentTimeMillis() / 1000).toInt()
+        val pendingIntent = PendingIntent.getActivity(context, requestCode, notificationIntent, 0)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel(CHANNEL_REQUEST, context.getString(R.string.notification__channel_request), NotificationManager.IMPORTANCE_MAX).apply {
@@ -150,7 +154,8 @@ class NotificationViewImpl(private val context: Context) : NotificationView {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         }
 
-        val pendingIntent = PendingIntent.getActivity(context, 0, notificationIntent, 0)
+        val requestCode = (System.currentTimeMillis() / 1000).toInt()
+        val pendingIntent = PendingIntent.getActivity(context, requestCode, notificationIntent, 0)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel(CHANNEL_FILE,

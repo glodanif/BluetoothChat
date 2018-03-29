@@ -13,7 +13,7 @@
     <string name="general__no">No</string>
     <string name="general__service_lost">Bluetooth Chat service just has been stopped, restart the service to be able to use the app</string>
     <string name="general__disconnect">Disconnect</string>
-    <string name="general__storage_permission">Bluetooth Chat provides you with an ability to share images. This feature requires <b>STORAGE</b> permission to work correctly.</string>
+    <string name="general__storage_permission">Bluetooth Chat provides you with an ability to share images. This feature requires <b>\"STORAGE\"</b> permission to work correctly.</string>
 
     <string name="general__time_format">MMM dd, yyyy</string>
     <string name="general__time_unknown">unknown</string>
@@ -80,7 +80,7 @@
     <string name="chat__presharing">You are not connected to this device, please connect and try again.</string>
     <string name="chat__presharing_share">Share</string>
 
-    <string name="conversations__no_conversations">You don\'t have any conversationsStorage yet\nScan for devices to find your partner</string>
+    <string name="conversations__no_conversations">You don\'t have any conversations yet\nScan for devices to find your partner</string>
     <string name="conversations__scan">Scan</string>
     <string name="conversations__options">Conversation options</string>
     <string name="conversations__remove">Remove</string>
@@ -89,6 +89,8 @@
     <string name="conversations__connection_request">%1$s (%2$s) wants to connect to you</string>
     <string name="conversations__settings">Settings</string>
     <string name="conversations__pin_to_home_screen">Pin to your home screen</string>
+    <string name="conversations__permissions_settings">Settings</string>
+    <string name="conversations__storage_permission"><![CDATA[Go to Settings and grant the <b>\"STORAGE\"</b> permission to use this app.]]></string>
 
     <string name="scan__no_devices">No devices were found</string>
     <string name="scan__scan_for_devices">Scan for devices</string>
@@ -106,8 +108,8 @@
     <string name="scan__unable_to_connect_service">Unable to engage connection, please restart the app</string>
     <string name="scan__unable_to_connect">Unable to connect to this device</string>
     <string name="scan__unable_to_fetch_apk">Unable to fetch an .apk file</string>
-    <string name="scan__permission_explanation_location">To be able to find other devices this app requires LOCATION permission</string>
-    <string name="scan__permission_explanation_storage">To be able to extract a file this app requires STORAGE permission</string>
+    <string name="scan__permission_explanation_location">To be able to find other devices this app requires \"LOCATION\" permission</string>
+    <string name="scan__permission_explanation_storage">To be able to extract a file this app requires \"STORAGE\" permission</string>
     <string name="scan__share_intent">Share .apk</string>
     <string name="scan__paired_devices">Paired devices</string>
     <string name="scan__available_devices">Available devices</string>
@@ -156,5 +158,4 @@
     <string name="conversations__cd__partners_avatar">Partner\'s avatar</string>
     <string name="conversations__cd__connected_indicator">Connected indicator</string>
     <string name="conversations__cd__users_avatar">User\'s avatar</string>
-
 </resources>

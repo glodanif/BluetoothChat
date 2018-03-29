@@ -10,7 +10,7 @@
     <string name="general__service_lost">Bluetooth Chat сервіс був зупинений, перезапустіть скрвіс для коректної роботи додатку</string>
     <string name="general__disconnect">Відключитись</string>
     <string name="general__exit">Вийти</string>
-    <string name="general__storage_permission">Bluetooth Chat надає вам можливість ділитися зображеннями. Ця функція потребує дозволу <b>STORAGE</b> для корректної роботи</string>
+    <string name="general__storage_permission">Bluetooth Chat надає вам можливість ділитися зображеннями. Ця функція потребує дозволу <b>\"ЗБЕРІГАННЯ\"</b> для корректної роботи</string>
 
     <string name="general__time_format">dd MMM, yyyy</string>
     <string name="general__time_unknown">невідомл</string>
@@ -80,7 +80,7 @@
     <string name="chat__partner_unable_to_receive_images">Ваш партнер використовує стару версію Bluetooth Chat, яка не може приймати зображення.</string>
     <string name="chat__image_message">%s [Зображення]</string>
     <string name="chat__presharing_share">Відправити</string>
-    <string name="chat__presharing">Зараз ви не підєднані до даного пристрою, підєднайтесь і спробуйте ще раз.</string>
+    <string name="chat__presharing">Зараз ви не підєднані до даного пристрою, під\'єднайтесь і спробуйте ще раз.</string>
 
     <string name="conversations__no_conversations">У вас поки що немає жодної розмови\nПочніть сканування щоб знайти вашого пратнера</string>
     <string name="conversations__scan">Сканувати</string>
@@ -91,6 +91,8 @@
     <string name="conversations__connection_request">%1$s (%2$s) хоче з\'єднатися з вами</string>
     <string name="conversations__settings">Налаштування</string>
     <string name="conversations__pin_to_home_screen">Додати на домашній екран</string>
+    <string name="conversations__permissions_settings">Налаштування</string>
+    <string name="conversations__storage_permission"><![CDATA[Перейдіть в налаштування і надайте дозвіл <b>\"ЗБЕРІГАННЯ\"</b> для використання даного додатку.]]></string>
 
     <string name="scan__no_devices">Пристроїв не знайдено</string>
     <string name="scan__scan_for_devices">Пошук пристроїв</string>
@@ -108,8 +110,8 @@
     <string name="scan__unable_to_connect_service">Не вдається встановити зв\'язок з цим пристроєм, спробуйте перезапустити додапок</string>
     <string name="scan__unable_to_connect">Не вдається з\'єднатися з цим пристроєм</string>
     <string name="scan__unable_to_fetch_apk">Не вдається витягнути .apk файл</string>
-    <string name="scan__permission_explanation_location">Щоб почати пошук цей додаток потребує LOCATION дозвіл</string>
-    <string name="scan__permission_explanation_storage">Щоб витягнути файл цей додаток потребує STORAGE дозвіл</string>
+    <string name="scan__permission_explanation_location">Щоб почати пошук цей додаток потребує дозвіл \"ГЕОДАНІ\"</string>
+    <string name="scan__permission_explanation_storage">Щоб витягнути файл цей додаток потребує дозвіл \"ЗБЕРІГАННЯ\"</string>
     <string name="scan__share_intent">Відправти .apk</string>
     <string name="scan__paired_devices">Під\'єднані пристрої</string>
     <string name="scan__available_devices">Доступні пристрої</string>
