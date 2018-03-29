@@ -13,12 +13,10 @@ class ConversationConverter(private val context: Context) {
 
     fun transform(conversation: Conversation): ConversationViewModel {
 
-        val lastMessage = if (conversation.messageType == MessageType.IMAGE) {
-            context.getString(R.string.chat__image_message, "\uD83D\uDCCE")
-        } else if (!conversation.lastMessage.isNullOrEmpty()) {
-            conversation.lastMessage
-        } else {
-            null
+        val lastMessage = when {
+            conversation.messageType == MessageType.IMAGE -> context.getString(R.string.chat__image_message, "\uD83D\uDCCE")
+            !conversation.lastMessage.isNullOrEmpty() -> conversation.lastMessage
+            else -> null
         }
 
         val lastActivity = if (!conversation.lastMessage.isNullOrEmpty() || conversation.messageType == MessageType.IMAGE) {
@@ -34,6 +32,7 @@ class ConversationConverter(private val context: Context) {
                 "${conversation.displayName} (${conversation.deviceName})",
                 conversation.color,
                 lastMessage,
+                conversation.lastActivity,
                 lastActivity,
                 conversation.notSeen
 

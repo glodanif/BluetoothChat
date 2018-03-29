@@ -344,11 +344,11 @@ abstract class DataTransferThread(private val socket: BluetoothSocket,
     interface OnFileListener {
         fun onFileSendingStarted(file: TransferringFile)
         fun onFileSendingProgress(file: TransferringFile, sentBytes: Long)
-        fun onFileSendingFinished(filePath: String)
+        fun onFileSendingFinished(path: String)
         fun onFileSendingFailed()
         fun onFileReceivingStarted(file: TransferringFile)
         fun onFileReceivingProgress(file: TransferringFile, receivedBytes: Long)
-        fun onFileReceivingFinished(filePath: String)
+        fun onFileReceivingFinished(path: String)
         fun onFileReceivingFailed()
         fun onFileTransferCanceled(byPartner: Boolean)
     }

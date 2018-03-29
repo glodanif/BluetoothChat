@@ -65,5 +65,13 @@ class ComponentsManager {
                     .build()
                     .inject(activity)
         }
+
+        fun injectScan(activity: ScanActivity) {
+            DaggerScanComponent.builder()
+                    .applicationComponent(appComponent)
+                    .scanModule(ScanModule(activity))
+                    .build()
+                    .inject(activity)
+        }
     }
 }

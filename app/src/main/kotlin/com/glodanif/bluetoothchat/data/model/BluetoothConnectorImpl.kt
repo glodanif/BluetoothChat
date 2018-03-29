@@ -22,10 +22,12 @@ class BluetoothConnectorImpl(private val context: Context) : BluetoothConnector 
     private val connection = object : ServiceConnection {
 
         override fun onServiceConnected(className: ComponentName, binder: IBinder) {
-            service = (binder as BluetoothConnectionService.ConnectionBinder).getService()
-            service?.setConnectionListener(connectionListenerInner)
-            service?.setMessageListener(messageListenerInner)
-            service?.setFileListener(fileListenerInner)
+
+            service = (binder as BluetoothConnectionService.ConnectionBinder).getService().apply {
+                setConnectionListener(connectionListenerInner)
+                setMessageListener(messageListenerInner)
+                setFileListener(fileListenerInner)
+            }
 
             bound = true
             prepareListener?.onPrepared()

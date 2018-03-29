@@ -35,44 +35,42 @@ import com.glodanif.bluetoothchat.ui.viewmodel.ConversationViewModel
 import com.glodanif.bluetoothchat.ui.widget.ActionView
 import com.glodanif.bluetoothchat.ui.widget.SettingsPopup
 import com.glodanif.bluetoothchat.ui.widget.ShortcutManager
-import com.glodanif.bluetoothchat.ui.widget.ShortcutManagerImpl
 import javax.inject.Inject
 
 class ConversationsActivity : SkeletonActivity(), ConversationsView {
 
     @Inject
     lateinit var presenter: ConversationsPresenter
-    private lateinit var shortcutsManager: ShortcutManager
+    @Inject
+    lateinit var shortcutsManager: ShortcutManager
 
     private lateinit var conversationsList: RecyclerView
     private lateinit var noConversations: View
     private lateinit var addButton: FloatingActionButton
     private lateinit var actions: ActionView
     private lateinit var userAvatar: ImageView
-    private lateinit var optionsButton: View
 
     private lateinit var settingsPopup: SettingsPopup
     private lateinit var storagePermissionDialog: AlertDialog
 
-    private val adapter = ConversationsAdapter()
+    private val conversationsAdapter = ConversationsAdapter()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_conversations, ActivityType.CUSTOM_TOOLBAR_ACTIVITY)
         ComponentsManager.injectConversations(this)
 
-        shortcutsManager = ShortcutManagerImpl(this)
-
         actions = findViewById(R.id.av_actions)
 
         userAvatar = findViewById(R.id.iv_avatar)
-        conversationsList = findViewById(R.id.rv_conversations)
-        noConversations = findViewById(R.id.ll_empty_holder)
-        optionsButton = findViewById(R.id.ll_options)
-        addButton = findViewById(R.id.fab_new_conversation)
 
-        conversationsList.layoutManager = LinearLayoutManager(this)
-        conversationsList.adapter = adapter
+        conversationsList = findViewById<RecyclerView>(R.id.rv_conversations).apply {
+            layoutManager = LinearLayoutManager(this@ConversationsActivity)
+            adapter = conversationsAdapter
+        }
+
+        noConversations = findViewById(R.id.ll_empty_holder)
+        addButton = findViewById(R.id.fab_new_conversation)
 
         settingsPopup = SettingsPopup(this)
         settingsPopup.setCallbacks(
@@ -81,19 +79,21 @@ class ConversationsActivity : SkeletonActivity(), ConversationsView {
                 settingsClickListener = { SettingsActivity.start(context = this) }
         )
 
-        adapter.clickListener = { ChatActivity.start(this, it.address) }
-        adapter.longClickListener = { conversation, isCurrent ->
+        conversationsAdapter.clickListener = { ChatActivity.start(this, it.address) }
+        conversationsAdapter.longClickListener = { conversation, isCurrent ->
             showContextMenu(conversation, isCurrent)
         }
 
         addButton.setOnClickListener {
             ScanActivity.startForResult(this, REQUEST_SCAN)
         }
+
         findViewById<Button>(R.id.btn_scan).setOnClickListener {
             ScanActivity.startForResult(this, REQUEST_SCAN)
         }
-        optionsButton.setOnClickListener { v ->
-            settingsPopup.show(v)
+
+        findViewById<View>(R.id.ll_options).setOnClickListener {
+            settingsPopup.show(it)
         }
 
         if (intent.action == Intent.ACTION_SEND) {
@@ -121,7 +121,7 @@ class ConversationsActivity : SkeletonActivity(), ConversationsView {
                 .setCancelable(false)
                 .create()
 
-        ShortcutManagerImpl(this).addSearchShortcut()
+        shortcutsManager.addSearchShortcut()
     }
 
     private fun showContextMenu(conversation: ConversationViewModel, isCurrent: Boolean) {
@@ -175,7 +175,7 @@ class ConversationsActivity : SkeletonActivity(), ConversationsView {
         super.onStart()
 
         if (ContextCompat.checkSelfPermission(this,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED && !storagePermissionDialog.isShowing) {
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED && !storagePermissionDialog.isShowing) {
             storagePermissionDialog.show()
         }
 
@@ -208,8 +208,8 @@ class ConversationsActivity : SkeletonActivity(), ConversationsView {
         addButton.visibility = View.VISIBLE
         noConversations.visibility = View.GONE
 
-        adapter.setData(ArrayList(conversations), connected)
-        adapter.notifyDataSetChanged()
+        conversationsAdapter.setData(ArrayList(conversations), connected)
+        conversationsAdapter.notifyDataSetChanged()
     }
 
     override fun showServiceDestroyed() {
@@ -227,8 +227,8 @@ class ConversationsActivity : SkeletonActivity(), ConversationsView {
     }
 
     override fun refreshList(connected: String?) {
-        adapter.setCurrentConversation(connected)
-        adapter.notifyDataSetChanged()
+        conversationsAdapter.setCurrentConversation(connected)
+        conversationsAdapter.notifyDataSetChanged()
     }
 
     override fun notifyAboutConnectedDevice(conversation: ConversationViewModel) {
@@ -292,7 +292,7 @@ class ConversationsActivity : SkeletonActivity(), ConversationsView {
                             val intent = Intent()
                                     .setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
                                     .addCategory(Intent.CATEGORY_DEFAULT)
-                                    .setData(Uri.parse("package:" + packageName))
+                                    .setData(Uri.parse("package:$packageName"))
                                     .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                                     .addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY)
                                     .addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS)

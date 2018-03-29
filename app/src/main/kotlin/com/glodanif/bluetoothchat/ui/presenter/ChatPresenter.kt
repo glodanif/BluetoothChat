@@ -26,9 +26,11 @@ class ChatPresenter(private val deviceAddress: String, private val view: ChatVie
 
         override fun onPrepared() {
 
-            connectionModel.setOnConnectListener(connectionListener)
-            connectionModel.setOnMessageListener(messageListener)
-            connectionModel.setOnFileListener(fileListener)
+            with(connectionModel) {
+                setOnConnectListener(connectionListener)
+                setOnMessageListener(messageListener)
+                setOnFileListener(fileListener)
+            }
             updateState()
             dismissNotification()
 
@@ -194,9 +196,11 @@ class ChatPresenter(private val deviceAddress: String, private val view: ChatVie
             connectionModel.setOnPrepareListener(prepareListener)
 
             if (connectionModel.isConnectionPrepared()) {
-                connectionModel.setOnConnectListener(connectionListener)
-                connectionModel.setOnMessageListener(messageListener)
-                connectionModel.setOnFileListener(fileListener)
+                with(connectionModel) {
+                    setOnConnectListener(connectionListener)
+                    setOnMessageListener(messageListener)
+                    setOnFileListener(fileListener)
+                }
                 updateState()
                 dismissNotification()
                 sendFileIfPrepared()
@@ -238,15 +242,15 @@ class ChatPresenter(private val deviceAddress: String, private val view: ChatVie
         }
     }
 
-    fun releaseConnection() {
+    fun releaseConnection() = with(connectionModel) {
 
-        connectionModel.setOnPrepareListener(null)
-        connectionModel.setOnConnectListener(null)
-        connectionModel.setOnMessageListener(null)
-        connectionModel.setOnFileListener(null)
+        setOnPrepareListener(null)
+        setOnConnectListener(null)
+        setOnMessageListener(null)
+        setOnFileListener(null)
 
-        if (!connectionModel.isConnectedOrPending()) {
-            connectionModel.release()
+        if (!isConnectedOrPending()) {
+            release()
         }
     }
 

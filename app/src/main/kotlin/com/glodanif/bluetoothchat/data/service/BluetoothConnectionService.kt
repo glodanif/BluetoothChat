@@ -233,27 +233,26 @@ class BluetoothConnectionService : Service() {
                 }
             }
 
-            override fun onFileSendingFinished(filePath: String) {
+            override fun onFileSendingFinished(path: String) {
 
                 val endMessage = Message.createFileEndMessage()
                 dataTransferThread?.write(endMessage.getDecodedMessage())
 
                 if (currentSocket == null) return
 
-                val sentMessage = ChatMessage(currentSocket!!.remoteDevice.address, Date(), true, "")
-
-                sentMessage.seenHere = true
-                sentMessage.messageType = MessageType.IMAGE
-                sentMessage.filePath = filePath
-
                 notificationView.dismissFileTransferNotification()
+                val sentMessage = ChatMessage(currentSocket!!.remoteDevice.address, Date(), true, "").apply {
+                    seenHere = true
+                    messageType = MessageType.IMAGE
+                    filePath = path
+                }
 
                 thread {
 
                     val options = BitmapFactory.Options()
                     options.inJustDecodeBounds = true
 
-                    BitmapFactory.decodeFile(filePath, options)
+                    BitmapFactory.decodeFile(path, options)
                     val width = options.outWidth
                     val height = options.outHeight
                     sentMessage.fileInfo = "${width}x$height"
@@ -309,17 +308,17 @@ class BluetoothConnectionService : Service() {
                 }
             }
 
-            override fun onFileReceivingFinished(filePath: String) {
+            override fun onFileReceivingFinished(path: String) {
 
                 val device: BluetoothDevice = currentSocket!!.remoteDevice
 
-                val receivedMessage = ChatMessage(device.address, Date(), false, "")
-                receivedMessage.messageType = MessageType.IMAGE
-                receivedMessage.filePath = filePath
-
-                Log.e("TAG13", "${messageListener == null} | ${application.currentChat == null} | ${!application.currentChat.equals(device.address)} --- (${application.currentChat} ${device.address})")
+                val receivedMessage = ChatMessage(device.address, Date(), false, "").apply {
+                    messageType = MessageType.IMAGE
+                    filePath = path
+                }
 
                 if (messageListener == null || application.currentChat == null || !application.currentChat.equals(device.address)) {
+                    notificationView.dismissMessageNotification()
                     notificationView.showNewMessageNotification(getString(R.string.chat__image_message, "\uD83D\uDCCE"), currentConversation?.displayName,
                             device.name, device.address, preferences.getSettings())
                 } else {
@@ -333,7 +332,7 @@ class BluetoothConnectionService : Service() {
                     val options = BitmapFactory.Options()
                     options.inJustDecodeBounds = true
 
-                    BitmapFactory.decodeFile(filePath, options)
+                    BitmapFactory.decodeFile(path, options)
                     val width = options.outWidth
                     val height = options.outHeight
                     receivedMessage.fileInfo = "${width}x$height"
@@ -460,7 +459,6 @@ class BluetoothConnectionService : Service() {
         if (currentSocket == null) return
 
         val message = Message(messageBody)
-
         val sentMessage = ChatMessage(currentSocket!!.remoteDevice.address, Date(), true, message.body)
 
         if (message.type == Message.Type.MESSAGE) {
@@ -531,12 +529,12 @@ class BluetoothConnectionService : Service() {
         } else {
             receivedMessage.seenHere = true
         }
+
         thread {
             db.messagesDao().insert(receivedMessage)
             handler.post { messageListener?.onMessageReceived(receivedMessage) }
-            if (currentConversation != null) {
-                shortcutManager.addConversationShortcut(device.address,
-                        currentConversation!!.displayName, currentConversation!!.color)
+            currentConversation?.let {
+                shortcutManager.addConversationShortcut(device.address, it.displayName, it.color)
             }
         }
     }
@@ -622,8 +620,7 @@ class BluetoothConnectionService : Service() {
     }
 
     fun isConnectedOrPending(): Boolean {
-        return connectionState == ConnectionState.CONNECTED ||
-                connectionState == ConnectionState.PENDING
+        return connectionState == ConnectionState.CONNECTED || connectionState == ConnectionState.PENDING
     }
 
     fun isPending(): Boolean {

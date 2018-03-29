@@ -25,7 +25,7 @@ class ReceivedImagesActivity : SkeletonActivity(), ReceivedImagesView {
     private lateinit var imagesGrid: RecyclerView
     private lateinit var noImagesLabel: TextView
 
-    private var adapter = ImagesAdapter(this)
+    private var imagesAdapter = ImagesAdapter(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,13 +35,13 @@ class ReceivedImagesActivity : SkeletonActivity(), ReceivedImagesView {
 
         ComponentsManager.injectReceivedImages(this, address)
 
-        imagesGrid = findViewById(R.id.rv_images)
         noImagesLabel = findViewById(R.id.tv_no_images)
+        imagesGrid = findViewById<RecyclerView>(R.id.rv_images).apply {
+            layoutManager = GridLayoutManager(this@ReceivedImagesActivity, calculateNoOfColumns())
+            adapter = imagesAdapter
+        }
 
-        imagesGrid.layoutManager = GridLayoutManager(this, calculateNoOfColumns())
-        imagesGrid.adapter = adapter
-
-        adapter.clickListener = { view, message ->
+        imagesAdapter.clickListener = { view, message ->
             ImagePreviewActivity.start(this, view, message)
         }
     }
@@ -52,8 +52,8 @@ class ReceivedImagesActivity : SkeletonActivity(), ReceivedImagesView {
     }
 
     override fun displayImages(imageMessages: List<ChatMessage>) {
-        adapter.images = ArrayList(imageMessages)
-        adapter.notifyDataSetChanged()
+        imagesAdapter.images = ArrayList(imageMessages)
+        imagesAdapter.notifyDataSetChanged()
     }
 
     override fun showNoImages() {

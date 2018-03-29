@@ -16,15 +16,17 @@ import android.support.v7.app.AlertDialog
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.View
-import android.widget.*
+import android.widget.Button
+import android.widget.ImageView
+import android.widget.TextView
+import android.widget.Toast
 import com.glodanif.bluetoothchat.R
+import com.glodanif.bluetoothchat.di.ComponentsManager
 import com.glodanif.bluetoothchat.ui.adapter.DevicesAdapter
-import com.glodanif.bluetoothchat.data.model.FileManagerImpl
-import com.glodanif.bluetoothchat.data.model.BluetoothConnectorImpl
-import com.glodanif.bluetoothchat.data.model.BluetoothScannerImpl
 import com.glodanif.bluetoothchat.ui.presenter.ScanPresenter
 import com.glodanif.bluetoothchat.ui.view.ScanView
 import com.glodanif.bluetoothchat.ui.widget.ExpiringProgressBar
+import javax.inject.Inject
 
 class ScanActivity : SkeletonActivity(), ScanView {
 
@@ -41,16 +43,15 @@ class ScanActivity : SkeletonActivity(), ScanView {
 
     private lateinit var pairedDevicesList: RecyclerView
 
-    private val adapter: DevicesAdapter = DevicesAdapter(this)
+    private val devicesAdapter: DevicesAdapter = DevicesAdapter(this)
 
-    private lateinit var presenter: ScanPresenter
+    @Inject
+    lateinit var presenter: ScanPresenter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_scan, ActivityType.CHILD_ACTIVITY)
-
-        presenter = ScanPresenter(this, BluetoothScannerImpl(this),
-                BluetoothConnectorImpl(this), FileManagerImpl(this))
+        ComponentsManager.injectScan(this)
 
         container = findViewById(R.id.fl_container)
         turnOnHolder = findViewById(R.id.ll_turn_on)
@@ -64,20 +65,26 @@ class ScanActivity : SkeletonActivity(), ScanView {
         makeDiscoverableButton = findViewById(R.id.btn_make_discoverable)
         scanForDevicesButton = findViewById(R.id.btn_scan)
 
-        pairedDevicesList = findViewById(R.id.rv_paired_devices)
-        pairedDevicesList.layoutManager = LinearLayoutManager(this)
-        pairedDevicesList.adapter = adapter
+        pairedDevicesList = findViewById<RecyclerView>(R.id.rv_paired_devices).apply {
+            layoutManager = LinearLayoutManager(this@ScanActivity)
+            adapter = devicesAdapter
+        }
 
-        adapter.listener = {
+        devicesAdapter.listener = {
             presenter.onDevicePicked(it.address)
             progress.visibility = View.VISIBLE
         }
 
         presenter.checkBluetoothAvailability()
 
-        findViewById<Button>(R.id.btn_turn_on).setOnClickListener { presenter.turnOnBluetooth() }
+        findViewById<Button>(R.id.btn_turn_on).setOnClickListener {
+            presenter.turnOnBluetooth()
+        }
 
-        makeDiscoverableButton.setOnClickListener { presenter.makeDiscoverable() }
+        makeDiscoverableButton.setOnClickListener {
+            presenter.makeDiscoverable()
+        }
+
         scanForDevicesButton.setOnClickListener {
 
             if (ContextCompat.checkSelfPermission(this,
@@ -110,11 +117,12 @@ class ScanActivity : SkeletonActivity(), ScanView {
 
     override fun shareApk(uri: Uri) {
 
-        val sharingIntent = Intent(Intent.ACTION_SEND)
-        sharingIntent.type = "*/*"
-        sharingIntent.`package` = "com.android.bluetooth"
-        sharingIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-        sharingIntent.putExtra(Intent.EXTRA_STREAM, uri)
+        val sharingIntent = Intent(Intent.ACTION_SEND).apply {
+            type = "*/*"
+            `package` = "com.android.bluetooth"
+            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            putExtra(Intent.EXTRA_STREAM, uri)
+        }
 
         try {
             startActivity(Intent.createChooser(sharingIntent, getString(R.string.scan__share_intent)))
@@ -125,8 +133,7 @@ class ScanActivity : SkeletonActivity(), ScanView {
     }
 
     override fun openChat(device: BluetoothDevice) {
-        val intent: Intent = Intent()
-                .putExtra(EXTRA_BLUETOOTH_DEVICE, device)
+        val intent: Intent = Intent().putExtra(EXTRA_BLUETOOTH_DEVICE, device)
         setResult(Activity.RESULT_OK, intent)
         finish()
     }
@@ -137,8 +144,8 @@ class ScanActivity : SkeletonActivity(), ScanView {
         listHolder.visibility = View.VISIBLE
 
         if (pairedDevices.isNotEmpty()) {
-            adapter.pairedList = ArrayList(pairedDevices)
-            adapter.notifyDataSetChanged()
+            devicesAdapter.pairedList = ArrayList(pairedDevices)
+            devicesAdapter.notifyDataSetChanged()
         }
     }
 
@@ -231,8 +238,8 @@ class ScanActivity : SkeletonActivity(), ScanView {
     }
 
     override fun addFoundDevice(device: BluetoothDevice) {
-        adapter.addNewFoundDevice(device)
-        adapter.notifyDataSetChanged()
+        devicesAdapter.addNewFoundDevice(device)
+        devicesAdapter.notifyDataSetChanged()
         pairedDevicesList.smoothScrollToPosition(pairedDevicesList.adapter.itemCount)
     }
 

@@ -39,9 +39,9 @@ class ConversationsAdapter : RecyclerView.Adapter<ConversationsAdapter.Conversat
             holder.messageContainer.visibility = View.GONE
         }
 
-        if (conversation.lastActivity != null) {
+        if (conversation.lastActivityText != null) {
             holder.time.visibility = View.VISIBLE
-            holder.time.text = conversation.lastActivity
+            holder.time.text = conversation.lastActivityText
         } else {
             holder.time.visibility = View.GONE
         }

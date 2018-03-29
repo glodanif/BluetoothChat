@@ -27,12 +27,14 @@ class NotificationViewImpl(private val context: Context) : NotificationView {
 
     override fun getForegroundNotification(message: String): Notification {
 
-        val notificationIntent = Intent(context, ConversationsActivity::class.java)
-        notificationIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        val notificationIntent = Intent(context, ConversationsActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        }
         val pendingIntent = PendingIntent.getActivity(context, 0, notificationIntent, 0)
 
-        val stopIntent = Intent(context, BluetoothConnectionService::class.java)
-        stopIntent.action = BluetoothConnectionService.ACTION_STOP
+        val stopIntent = Intent(context, BluetoothConnectionService::class.java).apply {
+            action = BluetoothConnectionService.ACTION_STOP
+        }
         val stopPendingIntent = PendingIntent.getService(context, 0, stopIntent, 0)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -58,16 +60,18 @@ class NotificationViewImpl(private val context: Context) : NotificationView {
 
     override fun showNewMessageNotification(message: String, displayName: String?, deviceName: String, address: String, settings: NotificationSettings) {
 
-        val notificationIntent = Intent(context, ChatActivity::class.java)
-                .putExtra(ChatActivity.EXTRA_ADDRESS, address)
-        notificationIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        val notificationIntent = Intent(context, ChatActivity::class.java).apply {
+            putExtra(ChatActivity.EXTRA_ADDRESS, address)
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        }
         val pendingIntent = PendingIntent.getActivity(context, 0, notificationIntent, 0)
 
         val name = if (displayName.isNullOrEmpty()) deviceName else "$displayName ($deviceName)"
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val channel = NotificationChannel(CHANNEL_MESSAGE, context.getString(R.string.notification__channel_message), NotificationManager.IMPORTANCE_MAX)
-            channel.setShowBadge(true)
+            val channel = NotificationChannel(CHANNEL_MESSAGE, context.getString(R.string.notification__channel_message), NotificationManager.IMPORTANCE_MAX).apply {
+                setShowBadge(true)
+            }
             notificationManager.createNotificationChannel(channel)
         }
 
@@ -99,13 +103,15 @@ class NotificationViewImpl(private val context: Context) : NotificationView {
 
     override fun showConnectionRequestNotification(deviceName: String, settings: NotificationSettings) {
 
-        val notificationIntent = Intent(context, ConversationsActivity::class.java)
-        notificationIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        val notificationIntent = Intent(context, ConversationsActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        }
         val pendingIntent = PendingIntent.getActivity(context, 0, notificationIntent, 0)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val channel = NotificationChannel(CHANNEL_REQUEST, context.getString(R.string.notification__channel_request), NotificationManager.IMPORTANCE_MAX)
-            channel.setShowBadge(true)
+            val channel = NotificationChannel(CHANNEL_REQUEST, context.getString(R.string.notification__channel_request), NotificationManager.IMPORTANCE_MAX).apply {
+                setShowBadge(true)
+            }
             notificationManager.createNotificationChannel(channel)
         }
 
@@ -139,9 +145,11 @@ class NotificationViewImpl(private val context: Context) : NotificationView {
 
     override fun showFileTransferNotification(displayName: String?, deviceName: String, address: String, file: TransferringFile, transferredBytes: Long, silently: Boolean, settings: NotificationSettings) {
 
-        val notificationIntent = Intent(context, ChatActivity::class.java)
-                .putExtra(ChatActivity.EXTRA_ADDRESS, address)
-        notificationIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        val notificationIntent = Intent(context, ChatActivity::class.java).apply {
+            putExtra(ChatActivity.EXTRA_ADDRESS, address)
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        }
+
         val pendingIntent = PendingIntent.getActivity(context, 0, notificationIntent, 0)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -184,10 +192,10 @@ class NotificationViewImpl(private val context: Context) : NotificationView {
 
     override fun updateFileTransferNotification(transferredBytes: Long, totalBytes: Long) {
 
-        if(transferBuilder != null) {
-            transferBuilder!!.setProgress(totalBytes.toInt(), transferredBytes.toInt(), false)
+        transferBuilder?.let {
+            it.setProgress(totalBytes.toInt(), transferredBytes.toInt(), false)
             notificationManager.notify(NotificationView.NOTIFICATION_TAG_FILE,
-                    NotificationView.NOTIFICATION_ID_FILE, transferBuilder!!.build())
+                    NotificationView.NOTIFICATION_ID_FILE, it.build())
         }
     }
 

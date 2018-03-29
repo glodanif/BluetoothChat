@@ -23,22 +23,24 @@ class ContactChooserActivity : SkeletonActivity(), ContactChooserView {
     private lateinit var contactsList: RecyclerView
     private lateinit var noContactsLabel: TextView
 
-    private val adapter = ContactsAdapter()
+    private val contactsAdapter = ContactsAdapter()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_contact_chooser, ActivityType.CHILD_ACTIVITY)
         ComponentsManager.injectContactChooser(this)
 
-        contactsList = findViewById(R.id.rv_contacts)
         noContactsLabel = findViewById(R.id.tv_no_contacts)
 
-        contactsList.layoutManager = LinearLayoutManager(this)
-        contactsList.adapter = adapter
+        contactsList = findViewById<RecyclerView>(R.id.rv_contacts).apply {
+            layoutManager = LinearLayoutManager(this@ContactChooserActivity)
+            adapter = contactsAdapter
+        }
 
         val message = intent.getStringExtra(EXTRA_MESSAGE)
         val filePath = intent.getStringExtra(EXTRA_FILE_PATH)
-        adapter.clickListener = {
+
+        contactsAdapter.clickListener = {
             ChatActivity.start(this, it.address, message, filePath)
             finish()
         }
@@ -50,8 +52,8 @@ class ContactChooserActivity : SkeletonActivity(), ContactChooserView {
     }
 
     override fun showContacts(contacts: List<ContactViewModel>) {
-        adapter.conversations = ArrayList(contacts)
-        adapter.notifyDataSetChanged()
+        contactsAdapter.conversations = ArrayList(contacts)
+        contactsAdapter.notifyDataSetChanged()
     }
 
     override fun showNoContacts() {

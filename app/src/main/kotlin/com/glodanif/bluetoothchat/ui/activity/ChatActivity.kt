@@ -8,7 +8,8 @@ import android.app.Service
 import android.bluetooth.BluetoothAdapter
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
+import android.graphics.Bitmap
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.os.Handler
 import android.support.v7.widget.CardView
@@ -21,7 +22,6 @@ import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import android.widget.*
 import com.glodanif.bluetoothchat.R
-import com.glodanif.bluetoothchat.data.entity.Conversation
 import com.glodanif.bluetoothchat.di.ComponentsManager
 import com.glodanif.bluetoothchat.extension.toReadableFileSize
 import com.glodanif.bluetoothchat.ui.adapter.ChatAdapter
@@ -32,6 +32,7 @@ import com.glodanif.bluetoothchat.ui.view.NotificationView
 import com.glodanif.bluetoothchat.ui.viewmodel.ChatMessageViewModel
 import com.glodanif.bluetoothchat.ui.widget.ActionView
 import com.squareup.picasso.Picasso
+import com.squareup.picasso.Target
 import pl.aprilapps.easyphotopicker.DefaultCallback
 import pl.aprilapps.easyphotopicker.EasyImage
 import java.io.File
@@ -48,8 +49,6 @@ class ChatActivity : SkeletonActivity(), ChatView {
     private lateinit var actions: ActionView
     private lateinit var chatList: RecyclerView
     private lateinit var messageField: EditText
-    private lateinit var sendButton: ImageButton
-    private lateinit var imagePickerButton: ImageButton
     private lateinit var sendButtonsSwitcher: ViewSwitcher
     private lateinit var transferringImagePreview: ImageView
     private lateinit var transferringImageSize: TextView
@@ -63,12 +62,12 @@ class ChatActivity : SkeletonActivity(), ChatView {
     private lateinit var textSendingHolder: ViewGroup
     private lateinit var imageSendingHolder: ViewGroup
 
-    private lateinit var adapter: ChatAdapter
+    private lateinit var chatAdapter: ChatAdapter
 
     private var deviceAddress: String? = null
 
     private val showAnimation =
-            lazy {  AnimationUtils.loadAnimation(this, R.anim.anime_fade_slide_in) }
+            lazy { AnimationUtils.loadAnimation(this, R.anim.anime_fade_slide_in) }
     private val hideAnimation =
             lazy { AnimationUtils.loadAnimation(this, R.anim.anime_fade_slide_out) }
 
@@ -95,8 +94,12 @@ class ChatActivity : SkeletonActivity(), ChatView {
 
         ComponentsManager.injectChat(this, deviceAddress.toString())
 
-        toolbar?.setTitleTextAppearance(this, R.style.ActionBar_TitleTextStyle)
-        toolbar?.setSubtitleTextAppearance(this, R.style.ActionBar_SubTitleTextStyle)
+        title = if (deviceAddress.isNullOrEmpty()) getString(R.string.app_name) else deviceAddress
+        toolbar?.let {
+            it.subtitle = getString(R.string.chat__not_connected)
+            it.setTitleTextAppearance(this, R.style.ActionBar_TitleTextStyle)
+            it.setSubtitleTextAppearance(this, R.style.ActionBar_SubTitleTextStyle)
+        }
 
         textSendingHolder = findViewById(R.id.ll_text_sending_holder)
         imageSendingHolder = findViewById(R.id.ll_image_sending_holder)
@@ -112,16 +115,15 @@ class ChatActivity : SkeletonActivity(), ChatView {
         presharingImage = findViewById(R.id.iv_presharing_image)
 
         actions = findViewById(R.id.av_actions)
-        messageField = findViewById(R.id.et_message)
-        messageField.addTextChangedListener(textWatcher)
+        messageField = findViewById<EditText>(R.id.et_message).apply {
+            addTextChangedListener(textWatcher)
+        }
 
-        sendButton = findViewById(R.id.ib_send)
-        sendButton.setOnClickListener {
+        findViewById<ImageButton>(R.id.ib_send).setOnClickListener {
             presenter.sendMessage(messageField.text.toString().trim())
         }
 
-        imagePickerButton = findViewById(R.id.ib_image)
-        imagePickerButton.setOnClickListener {
+        findViewById<ImageButton>(R.id.ib_image).setOnClickListener {
             EasyImage.openChooserWithGallery(this, "chooserTitle", 0)
         }
 
@@ -130,44 +132,47 @@ class ChatActivity : SkeletonActivity(), ChatView {
         }
 
         findViewById<Button>(R.id.btn_retry).setOnClickListener {
-            val animation = hideAnimation.value
-            animation.fillAfter = true
-            presharingContainer.startAnimation(animation)
-            presenter.proceedPresharing()
+            hideAnimation.value.let {
+                it.fillAfter = true
+                presharingContainer.startAnimation(it)
+                presenter.proceedPresharing()
+            }
         }
 
         findViewById<Button>(R.id.btn_cancel).setOnClickListener {
-            val animation = hideAnimation.value
-            animation.fillAfter = true
-            presharingContainer.startAnimation(animation)
-            presenter.cancelPresharing()
-        }
-
-        adapter = ChatAdapter(this)
-        adapter.imageClickListener = { view, message ->
-            ImagePreviewActivity.start(this, view, message)
-        }
-
-        chatList = findViewById(R.id.rv_chat)
-        layoutManager.reverseLayout = true
-        chatList.layoutManager = layoutManager
-        chatList.adapter = adapter
-
-        chatList.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-
-            override fun onScrollStateChanged(recyclerView: RecyclerView?, scrollState: Int) {
-
-                val picasso = Picasso.with(this@ChatActivity)
-                if (scrollState == RecyclerView.SCROLL_STATE_IDLE || scrollState == RecyclerView.SCROLL_STATE_DRAGGING) {
-                    picasso.resumeTag(adapter.picassoTag)
-                } else {
-                    picasso.pauseTag(adapter.picassoTag)
-                }
+            hideAnimation.value.let {
+                it.fillAfter = true
+                presharingContainer.startAnimation(it)
+                presenter.cancelPresharing()
             }
-        })
+        }
 
-        title = if (deviceAddress.isNullOrEmpty()) getString(R.string.app_name) else deviceAddress
-        toolbar?.subtitle = getString(R.string.chat__not_connected)
+        chatAdapter = ChatAdapter(this).apply {
+            imageClickListener = { view, message ->
+                ImagePreviewActivity.start(this@ChatActivity, view, message)
+            }
+        }
+
+        chatList = findViewById<RecyclerView>(R.id.rv_chat).apply {
+
+            val manager = this@ChatActivity.layoutManager
+            manager.reverseLayout = true
+            layoutManager = manager
+            adapter = chatAdapter
+
+            addOnScrollListener(object : RecyclerView.OnScrollListener() {
+
+                override fun onScrollStateChanged(recyclerView: RecyclerView?, scrollState: Int) {
+
+                    val picasso = Picasso.with(this@ChatActivity)
+                    if (scrollState == RecyclerView.SCROLL_STATE_IDLE || scrollState == RecyclerView.SCROLL_STATE_DRAGGING) {
+                        picasso.resumeTag(chatAdapter.picassoTag)
+                    } else {
+                        picasso.pauseTag(chatAdapter.picassoTag)
+                    }
+                }
+            })
+        }
 
         if (Intent.ACTION_SEND == intent.action) {
 
@@ -276,19 +281,19 @@ class ChatActivity : SkeletonActivity(), ChatView {
     }
 
     override fun showMessagesHistory(messages: List<ChatMessageViewModel>) {
-        adapter.messages = LinkedList(messages)
-        adapter.notifyDataSetChanged()
+        chatAdapter.messages = LinkedList(messages)
+        chatAdapter.notifyDataSetChanged()
     }
 
     override fun showReceivedMessage(message: ChatMessageViewModel) {
-        adapter.messages.addFirst(message)
-        adapter.notifyItemInserted(0)
+        chatAdapter.messages.addFirst(message)
+        chatAdapter.notifyItemInserted(0)
         layoutManager.scrollToPosition(0)
     }
 
     override fun showSentMessage(message: ChatMessageViewModel) {
-        adapter.messages.addFirst(message)
-        adapter.notifyItemInserted(0)
+        chatAdapter.messages.addFirst(message)
+        chatAdapter.notifyItemInserted(0)
         layoutManager.scrollToPosition(0)
     }
 
@@ -386,10 +391,11 @@ class ChatActivity : SkeletonActivity(), ChatView {
 
     override fun showPresharingImage(path: String) {
 
-        val animation = showAnimation.value
-        animation.fillAfter = true
-        presharingContainer.visibility = View.VISIBLE
-        presharingContainer.startAnimation(animation)
+        showAnimation.value.let {
+            it.fillAfter = true
+            presharingContainer.visibility = View.VISIBLE
+            presharingContainer.startAnimation(it)
+        }
 
         Picasso.with(this)
                 .load("file://$path")
@@ -404,13 +410,23 @@ class ChatActivity : SkeletonActivity(), ChatView {
         transferringImageHeader.text = getString(if (transferType == ChatView.FileTransferType.SENDING)
             R.string.chat__sending_image else R.string.chat__receiving_images)
 
-        //if (fileAddress != null) {
-            Picasso.with(this)
-                    .load("file://$fileAddress")
-                    .error(R.drawable.ic_photo)
-                    .placeholder(R.drawable.ic_photo)
-                    .into(transferringImagePreview)
-        //}
+        Picasso.with(this)
+                .load("file://$fileAddress")
+                .into(object : Target {
+
+                    override fun onPrepareLoad(placeHolderDrawable: Drawable?) {
+                        transferringImagePreview.setImageResource(R.drawable.ic_photo)
+                    }
+
+                    override fun onBitmapFailed(errorDrawable: Drawable?) {
+                        transferringImagePreview.setImageResource(R.drawable.ic_photo)
+                    }
+
+                    override fun onBitmapLoaded(bitmap: Bitmap?, from: Picasso.LoadedFrom?) {
+                        transferringImagePreview.setImageBitmap(bitmap)
+                    }
+                })
+
         transferringImageSize.text = fileSize.toReadableFileSize()
         transferringImageProgressLabel.text = "0%"
         //FIXME should work with Long
@@ -452,8 +468,7 @@ class ChatActivity : SkeletonActivity(), ChatView {
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        val inflater = menuInflater
-        inflater.inflate(R.menu.menu_chat, menu)
+        menuInflater.inflate(R.menu.menu_chat, menu)
         return super.onCreateOptionsMenu(menu)
     }
 

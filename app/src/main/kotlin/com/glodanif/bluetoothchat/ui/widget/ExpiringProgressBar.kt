@@ -36,16 +36,21 @@ class ExpiringProgressBar : View {
     private val strokeColor = resources.getColor(R.color.colorPrimary)
 
     init {
-        textPaint.color = textColor
-        textPaint.typeface = Typeface.create("sans-serif-light", Typeface.NORMAL)
-        textPaint.textSize = textSize
-        textPaint.isAntiAlias = true
 
-        strokePaint.color = strokeColor
-        strokePaint.strokeWidth = strokeWidth
-        strokePaint.isDither = true
-        strokePaint.style = Paint.Style.STROKE
-        strokePaint.isAntiAlias = true
+        with(textPaint) {
+            color = textColor
+            typeface = Typeface.create("sans-serif-light", Typeface.NORMAL)
+            textSize = textSize
+            isAntiAlias = true
+        }
+
+        with(strokePaint) {
+            color = strokeColor
+            strokeWidth = strokeWidth
+            isDither = true
+            style = Paint.Style.STROKE
+            isAntiAlias = true
+        }
     }
 
     private val periodHandler = Handler()

@@ -34,10 +34,10 @@ class ConversationsPresenter(private val view: ConversationsView, private val co
             }
         }
 
-        override fun onError() {
-            connection.setOnPrepareListener(null)
-            connection.setOnConnectListener(null)
-            connection.setOnMessageListener(null)
+        override fun onError() = with(connection) {
+            setOnPrepareListener(null)
+            setOnConnectListener(null)
+            setOnMessageListener(null)
         }
     }
 

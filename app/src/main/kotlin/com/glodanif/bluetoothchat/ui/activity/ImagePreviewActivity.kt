@@ -43,9 +43,10 @@ class ImagePreviewActivity : SkeletonActivity(), ImagePreviewView {
         toolbar?.setTitleTextAppearance(this, R.style.ActionBar_TitleTextStyle)
         toolbar?.setSubtitleTextAppearance(this, R.style.ActionBar_SubTitleTextStyle)
 
-        imageView = findViewById(R.id.pv_preview)
-        imageView.minimumScale = .75f
-        imageView.maximumScale = 2f
+        imageView = findViewById<PhotoView>(R.id.pv_preview).apply {
+            minimumScale = .75f
+            maximumScale = 2f
+        }
 
         presenter.loadImage()
     }

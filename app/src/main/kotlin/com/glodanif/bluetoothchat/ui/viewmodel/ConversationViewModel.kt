@@ -3,6 +3,7 @@ package com.glodanif.bluetoothchat.ui.viewmodel
 import android.graphics.Color
 import com.amulyakhare.textdrawable.TextDrawable
 import com.glodanif.bluetoothchat.extension.getFirstLetter
+import java.util.*
 
 data class ConversationViewModel(
         val address: String,
@@ -11,7 +12,8 @@ data class ConversationViewModel(
         val fullName: String,
         val color: Int,
         val lastMessage: String?,
-        val lastActivity: String?,
+        val lastActivity: Date?,
+        val lastActivityText: String?,
         val notSeen: Int
 ) {
 
