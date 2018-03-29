@@ -129,7 +129,7 @@ class ProfileActivity : SkeletonActivity(), ProfileView {
 
     companion object {
 
-        val EXTRA_EDIT_MODE = "extra.edit_mode"
+        private const val EXTRA_EDIT_MODE = "extra.edit_mode"
 
         fun start(context: Context, editMode: Boolean) {
             val intent = Intent(context, ProfileActivity::class.java)

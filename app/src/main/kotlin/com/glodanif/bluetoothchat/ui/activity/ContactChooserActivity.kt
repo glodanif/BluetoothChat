@@ -61,8 +61,8 @@ class ContactChooserActivity : SkeletonActivity(), ContactChooserView {
 
     companion object {
 
-        const val EXTRA_MESSAGE = "extra.message"
-        const val EXTRA_FILE_PATH = "extra.file_path"
+        private const val EXTRA_MESSAGE = "extra.message"
+        private const val EXTRA_FILE_PATH = "extra.file_path"
 
         fun start(context: Context, message: String?, filePath: String?) {
             val intent = Intent(context, ContactChooserActivity::class.java)

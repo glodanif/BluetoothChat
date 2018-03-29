@@ -36,7 +36,6 @@ import com.glodanif.bluetoothchat.ui.widget.ActionView
 import com.glodanif.bluetoothchat.ui.widget.SettingsPopup
 import com.glodanif.bluetoothchat.ui.widget.ShortcutManager
 import com.glodanif.bluetoothchat.ui.widget.ShortcutManagerImpl
-import java.io.File
 import javax.inject.Inject
 
 class ConversationsActivity : SkeletonActivity(), ConversationsView {

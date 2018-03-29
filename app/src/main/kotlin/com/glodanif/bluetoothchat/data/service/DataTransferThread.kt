@@ -22,7 +22,6 @@ abstract class DataTransferThread(private val socket: BluetoothSocket,
     private var skipEvents = false
 
     private val buffer = ByteArray(bufferSize)
-    private var bytes: Int? = null
 
     @Volatile
     private var isConnectionPrepared = false
@@ -104,8 +103,9 @@ abstract class DataTransferThread(private val socket: BluetoothSocket,
     }
 
     private fun readString(): String? {
-        bytes = inputStream?.read(buffer)
-        return if (bytes != null) String(buffer, 0, bytes!!) else null
+        return inputStream?.read(buffer)?.let {
+            String(buffer, 0, it)
+        }
     }
 
     fun write(message: String) {
@@ -168,6 +168,7 @@ abstract class DataTransferThread(private val socket: BluetoothSocket,
                         fileListener.onFileSendingProgress(transferringFile, sentBytes)
 
                         if (isFileTransferCanceledByMe || isFileTransferCanceledByPartner) {
+                            bos.flush()
                             break
                         }
                     }
@@ -223,12 +224,14 @@ abstract class DataTransferThread(private val socket: BluetoothSocket,
 
     fun getTransferringFile(): TransferringFile? {
 
-        return if (fileName != null && isFileDownloading) {
-            TransferringFile(fileName!!, fileSize, TransferringFile.TransferType.RECEIVING)
-        } else if (fileName != null && isFileUploading) {
-            TransferringFile(fileName!!, fileSize, TransferringFile.TransferType.SENDING)
-        } else {
-            null
+        return fileName?.let {
+            when {
+                isFileDownloading ->
+                    TransferringFile(it, fileSize, TransferringFile.TransferType.RECEIVING)
+                isFileUploading ->
+                    TransferringFile(it, fileSize, TransferringFile.TransferType.SENDING)
+                else -> null
+            }
         }
     }
 
@@ -287,6 +290,7 @@ abstract class DataTransferThread(private val socket: BluetoothSocket,
                     }
 
                     if (isFileTransferCanceledByMe || isFileTransferCanceledByPartner) {
+                        it.flush()
                         break
                     }
 

@@ -404,13 +404,13 @@ class ChatActivity : SkeletonActivity(), ChatView {
         transferringImageHeader.text = getString(if (transferType == ChatView.FileTransferType.SENDING)
             R.string.chat__sending_image else R.string.chat__receiving_images)
 
-        if (fileAddress != null) {
+        //if (fileAddress != null) {
             Picasso.with(this)
                     .load("file://$fileAddress")
+                    .error(R.drawable.ic_photo)
+                    .placeholder(R.drawable.ic_photo)
                     .into(transferringImagePreview)
-        } else {
-            transferringImagePreview.setImageResource(R.drawable.ic_photo)
-        }
+        //}
         transferringImageSize.text = fileSize.toReadableFileSize()
         transferringImageProgressLabel.text = "0%"
         //FIXME should work with Long
@@ -502,8 +502,8 @@ class ChatActivity : SkeletonActivity(), ChatView {
         private const val REQUEST_ENABLE_BLUETOOTH = 101
 
         const val EXTRA_ADDRESS = "extra.address"
-        const val EXTRA_MESSAGE = "extra.message"
-        const val EXTRA_FILE_PATH = "extra.file_path"
+        private const val EXTRA_MESSAGE = "extra.message"
+        private const val EXTRA_FILE_PATH = "extra.file_path"
 
         fun start(context: Context, address: String) {
             val intent: Intent = Intent(context, ChatActivity::class.java)

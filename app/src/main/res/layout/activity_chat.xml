@@ -94,8 +94,7 @@
                 android:layout_marginEnd="16dp"
                 android:layout_weight="0"
                 android:contentDescription="@string/chat__cd__transferring_image"
-                android:scaleType="centerInside"
-                tools:src="@mipmap/ic_launcher" />
+                android:scaleType="centerInside"/>
 
             <RelativeLayout
                 android:layout_width="match_parent"

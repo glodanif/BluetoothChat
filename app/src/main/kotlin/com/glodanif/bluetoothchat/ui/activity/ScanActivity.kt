@@ -28,11 +28,6 @@ import com.glodanif.bluetoothchat.ui.widget.ExpiringProgressBar
 
 class ScanActivity : SkeletonActivity(), ScanView {
 
-    private val REQUEST_ENABLE_BLUETOOTH = 101
-    private val REQUEST_MAKE_DISCOVERABLE = 102
-    private val REQUEST_LOCATION_PERMISSION = 103
-    private val REQUEST_STORAGE_PERMISSION = 104
-
     private lateinit var container: View
     private lateinit var turnOnHolder: View
     private lateinit var listHolder: View
@@ -308,7 +303,12 @@ class ScanActivity : SkeletonActivity(), ScanView {
 
     companion object {
 
-        val EXTRA_BLUETOOTH_DEVICE = "extra.bluetooth_device"
+        const val EXTRA_BLUETOOTH_DEVICE = "extra.bluetooth_device"
+
+        private const val REQUEST_ENABLE_BLUETOOTH = 101
+        private const val REQUEST_MAKE_DISCOVERABLE = 102
+        private const val REQUEST_LOCATION_PERMISSION = 103
+        private const val REQUEST_STORAGE_PERMISSION = 104
 
         fun start(context: Context) =
                 context.startActivity(Intent(context, ScanActivity::class.java))

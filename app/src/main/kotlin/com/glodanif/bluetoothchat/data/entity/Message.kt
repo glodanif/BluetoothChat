@@ -11,7 +11,7 @@ class Message() {
     private val DIVIDER = "#"
 
     enum class Type(val value: Int) {
-
+        UNEXPECTED(-1),
         MESSAGE(0),
         DELIVERY(1),
         CONNECTION_RESPONSE(2),
@@ -36,7 +36,13 @@ class Message() {
 
         var messageText = message
 
-        type = Type.from(messageText.substring(0, messageText.indexOf(DIVIDER)).toInt())
+        val parsedType = messageText.substring(0, messageText.indexOf(DIVIDER))
+        if (!parsedType.isNumber()) {
+            type = Type.UNEXPECTED
+            return
+        }
+
+        type = Type.from(parsedType.toInt())
         messageText = messageText.substring(messageText.indexOf(DIVIDER) + 1, messageText.length)
 
         uid = messageText.substring(0, messageText.indexOf(DIVIDER))

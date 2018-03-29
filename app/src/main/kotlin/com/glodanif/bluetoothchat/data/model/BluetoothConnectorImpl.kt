@@ -206,7 +206,7 @@ class BluetoothConnectorImpl(private val context: Context) : BluetoothConnector 
     }
 
     override fun getTransferringFile(): TransferringFile? {
-        return if (service == null) null else service!!.getTransferringFile()
+        return service?.getTransferringFile()
     }
 
     override fun cancelFileTransfer() {
@@ -218,15 +218,15 @@ class BluetoothConnectorImpl(private val context: Context) : BluetoothConnector 
     }
 
     override fun isConnected(): Boolean {
-        return if (service == null) false else service!!.isConnected()
+        return service?.isConnected() ?: false
     }
 
     override fun isConnectedOrPending(): Boolean {
-        return if (service == null) false else service!!.isConnectedOrPending()
+        return service?.isConnectedOrPending() ?: false
     }
 
     override fun isPending(): Boolean {
-        return if (service == null) false else service!!.isPending()
+        return service?.isPending() ?: false
     }
 
     override fun getCurrentConversation(): Conversation? {

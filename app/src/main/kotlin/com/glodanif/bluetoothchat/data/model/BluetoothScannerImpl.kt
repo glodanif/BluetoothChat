@@ -59,7 +59,7 @@ class BluetoothScannerImpl(val context: Context) : BluetoothScanner {
         try {
             context.unregisterReceiver(foundDeviceReceiver)
         } catch (e: IllegalArgumentException) {
-            Log.e("TAG13", e.message)
+            e.printStackTrace()
         }
         if (adapter != null && adapter.isDiscovering) {
             adapter.cancelDiscovery()

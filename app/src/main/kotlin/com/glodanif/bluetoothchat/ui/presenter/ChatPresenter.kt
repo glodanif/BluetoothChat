@@ -25,18 +25,19 @@ class ChatPresenter(private val deviceAddress: String, private val view: ChatVie
     private val prepareListener = object : OnPrepareListener {
 
         override fun onPrepared() {
+
             connectionModel.setOnConnectListener(connectionListener)
             connectionModel.setOnMessageListener(messageListener)
             connectionModel.setOnFileListener(fileListener)
             updateState()
             dismissNotification()
 
-            if (fileToSend != null) {
+            fileToSend?.let {
 
-                if (fileToSend!!.length() > maxFileSize) {
+                if (it.length() > maxFileSize) {
                     view.showImageTooBig(maxFileSize.toLong())
                 } else {
-                    connectionModel.sendFile(fileToSend!!)
+                    connectionModel.sendFile(it)
                 }
                 fileToSend = null
             }
@@ -213,12 +214,12 @@ class ChatPresenter(private val deviceAddress: String, private val view: ChatVie
 
     private fun sendFileIfPrepared() {
 
-        if (fileToSend != null) {
+        fileToSend?.let {
 
-            if (fileToSend!!.length() > maxFileSize) {
+            if (it.length() > maxFileSize) {
                 view.showImageTooBig(maxFileSize.toLong())
             } else {
-                connectionModel.sendFile(fileToSend!!)
+                connectionModel.sendFile(it)
             }
             fileToSend = null
         }
@@ -263,15 +264,16 @@ class ChatPresenter(private val deviceAddress: String, private val view: ChatVie
 
     fun connectToDevice() {
 
-        val device = scanModel.getDeviceByAddress(deviceAddress)
+        scanModel.getDeviceByAddress(deviceAddress).let {
 
-        if (device != null) {
-            view.showStatusPending()
-            connectionModel.connect(device)
-            view.showWainingForOpponent()
-        } else {
-            view.showStatusNotConnected()
-            view.showDeviceIsNotAvailable()
+            if (it != null) {
+                view.showStatusPending()
+                connectionModel.connect(it)
+                view.showWainingForOpponent()
+            } else {
+                view.showStatusNotConnected()
+                view.showDeviceIsNotAvailable()
+            }
         }
     }
 
@@ -309,18 +311,18 @@ class ChatPresenter(private val deviceAddress: String, private val view: ChatVie
 
     fun proceedPresharing() {
 
-        if (filePresharing != null) {
+        filePresharing?.let {
 
             val currentConversation: Conversation? = connectionModel.getCurrentConversation()
 
             if (!connectionModel.isConnected()) {
-                view.showPresharingImage(filePresharing!!.absolutePath)
+                view.showPresharingImage(it.absolutePath)
             } else if (currentConversation != null && currentConversation.messageContractVersion < 1) {
                 view.showReceiverUnableToReceiveImages()
-            } else if (filePresharing!!.length() > maxFileSize) {
+            } else if (it.length() > maxFileSize) {
                 view.showImageTooBig(maxFileSize.toLong())
             } else {
-                connectionModel.sendFile(filePresharing!!)
+                connectionModel.sendFile(it)
                 filePresharing = null
             }
         }
@@ -369,33 +371,36 @@ class ChatPresenter(private val deviceAddress: String, private val view: ChatVie
 
     private fun updateState() {
 
-        val transferringFile = connectionModel.getTransferringFile()
-        if (transferringFile != null) {
-            val type = if (transferringFile.transferType == TransferringFile.TransferType.RECEIVING)
-                ChatView.FileTransferType.RECEIVING else ChatView.FileTransferType.SENDING
-            view.showImageTransferLayout(transferringFile.name, transferringFile.size, type)
-        } else {
-            view.hideImageTransferLayout()
+        connectionModel.getTransferringFile().let {
+
+            if (it != null) {
+                val type = if (it.transferType == TransferringFile.TransferType.RECEIVING)
+                    ChatView.FileTransferType.RECEIVING else ChatView.FileTransferType.SENDING
+                view.showImageTransferLayout(it.name, it.size, type)
+            } else {
+                view.hideImageTransferLayout()
+            }
         }
 
-        val currentConversation: Conversation? = connectionModel.getCurrentConversation()
+        connectionModel.getCurrentConversation().let {
 
-        if (currentConversation == null) {
-            if (connectionModel.isPending()) {
-                view.showStatusPending()
-                view.showWainingForOpponent()
-            } else {
+            if (it == null) {
+                if (connectionModel.isPending()) {
+                    view.showStatusPending()
+                    view.showWainingForOpponent()
+                } else {
+                    view.showStatusNotConnected()
+                    view.showNotConnectedToAnyDevice()
+                }
+            } else if (it.deviceAddress != deviceAddress) {
                 view.showStatusNotConnected()
-                view.showNotConnectedToAnyDevice()
+                view.showNotConnectedToThisDevice("${it.displayName} (${it.deviceName})")
+            } else if (connectionModel.isPending() && it.deviceAddress == deviceAddress) {
+                view.showStatusPending()
+                view.showConnectionRequest(it.displayName, it.deviceName)
+            } else {
+                view.showStatusConnected()
             }
-        } else if (currentConversation.deviceAddress != deviceAddress) {
-            view.showStatusNotConnected()
-            view.showNotConnectedToThisDevice("${currentConversation.displayName} (${currentConversation.deviceName})")
-        } else if (connectionModel.isPending() && currentConversation.deviceAddress == deviceAddress) {
-            view.showStatusPending()
-            view.showConnectionRequest(currentConversation.displayName, currentConversation.deviceName)
-        } else {
-            view.showStatusConnected()
         }
     }
 }
