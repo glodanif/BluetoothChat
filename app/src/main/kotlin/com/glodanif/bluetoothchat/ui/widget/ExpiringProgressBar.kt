@@ -25,33 +25,25 @@ class ExpiringProgressBar : View {
     constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
     constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
 
-    private val textPaint: TextPaint = TextPaint()
-    private val strokePaint: Paint = Paint()
-    private val circleRect = RectF()
-
     private val minSize = resources.getDimension(R.dimen.epb_min_size)
-    private var textSize = resources.getDimension(R.dimen.epb_text_size)
-    private val strokeWidth = resources.getDimension(R.dimen.epb_stroke_width)
-    private var textColor = resources.getColor(R.color.text_dark)
-    private val strokeColor = resources.getColor(R.color.colorPrimary)
+    private val strokeThickness = resources.getDimension(R.dimen.epb_stroke_width)
 
-    init {
-
-        with(textPaint) {
-            color = textColor
-            typeface = Typeface.create("sans-serif-light", Typeface.NORMAL)
-            textSize = textSize
-            isAntiAlias = true
-        }
-
-        with(strokePaint) {
-            color = strokeColor
-            strokeWidth = strokeWidth
-            isDither = true
-            style = Paint.Style.STROKE
-            isAntiAlias = true
-        }
+    private val textPaint: TextPaint = TextPaint().apply {
+        color = resources.getColor(R.color.text_dark)
+        typeface = Typeface.create("sans-serif-light", Typeface.NORMAL)
+        textSize = resources.getDimension(R.dimen.epb_text_size)
+        isAntiAlias = true
     }
+
+    private val strokePaint: Paint = Paint().apply {
+        color = resources.getColor(R.color.colorPrimary)
+        strokeWidth = strokeThickness
+        isDither = true
+        style = Paint.Style.STROKE
+        isAntiAlias = true
+    }
+
+    private val circleRect = RectF()
 
     private val periodHandler = Handler()
     private val period: Long = 1000
@@ -62,7 +54,8 @@ class ExpiringProgressBar : View {
     override fun onDraw(canvas: Canvas?) {
         super.onDraw(canvas)
 
-        circleRect.set(strokeWidth, strokeWidth, width - strokeWidth, height - strokeWidth)
+        circleRect.set(strokeThickness, strokeThickness,
+                width - strokeThickness, height - strokeThickness)
 
         canvas?.drawArc(circleRect, -90f, getProgressAngle(), false, strokePaint)
 
@@ -140,8 +133,7 @@ class ExpiringProgressBar : View {
             return
         }
 
-        val bundle = state
-        progress = bundle.getInt(INSTANCE_PROGRESS)
-        super.onRestoreInstanceState(bundle.getParcelable(INSTANCE_STATE))
+        progress = state.getInt(INSTANCE_PROGRESS)
+        super.onRestoreInstanceState(state.getParcelable(INSTANCE_STATE))
     }
 }
