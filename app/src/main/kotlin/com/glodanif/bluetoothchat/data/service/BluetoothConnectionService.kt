@@ -31,9 +31,12 @@ import kotlin.concurrent.thread
 
 class BluetoothConnectionService : Service() {
 
-    private val TAG = "BCS"
-
     private val binder = ConnectionBinder()
+    private val handler = Handler()
+    private val adapter: BluetoothAdapter? = BluetoothAdapter.getDefaultAdapter()
+
+    private val APP_NAME = "BluetoothChat"
+    private val APP_UUID = UUID.fromString("220da3b2-41f5-11e7-a919-92ebcb67fe33")
 
     enum class ConnectionState { CONNECTED, CONNECTING, NOT_CONNECTED, REJECTED, PENDING, LISTENING }
     enum class ConnectionType { INCOMING, OUTCOMING }
@@ -41,13 +44,6 @@ class BluetoothConnectionService : Service() {
     private var connectionListener: OnConnectionListener? = null
     private var messageListener: OnMessageListener? = null
     private var fileListener: OnFileListener? = null
-
-    private val adapter: BluetoothAdapter? = BluetoothAdapter.getDefaultAdapter()
-
-    private val APP_NAME = "BluetoothChat"
-    private val APP_UUID = UUID.fromString("220da3b2-41f5-11e7-a919-92ebcb67fe33")
-
-    private val handler: Handler = Handler()
 
     private var acceptThread: AcceptThread? = null
     private var connectThread: ConnectThread? = null
@@ -82,7 +78,6 @@ class BluetoothConnectionService : Service() {
 
     override fun onCreate() {
         super.onCreate()
-        Log.e(TAG, "CREATED")
         application = getApplication() as ChatApplication
         settings = SettingsManagerImpl(this)
         preferences = UserPreferences(this)
@@ -129,11 +124,7 @@ class BluetoothConnectionService : Service() {
 
     @Synchronized
     private fun prepareForAccept() {
-
-        Log.d(TAG, "start")
-
         cancelConnections()
-
         acceptThread = AcceptThread()
         acceptThread?.start()
         showNotification(getString(R.string.notification__ready_to_connect))
@@ -141,8 +132,6 @@ class BluetoothConnectionService : Service() {
 
     @Synchronized
     fun connect(device: BluetoothDevice) {
-
-        log("connect to: ${device.name}")
 
         if (connectionState == ConnectionState.CONNECTING) {
             connectThread?.cancel()
@@ -168,7 +157,6 @@ class BluetoothConnectionService : Service() {
         cancelConnections()
 
         connectionType = type
-
         currentSocket = socket
 
         acceptThread?.cancel()
@@ -379,25 +367,17 @@ class BluetoothConnectionService : Service() {
         dataTransferThread?.start()
 
         handler.post { connectionListener?.onConnected(socket.remoteDevice) }
-
-        log("connected")
     }
 
     @Synchronized
     fun stop() {
-
         cancelConnections()
-
         acceptThread?.cancel()
         acceptThread = null
-
         connectionState = ConnectionState.NOT_CONNECTED
-
-        log("stop")
     }
 
     private fun cancelConnections() {
-        log("cancelConnections")
         connectThread?.cancel()
         connectThread = null
         dataTransferThread?.cancel()
@@ -454,12 +434,10 @@ class BluetoothConnectionService : Service() {
         notificationView.dismissFileTransferNotification()
     }
 
-    private fun onMessageSent(messageBody: String) {
-
-        if (currentSocket == null) return
+    private fun onMessageSent(messageBody: String) = currentSocket?.let {
 
         val message = Message(messageBody)
-        val sentMessage = ChatMessage(currentSocket!!.remoteDevice.address, Date(), true, message.body)
+        val sentMessage = ChatMessage(it.remoteDevice.address, Date(), true, message.body)
 
         if (message.type == Message.Type.MESSAGE) {
             sentMessage.seenHere = true
@@ -474,8 +452,6 @@ class BluetoothConnectionService : Service() {
     }
 
     private fun onMessageReceived(messageBody: String) {
-
-        log("Message received: $messageBody")
 
         val message = Message(messageBody)
 
@@ -517,9 +493,9 @@ class BluetoothConnectionService : Service() {
         }
     }
 
-    private fun handleReceivedMessage(text: String) {
+    private fun handleReceivedMessage(text: String) = currentSocket?.let {
 
-        val device: BluetoothDevice = currentSocket!!.remoteDevice
+        val device: BluetoothDevice = it.remoteDevice
 
         val receivedMessage = ChatMessage(device.address, Date(), false, text)
 
@@ -539,9 +515,9 @@ class BluetoothConnectionService : Service() {
         }
     }
 
-    private fun handleConnectionRequest(message: Message) {
+    private fun handleConnectionRequest(message: Message) = currentSocket?.let {
 
-        val device: BluetoothDevice = currentSocket!!.remoteDevice
+        val device: BluetoothDevice = it.remoteDevice
 
         val parts = message.body.split("#")
         val conversation = Conversation(device.address, device.name, parts[0], parts[1].toInt())
@@ -561,9 +537,9 @@ class BluetoothConnectionService : Service() {
         }
     }
 
-    private fun handleConnectionApproval(message: Message) {
+    private fun handleConnectionApproval(message: Message) = currentSocket?.let {
 
-        val device: BluetoothDevice = currentSocket!!.remoteDevice
+        val device: BluetoothDevice = it.remoteDevice
 
         val parts = message.body.split("#")
         val conversation = Conversation(device.address, device.name, parts[0], parts[1].toInt())
@@ -581,7 +557,6 @@ class BluetoothConnectionService : Service() {
     }
 
     private fun connectionFailed() {
-        log("connectionFailed")
         currentSocket = null
         currentConversation = null
         handler.post { connectionListener?.onConnectionFailed() }
@@ -591,8 +566,6 @@ class BluetoothConnectionService : Service() {
 
     private fun connectionLost() {
 
-        log("connectionLost")
-
         currentSocket = null
         currentConversation = null
         if (isConnectedOrPending()) {
@@ -600,17 +573,13 @@ class BluetoothConnectionService : Service() {
                 if (isPending() && connectionType == ConnectionType.INCOMING) {
                     connectionState = ConnectionState.NOT_CONNECTED
                     connectionListener?.onConnectionWithdrawn()
-                    log("onConnectionWithdrawn")
                 } else {
                     connectionState = ConnectionState.NOT_CONNECTED
                     connectionListener?.onConnectionLost()
-                    log("onConnectionLost")
                 }
-                log("connectionLost - connected - prepareForAccept")
                 prepareForAccept()
             }
         } else {
-            log("connectionLost - not connected - prepareForAccept")
             prepareForAccept()
         }
     }
@@ -647,7 +616,6 @@ class BluetoothConnectionService : Service() {
             try {
                 serverSocket = adapter?.listenUsingRfcommWithServiceRecord(APP_NAME, APP_UUID)
             } catch (e: IOException) {
-                log("Socket listen() failed: ${e.message}")
                 e.printStackTrace()
             }
 
@@ -656,42 +624,35 @@ class BluetoothConnectionService : Service() {
 
         override fun run() {
 
-            log("BEGIN acceptThread")
-
             var socket: BluetoothSocket?
 
             while (!isConnectedOrPending()) {
                 try {
                     socket = serverSocket?.accept()
                 } catch (e: IOException) {
-                    log("Socket accept() failed")
+                    e.printStackTrace()
                     break
                 }
 
                 if (socket != null) {
                     when (connectionState) {
                         ConnectionState.LISTENING, ConnectionState.CONNECTING -> {
-                            log("Connected in AcceptThread")
                             connected(socket, ConnectionType.INCOMING)
                         }
                         ConnectionState.NOT_CONNECTED, ConnectionState.CONNECTED, ConnectionState.PENDING, ConnectionState.REJECTED -> try {
                             socket.close()
                         } catch (e: IOException) {
-                            log("Could not close unwanted socket: ${e.message}")
+                            e.printStackTrace()
                         }
                     }
                 }
             }
-
-            log("END acceptThread")
         }
 
         fun cancel() {
-            log("cancel() AcceptThread")
             try {
                 serverSocket?.close()
             } catch (e: IOException) {
-                log("cancel() AcceptThread failed: ${e.message}")
                 e.printStackTrace()
             }
         }
@@ -703,12 +664,9 @@ class BluetoothConnectionService : Service() {
 
         override fun run() {
 
-            log("BEGIN connectThread")
-
             try {
                 socket = bluetoothDevice.createRfcommSocketToServiceRecord(APP_UUID)
             } catch (e: IOException) {
-                log("unable to create socket in ConnectThread: ${e.message}")
                 e.printStackTrace()
             }
             connectionState = ConnectionState.CONNECTING
@@ -720,7 +678,7 @@ class BluetoothConnectionService : Service() {
                 try {
                     socket?.close()
                 } catch (e: IOException) {
-                    log("unable to close() socket during connection failure: ${e.message}")
+                    e.printStackTrace()
                 }
                 connectionFailed()
                 return
@@ -731,11 +689,8 @@ class BluetoothConnectionService : Service() {
             }
 
             if (socket != null) {
-                log("connect thread - connected")
                 connected(socket!!, ConnectionType.OUTCOMING)
             }
-
-            log("END connectThread")
         }
 
         fun cancel() {
@@ -743,7 +698,6 @@ class BluetoothConnectionService : Service() {
                 socket?.close()
             } catch (e: IOException) {
                 e.printStackTrace()
-                log("cancel() of connect thread failed: ${e.message}")
             }
         }
     }
@@ -760,8 +714,8 @@ class BluetoothConnectionService : Service() {
 
         var isRunning = false
 
-        var FOREGROUND_SERVICE = 101
-        var ACTION_STOP = "action.stop"
+        private const val FOREGROUND_SERVICE = 101
+        const val ACTION_STOP = "action.stop"
 
         fun start(context: Context) {
             val intent = Intent(context, BluetoothConnectionService::class.java)
@@ -775,13 +729,6 @@ class BluetoothConnectionService : Service() {
         fun bind(context: Context, connection: ServiceConnection) {
             val intent = Intent(context, BluetoothConnectionService::class.java)
             context.bindService(intent, connection, AppCompatActivity.BIND_ABOVE_CLIENT)
-        }
-    }
-
-    private fun log(text: String) {
-        if (BuildConfig.DEBUG) {
-            val logBody = "$text - (State: ${connectionState.name}, Type: ${connectionType?.name}, Conversation: $currentConversation, Threads: A: $acceptThread (running: ${acceptThread?.isAlive}), C: $connectThread (running: ${connectThread?.isAlive}), CD: $dataTransferThread (running: ${dataTransferThread?.isAlive}))"
-            Log.e(TAG, logBody)
         }
     }
 }
