@@ -6,9 +6,6 @@ import com.glodanif.bluetoothchat.data.entity.Conversation
 @Dao
 interface ConversationsDao {
 
-    @Query("SELECT * FROM conversation")
-    fun getAllConversations(): List<Conversation>
-
     @Query("SELECT conversation.*, message.*, " +
             "(SELECT COUNT(message.seenHere) FROM message WHERE conversation.address = message.deviceAddress AND message.seenHere = 0) AS notSeen, " +
             "(SELECT MAX(message.date) FROM message WHERE conversation.address = message.deviceAddress) AS lastActivity " +

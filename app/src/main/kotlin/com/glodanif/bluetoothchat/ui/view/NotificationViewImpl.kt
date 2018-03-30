@@ -72,7 +72,7 @@ class NotificationViewImpl(private val context: Context) : NotificationView {
         val name = if (displayName.isNullOrEmpty()) deviceName else "$displayName ($deviceName)"
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val channel = NotificationChannel(CHANNEL_MESSAGE, context.getString(R.string.notification__channel_message), NotificationManager.IMPORTANCE_MAX).apply {
+            val channel = NotificationChannel(CHANNEL_MESSAGE, context.getString(R.string.notification__channel_message), NotificationManager.IMPORTANCE_HIGH).apply {
                 setShowBadge(true)
             }
             notificationManager.createNotificationChannel(channel)
@@ -113,7 +113,7 @@ class NotificationViewImpl(private val context: Context) : NotificationView {
         val pendingIntent = PendingIntent.getActivity(context, requestCode, notificationIntent, 0)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val channel = NotificationChannel(CHANNEL_REQUEST, context.getString(R.string.notification__channel_request), NotificationManager.IMPORTANCE_MAX).apply {
+            val channel = NotificationChannel(CHANNEL_REQUEST, context.getString(R.string.notification__channel_request), NotificationManager.IMPORTANCE_HIGH).apply {
                 setShowBadge(true)
             }
             notificationManager.createNotificationChannel(channel)

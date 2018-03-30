@@ -20,7 +20,7 @@
         android:tint="#444444"
         app:srcCompat="@drawable/ic_bluetooth_black_24dp" />
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
@@ -37,6 +37,5 @@
             android:layout_height="wrap_content"
             android:textSize="12sp"
             tools:text="43:F5:1A:77" />
-
     </LinearLayout>
 </LinearLayout>
