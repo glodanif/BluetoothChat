@@ -8,8 +8,11 @@ import kotlinx.coroutines.experimental.async
 import kotlinx.coroutines.experimental.launch
 import kotlin.coroutines.experimental.CoroutineContext
 
-class ReceivedImagesPresenter(private val address: String?, private val view: ReceivedImagesView, private val model: MessagesStorage,
-                              private val uiContext: CoroutineContext = UI, private val bgContext: CoroutineContext = CommonPool) {
+class ReceivedImagesPresenter(private val address: String?,
+                              private val view: ReceivedImagesView,
+                              private val model: MessagesStorage,
+                              private val uiContext: CoroutineContext = UI,
+                              private val bgContext: CoroutineContext = CommonPool) {
 
     fun loadImages() = launch(uiContext) {
         val messages = async(bgContext) { model.getFileMessagesByDevice(address) }.await()

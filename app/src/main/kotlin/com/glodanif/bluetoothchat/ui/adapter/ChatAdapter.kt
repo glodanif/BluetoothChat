@@ -34,22 +34,22 @@ class ChatAdapter(private val context: Context) : RecyclerView.Adapter<RecyclerV
 
         if (viewHolder is ImageMessageViewHolder) {
 
-            val holder: ImageMessageViewHolder? = viewHolder
+            val holder: ImageMessageViewHolder = viewHolder
 
             if (!message.isImageAvailable) {
 
-                holder?.image?.visibility = View.GONE
-                holder?.missingLabel?.visibility = View.VISIBLE
-                holder?.missingLabel?.setText(message.imageProblemText)
+                holder.image.visibility = View.GONE
+                holder.missingLabel.visibility = View.VISIBLE
+                holder.missingLabel.setText(message.imageProblemText)
 
             } else {
 
-                holder?.image?.visibility = View.VISIBLE
-                holder?.missingLabel?.visibility = View.GONE
+                holder.image.visibility = View.VISIBLE
+                holder.missingLabel.visibility = View.GONE
 
                 val size = message.imageSize
-                holder?.image?.layoutParams = FrameLayout.LayoutParams(size.width, size.height)
-                holder?.image?.setOnClickListener {
+                holder.image.layoutParams = FrameLayout.LayoutParams(size.width, size.height)
+                holder.image.setOnClickListener {
                     imageClickListener?.invoke(holder.image, message)
                 }
 
@@ -60,14 +60,16 @@ class ChatAdapter(private val context: Context) : RecyclerView.Adapter<RecyclerV
                         .placeholder(R.color.background_image)
                         .tag(picassoTag)
                         .resize(size.width, size.height)
-                        .into(holder?.image)
+                        .into(holder.image)
             }
 
-            holder?.date?.text = message.date
+            holder.date.text = message.date
+
         } else if (viewHolder is TextMessageViewHolder) {
-            val holder: TextMessageViewHolder? = viewHolder
-            holder?.text?.text = message.text
-            holder?.date?.text = message.date
+
+            val holder: TextMessageViewHolder = viewHolder
+            holder.text.text = message.text
+            holder.date.text = message.date
         }
     }
 

@@ -10,7 +10,7 @@ import com.glodanif.bluetoothchat.ui.activity.ProfileActivity
 import dagger.Component
 
 @PerActivity
-@Component(dependencies = arrayOf(ApplicationComponent::class), modules = arrayOf(ProfileModule::class))
+@Component(dependencies = [(ApplicationComponent::class)], modules = [(ProfileModule::class)])
 interface ProfileComponent {
     fun inject(activity: ProfileActivity)
 }

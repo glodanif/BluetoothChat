@@ -12,10 +12,17 @@ import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.async
 import kotlinx.coroutines.experimental.launch
 import java.io.File
+import kotlin.coroutines.experimental.CoroutineContext
 
-class ChatPresenter(private val deviceAddress: String, private val view: ChatView, private val conversationsStorage: ConversationsStorage,
-                    private val messagesStorage: MessagesStorage, private val scanModel: BluetoothScanner, private val connectionModel: BluetoothConnector,
-                    private val converter: ChatMessageConverter) {
+class ChatPresenter(private val deviceAddress: String,
+                    private val view: ChatView,
+                    private val conversationsStorage: ConversationsStorage,
+                    private val messagesStorage: MessagesStorage,
+                    private val scanModel: BluetoothScanner,
+                    private val connectionModel: BluetoothConnector,
+                    private val converter: ChatMessageConverter,
+                    private val uiContext: CoroutineContext = UI,
+                    private val bgContext: CoroutineContext = CommonPool) {
 
     private val maxFileSize = 5_242_880
 
@@ -69,8 +76,8 @@ class ChatPresenter(private val deviceAddress: String, private val view: ChatVie
             view.showStatusConnected()
             view.hideActions()
 
-            launch(UI) {
-                val conversation = async(CommonPool) { conversationsStorage.getConversationByAddress(deviceAddress) }.await()
+            launch(uiContext) {
+                val conversation = async(bgContext) { conversationsStorage.getConversationByAddress(deviceAddress) }.await()
                 if (conversation != null) {
                     view.showPartnerName(conversation.displayName, conversation.deviceName)
                 }
@@ -209,9 +216,9 @@ class ChatPresenter(private val deviceAddress: String, private val view: ChatVie
             }
         }
 
-        launch(UI) {
-            val messagesDef = async(CommonPool) { messagesStorage.getMessagesByDevice(deviceAddress) }
-            val conversationDef = async(CommonPool) { conversationsStorage.getConversationByAddress(deviceAddress) }
+        launch(uiContext) {
+            val messagesDef = async(bgContext) { messagesStorage.getMessagesByDevice(deviceAddress) }
+            val conversationDef = async(bgContext) { conversationsStorage.getConversationByAddress(deviceAddress) }
             displayInfo(messagesDef.await(), conversationDef.await())
         }
     }
@@ -237,7 +244,7 @@ class ChatPresenter(private val deviceAddress: String, private val view: ChatVie
             view.showPartnerName(partner.displayName, partner.deviceName)
         }
 
-        launch(CommonPool) {
+        launch(bgContext) {
             messagesStorage.updateMessages(messages)
         }
     }

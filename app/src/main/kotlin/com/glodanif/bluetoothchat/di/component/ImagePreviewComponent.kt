@@ -6,7 +6,7 @@ import com.glodanif.bluetoothchat.ui.activity.*
 import dagger.Component
 
 @PerActivity
-@Component(dependencies = arrayOf(ApplicationComponent::class), modules = arrayOf(ImagePreviewModule::class))
+@Component(dependencies = [(ApplicationComponent::class)], modules = [(ImagePreviewModule::class)])
 interface ImagePreviewComponent {
     fun inject(activity: ImagePreviewActivity)
 }

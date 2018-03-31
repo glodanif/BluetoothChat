@@ -12,7 +12,7 @@ import com.glodanif.bluetoothchat.ui.activity.ScanActivity
 import dagger.Component
 
 @PerActivity
-@Component(dependencies = arrayOf(ApplicationComponent::class), modules = arrayOf(ScanModule::class))
+@Component(dependencies = [(ApplicationComponent::class)], modules = [(ScanModule::class)])
 interface ScanComponent {
     fun inject(activity: ScanActivity)
 }

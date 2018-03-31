@@ -9,8 +9,11 @@ import kotlinx.coroutines.experimental.async
 import kotlinx.coroutines.experimental.launch
 import kotlin.coroutines.experimental.CoroutineContext
 
-class ContactChooserPresenter(private val view: ContactChooserView, private val model: ConversationsStorage, private val converter: ContactConverter,
-                              private val uiContext: CoroutineContext = UI, private val bgContext: CoroutineContext = CommonPool) {
+class ContactChooserPresenter(private val view: ContactChooserView,
+                              private val model: ConversationsStorage,
+                              private val converter: ContactConverter,
+                              private val uiContext: CoroutineContext = UI,
+                              private val bgContext: CoroutineContext = CommonPool) {
 
     fun loadContacts() = launch(uiContext) {
 

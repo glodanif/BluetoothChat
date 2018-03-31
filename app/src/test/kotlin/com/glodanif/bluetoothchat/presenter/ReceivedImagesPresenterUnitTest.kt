@@ -25,7 +25,8 @@ class ReceivedImagesPresenterUnitTest {
     @Before
     fun setup() {
         MockKAnnotations.init(this)
-        presenter = ReceivedImagesPresenter(null, view, storage, EmptyCoroutineContext, EmptyCoroutineContext)
+        presenter = ReceivedImagesPresenter(null, view, storage,
+                EmptyCoroutineContext, EmptyCoroutineContext)
     }
 
     @Test

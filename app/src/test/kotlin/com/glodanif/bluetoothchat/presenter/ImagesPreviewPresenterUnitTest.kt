@@ -5,6 +5,7 @@ import com.glodanif.bluetoothchat.extension.toReadableFileSize
 import com.glodanif.bluetoothchat.ui.presenter.ImagePreviewPresenter
 import com.glodanif.bluetoothchat.ui.view.ImagePreviewView
 import io.mockk.MockKAnnotations
+import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.verify
@@ -32,6 +33,7 @@ class ImagesPreviewPresenterUnitTest {
     @Test
     fun file_removing() {
         presenter.removeFile()
+        coVerify { storage.removeFileInfo(0) }
         verify { view.close() }
     }
 

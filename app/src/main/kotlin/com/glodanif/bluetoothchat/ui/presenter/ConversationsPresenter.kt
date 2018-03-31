@@ -12,8 +12,10 @@ import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.async
 import kotlinx.coroutines.experimental.launch
 
-class ConversationsPresenter(private val view: ConversationsView, private val connection: BluetoothConnector,
-                             private val conversationStorage: ConversationsStorage, private val settings: SettingsManager,
+class ConversationsPresenter(private val view: ConversationsView,
+                             private val connection: BluetoothConnector,
+                             private val conversationStorage: ConversationsStorage,
+                             private val settings: SettingsManager,
                              private val converter: ConversationConverter) {
 
     private val prepareListener = object : OnPrepareListener {
@@ -91,7 +93,7 @@ class ConversationsPresenter(private val view: ConversationsView, private val co
         }
     }
 
-    private val messageListener = object : OnMessageListener {
+    private val messageListener = object : SimpleOnMessageListener() {
 
         override fun onMessageReceived(message: ChatMessage) {
             loadConversations()
@@ -99,18 +101,6 @@ class ConversationsPresenter(private val view: ConversationsView, private val co
 
         override fun onMessageSent(message: ChatMessage) {
             loadConversations()
-        }
-
-        override fun onMessageDelivered(id: String) {
-
-        }
-
-        override fun onMessageNotDelivered(id: String) {
-
-        }
-
-        override fun onMessageSeen(id: String) {
-
         }
     }
 

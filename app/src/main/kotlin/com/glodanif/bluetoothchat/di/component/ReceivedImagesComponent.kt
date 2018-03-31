@@ -12,7 +12,7 @@ import com.glodanif.bluetoothchat.ui.activity.ReceivedImagesActivity
 import dagger.Component
 
 @PerActivity
-@Component(dependencies = arrayOf(ApplicationComponent::class), modules = arrayOf(ReceivedImagesModule::class))
+@Component(dependencies = [(ApplicationComponent::class)], modules = [(ReceivedImagesModule::class)])
 interface ReceivedImagesComponent {
     fun inject(activity: ReceivedImagesActivity)
 }

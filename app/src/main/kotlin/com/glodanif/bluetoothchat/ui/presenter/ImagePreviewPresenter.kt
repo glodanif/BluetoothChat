@@ -6,7 +6,10 @@ import com.glodanif.bluetoothchat.ui.view.ImagePreviewView
 import kotlinx.coroutines.experimental.launch
 import java.io.File
 
-class ImagePreviewPresenter(private val messageId: Long, private val image: File, private val view: ImagePreviewView, private val storage: MessagesStorage) {
+class ImagePreviewPresenter(private val messageId: Long,
+                            private val image: File,
+                            private val view: ImagePreviewView,
+                            private val storage: MessagesStorage) {
 
     fun loadImage() {
         view.showFileInfo(image.name, image.length().toReadableFileSize())
@@ -14,8 +17,8 @@ class ImagePreviewPresenter(private val messageId: Long, private val image: File
     }
 
     fun removeFile() {
-        image.delete()
         launch {
+            image.delete()
             storage.removeFileInfo(messageId)
         }
         view.close()

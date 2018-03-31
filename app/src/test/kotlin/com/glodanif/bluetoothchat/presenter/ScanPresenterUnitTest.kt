@@ -5,12 +5,14 @@ import android.net.Uri
 import com.glodanif.bluetoothchat.data.model.BluetoothConnector
 import com.glodanif.bluetoothchat.data.model.BluetoothScanner
 import com.glodanif.bluetoothchat.data.model.FileManager
+import com.glodanif.bluetoothchat.data.model.OnPrepareListener
 import com.glodanif.bluetoothchat.ui.presenter.ScanPresenter
 import com.glodanif.bluetoothchat.ui.view.ScanView
 import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
 import org.junit.Before
 import org.junit.Test
+import java.util.concurrent.CompletableFuture
 import kotlin.coroutines.experimental.EmptyCoroutineContext
 
 class ScanPresenterUnitTest {
@@ -29,7 +31,8 @@ class ScanPresenterUnitTest {
     @Before
     fun setup() {
         MockKAnnotations.init(this)
-        presenter = ScanPresenter(view, scanner, connector, fileModel, EmptyCoroutineContext, EmptyCoroutineContext)
+        presenter = ScanPresenter(view, scanner, connector,
+                fileModel, EmptyCoroutineContext, EmptyCoroutineContext)
     }
 
     @Test
@@ -123,6 +126,12 @@ class ScanPresenterUnitTest {
         verify { view.shareApk(uri) }
     }
 
+    @Test
+    fun apkSharing_failure() {
+        coEvery { fileModel.extractApkFile() } returns null
+        presenter.shareApk()
+        verify { view.showExtractionApkFailureMessage() }
+    }
 
     @Test
     fun scanning_start() {
@@ -130,8 +139,7 @@ class ScanPresenterUnitTest {
         presenter.scanForDevices()
         verify { scanner.scanForDevices(ScanPresenter.SCAN_DURATION_SECONDS) }
         verify { scanner.setScanningListener(capture(slot)) }
-        val listener = slot.captured
-        listener.onDiscoveryStart(0)
+        slot.captured.onDiscoveryStart(0)
         verify { view.showScanningStarted(0) }
     }
 
@@ -139,8 +147,7 @@ class ScanPresenterUnitTest {
     fun scanning_finished() {
         val slot = slot<BluetoothScanner.ScanningListener>()
         verify { scanner.setScanningListener(capture(slot)) }
-        val listener = slot.captured
-        listener.onDiscoveryFinish()
+        slot.captured.onDiscoveryFinish()
         verify { view.showScanningStopped() }
     }
 
@@ -148,8 +155,7 @@ class ScanPresenterUnitTest {
     fun scanning_discoverableStart() {
         val slot = slot<BluetoothScanner.ScanningListener>()
         verify { scanner.setScanningListener(capture(slot)) }
-        val listener = slot.captured
-        listener.onDiscoverableStart()
+        slot.captured.onDiscoverableStart()
         verify { view.showDiscoverableProcess() }
     }
 
@@ -157,8 +163,7 @@ class ScanPresenterUnitTest {
     fun scanning_discoverableFinishStart() {
         val slot = slot<BluetoothScanner.ScanningListener>()
         verify { scanner.setScanningListener(capture(slot)) }
-        val listener = slot.captured
-        listener.onDiscoverableFinish()
+        slot.captured.onDiscoverableFinish()
         verify { view.showDiscoverableFinished() }
     }
 
@@ -167,8 +172,57 @@ class ScanPresenterUnitTest {
         val slot = slot<BluetoothScanner.ScanningListener>()
         val device = mockk<BluetoothDevice>()
         verify { scanner.setScanningListener(capture(slot)) }
-        val listener = slot.captured
-        listener.onDeviceFind(device)
+        slot.captured.onDeviceFind(device)
         verify { view.addFoundDevice(device) }
+    }
+
+    @Test
+    fun devicePick_connected_deviceAvailable() {
+        val device = mockk<BluetoothDevice>()
+        every { scanner.getDeviceByAddress("any") } returns device
+        every { connector.isConnectionPrepared() } returns true
+        presenter.onDevicePicked("any")
+        verify { connector.connect(device) }
+    }
+
+    @Test
+    fun devicePick_connected_deviceNotAvailable() {
+        every { scanner.getDeviceByAddress("any") } returns null
+        every { connector.isConnectionPrepared() } returns true
+        presenter.onDevicePicked("any")
+        verify { view.showServiceUnavailable() }
+    }
+
+    @Test
+    fun devicePick_notConnected_connectionError() {
+        every { connector.isConnectionPrepared() } returns false
+        presenter.onDevicePicked("any")
+        val slot = slot<OnPrepareListener>()
+        verify { connector.setOnPrepareListener(capture(slot)) }
+        slot.captured.onError()
+        verify { view.showServiceUnavailable() }
+    }
+
+    @Test
+    fun devicePick_notConnected_deviceAvailable() {
+        val device = mockk<BluetoothDevice>()
+        every { scanner.getDeviceByAddress("any") } returns device
+        every { connector.isConnectionPrepared() } returns false
+        presenter.onDevicePicked("any")
+        val slot = slot<OnPrepareListener>()
+        verify { connector.setOnPrepareListener(capture(slot)) }
+        slot.captured.onPrepared()
+        verify { connector.connect(device) }
+    }
+
+    @Test
+    fun devicePick_notConnected_deviceNotAvailable() {
+        every { scanner.getDeviceByAddress("any") } returns null
+        every { connector.isConnectionPrepared() } returns false
+        presenter.onDevicePicked("any")
+        val slot = slot<OnPrepareListener>()
+        verify { connector.setOnPrepareListener(capture(slot)) }
+        slot.captured.onPrepared()
+        verify { view.showServiceUnavailable() }
     }
 }

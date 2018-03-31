@@ -73,7 +73,7 @@ class ProfilePresenterUnitTest {
     @Test
     fun onStart_displayProfile() {
         presenter.loadSavedUser()
-        verify { view.prefillUsername(any())}
-        verify { view.showUserData(any(), 0)}
+        verify { view.prefillUsername(any()) }
+        verify { view.showUserData(any(), 0) }
     }
 }

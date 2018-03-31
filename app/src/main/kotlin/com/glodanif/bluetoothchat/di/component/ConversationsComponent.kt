@@ -6,7 +6,7 @@ import com.glodanif.bluetoothchat.ui.activity.ConversationsActivity
 import dagger.Component
 
 @PerActivity
-@Component(dependencies = arrayOf(ApplicationComponent::class), modules = arrayOf(ConversationsModule::class))
+@Component(dependencies = [(ApplicationComponent::class)], modules = [(ConversationsModule::class)])
 interface ConversationsComponent {
     fun inject(activity: ConversationsActivity)
 }

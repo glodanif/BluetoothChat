@@ -9,9 +9,12 @@ import kotlinx.coroutines.experimental.async
 import kotlinx.coroutines.experimental.launch
 import kotlin.coroutines.experimental.CoroutineContext
 
-class ScanPresenter(private val view: ScanView, private val scanner: BluetoothScanner,
-                    private val connection: BluetoothConnector, private val fileManager: FileManager,
-                    private val uiContext: CoroutineContext = UI, private val bgContext: CoroutineContext = CommonPool) {
+class ScanPresenter(private val view: ScanView,
+                    private val scanner: BluetoothScanner,
+                    private val connection: BluetoothConnector,
+                    private val fileManager: FileManager,
+                    private val uiContext: CoroutineContext = UI,
+                    private val bgContext: CoroutineContext = CommonPool) {
 
     companion object {
         const val SCAN_DURATION_SECONDS = 30
@@ -48,22 +51,14 @@ class ScanPresenter(private val view: ScanView, private val scanner: BluetoothSc
         val device = scanner.getDeviceByAddress(address)
 
         if (connection.isConnectionPrepared()) {
-            if (device != null) {
-                connection.connect(device)
-            } else {
-                view.showServiceUnavailable()
-            }
+            connectDevice(device)
             return
         }
 
         connection.setOnPrepareListener(object : OnPrepareListener {
 
             override fun onPrepared() {
-                if (device != null) {
-                    connection.connect(device)
-                } else {
-                    view.showServiceUnavailable()
-                }
+                connectDevice(device)
             }
 
             override fun onError() {
@@ -73,6 +68,14 @@ class ScanPresenter(private val view: ScanView, private val scanner: BluetoothSc
 
         connection.setOnConnectListener(connectionListener)
         connection.prepare()
+    }
+
+    private fun connectDevice(device: BluetoothDevice?) {
+        if (device != null) {
+            connection.connect(device)
+        } else {
+            view.showServiceUnavailable()
+        }
     }
 
     private val connectionListener = object : SimpleConnectionListener() {
