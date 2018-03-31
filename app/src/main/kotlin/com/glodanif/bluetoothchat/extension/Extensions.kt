@@ -161,4 +161,3 @@ fun String.isNumber(): Boolean =
         } catch (e: NumberFormatException) {
             false
         }
-

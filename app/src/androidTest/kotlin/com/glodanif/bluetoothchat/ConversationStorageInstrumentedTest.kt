@@ -22,25 +22,17 @@ class ConversationStorageInstrumentedTest {
     private lateinit var storage: ConversationsStorage
 
     private val address1 = "00:00:00:00:00:01"
-    private val deviceName1 = "deviceName1"
-    private val displayName1 = "displayName1"
-    private val color1 = Color.BLACK
-    private val conversation1 = Conversation(address1, deviceName1, displayName1, color1)
+    private val conversation1 = Conversation(address1, "deviceName1", "displayName1", Color.BLACK)
+    private val conversation1_1 = Conversation(address1, "deviceName1_1", "displayName1_1", Color.GREEN)
 
     private val address2 = "00:00:00:00:00:02"
-    private val deviceName2 = "deviceName2"
-    private val displayName2 = "displayName2"
-    private val color2 = Color.WHITE
-    private val conversation2 = Conversation(address2, deviceName2, displayName2, color2)
+    private val conversation2 = Conversation(address2, "deviceName2", "displayName2", Color.WHITE)
 
     private val address3 = "00:00:00:00:00:03"
-    private val deviceName3 = "deviceName3"
-    private val displayName3 = "displayName3"
-    private val color3 = Color.GRAY
-    private val conversation3 = Conversation(address3, deviceName3, displayName3, color3)
+    private val conversation3 = Conversation(address3, "deviceName3", "displayName3", Color.GRAY)
 
     @Before
-    fun setup() = runBlocking {
+    fun prepare() = runBlocking {
         val context = InstrumentationRegistry.getTargetContext()
         storage = ConversationsStorageImpl(context)
         storage.insertConversation(conversation1)
@@ -63,6 +55,14 @@ class ConversationStorageInstrumentedTest {
     }
 
     @Test
+    fun updateConversation() = runBlocking {
+        storage.insertConversation(conversation1_1)
+        val dbConversation: Conversation? = storage.getConversationByAddress(address1)
+        assertNotNull(dbConversation)
+        assertTrue(equal(conversation1_1, dbConversation))
+    }
+
+    @Test
     fun removeConversation() = runBlocking {
         storage.removeConversationByAddress(address2)
         val dbConversation: Conversation? = storage.getConversationByAddress(address2)
@@ -82,8 +82,7 @@ class ConversationStorageInstrumentedTest {
         assertNull(dbConversation)
     }
 
-    private fun equal(c1: Conversation?, c2: Conversation?): Boolean {
-        return c1 != null && c2 != null && c1.deviceAddress == c2.deviceAddress &&
-                c1.deviceName == c2.deviceName && c1.displayName == c2.displayName && c1.color == c2.color
-    }
+    private fun equal(c1: Conversation?, c2: Conversation?) = c1 != null && c2 != null &&
+            c1.deviceAddress == c2.deviceAddress && c1.deviceName == c2.deviceName &&
+            c1.displayName == c2.displayName && c1.color == c2.color
 }
