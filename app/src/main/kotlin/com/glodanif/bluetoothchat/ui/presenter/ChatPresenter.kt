@@ -1,6 +1,8 @@
 package com.glodanif.bluetoothchat.ui.presenter
 
 import android.bluetooth.BluetoothDevice
+import android.support.annotation.VisibleForTesting
+import android.support.test.espresso.IdlingResource
 import com.glodanif.bluetoothchat.data.entity.ChatMessage
 import com.glodanif.bluetoothchat.data.entity.Conversation
 import com.glodanif.bluetoothchat.data.entity.TransferringFile
@@ -279,8 +281,8 @@ class ChatPresenter(private val deviceAddress: String,
 
             if (it != null) {
                 view.showStatusPending()
-                connectionModel.connect(it)
                 view.showWainingForOpponent()
+                connectionModel.connect(it)
             } else {
                 view.showStatusNotConnected()
                 view.showDeviceIsNotAvailable()

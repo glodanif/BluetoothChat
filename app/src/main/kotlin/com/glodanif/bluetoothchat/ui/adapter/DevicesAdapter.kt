@@ -19,25 +19,16 @@ class DevicesAdapter(private val context: Context) : RecyclerView.Adapter<Recycl
     var pairedList = ArrayList<BluetoothDevice>()
     var availableList = ArrayList<BluetoothDevice>()
 
-    override fun onBindViewHolder(viewHolder: RecyclerView.ViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
 
-        if (viewHolder is HeaderViewHolder) {
+        if (holder is HeaderViewHolder) {
 
-            val holder: HeaderViewHolder = viewHolder
+            holder.header.text = context.getString(if (position == 0)
+                R.string.scan__paired_devices else R.string.scan__available_devices)
+            holder.emptyMessage.visibility = if (if (position == 0)
+                        pairedList.isEmpty() else availableList.isEmpty()) View.VISIBLE else View.GONE
 
-            if (position == 0) {
-                holder.header.text = context.getString(R.string.scan__paired_devices)
-                holder.emptyMessage.visibility =
-                        if (pairedList.isEmpty()) View.VISIBLE else View.GONE
-            } else {
-                holder.header.text = context.getString(R.string.scan__available_devices)
-                holder.emptyMessage.visibility =
-                        if (availableList.isEmpty()) View.VISIBLE else View.GONE
-            }
-
-        } else if (viewHolder is DeviceViewHolder) {
-
-            val holder: DeviceViewHolder = viewHolder
+        } else if (holder is DeviceViewHolder) {
 
             val device = if (position >= 1 && position < pairedList.size + 1)
                 pairedList[position - 1] else availableList[position - pairedList.size - 2]

@@ -1,6 +1,8 @@
 package com.glodanif.bluetoothchat.data.model
 
 import android.bluetooth.BluetoothDevice
+import android.support.annotation.VisibleForTesting
+import android.support.test.espresso.IdlingResource
 import com.glodanif.bluetoothchat.data.entity.Conversation
 import com.glodanif.bluetoothchat.data.entity.TransferringFile
 import java.io.File

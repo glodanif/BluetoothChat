@@ -1,6 +1,7 @@
 package com.glodanif.bluetoothchat.ui.view
 
 import android.app.Notification
+import android.content.Context
 import com.glodanif.bluetoothchat.data.entity.TransferringFile
 import com.glodanif.bluetoothchat.ui.util.NotificationSettings
 
@@ -23,4 +24,5 @@ interface NotificationView {
     fun dismissMessageNotification()
     fun dismissConnectionNotification()
     fun dismissFileTransferNotification()
+    fun getContext(): Context
 }
