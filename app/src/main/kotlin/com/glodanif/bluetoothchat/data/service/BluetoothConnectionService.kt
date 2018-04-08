@@ -415,14 +415,11 @@ class BluetoothConnectionService : Service() {
 
     fun sendFile(file: File, type: MessageType) {
 
-        if (!isConnected()) {
-            return
+        if (isConnected()) {
+            val startMessage = Message.createFileStartMessage(file, MessageType.IMAGE)
+            dataTransferThread?.write(startMessage.getDecodedMessage())
+            dataTransferThread?.writeFile(file)
         }
-
-        val startMessage = Message.createFileStartMessage(file, MessageType.IMAGE)
-
-        dataTransferThread?.write(startMessage.getDecodedMessage())
-        dataTransferThread?.writeFile(file)
     }
 
     fun getTransferringFile(): TransferringFile? {

@@ -221,4 +221,8 @@ class NotificationViewImpl(private val context: Context) : NotificationView {
                 NotificationView.NOTIFICATION_TAG_FILE, NotificationView.NOTIFICATION_ID_FILE)
         transferBuilder = null
     }
+
+    override fun getContext(): Context {
+        return context
+    }
 }

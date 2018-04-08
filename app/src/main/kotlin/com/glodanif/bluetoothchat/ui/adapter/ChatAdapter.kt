@@ -28,13 +28,11 @@ class ChatAdapter(private val context: Context) : RecyclerView.Adapter<RecyclerV
 
     var imageClickListener: ((view: ImageView, message: ChatMessageViewModel) -> Unit)? = null
 
-    override fun onBindViewHolder(viewHolder: RecyclerView.ViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
 
         val message = messages[position]
 
-        if (viewHolder is ImageMessageViewHolder) {
-
-            val holder: ImageMessageViewHolder = viewHolder
+        if (holder is ImageMessageViewHolder) {
 
             if (!message.isImageAvailable) {
 
@@ -65,9 +63,8 @@ class ChatAdapter(private val context: Context) : RecyclerView.Adapter<RecyclerV
 
             holder.date.text = message.date
 
-        } else if (viewHolder is TextMessageViewHolder) {
+        } else if (holder is TextMessageViewHolder) {
 
-            val holder: TextMessageViewHolder = viewHolder
             holder.text.text = message.text
             holder.date.text = message.date
         }

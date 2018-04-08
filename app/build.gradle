@@ -60,6 +60,12 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             applicationIdSuffix '.dev'
             versionNameSuffix '-DEV'
+            buildConfigField "boolean", "AUTORESPONDER", "false"
+        }
+
+        autoresponder {
+            initWith(debug)
+            buildConfigField "boolean", "AUTORESPONDER", "true"
         }
 
         release {
@@ -68,6 +74,7 @@ android {
             debuggable false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.release
+            buildConfigField "boolean", "AUTORESPONDER", "false"
         }
     }
 
@@ -81,6 +88,7 @@ dependencies {
     def final SUPPORT_VERSION = '27.1.0'
     def final ARCH_VERSION = '1.0.0'
     def final DAGGER_VERSION = '2.4'
+    def final ESPRESSO_VERSION = '3.0.0'
     def final COROUTINES_VERSION = '0.22.5'
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
@@ -112,14 +120,23 @@ dependencies {
     implementation "com.google.dagger:dagger:$DAGGER_VERSION"
     kapt "com.google.dagger:dagger-compiler:$DAGGER_VERSION"
 
+    implementation "com.android.support.test.espresso:espresso-idling-resource:$ESPRESSO_VERSION"
+
     testImplementation "org.jetbrains.kotlin:kotlin-stdlib:$KOTLIN_VERSION"
     testImplementation "org.jetbrains.kotlin:kotlin-test-junit:$KOTLIN_VERSION"
     testImplementation 'io.mockk:mockk:1.7.10'
     testImplementation 'junit:junit:4.12'
 
-    androidTestImplementation('com.android.support.test.espresso:espresso-core:2.2.2', {
-        exclude group: 'com.android.support', module: 'support-annotations'
-    })
+    androidTestImplementation "com.android.support:support-annotations:$SUPPORT_VERSION"
+    androidTestImplementation "com.android.support.test.espresso:espresso-core:$ESPRESSO_VERSION"
+    androidTestImplementation("com.android.support.test.espresso:espresso-contrib:$ESPRESSO_VERSION") {
+        exclude group: 'com.android.support', module: 'appcompat'
+        exclude group: 'com.android.support', module: 'support-v4'
+        exclude group: 'com.android.support', module: 'support-v7'
+        exclude group: 'com.android.support', module: 'design'
+        exclude module: 'support-annotations'
+        exclude module: 'recyclerview-v7'
+    }
 }
 
 task assembleReleaseAndOpen << {

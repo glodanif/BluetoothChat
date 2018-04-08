@@ -5,7 +5,11 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.ServiceConnection
 import android.os.IBinder
+import com.glodanif.bluetoothchat.BuildConfig
 import com.glodanif.bluetoothchat.data.entity.*
+import com.glodanif.bluetoothchat.data.internal.AutoresponderProxy
+import com.glodanif.bluetoothchat.data.internal.CommunicationProxy
+import com.glodanif.bluetoothchat.data.internal.EmptyProxy
 import com.glodanif.bluetoothchat.data.service.BluetoothConnectionService
 import java.io.File
 
@@ -15,6 +19,8 @@ class BluetoothConnectorImpl(private val context: Context) : BluetoothConnector 
     private var messageListener: OnMessageListener? = null
     private var connectListener: OnConnectionListener? = null
     private var fileListener: OnFileListener? = null
+
+    private var proxy: CommunicationProxy? = null
 
     private var service: BluetoothConnectionService? = null
     private var bound = false
@@ -29,6 +35,8 @@ class BluetoothConnectorImpl(private val context: Context) : BluetoothConnector 
                 setFileListener(fileListenerInner)
             }
 
+            proxy = if (BuildConfig.AUTORESPONDER) AutoresponderProxy(service) else EmptyProxy()
+
             bound = true
             prepareListener?.onPrepared()
         }
@@ -38,6 +46,7 @@ class BluetoothConnectorImpl(private val context: Context) : BluetoothConnector 
             service?.setMessageListener(null)
             service?.setFileListener(null)
             service = null
+            proxy = null
 
             bound = false
             prepareListener?.onError()
@@ -47,46 +56,57 @@ class BluetoothConnectorImpl(private val context: Context) : BluetoothConnector 
     private val connectionListenerInner = object : OnConnectionListener {
 
         override fun onConnected(device: BluetoothDevice) {
+            proxy?.onConnected(device)
             connectListener?.onConnected(device)
         }
 
         override fun onConnectionWithdrawn() {
+            proxy?.onConnectionWithdrawn()
             connectListener?.onConnectionWithdrawn()
         }
 
         override fun onConnectionAccepted() {
+            proxy?.onConnectionAccepted()
             connectListener?.onConnectionAccepted()
         }
 
         override fun onConnectionRejected() {
+            proxy?.onConnectionRejected()
             connectListener?.onConnectionRejected()
         }
 
         override fun onConnecting() {
+            proxy?.onConnecting()
             connectListener?.onConnecting()
         }
 
         override fun onConnectedIn(conversation: Conversation) {
+            proxy?.onConnectedIn(conversation)
             connectListener?.onConnectedIn(conversation)
         }
 
         override fun onConnectedOut(conversation: Conversation) {
+            proxy?.onConnectedOut(conversation)
             connectListener?.onConnectedOut(conversation)
         }
 
         override fun onConnectionLost() {
+            proxy?.onConnectionLost()
             connectListener?.onConnectionLost()
         }
 
         override fun onConnectionFailed() {
+            proxy?.onConnectionFailed()
             connectListener?.onConnectionFailed()
         }
 
         override fun onDisconnected() {
+            proxy?.onDisconnected()
             connectListener?.onDisconnected()
         }
 
         override fun onConnectionDestroyed() {
+            proxy?.onConnectionDestroyed()
             connectListener?.onConnectionDestroyed()
         }
     }
@@ -94,22 +114,27 @@ class BluetoothConnectorImpl(private val context: Context) : BluetoothConnector 
     private val messageListenerInner = object : OnMessageListener {
 
         override fun onMessageReceived(message: ChatMessage) {
+            proxy?.onMessageReceived(message)
             messageListener?.onMessageReceived(message)
         }
 
         override fun onMessageSent(message: ChatMessage) {
+            proxy?.onMessageSent(message)
             messageListener?.onMessageSent(message)
         }
 
         override fun onMessageDelivered(id: String) {
+            proxy?.onMessageDelivered(id)
             messageListener?.onMessageDelivered(id)
         }
 
         override fun onMessageNotDelivered(id: String) {
+            proxy?.onMessageNotDelivered(id)
             messageListener?.onMessageNotDelivered(id)
         }
 
         override fun onMessageSeen(id: String) {
+            proxy?.onMessageSeen(id)
             messageListener?.onMessageSeen(id)
         }
     }
@@ -117,44 +142,54 @@ class BluetoothConnectorImpl(private val context: Context) : BluetoothConnector 
     private val fileListenerInner = object : OnFileListener {
 
         override fun onFileSendingStarted(fileAddress: String?, fileSize: Long) {
+            proxy?.onFileSendingStarted(fileAddress, fileSize)
             fileListener?.onFileSendingStarted(fileAddress, fileSize)
         }
 
         override fun onFileSendingProgress(sentBytes: Long, totalBytes: Long) {
+            proxy?.onFileSendingProgress(sentBytes, totalBytes)
             fileListener?.onFileSendingProgress(sentBytes, totalBytes)
         }
 
         override fun onFileSendingFinished() {
+            proxy?.onFileSendingFinished()
             fileListener?.onFileSendingFinished()
         }
 
         override fun onFileSendingFailed() {
+            proxy?.onFileSendingFailed()
             fileListener?.onFileSendingFailed()
         }
 
         override fun onFileReceivingStarted(fileSize: Long) {
+            proxy?.onFileReceivingStarted(fileSize)
             fileListener?.onFileReceivingStarted(fileSize)
         }
 
         override fun onFileReceivingProgress(sentBytes: Long, totalBytes: Long) {
+            proxy?.onFileReceivingProgress(sentBytes, totalBytes)
             fileListener?.onFileReceivingProgress(sentBytes, totalBytes)
         }
 
         override fun onFileReceivingFinished() {
+            proxy?.onFileReceivingFinished()
             fileListener?.onFileReceivingFinished()
         }
 
         override fun onFileReceivingFailed() {
+            proxy?.onFileReceivingFailed()
             fileListener?.onFileReceivingFailed()
         }
 
         override fun onFileTransferCanceled(byPartner: Boolean) {
+            proxy?.onFileTransferCanceled(byPartner)
             fileListener?.onFileTransferCanceled(byPartner)
         }
     }
 
     override fun prepare() {
         service = null
+        proxy = null
         bound = false
         if (!BluetoothConnectionService.isRunning) {
             BluetoothConnectionService.start(context)
@@ -167,6 +202,7 @@ class BluetoothConnectorImpl(private val context: Context) : BluetoothConnector 
             context.unbindService(connection)
             bound = false
             service = null
+            proxy = null
         }
     }
 
