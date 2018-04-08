@@ -13,6 +13,7 @@ import android.provider.MediaStore
 import android.support.annotation.PluralsRes
 import com.amulyakhare.textdrawable.TextDrawable
 import com.glodanif.bluetoothchat.R
+import java.lang.Exception
 import java.text.DecimalFormat
 import java.text.SimpleDateFormat
 import java.util.*
@@ -114,6 +115,8 @@ private fun getDataColumn(context: Context, uri: Uri?, selection: String?, selec
             val columnIndex = cursor.getColumnIndexOrThrow(column)
             return cursor.getString(columnIndex)
         }
+    } catch (e: Exception) {
+        return null
     } finally {
         cursor?.close()
     }

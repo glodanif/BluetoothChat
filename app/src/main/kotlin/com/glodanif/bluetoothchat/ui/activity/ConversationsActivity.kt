@@ -95,7 +95,7 @@ class ConversationsActivity : SkeletonActivity(), ConversationsView {
             settingsPopup.show(it)
         }
 
-        if (intent.action == Intent.ACTION_SEND) {
+        if (intent.action == Intent.ACTION_SEND && intent.type != null) {
 
             var textToShare: String? = null
             var fileToShare: String? = null

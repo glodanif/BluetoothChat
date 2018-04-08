@@ -1,5 +1,5 @@
-def final VERSION_CODE = 15
-def final VERSION_NAME = '1.0.2'
+def final VERSION_CODE = 16
+def final VERSION_NAME = '1.0.3'
 
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'

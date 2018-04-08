@@ -40,7 +40,9 @@ class NotificationViewImpl(private val context: Context) : NotificationView {
         val stopPendingIntent = PendingIntent.getService(context, requestCode, stopIntent, 0)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val channel = NotificationChannel(CHANNEL_FOREGROUND, context.getString(R.string.notification__channel_background), NotificationManager.IMPORTANCE_LOW)
+            val channel = NotificationChannel(CHANNEL_FOREGROUND, context.getString(R.string.notification__channel_background), NotificationManager.IMPORTANCE_LOW).apply {
+                setShowBadge(false)
+            }
             notificationManager.createNotificationChannel(channel)
         }
 
