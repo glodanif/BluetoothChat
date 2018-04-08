@@ -54,18 +54,35 @@ class BluetoothCommunicationInstrumentedTest {
     fun communication() {
         checkNotConnected()
         checkNotSendingTextIfDisconnected()
+
+        onView(withText(R.string.chat__connect)).perform(click())
         checkOutcommingConnection()
+
         checkTextMessageReceiving()
         checkTextMessageReceiving()
         checkFileMessageReceiving()
+        checkFileMessageReceivingAndCancelByPartner()
+        checkFileMessageReceiving()
+        checkFileMessageReceivingAndCancelByPartner()
         checkTextMessageReceiving()
+
         checkDisconnectionByPartner()
+        onView(withId(android.R.id.button2)).perform(click())
+
+        onView(withText(R.string.chat__connect)).perform(click())
+        checkOutcommingConnection()
+
+        checkDisconnectionByPartner()
+        onView(withId(android.R.id.button1)).perform(click())
+        checkOutcommingConnection()
+
+        checkDisconnectionByPartner()
+        onView(withId(android.R.id.button2)).perform(click())
+
         checkNotConnected()
-        checkNotSendingTextIfDisconnected()
     }
 
     private fun checkOutcommingConnection() {
-        onView(withText(R.string.chat__connect)).perform(click())
         onView(withText(R.string.chat__waiting_for_device))
         onView(withId(R.id.tb_toolbar)).check(matches(
                 withToolbarSubTitle(context.getString(R.string.chat__pending))))
@@ -75,7 +92,7 @@ class BluetoothCommunicationInstrumentedTest {
                 withToolbarSubTitle(context.getString(R.string.chat__connected))))
     }
 
-    private fun checkFileMessageReceiving() {
+       private fun checkFileMessageReceiving() {
         onView(withId(R.id.et_message)).perform(typeText(AutoresponderProxy.COMMAND_SEND_FILE))
         onView(withId(R.id.ib_send)).perform(click())
         Thread.sleep(textMessageDelay)
@@ -84,6 +101,17 @@ class BluetoothCommunicationInstrumentedTest {
         onView(withId(R.id.rv_chat))
                 .check(matches(atPosition(0, hasDescendant(withId(R.id.iv_image)))))
         onView(withText(R.string.chat__receiving_images)).check(matches(not(isDisplayed())))
+    }
+
+    private fun checkFileMessageReceivingAndCancelByPartner() {
+        onView(withId(R.id.et_message)).perform(typeText(AutoresponderProxy.COMMAND_SEND_FILE_AND_CANCEL))
+        onView(withId(R.id.ib_send)).perform(click())
+        Thread.sleep(textMessageDelay * 2)
+        onView(withText(R.string.chat__partner_canceled_image_transfer))
+                .inRoot(withDecorView(not(`is`(context.window.decorView)))).check(matches(isDisplayed()))
+        onView(withText(R.string.chat__receiving_images)).check(matches(not(isDisplayed())))
+        onView(withId(R.id.rv_chat))
+                .check(matches(atPosition(0, not(hasDescendant(withText(AutoresponderProxy.RESPONSE_RECEIVED))))))
     }
 
     private fun checkNotSendingTextIfDisconnected() {
@@ -106,9 +134,7 @@ class BluetoothCommunicationInstrumentedTest {
         onView(withId(R.id.et_message)).perform(typeText(AutoresponderProxy.COMMAND_DISCONNECT))
         onView(withId(R.id.ib_send)).perform(click())
         Thread.sleep(textMessageDelay)
-        onView(withText(R.string.chat__partner_disconnected))
-                .check(matches(isDisplayed()))
-        onView(withId(android.R.id.button2)).perform(click())
+        onView(withText(R.string.chat__partner_disconnected)).check(matches(isDisplayed()))
     }
 
     private fun checkNotConnected() {

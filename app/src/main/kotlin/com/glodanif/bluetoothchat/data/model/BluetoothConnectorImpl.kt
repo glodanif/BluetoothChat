@@ -5,7 +5,6 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.ServiceConnection
 import android.os.IBinder
-import android.support.test.espresso.IdlingResource
 import com.glodanif.bluetoothchat.BuildConfig
 import com.glodanif.bluetoothchat.data.entity.*
 import com.glodanif.bluetoothchat.data.internal.AutoresponderProxy
@@ -13,9 +12,6 @@ import com.glodanif.bluetoothchat.data.internal.CommunicationProxy
 import com.glodanif.bluetoothchat.data.internal.EmptyProxy
 import com.glodanif.bluetoothchat.data.service.BluetoothConnectionService
 import java.io.File
-import com.glodanif.bluetoothchat.data.internal.SimpleIdlingResource
-import android.support.annotation.NonNull
-import android.support.annotation.VisibleForTesting
 
 class BluetoothConnectorImpl(private val context: Context) : BluetoothConnector {
 

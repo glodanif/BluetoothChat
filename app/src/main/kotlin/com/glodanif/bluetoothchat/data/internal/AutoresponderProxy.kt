@@ -16,15 +16,17 @@ class AutoresponderProxy(private val service: BluetoothConnectionService?) : Com
 
         const val COMMAND_SEND_TEXT = "-send_text"
         const val COMMAND_SEND_FILE = "-send_file"
+        const val COMMAND_SEND_FILE_AND_CANCEL = "-send_file_and_cancel"
         const val COMMAND_DISCONNECT = "-disconnect"
 
         const val RESPONSE_RECEIVED = "+text_message"
     }
 
     private val handler = Handler()
+    private val file = File("/storage/emulated/0/BLC DEV/image.jpg")
 
-    private fun runWithDelay(task: () -> Unit) {
-        handler.postDelayed(task, 500)
+    private fun runWithDelay(delay: Long = 500, task: () -> Unit) {
+        handler.postDelayed(task, delay)
     }
 
     override fun onConnecting() {
@@ -77,15 +79,20 @@ class AutoresponderProxy(private val service: BluetoothConnectionService?) : Com
                 when {
                     message.text == COMMAND_SEND_TEXT -> {
                         val chatMessage = Message(System.nanoTime().toString(), RESPONSE_RECEIVED, Message.Type.MESSAGE)
-                        service.sendMessage(chatMessage)
+                        it.sendMessage(chatMessage)
                     }
                     message.text == COMMAND_SEND_FILE -> {
-                        val file = File("/storage/emulated/0/BLC DEV/image.jpg")
-                        service.sendFile(file, MessageType.IMAGE)
+                        it.sendFile(file, MessageType.IMAGE)
+                    }
+                    message.text == COMMAND_SEND_FILE_AND_CANCEL -> {
+                        it.sendFile(file, MessageType.IMAGE)
+                        runWithDelay(2000) {
+                            it.cancelFileTransfer()
+                        }
                     }
                     message.text == COMMAND_DISCONNECT -> {
                         val chatMessage = Message.createDisconnectMessage()
-                        service.sendMessage(chatMessage)
+                        it.sendMessage(chatMessage)
                     }
                 }
             }
