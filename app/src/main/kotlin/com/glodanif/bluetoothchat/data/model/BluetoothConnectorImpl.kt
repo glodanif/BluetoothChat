@@ -239,8 +239,8 @@ class BluetoothConnectorImpl(private val context: Context) : BluetoothConnector 
         service?.sendMessage(chatMessage)
     }
 
-    override fun sendFile(file: File) {
-        service?.sendFile(file, MessageType.IMAGE)
+    override fun sendFile(file: File, type: MessageType) {
+        service?.sendFile(file, type)
     }
 
     override fun getTransferringFile(): TransferringFile? {

@@ -26,22 +26,22 @@ import com.glodanif.bluetoothchat.ui.adapter.DevicesAdapter
 import com.glodanif.bluetoothchat.ui.presenter.ScanPresenter
 import com.glodanif.bluetoothchat.ui.view.ScanView
 import com.glodanif.bluetoothchat.ui.widget.ExpiringProgressBar
+import com.glodanif.bluetoothchat.utils.bind
 import javax.inject.Inject
 
 class ScanActivity : SkeletonActivity(), ScanView {
 
-    private lateinit var container: View
-    private lateinit var turnOnHolder: View
-    private lateinit var listHolder: View
-    private lateinit var progress: View
+    private val container: View by bind(R.id.fl_container)
+    private val turnOnHolder: View by bind(R.id.ll_turn_on)
+    private val listHolder: View by bind(R.id.cl_list)
+    private val progress: View by bind(R.id.fl_progress)
 
-    private lateinit var infoLabel: TextView
-    private lateinit var discoveryLabel: TextView
-    private lateinit var progressBar: ExpiringProgressBar
-    private lateinit var makeDiscoverableButton: Button
-    private lateinit var scanForDevicesButton: Button
+    private val discoveryLabel: TextView by bind(R.id.tv_discovery_label)
+    private val progressBar: ExpiringProgressBar by bind(R.id.epb_progress)
+    private val makeDiscoverableButton: Button by bind(R.id.btn_make_discoverable)
+    private val scanForDevicesButton: Button by bind(R.id.btn_scan)
 
-    private lateinit var pairedDevicesList: RecyclerView
+    private val pairedDevicesList: RecyclerView by bind(R.id.rv_paired_devices)
 
     private val devicesAdapter: DevicesAdapter = DevicesAdapter(this)
 
@@ -53,22 +53,8 @@ class ScanActivity : SkeletonActivity(), ScanView {
         setContentView(R.layout.activity_scan, ActivityType.CHILD_ACTIVITY)
         ComponentsManager.injectScan(this)
 
-        container = findViewById(R.id.fl_container)
-        turnOnHolder = findViewById(R.id.ll_turn_on)
-        listHolder = findViewById(R.id.cl_list)
-        progress = findViewById(R.id.fl_progress)
-
-        infoLabel = findViewById(R.id.tv_info)
-        discoveryLabel = findViewById(R.id.tv_discovery_label)
-        progressBar = findViewById(R.id.epb_progress)
-
-        makeDiscoverableButton = findViewById(R.id.btn_make_discoverable)
-        scanForDevicesButton = findViewById(R.id.btn_scan)
-
-        pairedDevicesList = findViewById<RecyclerView>(R.id.rv_paired_devices).apply {
-            layoutManager = LinearLayoutManager(this@ScanActivity)
-            adapter = devicesAdapter
-        }
+        pairedDevicesList.layoutManager = LinearLayoutManager(this)
+        pairedDevicesList.adapter = devicesAdapter
 
         devicesAdapter.listener = {
             presenter.onDevicePicked(it.address)
@@ -88,7 +74,7 @@ class ScanActivity : SkeletonActivity(), ScanView {
         scanForDevicesButton.setOnClickListener {
 
             if (ContextCompat.checkSelfPermission(this,
-                    Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                            Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
                 presenter.scanForDevices()
             } else {
                 if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_COARSE_LOCATION)) {
@@ -102,7 +88,7 @@ class ScanActivity : SkeletonActivity(), ScanView {
 
         findViewById<ImageView>(R.id.iv_share).setOnClickListener {
             if (ContextCompat.checkSelfPermission(this,
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+                            Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
                 presenter.shareApk()
             } else {
                 if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
@@ -217,24 +203,22 @@ class ScanActivity : SkeletonActivity(), ScanView {
 
     override fun showServiceUnavailable() {
         progress.visibility = View.GONE
-
-        if (!isStarted()) return
-
-        AlertDialog.Builder(this)
-                .setMessage(R.string.scan__unable_to_connect_service)
-                .setPositiveButton(R.string.general__ok, null)
-                .show()
+        doIfStarted {
+            AlertDialog.Builder(this)
+                    .setMessage(R.string.scan__unable_to_connect_service)
+                    .setPositiveButton(R.string.general__ok, null)
+                    .show()
+        }
     }
 
     override fun showUnableToConnect() {
         progress.visibility = View.GONE
-
-        if (!isStarted()) return
-
-        AlertDialog.Builder(this)
-                .setMessage(R.string.scan__unable_to_connect)
-                .setPositiveButton(R.string.general__ok, null)
-                .show()
+        doIfStarted {
+            AlertDialog.Builder(this)
+                    .setMessage(R.string.scan__unable_to_connect)
+                    .setPositiveButton(R.string.general__ok, null)
+                    .show()
+        }
     }
 
     override fun addFoundDevice(device: BluetoothDevice) {

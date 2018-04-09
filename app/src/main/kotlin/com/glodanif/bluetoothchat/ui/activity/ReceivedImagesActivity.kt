@@ -13,6 +13,7 @@ import com.glodanif.bluetoothchat.di.ComponentsManager
 import com.glodanif.bluetoothchat.ui.adapter.ImagesAdapter
 import com.glodanif.bluetoothchat.ui.presenter.ReceivedImagesPresenter
 import com.glodanif.bluetoothchat.ui.view.ReceivedImagesView
+import com.glodanif.bluetoothchat.utils.bind
 import javax.inject.Inject
 
 class ReceivedImagesActivity : SkeletonActivity(), ReceivedImagesView {
@@ -22,8 +23,8 @@ class ReceivedImagesActivity : SkeletonActivity(), ReceivedImagesView {
 
     private var address: String? = null
 
-    private lateinit var imagesGrid: RecyclerView
-    private lateinit var noImagesLabel: TextView
+    private val imagesGrid: RecyclerView by bind(R.id.rv_images)
+    private val noImagesLabel: TextView by bind(R.id.tv_no_images)
 
     private var imagesAdapter = ImagesAdapter(this)
 
@@ -35,11 +36,8 @@ class ReceivedImagesActivity : SkeletonActivity(), ReceivedImagesView {
 
         ComponentsManager.injectReceivedImages(this, address)
 
-        noImagesLabel = findViewById(R.id.tv_no_images)
-        imagesGrid = findViewById<RecyclerView>(R.id.rv_images).apply {
-            layoutManager = GridLayoutManager(this@ReceivedImagesActivity, calculateNoOfColumns())
-            adapter = imagesAdapter
-        }
+        imagesGrid.layoutManager = GridLayoutManager(this, calculateNoOfColumns())
+        imagesGrid.adapter = imagesAdapter
 
         imagesAdapter.clickListener = { view, message ->
             ImagePreviewActivity.start(this, view, message)

@@ -15,7 +15,7 @@ import android.widget.PopupWindow
 import android.widget.TextView
 import com.amulyakhare.textdrawable.TextDrawable
 import com.glodanif.bluetoothchat.R
-import com.glodanif.bluetoothchat.extension.getFirstLetter
+import com.glodanif.bluetoothchat.utils.getFirstLetter
 import com.glodanif.bluetoothchat.ui.util.EmptyAnimatorListener
 
 class SettingsPopup(context: Context) : PopupWindow() {

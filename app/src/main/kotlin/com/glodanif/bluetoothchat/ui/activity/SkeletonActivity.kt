@@ -57,14 +57,16 @@ open class SkeletonActivity : AppCompatActivity() {
         return true
     }
 
+    fun doIfStarted(dialog: () -> Unit) {
+        if (isStarted) {
+            dialog.invoke()
+        }
+    }
+
     fun hideKeyboard() {
         val inputManager = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
         if (currentFocus != null) {
             inputManager.hideSoftInputFromWindow(currentFocus?.windowToken, InputMethodManager.HIDE_NOT_ALWAYS)
         }
-    }
-
-    fun isStarted(): Boolean {
-        return isStarted
     }
 }

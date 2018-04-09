@@ -13,10 +13,11 @@ import android.widget.TextView
 import com.amulyakhare.textdrawable.TextDrawable
 import com.glodanif.bluetoothchat.R
 import com.glodanif.bluetoothchat.di.ComponentsManager
-import com.glodanif.bluetoothchat.extension.getFirstLetter
+import com.glodanif.bluetoothchat.utils.getFirstLetter
 import com.glodanif.bluetoothchat.ui.presenter.ProfilePresenter
 import com.glodanif.bluetoothchat.ui.util.SimpleTextWatcher
 import com.glodanif.bluetoothchat.ui.view.ProfileView
+import com.glodanif.bluetoothchat.utils.bind
 import me.priyesh.chroma.ChromaDialog
 import me.priyesh.chroma.ColorMode
 import me.priyesh.chroma.ColorSelectListener
@@ -27,10 +28,10 @@ class ProfileActivity : SkeletonActivity(), ProfileView {
     @Inject
     lateinit var presenter: ProfilePresenter
 
-    private lateinit var nameField: EditText
-    private lateinit var nameLabel: TextView
-    private lateinit var avatar: ImageView
-    private lateinit var colorPicker: View
+    private val nameField: EditText by bind(R.id.et_name)
+    private val nameLabel: TextView by bind(R.id.tv_name)
+    private val avatar: ImageView by bind(R.id.iv_avatar)
+    private val colorPicker: View by bind(R.id.v_color)
 
     private var editMode = false
 
@@ -47,11 +48,6 @@ class ProfileActivity : SkeletonActivity(), ProfileView {
             title = getString(R.string.profile__profile)
             window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN)
         }
-
-        colorPicker = findViewById(R.id.v_color)
-        nameField = findViewById(R.id.et_name)
-        nameLabel = findViewById(R.id.tv_name)
-        avatar = findViewById(R.id.iv_avatar)
 
         colorPicker.setOnClickListener {
             presenter.prepareColorPicker()

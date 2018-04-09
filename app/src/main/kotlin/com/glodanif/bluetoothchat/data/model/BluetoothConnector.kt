@@ -4,6 +4,7 @@ import android.bluetooth.BluetoothDevice
 import android.support.annotation.VisibleForTesting
 import android.support.test.espresso.IdlingResource
 import com.glodanif.bluetoothchat.data.entity.Conversation
+import com.glodanif.bluetoothchat.data.entity.MessageType
 import com.glodanif.bluetoothchat.data.entity.TransferringFile
 import java.io.File
 
@@ -19,7 +20,7 @@ interface BluetoothConnector {
     fun setOnFileListener(listener: OnFileListener?)
     fun connect(device: BluetoothDevice)
     fun sendMessage(message: String)
-    fun sendFile(file: File)
+    fun sendFile(file: File, type: MessageType)
     fun cancelFileTransfer()
     fun isConnected(): Boolean
     fun isConnectedOrPending(): Boolean

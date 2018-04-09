@@ -1,12 +1,10 @@
 package com.glodanif.bluetoothchat.ui.viewmodel.converter
 
 import android.content.Context
-import com.amulyakhare.textdrawable.TextDrawable
 import com.glodanif.bluetoothchat.R
 import com.glodanif.bluetoothchat.data.entity.Conversation
 import com.glodanif.bluetoothchat.data.entity.MessageType
-import com.glodanif.bluetoothchat.extension.getFirstLetter
-import com.glodanif.bluetoothchat.extension.getRelativeTime
+import com.glodanif.bluetoothchat.utils.getRelativeTime
 import com.glodanif.bluetoothchat.ui.viewmodel.ConversationViewModel
 
 class ConversationConverter(private val context: Context) {

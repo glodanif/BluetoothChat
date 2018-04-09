@@ -3,7 +3,7 @@ package com.glodanif.bluetoothchat.ui.viewmodel.converter
 import com.amulyakhare.textdrawable.TextDrawable
 import com.glodanif.bluetoothchat.ui.viewmodel.ContactViewModel
 import com.glodanif.bluetoothchat.data.entity.Conversation
-import com.glodanif.bluetoothchat.extension.getFirstLetter
+import com.glodanif.bluetoothchat.utils.getFirstLetter
 
 class ContactConverter {
 

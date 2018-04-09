@@ -13,8 +13,8 @@ import com.glodanif.bluetoothchat.R
 import com.glodanif.bluetoothchat.ui.activity.ChatActivity
 import com.glodanif.bluetoothchat.ui.activity.ConversationsActivity
 import com.glodanif.bluetoothchat.ui.activity.ScanActivity
-import com.glodanif.bluetoothchat.extension.getBitmap
-import com.glodanif.bluetoothchat.extension.getFirstLetter
+import com.glodanif.bluetoothchat.utils.getBitmap
+import com.glodanif.bluetoothchat.utils.getFirstLetter
 import java.util.*
 
 class ShortcutManagerImpl(private val context: Context) : ShortcutManager {

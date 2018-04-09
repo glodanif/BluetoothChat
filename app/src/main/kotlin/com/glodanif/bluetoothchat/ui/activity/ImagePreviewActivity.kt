@@ -17,6 +17,7 @@ import com.glodanif.bluetoothchat.di.ComponentsManager
 import com.glodanif.bluetoothchat.ui.presenter.ImagePreviewPresenter
 import com.glodanif.bluetoothchat.ui.view.ImagePreviewView
 import com.glodanif.bluetoothchat.ui.viewmodel.ChatMessageViewModel
+import com.glodanif.bluetoothchat.utils.bind
 import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso
 import java.io.File
@@ -24,7 +25,7 @@ import javax.inject.Inject
 
 class ImagePreviewActivity : SkeletonActivity(), ImagePreviewView {
 
-    private lateinit var imageView: PhotoView
+    private val imageView: PhotoView by bind(R.id.pv_preview)
 
     @Inject
     lateinit var presenter: ImagePreviewPresenter
@@ -43,10 +44,8 @@ class ImagePreviewActivity : SkeletonActivity(), ImagePreviewView {
         toolbar?.setTitleTextAppearance(this, R.style.ActionBar_TitleTextStyle)
         toolbar?.setSubtitleTextAppearance(this, R.style.ActionBar_SubTitleTextStyle)
 
-        imageView = findViewById<PhotoView>(R.id.pv_preview).apply {
-            minimumScale = .75f
-            maximumScale = 2f
-        }
+        imageView.minimumScale = .75f
+        imageView.maximumScale = 2f
 
         presenter.loadImage()
     }
@@ -121,7 +120,8 @@ class ImagePreviewActivity : SkeletonActivity(), ImagePreviewView {
         }
 
         fun start(activity: Activity, transitionView: ImageView, message: ChatMessageViewModel) {
-            start(activity, transitionView, message.uid, message.imagePath ?: "unknown", message.own)
+            start(activity, transitionView, message.uid, message.imagePath
+                    ?: "unknown", message.own)
         }
 
         fun start(activity: Activity, transitionView: ImageView, messageId: Long, imagePath: String, ownMessage: Boolean) {

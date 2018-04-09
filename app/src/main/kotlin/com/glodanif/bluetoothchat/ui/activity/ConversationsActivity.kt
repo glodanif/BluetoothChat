@@ -25,8 +25,8 @@ import android.widget.ImageView
 import com.amulyakhare.textdrawable.TextDrawable
 import com.glodanif.bluetoothchat.R
 import com.glodanif.bluetoothchat.di.ComponentsManager
-import com.glodanif.bluetoothchat.extension.getFilePath
-import com.glodanif.bluetoothchat.extension.getFirstLetter
+import com.glodanif.bluetoothchat.utils.getFilePath
+import com.glodanif.bluetoothchat.utils.getFirstLetter
 import com.glodanif.bluetoothchat.ui.adapter.ConversationsAdapter
 import com.glodanif.bluetoothchat.ui.presenter.ConversationsPresenter
 import com.glodanif.bluetoothchat.ui.view.ConversationsView
@@ -35,6 +35,7 @@ import com.glodanif.bluetoothchat.ui.viewmodel.ConversationViewModel
 import com.glodanif.bluetoothchat.ui.widget.ActionView
 import com.glodanif.bluetoothchat.ui.widget.SettingsPopup
 import com.glodanif.bluetoothchat.ui.widget.ShortcutManager
+import com.glodanif.bluetoothchat.utils.bind
 import javax.inject.Inject
 
 class ConversationsActivity : SkeletonActivity(), ConversationsView {
@@ -44,11 +45,11 @@ class ConversationsActivity : SkeletonActivity(), ConversationsView {
     @Inject
     lateinit var shortcutsManager: ShortcutManager
 
-    private lateinit var conversationsList: RecyclerView
-    private lateinit var noConversations: View
-    private lateinit var addButton: FloatingActionButton
-    private lateinit var actions: ActionView
-    private lateinit var userAvatar: ImageView
+    private val conversationsList: RecyclerView by bind(R.id.rv_conversations)
+    private val noConversations: View by bind(R.id.ll_empty_holder)
+    private val addButton: FloatingActionButton by bind(R.id.fab_new_conversation)
+    private val actions: ActionView by bind(R.id.av_actions)
+    private val userAvatar: ImageView by bind(R.id.iv_avatar)
 
     private lateinit var settingsPopup: SettingsPopup
     private lateinit var storagePermissionDialog: AlertDialog
@@ -60,16 +61,8 @@ class ConversationsActivity : SkeletonActivity(), ConversationsView {
         setContentView(R.layout.activity_conversations, ActivityType.CUSTOM_TOOLBAR_ACTIVITY)
         ComponentsManager.injectConversations(this)
 
-        actions = findViewById(R.id.av_actions)
-        userAvatar = findViewById(R.id.iv_avatar)
-
-        conversationsList = findViewById<RecyclerView>(R.id.rv_conversations).apply {
-            layoutManager = LinearLayoutManager(this@ConversationsActivity)
-            adapter = conversationsAdapter
-        }
-
-        noConversations = findViewById(R.id.ll_empty_holder)
-        addButton = findViewById(R.id.fab_new_conversation)
+        conversationsList.layoutManager = LinearLayoutManager(this)
+        conversationsList.adapter = conversationsAdapter
 
         settingsPopup = SettingsPopup(this)
         settingsPopup.setCallbacks(
@@ -203,6 +196,7 @@ class ConversationsActivity : SkeletonActivity(), ConversationsView {
     }
 
     override fun showConversations(conversations: List<ConversationViewModel>, connected: String?) {
+
         conversationsList.visibility = View.VISIBLE
         addButton.visibility = View.VISIBLE
         noConversations.visibility = View.GONE
@@ -211,10 +205,7 @@ class ConversationsActivity : SkeletonActivity(), ConversationsView {
         conversationsAdapter.notifyDataSetChanged()
     }
 
-    override fun showServiceDestroyed() {
-
-        if (!isStarted()) return
-
+    override fun showServiceDestroyed() = doIfStarted {
         AlertDialog.Builder(this)
                 .setMessage(getString(R.string.general__service_lost))
                 .setPositiveButton(getString(R.string.general__restart), { _, _ ->
@@ -231,18 +222,13 @@ class ConversationsActivity : SkeletonActivity(), ConversationsView {
     }
 
     override fun notifyAboutConnectedDevice(conversation: ConversationViewModel) {
-
-        actions.visibility = View.VISIBLE
-        actions.setActions(getString(R.string.conversations__connection_request, conversation.displayName, conversation.deviceName),
+        actions.setActionsAndShow(getString(R.string.conversations__connection_request, conversation.displayName, conversation.deviceName),
                 ActionView.Action(getString(R.string.general__start_chat)) { presenter.startChat(conversation) },
                 ActionView.Action(getString(R.string.general__disconnect)) { presenter.rejectConnection() }
         )
     }
 
-    override fun showRejectedNotification(conversation: ConversationViewModel) {
-
-        if (!isStarted()) return
-
+    override fun showRejectedNotification(conversation: ConversationViewModel) = doIfStarted {
         AlertDialog.Builder(this)
                 .setMessage(getString(R.string.conversations__connection_rejected,
                         conversation.displayName, conversation.deviceName))

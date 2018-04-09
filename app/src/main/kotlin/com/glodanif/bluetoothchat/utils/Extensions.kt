@@ -1,5 +1,6 @@
-package com.glodanif.bluetoothchat.extension
+package com.glodanif.bluetoothchat.utils
 
+import android.app.Activity
 import android.content.ContentUris
 import android.content.Context
 import android.content.res.Resources
@@ -10,7 +11,10 @@ import android.net.Uri
 import android.os.Environment
 import android.provider.DocumentsContract
 import android.provider.MediaStore
+import android.support.annotation.IdRes
 import android.support.annotation.PluralsRes
+import android.view.View
+
 import com.amulyakhare.textdrawable.TextDrawable
 import com.glodanif.bluetoothchat.R
 import java.lang.Exception
@@ -164,3 +168,9 @@ fun String.isNumber(): Boolean =
         } catch (e: NumberFormatException) {
             false
         }
+
+fun <T : View> Activity.bind(@IdRes idRes: Int): Lazy<T> {
+    return unsafeLazy { findViewById<T>(idRes) }
+}
+
+private fun <T> unsafeLazy(initializer: () -> T) = lazy(LazyThreadSafetyMode.NONE, initializer)

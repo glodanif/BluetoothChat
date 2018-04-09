@@ -4,6 +4,8 @@ import android.bluetooth.BluetoothSocket
 import android.util.Log
 import com.glodanif.bluetoothchat.data.entity.Message
 import com.glodanif.bluetoothchat.data.entity.TransferringFile
+import kotlinx.coroutines.experimental.CommonPool
+import kotlinx.coroutines.experimental.launch
 import java.io.*
 import kotlin.concurrent.thread
 
@@ -137,7 +139,7 @@ abstract class DataTransferThread(private val socket: BluetoothSocket,
         val transferringFile = TransferringFile(fileName, fileSize, TransferringFile.TransferType.SENDING)
         fileListener.onFileSendingStarted(transferringFile)
 
-        thread {
+        launch(CommonPool) {
 
             val fileStream = FileInputStream(file)
             BufferedInputStream(fileStream).use {

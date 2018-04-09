@@ -49,5 +49,10 @@ class ActionView: FrameLayout {
         addView(container)
     }
 
+    fun setActionsAndShow(text: String, firstAction: Action?, secondAction: Action?) {
+        setActions(text, firstAction, secondAction)
+        visibility = View.VISIBLE
+    }
+
     class Action(var text: String, var action: () -> Unit)
 }

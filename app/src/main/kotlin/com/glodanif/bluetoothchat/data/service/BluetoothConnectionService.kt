@@ -24,6 +24,10 @@ import com.glodanif.bluetoothchat.ui.view.NotificationView
 import com.glodanif.bluetoothchat.ui.view.NotificationViewImpl
 import com.glodanif.bluetoothchat.ui.widget.ShortcutManager
 import com.glodanif.bluetoothchat.ui.widget.ShortcutManagerImpl
+import com.glodanif.bluetoothchat.utils.Size
+import kotlinx.coroutines.experimental.CommonPool
+import kotlinx.coroutines.experimental.android.UI
+import kotlinx.coroutines.experimental.launch
 import java.io.File
 import java.io.IOException
 import java.util.*
@@ -32,7 +36,8 @@ import kotlin.concurrent.thread
 class BluetoothConnectionService : Service() {
 
     private val binder = ConnectionBinder()
-    private val handler = Handler()
+    private val uiContext = UI
+    private val bgContext = CommonPool
     private val adapter: BluetoothAdapter? = BluetoothAdapter.getDefaultAdapter()
 
     private val APP_NAME = "BluetoothChat"
@@ -106,9 +111,7 @@ class BluetoothConnectionService : Service() {
         return Service.START_STICKY
     }
 
-    fun getCurrentConversation(): Conversation? {
-        return currentConversation
-    }
+    fun getCurrentConversation() = currentConversation
 
     private fun showNotification(message: String) {
         val notification = notificationView.getForegroundNotification(message)
@@ -148,7 +151,8 @@ class BluetoothConnectionService : Service() {
 
         connectThread = ConnectThread(device)
         connectThread?.start()
-        handler.post { connectionListener?.onConnecting() }
+
+        launch(uiContext) { connectionListener?.onConnecting() }
     }
 
     @Synchronized
@@ -165,11 +169,11 @@ class BluetoothConnectionService : Service() {
         val transferEventsListener = object : DataTransferThread.TransferEventsListener {
 
             override fun onMessageReceived(message: String) {
-                handler.post { this@BluetoothConnectionService.onMessageReceived(message) }
+                launch(uiContext) { this@BluetoothConnectionService.onMessageReceived(message) }
             }
 
             override fun onMessageSent(message: String) {
-                this@BluetoothConnectionService.onMessageSent(message)
+                launch(uiContext) { this@BluetoothConnectionService.onMessageSent(message) }
             }
 
             override fun onConnectionPrepared(type: ConnectionType) {
@@ -211,7 +215,7 @@ class BluetoothConnectionService : Service() {
 
             override fun onFileSendingProgress(file: TransferringFile, sentBytes: Long) {
 
-                handler.post {
+                launch(uiContext) {
 
                     fileListener?.onFileSendingProgress(sentBytes, file.size)
 
@@ -235,20 +239,15 @@ class BluetoothConnectionService : Service() {
                     filePath = path
                 }
 
-                thread {
+                launch(bgContext) {
 
-                    val options = BitmapFactory.Options()
-                    options.inJustDecodeBounds = true
-
-                    BitmapFactory.decodeFile(path, options)
-                    val width = options.outWidth
-                    val height = options.outHeight
-                    sentMessage.fileInfo = "${width}x$height"
+                    val size = getImageSize(path)
+                    sentMessage.fileInfo = "${size.width}x${size.height}"
                     sentMessage.fileExists = true
 
                     db.messagesDao().insert(sentMessage)
 
-                    handler.post {
+                    launch(uiContext) {
                         fileListener?.onFileSendingFinished()
                         messageListener?.onMessageSent(sentMessage)
                     }
@@ -261,7 +260,7 @@ class BluetoothConnectionService : Service() {
 
             override fun onFileSendingFailed() {
 
-                handler.post {
+                launch(uiContext) {
                     fileListener?.onFileSendingFailed()
                     notificationView.dismissFileTransferNotification()
                 }
@@ -269,7 +268,7 @@ class BluetoothConnectionService : Service() {
 
             override fun onFileReceivingStarted(file: TransferringFile) {
 
-                handler.post {
+                launch(uiContext) {
 
                     fileListener?.onFileReceivingStarted(file.size)
 
@@ -286,7 +285,7 @@ class BluetoothConnectionService : Service() {
 
             override fun onFileReceivingProgress(file: TransferringFile, receivedBytes: Long) {
 
-                handler.post {
+                launch(uiContext) {
 
                     fileListener?.onFileReceivingProgress(receivedBytes, file.size)
 
@@ -315,20 +314,15 @@ class BluetoothConnectionService : Service() {
 
                 notificationView.dismissFileTransferNotification()
 
-                thread {
+                launch(bgContext) {
 
-                    val options = BitmapFactory.Options()
-                    options.inJustDecodeBounds = true
-
-                    BitmapFactory.decodeFile(path, options)
-                    val width = options.outWidth
-                    val height = options.outHeight
-                    receivedMessage.fileInfo = "${width}x$height"
+                    val size = getImageSize(path)
+                    receivedMessage.fileInfo = "${size.width}x${size.height}"
                     receivedMessage.fileExists = true
 
                     db.messagesDao().insert(receivedMessage)
 
-                    handler.post {
+                    launch(uiContext) {
                         fileListener?.onFileReceivingFinished()
                         messageListener?.onMessageReceived(receivedMessage)
                     }
@@ -340,14 +334,14 @@ class BluetoothConnectionService : Service() {
             }
 
             override fun onFileReceivingFailed() {
-                handler.post {
+                launch(uiContext) {
                     fileListener?.onFileReceivingFailed()
                     notificationView.dismissFileTransferNotification()
                 }
             }
 
             override fun onFileTransferCanceled(byPartner: Boolean) {
-                handler.post {
+                launch(uiContext) {
                     fileListener?.onFileTransferCanceled(byPartner)
                     notificationView.dismissFileTransferNotification()
                 }
@@ -366,7 +360,14 @@ class BluetoothConnectionService : Service() {
         dataTransferThread?.prepare()
         dataTransferThread?.start()
 
-        handler.post { connectionListener?.onConnected(socket.remoteDevice) }
+        launch(uiContext) { connectionListener?.onConnected(socket.remoteDevice) }
+    }
+
+    private fun getImageSize(path: String): Size {
+        val options = BitmapFactory.Options()
+        options.inJustDecodeBounds = true
+        BitmapFactory.decodeFile(path, options)
+        return Size(options.outWidth, options.outHeight)
     }
 
     @Synchronized
@@ -398,7 +399,6 @@ class BluetoothConnectionService : Service() {
             if (disconnect) {
                 dataTransferThread?.cancel(disconnect)
                 dataTransferThread = null
-
                 prepareForAccept()
             }
         }
@@ -416,7 +416,7 @@ class BluetoothConnectionService : Service() {
     fun sendFile(file: File, type: MessageType) {
 
         if (isConnected()) {
-            val startMessage = Message.createFileStartMessage(file, MessageType.IMAGE)
+            val startMessage = Message.createFileStartMessage(file, type)
             dataTransferThread?.write(startMessage.getDecodedMessage())
             dataTransferThread?.writeFile(file)
         }
@@ -438,9 +438,9 @@ class BluetoothConnectionService : Service() {
 
         if (message.type == Message.Type.MESSAGE) {
             sentMessage.seenHere = true
-            thread {
+            launch(bgContext) {
                 db.messagesDao().insert(sentMessage)
-                handler.post { messageListener?.onMessageSent(sentMessage) }
+                launch(uiContext) { messageListener?.onMessageSent(sentMessage) }
                 currentConversation?.let {
                     shortcutManager.addConversationShortcut(sentMessage.deviceAddress, it.displayName, it.color)
                 }
@@ -503,9 +503,9 @@ class BluetoothConnectionService : Service() {
             receivedMessage.seenHere = true
         }
 
-        thread {
+        launch(bgContext) {
             db.messagesDao().insert(receivedMessage)
-            handler.post { messageListener?.onMessageReceived(receivedMessage) }
+            launch(uiContext) { messageListener?.onMessageReceived(receivedMessage) }
             currentConversation?.let {
                 shortcutManager.addConversationShortcut(device.address, it.displayName, it.color)
             }
@@ -522,7 +522,7 @@ class BluetoothConnectionService : Service() {
         val messageContractVersion = if (parts.size >= 3) parts[2].toInt() else 0
         conversation.messageContractVersion = messageContractVersion
 
-        thread { db.conversationsDao().insert(conversation) }
+        launch(bgContext) { db.conversationsDao().insert(conversation) }
 
         currentConversation = conversation
 
@@ -544,7 +544,7 @@ class BluetoothConnectionService : Service() {
         val messageContractVersion = if (parts.size >= 3) parts[2].toInt() else 0
         conversation.messageContractVersion = messageContractVersion
 
-        thread { db.conversationsDao().insert(conversation) }
+        launch(bgContext) { db.conversationsDao().insert(conversation) }
 
         currentConversation = conversation
 
@@ -556,7 +556,7 @@ class BluetoothConnectionService : Service() {
     private fun connectionFailed() {
         currentSocket = null
         currentConversation = null
-        handler.post { connectionListener?.onConnectionFailed() }
+        launch(uiContext) { connectionListener?.onConnectionFailed() }
         connectionState = ConnectionState.NOT_CONNECTED
         prepareForAccept()
     }
@@ -566,7 +566,7 @@ class BluetoothConnectionService : Service() {
         currentSocket = null
         currentConversation = null
         if (isConnectedOrPending()) {
-            handler.post {
+            launch(uiContext) {
                 if (isPending() && connectionType == ConnectionType.INCOMING) {
                     connectionState = ConnectionState.NOT_CONNECTED
                     connectionListener?.onConnectionWithdrawn()
@@ -581,17 +581,11 @@ class BluetoothConnectionService : Service() {
         }
     }
 
-    fun isConnected(): Boolean {
-        return connectionState == ConnectionState.CONNECTED
-    }
+    fun isConnected() = connectionState == ConnectionState.CONNECTED
 
-    fun isConnectedOrPending(): Boolean {
-        return connectionState == ConnectionState.CONNECTED || connectionState == ConnectionState.PENDING
-    }
+    fun isPending() = connectionState == ConnectionState.PENDING
 
-    fun isPending(): Boolean {
-        return connectionState == ConnectionState.PENDING
-    }
+    fun isConnectedOrPending() = isConnected() || isPending()
 
     fun setConnectionListener(listener: OnConnectionListener?) {
         this.connectionListener = listener
@@ -624,6 +618,7 @@ class BluetoothConnectionService : Service() {
             var socket: BluetoothSocket?
 
             while (!isConnectedOrPending()) {
+
                 try {
                     socket = serverSocket?.accept()
                 } catch (e: IOException) {
@@ -631,13 +626,13 @@ class BluetoothConnectionService : Service() {
                     break
                 }
 
-                if (socket != null) {
+                socket?.let {
                     when (connectionState) {
                         ConnectionState.LISTENING, ConnectionState.CONNECTING -> {
-                            connected(socket, ConnectionType.INCOMING)
+                            connected(it, ConnectionType.INCOMING)
                         }
                         ConnectionState.NOT_CONNECTED, ConnectionState.CONNECTED, ConnectionState.PENDING, ConnectionState.REJECTED -> try {
-                            socket.close()
+                            it.close()
                         } catch (e: IOException) {
                             e.printStackTrace()
                         }
@@ -685,8 +680,8 @@ class BluetoothConnectionService : Service() {
                 connectThread = null
             }
 
-            if (socket != null) {
-                connected(socket!!, ConnectionType.OUTCOMING)
+            socket?.let {
+                connected(it, ConnectionType.OUTCOMING)
             }
         }
 

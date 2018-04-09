@@ -11,16 +11,10 @@ import com.glodanif.bluetoothchat.data.entity.TransferringFile
 import com.glodanif.bluetoothchat.ui.activity.ChatActivity
 import com.glodanif.bluetoothchat.ui.activity.ConversationsActivity
 import com.glodanif.bluetoothchat.data.service.BluetoothConnectionService
-import com.glodanif.bluetoothchat.extension.toReadableFileSize
+import com.glodanif.bluetoothchat.utils.toReadableFileSize
 import com.glodanif.bluetoothchat.ui.util.NotificationSettings
-import java.util.*
 
 class NotificationViewImpl(private val context: Context) : NotificationView {
-
-    private val CHANNEL_FOREGROUND = "channel.foreground"
-    private val CHANNEL_REQUEST = "channel.request"
-    private val CHANNEL_FILE = "channel.file"
-    private val CHANNEL_MESSAGE = "channel.message"
 
     private val notificationManager =
             context.getSystemService(Service.NOTIFICATION_SERVICE) as NotificationManager
@@ -40,13 +34,13 @@ class NotificationViewImpl(private val context: Context) : NotificationView {
         val stopPendingIntent = PendingIntent.getService(context, requestCode, stopIntent, 0)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val channel = NotificationChannel(CHANNEL_FOREGROUND, context.getString(R.string.notification__channel_background), NotificationManager.IMPORTANCE_LOW).apply {
+            val channel = NotificationChannel(NotificationView.CHANNEL_FOREGROUND, context.getString(R.string.notification__channel_background), NotificationManager.IMPORTANCE_LOW).apply {
                 setShowBadge(false)
             }
             notificationManager.createNotificationChannel(channel)
         }
 
-        val builder = NotificationCompat.Builder(context, CHANNEL_FOREGROUND)
+        val builder = NotificationCompat.Builder(context, NotificationView.CHANNEL_FOREGROUND)
                 .setContentTitle(context.getString(R.string.app_name))
                 .setContentText(message)
                 .setSmallIcon(R.drawable.ic_notification)
@@ -74,13 +68,13 @@ class NotificationViewImpl(private val context: Context) : NotificationView {
         val name = if (displayName.isNullOrEmpty()) deviceName else "$displayName ($deviceName)"
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val channel = NotificationChannel(CHANNEL_MESSAGE, context.getString(R.string.notification__channel_message), NotificationManager.IMPORTANCE_HIGH).apply {
+            val channel = NotificationChannel(NotificationView.CHANNEL_MESSAGE, context.getString(R.string.notification__channel_message), NotificationManager.IMPORTANCE_HIGH).apply {
                 setShowBadge(true)
             }
             notificationManager.createNotificationChannel(channel)
         }
 
-        val builder = NotificationCompat.Builder(context, CHANNEL_MESSAGE)
+        val builder = NotificationCompat.Builder(context, NotificationView.CHANNEL_MESSAGE)
                 .setContentTitle(name)
                 .setContentText(message)
                 .setLights(Color.BLUE, 3000, 3000)
@@ -115,13 +109,13 @@ class NotificationViewImpl(private val context: Context) : NotificationView {
         val pendingIntent = PendingIntent.getActivity(context, requestCode, notificationIntent, 0)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val channel = NotificationChannel(CHANNEL_REQUEST, context.getString(R.string.notification__channel_request), NotificationManager.IMPORTANCE_HIGH).apply {
+            val channel = NotificationChannel(NotificationView.CHANNEL_REQUEST, context.getString(R.string.notification__channel_request), NotificationManager.IMPORTANCE_HIGH).apply {
                 setShowBadge(true)
             }
             notificationManager.createNotificationChannel(channel)
         }
 
-        val builder = NotificationCompat.Builder(context, CHANNEL_REQUEST)
+        val builder = NotificationCompat.Builder(context, NotificationView.CHANNEL_REQUEST)
                 .setContentTitle(context.getString(R.string.notification__connection_request))
                 .setContentText(context.getString(R.string.notification__connection_request_body, deviceName))
                 .setLights(Color.BLUE, 3000, 3000)
@@ -160,12 +154,12 @@ class NotificationViewImpl(private val context: Context) : NotificationView {
         val pendingIntent = PendingIntent.getActivity(context, requestCode, notificationIntent, 0)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val channel = NotificationChannel(CHANNEL_FILE,
+            val channel = NotificationChannel(NotificationView.CHANNEL_FILE,
                     context.getString(R.string.notification__channel_file), NotificationManager.IMPORTANCE_LOW)
             notificationManager.createNotificationChannel(channel)
         }
 
-        val builder = NotificationCompat.Builder(context, CHANNEL_FILE)
+        val builder = NotificationCompat.Builder(context, NotificationView.CHANNEL_FILE)
                 .setContentTitle(context.getString(
                         if (file.transferType == TransferringFile.TransferType.SENDING)
                             R.string.notification__file_sending else R.string.notification__file_receiving, displayName))

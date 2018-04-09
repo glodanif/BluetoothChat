@@ -1,7 +1,7 @@
 package com.glodanif.bluetoothchat.ui.presenter
 
 import com.glodanif.bluetoothchat.data.model.MessagesStorage
-import com.glodanif.bluetoothchat.extension.toReadableFileSize
+import com.glodanif.bluetoothchat.utils.toReadableFileSize
 import com.glodanif.bluetoothchat.ui.view.ImagePreviewView
 import kotlinx.coroutines.experimental.launch
 import java.io.File

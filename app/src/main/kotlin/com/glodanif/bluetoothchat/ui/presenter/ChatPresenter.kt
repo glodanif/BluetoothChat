@@ -5,6 +5,7 @@ import android.support.annotation.VisibleForTesting
 import android.support.test.espresso.IdlingResource
 import com.glodanif.bluetoothchat.data.entity.ChatMessage
 import com.glodanif.bluetoothchat.data.entity.Conversation
+import com.glodanif.bluetoothchat.data.entity.MessageType
 import com.glodanif.bluetoothchat.data.entity.TransferringFile
 import com.glodanif.bluetoothchat.data.model.*
 import com.glodanif.bluetoothchat.ui.view.ChatView
@@ -48,7 +49,7 @@ class ChatPresenter(private val deviceAddress: String,
                 if (it.length() > maxFileSize) {
                     view.showImageTooBig(maxFileSize.toLong())
                 } else {
-                    connectionModel.sendFile(it)
+                    connectionModel.sendFile(it, MessageType.IMAGE)
                 }
                 fileToSend = null
             }
@@ -232,7 +233,7 @@ class ChatPresenter(private val deviceAddress: String,
             if (it.length() > maxFileSize) {
                 view.showImageTooBig(maxFileSize.toLong())
             } else {
-                connectionModel.sendFile(it)
+                connectionModel.sendFile(it, MessageType.IMAGE)
             }
             fileToSend = null
         }
@@ -335,7 +336,7 @@ class ChatPresenter(private val deviceAddress: String,
             } else if (it.length() > maxFileSize) {
                 view.showImageTooBig(maxFileSize.toLong())
             } else {
-                connectionModel.sendFile(it)
+                connectionModel.sendFile(it, MessageType.IMAGE)
                 filePresharing = null
             }
         }

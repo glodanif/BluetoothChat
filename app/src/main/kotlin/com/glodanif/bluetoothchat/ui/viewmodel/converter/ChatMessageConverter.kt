@@ -4,9 +4,9 @@ import android.content.Context
 import android.util.DisplayMetrics
 import com.glodanif.bluetoothchat.R
 import com.glodanif.bluetoothchat.data.entity.ChatMessage
-import com.glodanif.bluetoothchat.extension.getRelativeTime
+import com.glodanif.bluetoothchat.utils.getRelativeTime
 import com.glodanif.bluetoothchat.ui.viewmodel.ChatMessageViewModel
-import com.glodanif.bluetoothchat.ui.viewmodel.Size
+import com.glodanif.bluetoothchat.utils.Size
 
 class ChatMessageConverter(private val context: Context, private val displayMetrics: DisplayMetrics) {
 

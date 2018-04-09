@@ -1,7 +1,7 @@
 package com.glodanif.bluetoothchat.presenter
 
 import com.glodanif.bluetoothchat.data.model.MessagesStorage
-import com.glodanif.bluetoothchat.extension.toReadableFileSize
+import com.glodanif.bluetoothchat.utils.toReadableFileSize
 import com.glodanif.bluetoothchat.ui.presenter.ImagePreviewPresenter
 import com.glodanif.bluetoothchat.ui.view.ImagePreviewView
 import io.mockk.MockKAnnotations

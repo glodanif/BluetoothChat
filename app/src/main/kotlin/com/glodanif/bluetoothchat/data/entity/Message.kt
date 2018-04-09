@@ -1,14 +1,10 @@
 package com.glodanif.bluetoothchat.data.entity
 
 import android.support.annotation.ColorInt
-import com.crashlytics.android.Crashlytics
-import com.glodanif.bluetoothchat.extension.isNumber
-import io.fabric.sdk.android.Fabric
+import com.glodanif.bluetoothchat.utils.isNumber
 import java.io.File
 
 class Message() {
-
-    private val DIVIDER = "#"
 
     enum class Type(val value: Int) {
         UNEXPECTED(-1),
@@ -85,6 +81,7 @@ class Message() {
 
     companion object {
 
+        const val DIVIDER = "#"
         const val MESSAGE_CONTRACT_VERSION = 1
 
         fun createConnectMessage(name: String, @ColorInt color: Int): Message {

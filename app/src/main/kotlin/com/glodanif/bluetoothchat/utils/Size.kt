@@ -1,4 +1,4 @@
-package com.glodanif.bluetoothchat.ui.viewmodel
+package com.glodanif.bluetoothchat.utils
 
 data class Size(
         val width: Int,

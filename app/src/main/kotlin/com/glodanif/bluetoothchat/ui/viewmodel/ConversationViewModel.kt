@@ -2,7 +2,7 @@ package com.glodanif.bluetoothchat.ui.viewmodel
 
 import android.graphics.Color
 import com.amulyakhare.textdrawable.TextDrawable
-import com.glodanif.bluetoothchat.extension.getFirstLetter
+import com.glodanif.bluetoothchat.utils.getFirstLetter
 import java.util.*
 
 data class ConversationViewModel(

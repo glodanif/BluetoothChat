@@ -23,7 +23,7 @@ import android.view.animation.AnimationUtils
 import android.widget.*
 import com.glodanif.bluetoothchat.R
 import com.glodanif.bluetoothchat.di.ComponentsManager
-import com.glodanif.bluetoothchat.extension.toReadableFileSize
+import com.glodanif.bluetoothchat.utils.toReadableFileSize
 import com.glodanif.bluetoothchat.ui.adapter.ChatAdapter
 import com.glodanif.bluetoothchat.ui.presenter.ChatPresenter
 import com.glodanif.bluetoothchat.ui.util.SimpleTextWatcher
@@ -31,6 +31,7 @@ import com.glodanif.bluetoothchat.ui.view.ChatView
 import com.glodanif.bluetoothchat.ui.view.NotificationView
 import com.glodanif.bluetoothchat.ui.viewmodel.ChatMessageViewModel
 import com.glodanif.bluetoothchat.ui.widget.ActionView
+import com.glodanif.bluetoothchat.utils.bind
 import com.squareup.picasso.Picasso
 import com.squareup.picasso.Target
 import pl.aprilapps.easyphotopicker.DefaultCallback
@@ -46,30 +47,35 @@ class ChatActivity : SkeletonActivity(), ChatView {
     lateinit var presenter: ChatPresenter
 
     private val layoutManager = LinearLayoutManager(this)
-    private lateinit var actions: ActionView
-    private lateinit var chatList: RecyclerView
-    private lateinit var messageField: EditText
-    private lateinit var sendButtonsSwitcher: ViewSwitcher
-    private lateinit var transferringImagePreview: ImageView
-    private lateinit var transferringImageSize: TextView
-    private lateinit var transferringImageHeader: TextView
-    private lateinit var transferringImageProgressLabel: TextView
-    private lateinit var transferringImageProgressBar: ProgressBar
 
-    private lateinit var presharingContainer: CardView
-    private lateinit var presharingImage: ImageView
-
-    private lateinit var textSendingHolder: ViewGroup
-    private lateinit var imageSendingHolder: ViewGroup
+    private val actions: ActionView by bind(R.id.av_actions)
+    private val chatList: RecyclerView by bind(R.id.rv_chat)
+    private val messageField: EditText by bind(R.id.et_message)
+    private val sendButtonsSwitcher: ViewSwitcher by bind(R.id.vs_send_buttons)
+    private val textSendingHolder: ViewGroup by bind(R.id.ll_text_sending_holder)
+    private val imageSendingHolder: ViewGroup by bind(R.id.ll_image_sending_holder)
+    private val transferringImagePreview: ImageView by bind(R.id.iv_transferring_image)
+    private val transferringImageSize: TextView by bind(R.id.tv_file_size)
+    private val transferringImageHeader: TextView by bind(R.id.tv_sending_image_label)
+    private val transferringImageProgressLabel: TextView by bind(R.id.tv_file_sending_percentage)
+    private val transferringImageProgressBar: ProgressBar by bind(R.id.pb_transferring_progress)
+    private val presharingContainer: CardView  by bind(R.id.cv_presharing_image_holder)
+    private val presharingImage: ImageView by bind(R.id.iv_presharing_image)
 
     private lateinit var chatAdapter: ChatAdapter
 
     private var deviceAddress: String? = null
 
-    private val showAnimation =
-            lazy { AnimationUtils.loadAnimation(this, R.anim.anime_fade_slide_in) }
-    private val hideAnimation =
-            lazy { AnimationUtils.loadAnimation(this, R.anim.anime_fade_slide_out) }
+    private val showAnimation by lazy {
+        AnimationUtils.loadAnimation(this, R.anim.anime_fade_slide_in).apply {
+            fillAfter = true
+        }
+    }
+    private val hideAnimation by lazy {
+        AnimationUtils.loadAnimation(this, R.anim.anime_fade_slide_out).apply {
+            fillAfter = true
+        }
+    }
 
     private val textWatcher = object : SimpleTextWatcher() {
 
@@ -101,23 +107,7 @@ class ChatActivity : SkeletonActivity(), ChatView {
             it.setSubtitleTextAppearance(this, R.style.ActionBar_SubTitleTextStyle)
         }
 
-        textSendingHolder = findViewById(R.id.ll_text_sending_holder)
-        imageSendingHolder = findViewById(R.id.ll_image_sending_holder)
-        sendButtonsSwitcher = findViewById(R.id.vs_send_buttons)
-
-        transferringImagePreview = findViewById(R.id.iv_transferring_image)
-        transferringImageSize = findViewById(R.id.tv_file_size)
-        transferringImageHeader = findViewById(R.id.tv_sending_image_label)
-        transferringImageProgressLabel = findViewById(R.id.tv_file_sending_percentage)
-        transferringImageProgressBar = findViewById(R.id.pb_transferring_progress)
-
-        presharingContainer = findViewById(R.id.cv_presharing_image_holder)
-        presharingImage = findViewById(R.id.iv_presharing_image)
-
-        actions = findViewById(R.id.av_actions)
-        messageField = findViewById<EditText>(R.id.et_message).apply {
-            addTextChangedListener(textWatcher)
-        }
+        messageField.addTextChangedListener(textWatcher)
 
         findViewById<ImageButton>(R.id.ib_send).setOnClickListener {
             presenter.sendMessage(messageField.text.toString().trim())
@@ -132,19 +122,13 @@ class ChatActivity : SkeletonActivity(), ChatView {
         }
 
         findViewById<Button>(R.id.btn_retry).setOnClickListener {
-            hideAnimation.value.let {
-                it.fillAfter = true
-                presharingContainer.startAnimation(it)
-                presenter.proceedPresharing()
-            }
+            presharingContainer.startAnimation(hideAnimation)
+            presenter.proceedPresharing()
         }
 
         findViewById<Button>(R.id.btn_cancel).setOnClickListener {
-            hideAnimation.value.let {
-                it.fillAfter = true
-                presharingContainer.startAnimation(it)
-                presenter.cancelPresharing()
-            }
+            presharingContainer.startAnimation(hideAnimation)
+            presenter.cancelPresharing()
         }
 
         chatAdapter = ChatAdapter(this).apply {
@@ -153,7 +137,7 @@ class ChatActivity : SkeletonActivity(), ChatView {
             }
         }
 
-        chatList = findViewById<RecyclerView>(R.id.rv_chat).apply {
+        chatList.apply {
 
             val manager = this@ChatActivity.layoutManager
             manager.reverseLayout = true
@@ -230,50 +214,39 @@ class ChatActivity : SkeletonActivity(), ChatView {
     }
 
     override fun showNotConnectedToThisDevice(currentDevice: String) {
-
-        actions.visibility = View.VISIBLE
-        actions.setActions(getString(R.string.chat__connected_to_another, currentDevice),
+        actions.setActionsAndShow(getString(R.string.chat__connected_to_another, currentDevice),
                 ActionView.Action(getString(R.string.chat__connect)) { presenter.connectToDevice() },
                 null
         )
     }
 
     override fun showNotConnectedToAnyDevice() {
-
-        actions.visibility = View.VISIBLE
-        actions.setActions(getString(R.string.chat__not_connected_to_this_device),
+        actions.setActionsAndShow(getString(R.string.chat__not_connected_to_this_device),
                 ActionView.Action(getString(R.string.chat__connect)) { presenter.connectToDevice() },
                 null
         )
     }
 
     override fun showWainingForOpponent() {
-
-        actions.visibility = View.VISIBLE
-        actions.setActions(getString(R.string.chat__waiting_for_device),
+        actions.setActionsAndShow(getString(R.string.chat__waiting_for_device),
                 ActionView.Action(getString(R.string.general__cancel)) { presenter.resetConnection() },
                 null
         )
     }
 
     override fun showConnectionRequest(displayName: String, deviceName: String) {
-
-        actions.visibility = View.VISIBLE
-        actions.setActions(getString(R.string.chat__connection_request, displayName, deviceName),
+        actions.setActionsAndShow(getString(R.string.chat__connection_request, displayName, deviceName),
                 ActionView.Action(getString(R.string.general__start_chat)) { presenter.acceptConnection() },
                 ActionView.Action(getString(R.string.chat__disconnect)) { presenter.rejectConnection() }
         )
     }
 
-    override fun showServiceDestroyed() {
-
-        if (!isStarted()) return
-
+    override fun showServiceDestroyed() = doIfStarted {
         AlertDialog.Builder(this)
                 .setMessage(getString(R.string.general__service_lost))
                 .setPositiveButton(getString(R.string.general__restart), { _, _ -> presenter.prepareConnection() })
                 .setCancelable(false)
-                .show()
+                .create()
     }
 
     override fun hideActions() {
@@ -297,10 +270,7 @@ class ChatActivity : SkeletonActivity(), ChatView {
         layoutManager.scrollToPosition(0)
     }
 
-    override fun showRejectedConnection() {
-
-        if (!isStarted()) return
-
+    override fun showRejectedConnection() = doIfStarted {
         AlertDialog.Builder(this)
                 .setMessage(getString(R.string.chat__connection_rejected))
                 .setPositiveButton(getString(R.string.general__ok), null)
@@ -309,17 +279,13 @@ class ChatActivity : SkeletonActivity(), ChatView {
     }
 
     override fun showBluetoothDisabled() {
-        actions.visibility = View.VISIBLE
-        actions.setActions(getString(R.string.chat__bluetooth_is_disabled),
+        actions.setActionsAndShow(getString(R.string.chat__bluetooth_is_disabled),
                 ActionView.Action(getString(R.string.chat__enable)) { presenter.enableBluetooth() },
                 null
         )
     }
 
-    override fun showLostConnection() {
-
-        if (!isStarted()) return
-
+    override fun showLostConnection() = doIfStarted {
         AlertDialog.Builder(this)
                 .setMessage(getString(R.string.chat__connection_lost))
                 .setPositiveButton(getString(R.string.chat__reconnect), { _, _ -> presenter.reconnect() })
@@ -328,10 +294,7 @@ class ChatActivity : SkeletonActivity(), ChatView {
                 .show()
     }
 
-    override fun showDisconnected() {
-
-        if (!isStarted()) return
-
+    override fun showDisconnected() = doIfStarted {
         AlertDialog.Builder(this)
                 .setMessage(getString(R.string.chat__partner_disconnected))
                 .setPositiveButton(getString(R.string.chat__reconnect), { _, _ -> presenter.reconnect() })
@@ -340,27 +303,20 @@ class ChatActivity : SkeletonActivity(), ChatView {
                 .show()
     }
 
-    override fun showFailedConnection() {
-
-        if (!isStarted()) return
-
+    override fun showFailedConnection() = doIfStarted {
         AlertDialog.Builder(this)
                 .setMessage(getString(R.string.chat__unable_to_connect))
                 .setPositiveButton(getString(R.string.general__try_again), { _, _ -> presenter.connectToDevice() })
                 .setNegativeButton(getString(R.string.general__cancel), null)
                 .setCancelable(false)
                 .show()
-
     }
 
     override fun showNotValidMessage() {
         Toast.makeText(this, getString(R.string.chat__message_cannot_be_empty), Toast.LENGTH_SHORT).show()
     }
 
-    override fun showDeviceIsNotAvailable() {
-
-        if (!isStarted()) return
-
+    override fun showDeviceIsNotAvailable() = doIfStarted {
         AlertDialog.Builder(this)
                 .setMessage(getString(R.string.chat__device_is_not_available))
                 .setPositiveButton(getString(R.string.chat__rescan), { _, _ -> ScanActivity.start(this) })
@@ -379,10 +335,7 @@ class ChatActivity : SkeletonActivity(), ChatView {
                 .show()
     }
 
-    override fun showImageTooBig(maxSize: Long) {
-
-        if (!isStarted()) return
-
+    override fun showImageTooBig(maxSize: Long) = doIfStarted {
         AlertDialog.Builder(this)
                 .setMessage(getString(R.string.chat__too_big_image, maxSize.toReadableFileSize()))
                 .setPositiveButton(getString(R.string.general__ok), null)
@@ -391,11 +344,8 @@ class ChatActivity : SkeletonActivity(), ChatView {
 
     override fun showPresharingImage(path: String) {
 
-        showAnimation.value.let {
-            it.fillAfter = true
-            presharingContainer.visibility = View.VISIBLE
-            presharingContainer.startAnimation(it)
-        }
+        presharingContainer.visibility = View.VISIBLE
+        presharingContainer.startAnimation(showAnimation)
 
         Picasso.with(this)
                 .load("file://$path")
@@ -457,10 +407,7 @@ class ChatActivity : SkeletonActivity(), ChatView {
         Toast.makeText(this, R.string.chat__problem_during_file_transfer, Toast.LENGTH_LONG).show()
     }
 
-    override fun showReceiverUnableToReceiveImages() {
-
-        if (!isStarted()) return
-
+    override fun showReceiverUnableToReceiveImages() = doIfStarted {
         AlertDialog.Builder(this)
                 .setMessage(R.string.chat__partner_unable_to_receive_images)
                 .setPositiveButton(R.string.general__ok, null)

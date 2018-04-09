@@ -13,6 +13,7 @@ import com.glodanif.bluetoothchat.ui.adapter.ContactsAdapter
 import com.glodanif.bluetoothchat.ui.viewmodel.ContactViewModel
 import com.glodanif.bluetoothchat.ui.presenter.ContactChooserPresenter
 import com.glodanif.bluetoothchat.ui.view.ContactChooserView
+import com.glodanif.bluetoothchat.utils.bind
 import javax.inject.Inject
 
 class ContactChooserActivity : SkeletonActivity(), ContactChooserView {
@@ -20,8 +21,8 @@ class ContactChooserActivity : SkeletonActivity(), ContactChooserView {
     @Inject
     lateinit var presenter: ContactChooserPresenter
 
-    private lateinit var contactsList: RecyclerView
-    private lateinit var noContactsLabel: TextView
+    private val contactsList: RecyclerView by bind(R.id.rv_contacts)
+    private val noContactsLabel: TextView by bind(R.id.tv_no_contacts)
 
     private val contactsAdapter = ContactsAdapter()
 
@@ -30,12 +31,8 @@ class ContactChooserActivity : SkeletonActivity(), ContactChooserView {
         setContentView(R.layout.activity_contact_chooser, ActivityType.CHILD_ACTIVITY)
         ComponentsManager.injectContactChooser(this)
 
-        noContactsLabel = findViewById(R.id.tv_no_contacts)
-
-        contactsList = findViewById<RecyclerView>(R.id.rv_contacts).apply {
-            layoutManager = LinearLayoutManager(this@ContactChooserActivity)
-            adapter = contactsAdapter
-        }
+        contactsList.layoutManager = LinearLayoutManager(this)
+        contactsList.adapter = contactsAdapter
 
         val message = intent.getStringExtra(EXTRA_MESSAGE)
         val filePath = intent.getStringExtra(EXTRA_FILE_PATH)

@@ -1,14 +1,13 @@
 package com.glodanif.bluetoothchat.data.service
 
-import com.glodanif.bluetoothchat.extension.isNumber
+import com.glodanif.bluetoothchat.utils.isNumber
 
-class TransferEventStrategy: DataTransferThread.EventsStrategy {
+class TransferEventStrategy : DataTransferThread.EventsStrategy {
 
     private val regex = Regex("\\d+#\\d+#\\d+#*")
 
-    override fun isMessage(message: String?): Boolean {
-        return message != null && regex.containsMatchIn(message)
-    }
+    override fun isMessage(message: String?) =
+            message != null && regex.containsMatchIn(message)
 
     override fun isFileStart(message: String?): DataTransferThread.FileInfo? {
 
@@ -32,20 +31,18 @@ class TransferEventStrategy: DataTransferThread.EventsStrategy {
         return null
     }
 
-    override fun isFileCanceled(message: String?): DataTransferThread.CancelInfo? {
+    override fun isFileCanceled(message: String?): DataTransferThread.CancelInfo? =
 
-        return if (message != null && (message.contains("8#0#0#") || message.contains("8#0#1#"))) {
-            val byPartner = message
-                    .substringAfter("8#0#")
-                    .replace("8#0#", "")
-                    .substringBefore("#")
-            DataTransferThread.CancelInfo(byPartner == "1")
-        } else {
-            null
-        }
-    }
+            if (message != null && (message.contains("8#0#0#") || message.contains("8#0#1#"))) {
+                val byPartner = message
+                        .substringAfter("8#0#")
+                        .replace("8#0#", "")
+                        .substringBefore("#")
+                DataTransferThread.CancelInfo(byPartner == "1")
+            } else {
+                null
+            }
 
-    override fun isFileFinish(message: String?): Boolean {
-        return message != null && message.contains("7#0#0#")
-    }
+    override fun isFileFinish(message: String?) =
+            message != null && message.contains("7#0#0#")
 }
