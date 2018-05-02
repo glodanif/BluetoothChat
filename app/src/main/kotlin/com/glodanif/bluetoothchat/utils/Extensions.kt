@@ -1,6 +1,7 @@
 package com.glodanif.bluetoothchat.utils
 
 import android.app.Activity
+import android.app.NotificationManager
 import android.content.ContentUris
 import android.content.Context
 import android.content.res.Resources
@@ -13,7 +14,11 @@ import android.provider.DocumentsContract
 import android.provider.MediaStore
 import android.support.annotation.IdRes
 import android.support.annotation.PluralsRes
+import android.util.DisplayMetrics
+import android.view.LayoutInflater
+import android.view.Menu
 import android.view.View
+import android.view.WindowManager
 
 import com.amulyakhare.textdrawable.TextDrawable
 import com.glodanif.bluetoothchat.R
@@ -21,6 +26,16 @@ import java.lang.Exception
 import java.text.DecimalFormat
 import java.text.SimpleDateFormat
 import java.util.*
+
+fun Context.getDisplayMetrics(): DisplayMetrics {
+    val windowManager = this.getSystemService(Context.WINDOW_SERVICE) as WindowManager
+    val displayMetrics = DisplayMetrics()
+    windowManager.defaultDisplay.getMetrics(displayMetrics)
+    return displayMetrics
+}
+
+fun Context.getNotificationManager() =
+        this.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
 fun Date.getRelativeTime(context: Context): String {
 
@@ -81,9 +96,9 @@ fun Uri.getFilePath(context: Context): String? {
 
         } else if (isDownloadsDocument(this)) {
 
-            val id = DocumentsContract.getDocumentId(this)
+            val id = DocumentsContract.getDocumentId(this).toLong()
             val contentUri = ContentUris.withAppendedId(
-                    Uri.parse("content://downloads/public_downloads"), java.lang.Long.valueOf(id)!!)
+                    Uri.parse("content://downloads/public_downloads"), id)
 
             return getDataColumn(context, contentUri, null, null)
         } else if (isMediaDocument(this)) {
@@ -170,7 +185,11 @@ fun String.isNumber(): Boolean =
         }
 
 fun <T : View> Activity.bind(@IdRes idRes: Int): Lazy<T> {
-    return unsafeLazy { findViewById<T>(idRes) }
+    return lazy(LazyThreadSafetyMode.NONE) { findViewById<T>(idRes) }
 }
 
-private fun <T> unsafeLazy(initializer: () -> T) = lazy(LazyThreadSafetyMode.NONE, initializer)
+fun <T : Any, V : Any> safeLet(p1: T?, p2: V?, block: (T, V) -> Unit) {
+    if (p1 != null && p2 != null) {
+        block(p1, p2)
+    }
+}

@@ -9,16 +9,16 @@ import android.content.Context
 import android.content.Intent
 import android.content.ServiceConnection
 import android.graphics.BitmapFactory
-import android.os.*
+import android.os.Binder
+import android.os.Build
+import android.os.Environment
+import android.os.IBinder
 import android.support.v7.app.AppCompatActivity
-import android.util.Log
-import com.glodanif.bluetoothchat.BuildConfig
 import com.glodanif.bluetoothchat.ChatApplication
 import com.glodanif.bluetoothchat.R
 import com.glodanif.bluetoothchat.data.database.ChatDatabase
 import com.glodanif.bluetoothchat.data.database.Storage
 import com.glodanif.bluetoothchat.data.entity.*
-import com.glodanif.bluetoothchat.data.entity.Message
 import com.glodanif.bluetoothchat.data.model.*
 import com.glodanif.bluetoothchat.ui.view.NotificationView
 import com.glodanif.bluetoothchat.ui.view.NotificationViewImpl
@@ -31,7 +31,6 @@ import kotlinx.coroutines.experimental.launch
 import java.io.File
 import java.io.IOException
 import java.util.*
-import kotlin.concurrent.thread
 
 class BluetoothConnectionService : Service() {
 
@@ -230,30 +229,32 @@ class BluetoothConnectionService : Service() {
                 val endMessage = Message.createFileEndMessage()
                 dataTransferThread?.write(endMessage.getDecodedMessage())
 
-                if (currentSocket == null) return
+                currentSocket?.let {
 
-                notificationView.dismissFileTransferNotification()
-                val sentMessage = ChatMessage(currentSocket!!.remoteDevice.address, Date(), true, "").apply {
-                    seenHere = true
-                    messageType = MessageType.IMAGE
-                    filePath = path
-                }
-
-                launch(bgContext) {
-
-                    val size = getImageSize(path)
-                    sentMessage.fileInfo = "${size.width}x${size.height}"
-                    sentMessage.fileExists = true
-
-                    db.messagesDao().insert(sentMessage)
-
-                    launch(uiContext) {
-                        fileListener?.onFileSendingFinished()
-                        messageListener?.onMessageSent(sentMessage)
+                    val message = ChatMessage(it.remoteDevice.address, Date(), true, "").apply {
+                        seenHere = true
+                        messageType = MessageType.IMAGE
+                        filePath = path
                     }
 
-                    currentConversation?.let {
-                        shortcutManager.addConversationShortcut(sentMessage.deviceAddress, it.displayName, it.color)
+                    launch(bgContext) {
+
+                        val size = getImageSize(path)
+                        message.fileInfo = "${size.width}x${size.height}"
+                        message.fileExists = true
+
+                        db.messagesDao().insert(message)
+
+                        launch(uiContext) {
+
+                            fileListener?.onFileSendingFinished()
+                            messageListener?.onMessageSent(message)
+
+                            notificationView.dismissFileTransferNotification()
+                            currentConversation?.let {
+                                shortcutManager.addConversationShortcut(message.deviceAddress, it.displayName, it.color)
+                            }
+                        }
                     }
                 }
             }
@@ -297,38 +298,39 @@ class BluetoothConnectionService : Service() {
 
             override fun onFileReceivingFinished(path: String) {
 
-                val device: BluetoothDevice = currentSocket!!.remoteDevice
+                currentSocket?.remoteDevice?.let {
 
-                val receivedMessage = ChatMessage(device.address, Date(), false, "").apply {
-                    messageType = MessageType.IMAGE
-                    filePath = path
-                }
-
-                if (messageListener == null || application.currentChat == null || !application.currentChat.equals(device.address)) {
-                    notificationView.dismissMessageNotification()
-                    notificationView.showNewMessageNotification(getString(R.string.chat__image_message, "\uD83D\uDCCE"), currentConversation?.displayName,
-                            device.name, device.address, preferences.getSettings())
-                } else {
-                    receivedMessage.seenHere = true
-                }
-
-                notificationView.dismissFileTransferNotification()
-
-                launch(bgContext) {
-
-                    val size = getImageSize(path)
-                    receivedMessage.fileInfo = "${size.width}x${size.height}"
-                    receivedMessage.fileExists = true
-
-                    db.messagesDao().insert(receivedMessage)
-
-                    launch(uiContext) {
-                        fileListener?.onFileReceivingFinished()
-                        messageListener?.onMessageReceived(receivedMessage)
+                    val address = it.address
+                    val message = ChatMessage(address, Date(), false, "").apply {
+                        messageType = MessageType.IMAGE
+                        filePath = path
                     }
 
-                    currentConversation?.let {
-                        shortcutManager.addConversationShortcut(device.address, it.displayName, it.color)
+                    if (messageListener == null || application.currentChat == null || !application.currentChat.equals(address)) {
+                        notificationView.dismissMessageNotification()
+                        notificationView.showNewMessageNotification(getString(R.string.chat__image_message, "\uD83D\uDCCE"), currentConversation?.displayName,
+                                it.name, address, preferences.getSettings())
+                    } else {
+                        message.seenHere = true
+                    }
+
+                    launch(bgContext) {
+
+                        val size = getImageSize(path)
+                        message.fileInfo = "${size.width}x${size.height}"
+                        message.fileExists = true
+
+                        db.messagesDao().insert(message)
+
+                        launch(uiContext) {
+                            fileListener?.onFileReceivingFinished()
+                            messageListener?.onMessageReceived(message)
+
+                            notificationView.dismissFileTransferNotification()
+                            currentConversation?.let {
+                                shortcutManager.addConversationShortcut(address, it.displayName, it.color)
+                            }
+                        }
                     }
                 }
             }

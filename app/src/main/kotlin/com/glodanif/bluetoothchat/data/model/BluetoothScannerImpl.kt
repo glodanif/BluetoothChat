@@ -7,7 +7,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.os.Handler
-import android.util.Log
 import com.glodanif.bluetoothchat.data.model.BluetoothScanner.ScanningListener
 
 class BluetoothScannerImpl(val context: Context) : BluetoothScanner {
@@ -30,7 +29,7 @@ class BluetoothScannerImpl(val context: Context) : BluetoothScanner {
             if (BluetoothDevice.ACTION_FOUND == intent.action) {
                 val device = intent
                         .getParcelableExtra<BluetoothDevice>(BluetoothDevice.EXTRA_DEVICE)
-                foundDevices.put(device.address, device)
+                foundDevices[device.address] = device
                 listener?.onDeviceFind(device)
             }
         }

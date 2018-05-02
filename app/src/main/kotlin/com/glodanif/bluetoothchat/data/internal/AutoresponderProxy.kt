@@ -2,10 +2,7 @@ package com.glodanif.bluetoothchat.data.internal
 
 import android.bluetooth.BluetoothDevice
 import android.os.Handler
-import com.glodanif.bluetoothchat.data.entity.ChatMessage
-import com.glodanif.bluetoothchat.data.entity.Conversation
-import com.glodanif.bluetoothchat.data.entity.Message
-import com.glodanif.bluetoothchat.data.entity.MessageType
+import com.glodanif.bluetoothchat.data.entity.*
 import com.glodanif.bluetoothchat.data.model.SettingsManagerImpl
 import com.glodanif.bluetoothchat.data.service.BluetoothConnectionService
 import java.io.File

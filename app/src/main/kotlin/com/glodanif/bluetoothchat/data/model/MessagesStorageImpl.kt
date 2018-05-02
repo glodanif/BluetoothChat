@@ -1,12 +1,10 @@
 package com.glodanif.bluetoothchat.data.model
 
 import android.content.Context
-import android.os.Handler
-import com.glodanif.bluetoothchat.data.database.Storage
 import com.glodanif.bluetoothchat.data.database.MessagesDao
+import com.glodanif.bluetoothchat.data.database.Storage
 import com.glodanif.bluetoothchat.data.entity.ChatMessage
 import java.io.File
-import kotlin.concurrent.thread
 
 class MessagesStorageImpl(val context: Context) : MessagesStorage {
 

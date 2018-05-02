@@ -19,8 +19,8 @@ interface NotificationView {
 
         const val CHANNEL_FOREGROUND = "channel.foreground"
         const val CHANNEL_REQUEST = "channel.request"
-        const val CHANNEL_FILE = "channel.file"
         const val CHANNEL_MESSAGE = "channel.message"
+        const val CHANNEL_FILE = "channel.file"
     }
 
     fun getForegroundNotification(message: String): Notification

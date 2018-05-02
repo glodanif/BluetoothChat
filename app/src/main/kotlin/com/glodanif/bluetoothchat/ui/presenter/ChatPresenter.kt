@@ -1,8 +1,6 @@
 package com.glodanif.bluetoothchat.ui.presenter
 
 import android.bluetooth.BluetoothDevice
-import android.support.annotation.VisibleForTesting
-import android.support.test.espresso.IdlingResource
 import com.glodanif.bluetoothchat.data.entity.ChatMessage
 import com.glodanif.bluetoothchat.data.entity.Conversation
 import com.glodanif.bluetoothchat.data.entity.MessageType
@@ -190,10 +188,11 @@ class ChatPresenter(private val deviceAddress: String,
     }
 
     private fun dismissNotification() {
-        val currentConversation: Conversation? = connectionModel.getCurrentConversation()
-        if (currentConversation != null && connectionModel.isConnectedOrPending() &&
-                currentConversation.deviceAddress == deviceAddress) {
-            view.dismissMessageNotification()
+
+        connectionModel.getCurrentConversation()?.let {
+            if (connectionModel.isConnectedOrPending() && it.deviceAddress == deviceAddress) {
+                view.dismissMessageNotification()
+            }
         }
     }
 

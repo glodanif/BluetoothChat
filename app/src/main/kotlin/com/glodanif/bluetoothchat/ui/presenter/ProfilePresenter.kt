@@ -2,9 +2,7 @@ package com.glodanif.bluetoothchat.ui.presenter
 
 import android.support.annotation.ColorInt
 import com.glodanif.bluetoothchat.data.model.SettingsManager
-import com.glodanif.bluetoothchat.di.ComponentsManager
 import com.glodanif.bluetoothchat.ui.view.ProfileView
-import javax.inject.Inject
 
 class ProfilePresenter(private val view: ProfileView, private val settings: SettingsManager) {
 

@@ -36,6 +36,7 @@ import com.glodanif.bluetoothchat.ui.widget.ActionView
 import com.glodanif.bluetoothchat.ui.widget.SettingsPopup
 import com.glodanif.bluetoothchat.ui.widget.ShortcutManager
 import com.glodanif.bluetoothchat.utils.bind
+import com.glodanif.bluetoothchat.utils.getNotificationManager
 import javax.inject.Inject
 
 class ConversationsActivity : SkeletonActivity(), ConversationsView {
@@ -176,7 +177,7 @@ class ConversationsActivity : SkeletonActivity(), ConversationsView {
     }
 
     override fun dismissConversationNotification() {
-        (getSystemService(Service.NOTIFICATION_SERVICE) as NotificationManager)
+        getNotificationManager()
                 .cancel(NotificationView.NOTIFICATION_TAG_CONNECTION, NotificationView.NOTIFICATION_ID_CONNECTION)
     }
 

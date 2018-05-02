@@ -22,11 +22,8 @@ class SettingsPopup(context: Context) : PopupWindow() {
 
     private val APPEARING_ANIMATION_DURATION: Long = 200
 
-    private var windowManager: WindowManager =
-            context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
-    private var inflater: LayoutInflater =
+    private var inflater =
             context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-    private var displayMetrics: DisplayMetrics = DisplayMetrics()
 
     @ColorInt
     private var color = Color.GRAY
@@ -54,8 +51,6 @@ class SettingsPopup(context: Context) : PopupWindow() {
     }
 
     init {
-
-        this.windowManager.defaultDisplay.getMetrics(displayMetrics)
 
         @SuppressLint("InflateParams")
         rootView = inflater.inflate(R.layout.popup_settings, null)

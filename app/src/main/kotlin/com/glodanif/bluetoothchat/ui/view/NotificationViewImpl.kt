@@ -13,11 +13,11 @@ import com.glodanif.bluetoothchat.ui.activity.ConversationsActivity
 import com.glodanif.bluetoothchat.data.service.BluetoothConnectionService
 import com.glodanif.bluetoothchat.utils.toReadableFileSize
 import com.glodanif.bluetoothchat.ui.util.NotificationSettings
+import com.glodanif.bluetoothchat.utils.getNotificationManager
 
 class NotificationViewImpl(private val context: Context) : NotificationView {
 
-    private val notificationManager =
-            context.getSystemService(Service.NOTIFICATION_SERVICE) as NotificationManager
+    private val notificationManager = context.getNotificationManager()
     private val resources = context.resources
 
     override fun getForegroundNotification(message: String): Notification {

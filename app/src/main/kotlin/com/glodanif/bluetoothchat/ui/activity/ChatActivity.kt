@@ -32,6 +32,7 @@ import com.glodanif.bluetoothchat.ui.view.NotificationView
 import com.glodanif.bluetoothchat.ui.viewmodel.ChatMessageViewModel
 import com.glodanif.bluetoothchat.ui.widget.ActionView
 import com.glodanif.bluetoothchat.utils.bind
+import com.glodanif.bluetoothchat.utils.getNotificationManager
 import com.squareup.picasso.Picasso
 import com.squareup.picasso.Target
 import pl.aprilapps.easyphotopicker.DefaultCallback
@@ -186,7 +187,7 @@ class ChatActivity : SkeletonActivity(), ChatView {
     }
 
     override fun dismissMessageNotification() {
-        (getSystemService(Service.NOTIFICATION_SERVICE) as NotificationManager)
+        getNotificationManager()
                 .cancel(NotificationView.NOTIFICATION_TAG_MESSAGE, NotificationView.NOTIFICATION_ID_MESSAGE)
     }
 
@@ -246,7 +247,7 @@ class ChatActivity : SkeletonActivity(), ChatView {
                 .setMessage(getString(R.string.general__service_lost))
                 .setPositiveButton(getString(R.string.general__restart), { _, _ -> presenter.prepareConnection() })
                 .setCancelable(false)
-                .create()
+                .show()
     }
 
     override fun hideActions() {
@@ -328,7 +329,7 @@ class ChatActivity : SkeletonActivity(), ChatView {
         startActivityForResult(enableBtIntent, REQUEST_ENABLE_BLUETOOTH)
     }
 
-    override fun showBluetoothEnablingFailed() {
+    override fun showBluetoothEnablingFailed() = doIfStarted {
         AlertDialog.Builder(this)
                 .setMessage(getString(R.string.chat__bluetooth_required))
                 .setPositiveButton(getString(R.string.general__ok), null)

@@ -5,17 +5,14 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.os.Environment
-import android.os.Handler
 import android.support.v4.content.FileProvider
 import com.crashlytics.android.Crashlytics
 import com.glodanif.bluetoothchat.BuildConfig
 import com.glodanif.bluetoothchat.R
 import io.fabric.sdk.android.Fabric
 import java.io.*
-import java.lang.IllegalStateException
 import java.util.zip.ZipEntry
 import java.util.zip.ZipOutputStream
-import kotlin.concurrent.thread
 
 class FileManagerImpl(private val context: Context) : FileManager {
 
@@ -63,31 +60,34 @@ class FileManagerImpl(private val context: Context) : FileManager {
         copiedFile.createNewFile()
         zipFile.deleteOnExit()
 
-        FileInputStream(file).use {
-            val sourceChannel = it.channel
-            FileOutputStream(copiedFile).use {
-                val destinationChannel = it.channel
-                destinationChannel.transferFrom(sourceChannel, 0, sourceChannel.size())
+        FileInputStream(file).use { fileInputStream ->
+
+            FileOutputStream(copiedFile).use { fileOutputStream ->
+
+                fileOutputStream.channel
+                        .transferFrom(fileInputStream.channel, 0, fileInputStream.channel.size())
             }
         }
 
-        FileInputStream(copiedFile).use {
+        FileInputStream(copiedFile).use { fileInputStream ->
 
-            val origin = BufferedInputStream(it, bufferSize)
+            BufferedInputStream(fileInputStream, bufferSize).use { bufferedInputStream ->
 
-            origin.use {
+                FileOutputStream(zipFile).use { fileOutputStream ->
 
-                FileOutputStream(zipFile).use {
-                    ZipOutputStream(BufferedOutputStream(it)).use {
+                    BufferedOutputStream(fileOutputStream).use { bufferedOutputStream ->
 
-                        val data = ByteArray(bufferSize)
-                        val entry = ZipEntry(copiedFile.name)
-                        it.putNextEntry(entry)
+                        ZipOutputStream(bufferedOutputStream).use { zipOutputStream ->
 
-                        var count = origin.read(data, 0, bufferSize)
-                        while (count != -1) {
-                            it.write(data, 0, count)
-                            count = origin.read(data, 0, bufferSize)
+                            val data = ByteArray(bufferSize)
+                            val entry = ZipEntry(copiedFile.name)
+                            zipOutputStream.putNextEntry(entry)
+
+                            var count = bufferedInputStream.read(data, 0, bufferSize)
+                            while (count != -1) {
+                                zipOutputStream.write(data, 0, count)
+                                count = bufferedInputStream.read(data, 0, bufferSize)
+                            }
                         }
                     }
                 }

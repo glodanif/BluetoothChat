@@ -3,7 +3,6 @@ package com.glodanif.bluetoothchat.data.internal
 import android.bluetooth.BluetoothDevice
 import com.glodanif.bluetoothchat.data.entity.ChatMessage
 import com.glodanif.bluetoothchat.data.entity.Conversation
-import com.glodanif.bluetoothchat.data.service.BluetoothConnectionService
 
 class EmptyProxy : CommunicationProxy {
 

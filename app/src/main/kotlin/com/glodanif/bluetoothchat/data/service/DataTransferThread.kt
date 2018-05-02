@@ -1,13 +1,12 @@
 package com.glodanif.bluetoothchat.data.service
 
 import android.bluetooth.BluetoothSocket
-import android.util.Log
 import com.glodanif.bluetoothchat.data.entity.Message
 import com.glodanif.bluetoothchat.data.entity.TransferringFile
+import com.glodanif.bluetoothchat.utils.safeLet
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.launch
 import java.io.*
-import kotlin.concurrent.thread
 
 abstract class DataTransferThread(private val socket: BluetoothSocket,
                                   private val type: BluetoothConnectionService.ConnectionType,
@@ -16,14 +15,13 @@ abstract class DataTransferThread(private val socket: BluetoothSocket,
                                   private val fileListener: OnFileListener,
                                   private val eventsStrategy: EventsStrategy) : Thread() {
 
-    private val bufferSize = 2048
-
     private var inputStream: InputStream? = null
     private var outputStream: OutputStream? = null
 
-    private var skipEvents = false
-
+    private val bufferSize = 2048
     private val buffer = ByteArray(bufferSize)
+
+    private var skipEvents = false
 
     @Volatile
     private var isConnectionPrepared = false
@@ -54,11 +52,7 @@ abstract class DataTransferThread(private val socket: BluetoothSocket,
     abstract fun shouldRun(): Boolean
 
     override fun start() {
-
-        if (!isConnectionPrepared) {
-            throw IllegalStateException("Connection is not prepared yet.")
-        }
-
+        require(isConnectionPrepared) { "Connection is not prepared yet." }
         super.start()
     }
 
@@ -78,7 +72,10 @@ abstract class DataTransferThread(private val socket: BluetoothSocket,
                     fileSize = potentialFile.size
 
                     transferListener.onMessageReceived(message)
-                    readFile(inputStream!!, fileName!!, fileSize)
+
+                    safeLet(inputStream, fileName) { stream, name ->
+                        readFile(stream, name, fileSize)
+                    }
 
                 } else {
 
@@ -144,7 +141,7 @@ abstract class DataTransferThread(private val socket: BluetoothSocket,
             val fileStream = FileInputStream(file)
             BufferedInputStream(fileStream).use {
 
-                val bos = BufferedOutputStream(outputStream)
+                val bufferedOutputStream = BufferedOutputStream(outputStream)
 
                 try {
 
@@ -156,8 +153,8 @@ abstract class DataTransferThread(private val socket: BluetoothSocket,
                     while (length > -1) {
                         if (length > 0) {
                             try {
-                                bos.write(buffer, 0, length)
-                                bos.flush()
+                                bufferedOutputStream.write(buffer, 0, length)
+                                bufferedOutputStream.flush()
                             } catch (e: IOException) {
                                 Thread.sleep(250)
                                 fileListener.onFileSendingFailed()
@@ -170,7 +167,7 @@ abstract class DataTransferThread(private val socket: BluetoothSocket,
                         fileListener.onFileSendingProgress(transferringFile, sentBytes)
 
                         if (isFileTransferCanceledByMe || isFileTransferCanceledByPartner) {
-                            bos.flush()
+                            bufferedOutputStream.flush()
                             break
                         }
                     }

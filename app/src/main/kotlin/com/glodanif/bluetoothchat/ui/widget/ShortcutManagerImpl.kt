@@ -34,9 +34,9 @@ class ShortcutManagerImpl(private val context: Context) : ShortcutManager {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
 
-            if (shortcutManager != null) {
+            shortcutManager?.let {
 
-                val isSearchAdded = shortcutManager!!.dynamicShortcuts
+                val isSearchAdded = it.dynamicShortcuts
                         .filter { it.id == ID_SEARCH }.any()
 
                 if (isSearchAdded) {
@@ -86,14 +86,12 @@ class ShortcutManagerImpl(private val context: Context) : ShortcutManager {
         }
     }
 
-    override fun isRequestPinShortcutSupported(): Boolean {
-
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            if (shortcutManager != null) shortcutManager!!.isRequestPinShortcutSupported else false
-        } else {
-            false
-        }
-    }
+    override fun isRequestPinShortcutSupported() =
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                shortcutManager?.isRequestPinShortcutSupported ?: false
+            } else {
+                false
+            }
 
     @RequiresApi(Build.VERSION_CODES.N_MR1)
     private fun createConversationShortcut(address: String, name: String, @ColorInt color: Int): ShortcutInfo {

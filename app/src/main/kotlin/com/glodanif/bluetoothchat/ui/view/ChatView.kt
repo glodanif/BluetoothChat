@@ -1,7 +1,5 @@
 package com.glodanif.bluetoothchat.ui.view
 
-import com.glodanif.bluetoothchat.data.entity.ChatMessage
-import com.glodanif.bluetoothchat.data.entity.Conversation
 import com.glodanif.bluetoothchat.ui.viewmodel.ChatMessageViewModel
 
 interface ChatView {

@@ -1,5 +1,5 @@
-def final VERSION_CODE = 16
-def final VERSION_NAME = '1.0.3'
+def final VERSION_CODE = 17
+def final VERSION_NAME = '1.0.4'
 
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
@@ -119,8 +119,6 @@ dependencies {
 
     implementation "com.google.dagger:dagger:$DAGGER_VERSION"
     kapt "com.google.dagger:dagger-compiler:$DAGGER_VERSION"
-
-    implementation "com.android.support.test.espresso:espresso-idling-resource:$ESPRESSO_VERSION"
 
     testImplementation "org.jetbrains.kotlin:kotlin-stdlib:$KOTLIN_VERSION"
     testImplementation "org.jetbrains.kotlin:kotlin-test-junit:$KOTLIN_VERSION"

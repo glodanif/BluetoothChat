@@ -12,7 +12,6 @@ import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
 import org.junit.Before
 import org.junit.Test
-import java.util.concurrent.CompletableFuture
 import kotlin.coroutines.experimental.EmptyCoroutineContext
 
 class ScanPresenterUnitTest {

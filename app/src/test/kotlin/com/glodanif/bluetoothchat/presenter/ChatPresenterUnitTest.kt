@@ -22,9 +22,9 @@ class ChatPresenterUnitTest {
     @RelaxedMockK
     lateinit var messageStorage: MessagesStorage
     @RelaxedMockK
-    private lateinit var scanner: BluetoothScanner
+    lateinit var scanner: BluetoothScanner
     @RelaxedMockK
-    private lateinit var connector: BluetoothConnector
+    lateinit var connector: BluetoothConnector
     @RelaxedMockK
     lateinit var converter: ChatMessageConverter
 

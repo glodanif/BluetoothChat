@@ -61,10 +61,16 @@ class Storage private constructor(context: Context) {
         private var instance : Storage? = null
 
         fun getInstance(context: Context): Storage {
-            if (instance == null)
-                instance = Storage(context)
 
-            return instance!!
+            if (instance == null) {
+                instance = Storage(context)
+            }
+
+            instance?.let {
+                return it
+            }
+
+            throw IllegalStateException("Instance became null after initialization")
         }
     }
 }

@@ -120,8 +120,7 @@ class ImagePreviewActivity : SkeletonActivity(), ImagePreviewView {
         }
 
         fun start(activity: Activity, transitionView: ImageView, message: ChatMessageViewModel) {
-            start(activity, transitionView, message.uid, message.imagePath
-                    ?: "unknown", message.own)
+            start(activity, transitionView, message.uid, message.imagePath ?: "unknown", message.own)
         }
 
         fun start(activity: Activity, transitionView: ImageView, messageId: Long, imagePath: String, ownMessage: Boolean) {

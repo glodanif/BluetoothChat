@@ -9,6 +9,7 @@ import com.glodanif.bluetoothchat.ui.viewmodel.converter.ContactConverter
 import com.glodanif.bluetoothchat.ui.viewmodel.converter.ConversationConverter
 import com.glodanif.bluetoothchat.ui.widget.ShortcutManager
 import com.glodanif.bluetoothchat.ui.widget.ShortcutManagerImpl
+import com.glodanif.bluetoothchat.utils.getDisplayMetrics
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton
@@ -47,9 +48,6 @@ class ApplicationModule(private val context: Context) {
     @Provides
     @Singleton
     internal fun provideChatMessageConverter(): ChatMessageConverter {
-        val windowManager = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
-        val displayMetrics = DisplayMetrics()
-        windowManager.defaultDisplay.getMetrics(displayMetrics)
-        return ChatMessageConverter(context, displayMetrics)
+        return ChatMessageConverter(context)
     }
 }

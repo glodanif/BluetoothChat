@@ -10,13 +10,14 @@ import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import com.glodanif.bluetoothchat.R
 
-open class SkeletonActivity : AppCompatActivity() {
+open class
+SkeletonActivity : AppCompatActivity() {
 
     protected enum class ActivityType { CHILD_ACTIVITY, CUSTOM_TOOLBAR_ACTIVITY }
 
     protected var toolbar: Toolbar? = null
 
-    private var isStarted = false
+    var isStarted = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,16 +58,16 @@ open class SkeletonActivity : AppCompatActivity() {
         return true
     }
 
-    fun doIfStarted(dialog: () -> Unit) {
+    inline fun doIfStarted(action: () -> Unit) {
         if (isStarted) {
-            dialog.invoke()
+            action.invoke()
         }
     }
 
     fun hideKeyboard() {
         val inputManager = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
-        if (currentFocus != null) {
-            inputManager.hideSoftInputFromWindow(currentFocus?.windowToken, InputMethodManager.HIDE_NOT_ALWAYS)
+        currentFocus?.let {
+            inputManager.hideSoftInputFromWindow(it.windowToken, InputMethodManager.HIDE_NOT_ALWAYS)
         }
     }
 }

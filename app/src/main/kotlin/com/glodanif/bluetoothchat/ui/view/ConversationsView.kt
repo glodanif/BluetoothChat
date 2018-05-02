@@ -1,7 +1,6 @@
 package com.glodanif.bluetoothchat.ui.view
 
 import android.support.annotation.ColorInt
-import com.glodanif.bluetoothchat.data.entity.Conversation
 import com.glodanif.bluetoothchat.ui.viewmodel.ConversationViewModel
 
 interface ConversationsView {

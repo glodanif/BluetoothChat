@@ -2,13 +2,10 @@ package com.glodanif.bluetoothchat.di.module
 
 import com.glodanif.bluetoothchat.data.model.*
 import com.glodanif.bluetoothchat.di.PerActivity
-import com.glodanif.bluetoothchat.ui.activity.ImagePreviewActivity
 import com.glodanif.bluetoothchat.ui.activity.ScanActivity
-import com.glodanif.bluetoothchat.ui.presenter.ImagePreviewPresenter
 import com.glodanif.bluetoothchat.ui.presenter.ScanPresenter
 import dagger.Module
 import dagger.Provides
-import java.io.File
 
 @Module
 class ScanModule(private val activity: ScanActivity) {
