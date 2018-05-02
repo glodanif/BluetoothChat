@@ -10,11 +10,11 @@
 
 <img src="graphics/featured.png"/>
 
-License [![Crowdin](https://d322cqt584bo4o.cloudfront.net/bluetoothchat/localized.svg)](https://crowdin.com/project/bluetoothchat)
+Localization [![Crowdin](https://d322cqt584bo4o.cloudfront.net/bluetoothchat/localized.svg)](https://crowdin.com/project/bluetoothchat)
 --------
 You can help to localize Bluetooth Chat to your language using [Crowdin](https://crowdin.com/project/bluetoothchat)
 
-License
+Third Party Libraries
 --------
 [TextDrawable](https://github.com/amulyakhare/TextDrawable)
 
