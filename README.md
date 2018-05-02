@@ -16,19 +16,13 @@ You can help to localize Bluetooth Chat to your language using [Crowdin](https:/
 
 Third Party Libraries
 --------
-[TextDrawable](https://github.com/amulyakhare/TextDrawable)
-
-[EasyImage](https://github.com/jkwiecien/EasyImage)
-
-[Picasso](https://github.com/square/picasso)
-
-[Chroma](https://github.com/ItsPriyesh/chroma)
-
-[PhotoView](https://github.com/chrisbanes/PhotoView)
-
-[Dagger](https://github.com/google/dagger)
-
-[MockK](https://github.com/oleksiyp/mockk)
+* [TextDrawable](https://github.com/amulyakhare/TextDrawable)
+* [EasyImage](https://github.com/jkwiecien/EasyImage)
+* [Picasso](https://github.com/square/picasso)
+* [Chroma](https://github.com/ItsPriyesh/chroma)
+* [PhotoView](https://github.com/chrisbanes/PhotoView)
+* [Dagger](https://github.com/google/dagger)
+* [MockK](https://github.com/oleksiyp/mockk)
 
 License
 --------
