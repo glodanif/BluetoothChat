@@ -14,8 +14,7 @@
         android:layout_marginStart="48dp"
         android:layout_marginTop="6dp"
         card_view:cardCornerRadius="2dp"
-        card_view:cardPreventCornerOverlap="false"
-        card_view:elevation="8dp">
+        card_view:cardPreventCornerOverlap="false">
 
         <LinearLayout
             android:layout_width="match_parent"
