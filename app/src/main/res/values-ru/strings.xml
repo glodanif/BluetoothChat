@@ -71,6 +71,7 @@
   <string name="chat__missing_image">Изображение не найдено</string>
   <string name="chat__partner_canceled_image_transfer">Ваш партнер отменил передачу файла</string>
   <string name="chat__problem_during_file_transfer">Произошла ошибка во время передачи файла</string>
+  <string name="chat__file_not_exist">Не удалось найти этот файл, пожалуйста, попробуйте снова</string>
   <string name="chat__sending_image">Отправка изображения</string>
   <string name="chat__receiving_images">Прием изображения</string>
   <string name="chat__partner_unable_to_receive_images">Ваш партнер изпользует старую версию Bluetooth Chat, которая не может принимать изображения.</string>
