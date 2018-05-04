@@ -85,7 +85,7 @@ android {
 
 dependencies {
 
-    def final SUPPORT_VERSION = '27.1.0'
+    def final SUPPORT_VERSION = '27.1.1'
     def final ARCH_VERSION = '1.0.0'
     def final DAGGER_VERSION = '2.4'
     def final ESPRESSO_VERSION = '3.0.0'
@@ -102,14 +102,14 @@ dependencies {
     implementation "android.arch.persistence.room:runtime:$ARCH_VERSION"
     kapt "android.arch.persistence.room:compiler:$ARCH_VERSION"
 
-    implementation 'com.android.support.constraint:constraint-layout:1.0.2'
+    implementation 'com.android.support.constraint:constraint-layout:1.1.0'
     implementation 'com.amulyakhare:com.amulyakhare.textdrawable:1.0.1'
     implementation 'com.github.jkwiecien:EasyImage:2.0.4'
     implementation 'com.squareup.picasso:picasso:2.6.0-SNAPSHOT'
     implementation 'me.priyesh:chroma:1.0.2'
     implementation 'com.github.chrisbanes:PhotoView:2.1.3'
 
-    implementation('com.crashlytics.sdk.android:crashlytics:2.9.1@aar') {
+    implementation('com.crashlytics.sdk.android:crashlytics:2.9.2@aar') {
         transitive = true
     }
 

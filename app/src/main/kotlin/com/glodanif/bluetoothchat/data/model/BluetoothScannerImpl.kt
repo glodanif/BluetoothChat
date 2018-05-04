@@ -81,7 +81,8 @@ class BluetoothScannerImpl(val context: Context) : BluetoothScanner {
     }
 
     override fun getBondedDevices(): List<BluetoothDevice> {
-        return ArrayList<BluetoothDevice>(adapter?.bondedDevices)
+        val devices = adapter?.bondedDevices
+        return if (devices == null) ArrayList() else ArrayList<BluetoothDevice>(devices)
     }
 
     override fun getDeviceByAddress(address: String): BluetoothDevice? {

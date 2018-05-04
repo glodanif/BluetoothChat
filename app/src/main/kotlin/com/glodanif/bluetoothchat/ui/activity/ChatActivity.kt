@@ -343,6 +343,10 @@ class ChatActivity : SkeletonActivity(), ChatView {
                 .show()
     }
 
+    override fun showImageNotExist() {
+        Toast.makeText(this, R.string.chat__file_not_exist, Toast.LENGTH_LONG).show()
+    }
+
     override fun showPresharingImage(path: String) {
 
         presharingContainer.visibility = View.VISIBLE

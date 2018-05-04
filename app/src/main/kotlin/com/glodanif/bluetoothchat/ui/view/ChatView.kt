@@ -33,6 +33,7 @@ interface ChatView {
 
     fun showPresharingImage(path: String)
     fun showImageTooBig(maxSize: Long)
+    fun showImageNotExist()
     fun showImageTransferLayout(fileAddress: String?, fileSize: Long, transferType: FileTransferType)
     fun updateImageTransferProgress(transferredBytes: Long, totalBytes: Long)
     fun hideImageTransferLayout()

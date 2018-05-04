@@ -307,7 +307,9 @@ class ChatPresenter(private val deviceAddress: String,
 
     fun sendFile(file: File) {
 
-        if (!connectionModel.isConnected()) {
+        if (!file.exists()) {
+            view.showImageNotExist()
+        } else if (!connectionModel.isConnected()) {
             view.showPresharingImage(file.absolutePath)
             filePresharing = file
         } else {
