@@ -10,17 +10,32 @@
 
 <img src="graphics/featured.png"/>
 
-### Third Party Libraries
-[TextDrawable](https://github.com/amulyakhare/TextDrawable)
+Localization [![Crowdin](https://d322cqt584bo4o.cloudfront.net/bluetoothchat/localized.svg)](https://crowdin.com/project/bluetoothchat)
+--------
+You can help to localize Bluetooth Chat to your language using [Crowdin](https://crowdin.com/project/bluetoothchat)
 
-[EasyImage](https://github.com/jkwiecien/EasyImage)
+Third Party Libraries
+--------
+* [TextDrawable](https://github.com/amulyakhare/TextDrawable)
+* [EasyImage](https://github.com/jkwiecien/EasyImage)
+* [Picasso](https://github.com/square/picasso)
+* [Chroma](https://github.com/ItsPriyesh/chroma)
+* [PhotoView](https://github.com/chrisbanes/PhotoView)
+* [Dagger](https://github.com/google/dagger)
+* [MockK](https://github.com/oleksiyp/mockk)
 
-[Picasso](https://github.com/square/picasso)
+License
+--------
+    Copyright 2018 Vasyl Glodan
 
-[Chroma](https://github.com/ItsPriyesh/chroma)
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
 
-[PhotoView](https://github.com/chrisbanes/PhotoView)
+        http://www.apache.org/licenses/LICENSE-2.0
 
-[Dagger](https://github.com/google/dagger)
-
-[MockK](https://github.com/oleksiyp/mockk)
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
