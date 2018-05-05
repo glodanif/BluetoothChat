@@ -31,5 +31,4 @@ interface NotificationView {
     fun dismissMessageNotification()
     fun dismissConnectionNotification()
     fun dismissFileTransferNotification()
-    fun getContext(): Context
 }

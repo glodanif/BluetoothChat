@@ -188,7 +188,7 @@ fun <T : View> Activity.bind(@IdRes idRes: Int): Lazy<T> {
     return lazy(LazyThreadSafetyMode.NONE) { findViewById<T>(idRes) }
 }
 
-fun <T : Any, V : Any> safeLet(p1: T?, p2: V?, block: (T, V) -> Unit) {
+inline fun <T : Any, V : Any> safeLet(p1: T?, p2: V?, block: (T, V) -> Unit) {
     if (p1 != null && p2 != null) {
         block(p1, p2)
     }

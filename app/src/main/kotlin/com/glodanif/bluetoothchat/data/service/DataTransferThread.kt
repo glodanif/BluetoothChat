@@ -62,24 +62,22 @@ abstract class DataTransferThread(private val socket: BluetoothSocket,
 
             try {
 
-                val message = readString()
-                val potentialFile = eventsStrategy.isFileStart(message)
+                readString()?.let { message ->
 
-                if (message != null && potentialFile != null) {
+                    val potentialFile = eventsStrategy.isFileStart(message)
+                    if (potentialFile != null) {
 
-                    isFileDownloading = true
-                    fileName = potentialFile.name
-                    fileSize = potentialFile.size
+                        isFileDownloading = true
+                        fileName = potentialFile.name
+                        fileSize = potentialFile.size
 
-                    transferListener.onMessageReceived(message)
+                        transferListener.onMessageReceived(message)
 
-                    safeLet(inputStream, fileName) { stream, name ->
-                        readFile(stream, name, fileSize)
-                    }
+                        safeLet(inputStream, fileName) { stream, name ->
+                            readFile(stream, name, fileSize)
+                        }
 
-                } else {
-
-                    if (message != null && eventsStrategy.isMessage(message)) {
+                    } else if (eventsStrategy.isMessage(message)) {
 
                         val cancelInfo = eventsStrategy.isFileCanceled(message)
                         if (cancelInfo == null) {

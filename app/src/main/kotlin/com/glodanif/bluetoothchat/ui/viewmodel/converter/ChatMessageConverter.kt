@@ -16,6 +16,7 @@ class ChatMessageConverter(private val context: Context) {
 
         val isImageAvailable = message.filePath != null && message.fileExists
         val problemString = when {
+            isImageAvailable -> -1
             message.filePath == null -> R.string.chat__removed_image
             !message.fileExists -> R.string.chat__missing_image
             else -> -1
