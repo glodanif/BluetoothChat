@@ -56,7 +56,7 @@ class NotificationViewImpl(private val context: Context) : NotificationView {
         return builder.build()
     }
 
-    override fun showNewMessageNotification(message: String, displayName: String?, deviceName: String, address: String, settings: NotificationSettings) {
+    override fun showNewMessageNotification(message: String, displayName: String?, deviceName: String?, address: String, settings: NotificationSettings) {
 
         val notificationIntent = Intent(context, ChatActivity::class.java).apply {
             putExtra(ChatActivity.EXTRA_ADDRESS, address)
@@ -65,7 +65,11 @@ class NotificationViewImpl(private val context: Context) : NotificationView {
         val requestCode = (System.currentTimeMillis() / 1000).toInt()
         val pendingIntent = PendingIntent.getActivity(context, requestCode, notificationIntent, 0)
 
-        val name = if (displayName.isNullOrEmpty()) deviceName else "$displayName ($deviceName)"
+        val name = when {
+            deviceName == null -> "?"
+            displayName.isNullOrEmpty() -> deviceName
+            else -> "$displayName ($deviceName)"
+        }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel(NotificationView.CHANNEL_MESSAGE, context.getString(R.string.notification__channel_message), NotificationManager.IMPORTANCE_HIGH).apply {
