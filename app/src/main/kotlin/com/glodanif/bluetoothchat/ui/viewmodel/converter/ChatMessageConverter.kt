@@ -28,7 +28,7 @@ class ChatMessageConverter(private val context: Context) {
         var height = width
         if (info != null && actualSize != null && actualSize.size == 2) {
             val scaledSize = getScaledSize(actualSize[0].toInt(), actualSize[1].toInt())
-            if (scaledSize.width >= 0 && scaledSize.height >= 0) {
+            if (scaledSize.width > 0 && scaledSize.height > 0) {
                 width = scaledSize.width
                 height = scaledSize.height
             }
