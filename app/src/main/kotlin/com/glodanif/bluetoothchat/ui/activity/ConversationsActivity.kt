@@ -62,6 +62,8 @@ class ConversationsActivity : SkeletonActivity(), ConversationsView {
         setContentView(R.layout.activity_conversations, ActivityType.CUSTOM_TOOLBAR_ACTIVITY)
         ComponentsManager.injectConversations(this)
 
+        supportActionBar?.setDisplayShowTitleEnabled(false)
+
         conversationsList.layoutManager = LinearLayoutManager(this)
         conversationsList.adapter = conversationsAdapter
 

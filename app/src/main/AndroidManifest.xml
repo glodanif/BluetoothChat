@@ -47,7 +47,6 @@
 
         <activity
             android:name=".ui.activity.ConversationsActivity"
-            android:label="@string/app_name"
             android:screenOrientation="portrait" />
 
         <activity
@@ -93,6 +92,9 @@
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="b26de0978fcc0fa56349d97da37b554f54e1d034" />
+        <meta-data
+            android:name="preloaded_fonts"
+            android:resource="@array/preloaded_fonts" />
 
         <provider
             android:name=".data.file.GenericFileProvider"
