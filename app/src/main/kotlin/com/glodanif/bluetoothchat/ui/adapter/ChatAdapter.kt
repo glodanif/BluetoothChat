@@ -2,7 +2,11 @@ package com.glodanif.bluetoothchat.ui.adapter
 
 import android.content.Context
 import android.graphics.Bitmap
+import android.support.v4.text.util.LinkifyCompat
 import android.support.v7.widget.RecyclerView
+import android.text.SpannableString
+import android.text.method.LinkMovementMethod
+import android.text.util.Linkify
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -65,7 +69,12 @@ class ChatAdapter(private val context: Context) : RecyclerView.Adapter<RecyclerV
 
         } else if (holder is TextMessageViewHolder) {
 
-            holder.text.text = message.text
+            val spannableMessage = SpannableString(message.text)
+            LinkifyCompat.addLinks(spannableMessage,
+                    Linkify.WEB_URLS or Linkify.PHONE_NUMBERS or Linkify.EMAIL_ADDRESSES)
+
+            holder.text.movementMethod = LinkMovementMethod.getInstance()
+            holder.text.setText(spannableMessage, TextView.BufferType.SPANNABLE)
             holder.date.text = message.date
         }
     }
