@@ -19,6 +19,7 @@ import android.view.LayoutInflater
 import android.view.Menu
 import android.view.View
 import android.view.WindowManager
+import android.view.animation.Animation
 
 import com.amulyakhare.textdrawable.TextDrawable
 import com.glodanif.bluetoothchat.R
@@ -36,6 +37,22 @@ fun Context.getDisplayMetrics(): DisplayMetrics {
 
 fun Context.getNotificationManager() =
         this.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+
+fun Animation.onEnd(action: () -> Unit) {
+
+    this.setAnimationListener(object : Animation.AnimationListener {
+
+        override fun onAnimationRepeat(animation: Animation?) {
+        }
+
+        override fun onAnimationEnd(animation: Animation?) {
+            action.invoke()
+        }
+
+        override fun onAnimationStart(animation: Animation?) {
+        }
+    })
+}
 
 fun Date.getRelativeTime(context: Context): String {
 

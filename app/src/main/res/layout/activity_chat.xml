@@ -170,6 +170,8 @@
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
+        android:clickable="true"
+        android:focusable="true"
         android:visibility="gone"
         app:cardElevation="4dp"
         app:layout_constraintBottom_toTopOf="@+id/bottomLayout"
@@ -183,9 +185,7 @@
         <android.support.constraint.ConstraintLayout
             android:id="@+id/relativeLayout"
             android:layout_width="match_parent"
-            android:layout_height="124dp"
-            android:clickable="true"
-            android:focusable="true">
+            android:layout_height="124dp">
 
             <ImageView
                 android:id="@+id/iv_presharing_image"
@@ -194,9 +194,9 @@
                 android:layout_marginBottom="8dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
+                android:background="@color/background_image"
                 android:contentDescription="@string/chat__cd__preshare_image"
                 android:scaleType="centerCrop"
-                android:background="@color/background_image"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"

@@ -3,8 +3,6 @@ package com.glodanif.bluetoothchat.ui.activity
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.AlertDialog
-import android.app.NotificationManager
-import android.app.Service
 import android.bluetooth.BluetoothAdapter
 import android.content.Context
 import android.content.Intent
@@ -33,6 +31,7 @@ import com.glodanif.bluetoothchat.ui.viewmodel.ChatMessageViewModel
 import com.glodanif.bluetoothchat.ui.widget.ActionView
 import com.glodanif.bluetoothchat.utils.bind
 import com.glodanif.bluetoothchat.utils.getNotificationManager
+import com.glodanif.bluetoothchat.utils.onEnd
 import com.squareup.picasso.Picasso
 import com.squareup.picasso.Target
 import pl.aprilapps.easyphotopicker.DefaultCallback
@@ -68,13 +67,11 @@ class ChatActivity : SkeletonActivity(), ChatView {
     private var deviceAddress: String? = null
 
     private val showAnimation by lazy {
-        AnimationUtils.loadAnimation(this, R.anim.anime_fade_slide_in).apply {
-            fillAfter = true
-        }
+        AnimationUtils.loadAnimation(this, R.anim.anime_fade_slide_in)
     }
     private val hideAnimation by lazy {
         AnimationUtils.loadAnimation(this, R.anim.anime_fade_slide_out).apply {
-            fillAfter = true
+            onEnd { presharingContainer.visibility = View.GONE }
         }
     }
 
