@@ -13,6 +13,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="6dp"
         card_view:cardCornerRadius="2dp"
+        card_view:cardElevation="1dp"
         card_view:cardPreventCornerOverlap="false">
 
         <LinearLayout
@@ -47,8 +48,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_marginTop="8dp"
-                    android:scaleType="centerCrop"
                     android:contentDescription="@string/chat__cd__received_image"
+                    android:scaleType="centerCrop"
                     android:transitionName="@string/id_transition_image"
                     tools:src="@tools:sample/avatars" />
 

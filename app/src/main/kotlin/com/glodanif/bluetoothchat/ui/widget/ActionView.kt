@@ -2,6 +2,7 @@ package com.glodanif.bluetoothchat.ui.widget
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.text.Html
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
@@ -24,7 +25,7 @@ class ActionView : FrameLayout {
 
         removeAllViews()
 
-        container.findViewById<TextView>(R.id.tv_text).text = textMessage
+        container.findViewById<TextView>(R.id.tv_text).text = Html.fromHtml(textMessage)
 
         container.findViewById<Button>(R.id.btn_first_action).let {
 

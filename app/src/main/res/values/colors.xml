@@ -9,4 +9,7 @@
     <color name="text_light">#bbbbbb</color>
 
     <color name="background_image">#eeeeee</color>
+
+    <color name="background_own_message">#22009688</color>
+    <color name="background_chat_screen_default">#ADE9C5</color>
 </resources>

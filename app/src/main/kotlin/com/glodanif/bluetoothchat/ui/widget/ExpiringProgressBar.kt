@@ -51,6 +51,13 @@ class ExpiringProgressBar : View {
     private var timeLeft = 0
     private var isCanceled: Boolean = false
 
+    init {
+        if (isInEditMode) {
+            max = 100
+            progress = 69
+        }
+    }
+
     override fun onDraw(canvas: Canvas?) {
         super.onDraw(canvas)
 

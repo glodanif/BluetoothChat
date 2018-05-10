@@ -275,7 +275,6 @@ class ChatActivity : SkeletonActivity(), ChatView {
         AlertDialog.Builder(this)
                 .setMessage(getString(R.string.chat__connection_rejected))
                 .setPositiveButton(getString(R.string.general__ok), null)
-                .setCancelable(false)
                 .show()
     }
 
@@ -291,7 +290,6 @@ class ChatActivity : SkeletonActivity(), ChatView {
                 .setMessage(getString(R.string.chat__connection_lost))
                 .setPositiveButton(getString(R.string.chat__reconnect), { _, _ -> presenter.reconnect() })
                 .setNegativeButton(getString(R.string.general__cancel), null)
-                .setCancelable(false)
                 .show()
     }
 
@@ -300,7 +298,6 @@ class ChatActivity : SkeletonActivity(), ChatView {
                 .setMessage(getString(R.string.chat__partner_disconnected))
                 .setPositiveButton(getString(R.string.chat__reconnect), { _, _ -> presenter.reconnect() })
                 .setNegativeButton(getString(R.string.general__cancel), null)
-                .setCancelable(false)
                 .show()
     }
 
@@ -309,7 +306,6 @@ class ChatActivity : SkeletonActivity(), ChatView {
                 .setMessage(getString(R.string.chat__unable_to_connect))
                 .setPositiveButton(getString(R.string.general__try_again), { _, _ -> presenter.connectToDevice() })
                 .setNegativeButton(getString(R.string.general__cancel), null)
-                .setCancelable(false)
                 .show()
     }
 

@@ -34,7 +34,7 @@
                 android:ellipsize="end"
                 android:fontFamily="@font/titillium_web_semibold"
                 android:maxWidth="150dp"
-                android:text="@string/app_name"
+                android:text="@string/main_title"
                 android:textColor="@android:color/white"
                 android:textSize="20sp" />
 

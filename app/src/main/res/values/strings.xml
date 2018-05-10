@@ -3,6 +3,7 @@
 <resources>
 
     <string name="app_name" translatable="false">Bluetooth Chat</string>
+    <string name="main_title" translatable="false">Bluetooth Chat</string>
     <string name="id_transition_image" translatable="false">chatImage</string>
 
     <string name="general__ok">OK</string>
@@ -56,7 +57,7 @@
     <string name="chat__waiting_for_device">You are waiting for this device to approve a connection</string>
     <string name="chat__connect">Connect</string>
     <string name="chat__not_connected_to_send">You are not connected to this device</string>
-    <string name="chat__connection_request">%1$s (%2$s) wants to connect to you</string>
+    <string name="chat__connection_request"><![CDATA[<b>%1$s (%2$s)</b> wants to connect to you]]></string>
     <string name="chat__not_connected_to_this_device">You are not connected to this device right now</string>
     <string name="chat__message_cannot_be_empty">Message cannot be empty</string>
     <string name="chat__partner_disconnected">Your partner disconnected from your device. Do you want to reconnect?</string>
@@ -67,7 +68,7 @@
     <string name="chat__rescan">Rescan</string>
     <string name="chat__device_is_not_available">This device is not available right now, make sure it\'s paired</string>
     <string name="chat__bluetooth_required">This app requires Bluetooth enabled to work properly</string>
-    <string name="chat__connected_to_another">You are currently connected to %s. You can connect to this device (current connection will be interrupted)?</string>
+    <string name="chat__connected_to_another"><![CDATA[You are currently connected to <b>%s</b>. You can connect to this device but current connection will be interrupted]]></string>
     <string name="chat__message_hint">Message</string>
     <string name="chat__chat">Chat</string>
     <string name="chat__too_big_image">This image it too big. Max file size which you can send via Bluetooth Chat is %s</string>
@@ -88,8 +89,8 @@
     <string name="conversations__options">Conversation options</string>
     <string name="conversations__remove">Remove</string>
     <string name="conversations__removal_confirmation">Do you really want to remove this conversation? All messages will be lost</string>
-    <string name="conversations__connection_rejected">Your connection request to %1$s (%2$s) was rejected</string>
-    <string name="conversations__connection_request">%1$s (%2$s) wants to connect to you</string>
+    <string name="conversations__connection_rejected"><![CDATA[Your connection request to <b>%1$s</b> (%2$s) was rejected]]></string>
+    <string name="conversations__connection_request"><![CDATA[<b>%1$s (%2$s)</b> wants to connect to you]]></string>
     <string name="conversations__settings">Settings</string>
     <string name="conversations__pin_to_home_screen">Pin to your home screen</string>
     <string name="conversations__permissions_settings">Settings</string>

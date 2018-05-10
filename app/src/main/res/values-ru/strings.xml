@@ -52,7 +52,7 @@
   <string name="chat__waiting_for_device">Вы ждете пока это устройство одобрит соединение</string>
   <string name="chat__connect">Подключится</string>
   <string name="chat__not_connected_to_send">Вы не подключены к этому устройству</string>
-  <string name="chat__connection_request">%1$s (%2$s) хочет подключиться к вам</string>
+  <string name="chat__connection_request"><![CDATA[<b>%1$s (%2$s)</b> хочет подключиться к вам]]></string>
   <string name="chat__not_connected_to_this_device">Сейчас вы не подключены к этому устройству</string>
   <string name="chat__message_cannot_be_empty">Сообщение не может быть пустым</string>
   <string name="chat__partner_disconnected">Ваш партнер отсоединился от вашего устройства. Хотите переподлючиться?</string>
@@ -63,7 +63,7 @@
   <string name="chat__rescan">Пересканнировать</string>
   <string name="chat__device_is_not_available">Сейчас это устройство недоступно, убедитесь что вы подключены</string>
   <string name="chat__bluetooth_required">Для корректной работы этого приложения необходимо включить Bluetooth</string>
-  <string name="chat__connected_to_another">Сейчас вы соеденины с %s. Вы можете подключиться к этому устройству (текущее соединение будет прервано)?</string>
+  <string name="chat__connected_to_another"><![CDATA[Сейчас вы соеденины с <b>%s</b>. Вы можете подключиться к этому устройству, но текущее соединение будет прервано]]></string>
   <string name="chat__message_hint">Сообщение</string>
   <string name="chat__chat">Чат</string>
   <string name="chat__too_big_image">Это изображение слишком большое. Максимальный размер файла, который вы можете отправить с помощью Blooetooth Chat составляет %s.</string>
@@ -83,8 +83,8 @@
   <string name="conversations__options">Опции разговора</string>
   <string name="conversations__remove">Удалить</string>
   <string name="conversations__removal_confirmation">Вы уверенны что хотите удалить этот разговор? Все сообщения будут утраченны</string>
-  <string name="conversations__connection_rejected">Ваш запрос на соединение к %1$s (%2$s) был отклонен</string>
-  <string name="conversations__connection_request">%1$s (%2$s) хочет соедениться с вами</string>
+  <string name="conversations__connection_rejected"><![CDATA[Ваш запрос на соединение к <b>%1$s (%2$s)</b> был отклонен]]></string>
+  <string name="conversations__connection_request"><![CDATA[<b>%1$s (%2$s)</b> хочет соедениться с вами]]></string>
   <string name="conversations__settings">Настройки</string>
   <string name="conversations__pin_to_home_screen">Добавить на начальный экран</string>
   <string name="conversations__permissions_settings">Настройки</string>
