@@ -3,6 +3,7 @@ package com.glodanif.bluetoothchat.ui.presenter
 import android.bluetooth.BluetoothDevice
 import com.glodanif.bluetoothchat.data.model.*
 import com.glodanif.bluetoothchat.ui.view.ScanView
+import com.glodanif.bluetoothchat.utils.withPotentiallyInstalledApplication
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.async
@@ -41,7 +42,9 @@ class ScanPresenter(private val view: ScanView,
             }
 
             override fun onDeviceFind(device: BluetoothDevice) {
-                view.addFoundDevice(device)
+                if (device.bluetoothClass.withPotentiallyInstalledApplication()) {
+                    view.addFoundDevice(device)
+                }
             }
         })
     }
@@ -124,7 +127,10 @@ class ScanPresenter(private val view: ScanView,
     }
 
     fun onPairedDevicesReady() {
-        view.showPairedDevices(scanner.getBondedDevices())
+        val devices = scanner.getBondedDevices().filter {
+            it.bluetoothClass.withPotentiallyInstalledApplication()
+        }
+        view.showPairedDevices(devices)
     }
 
     fun onBluetoothEnablingFailed() {

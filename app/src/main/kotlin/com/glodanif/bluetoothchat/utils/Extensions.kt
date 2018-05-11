@@ -2,6 +2,8 @@ package com.glodanif.bluetoothchat.utils
 
 import android.app.Activity
 import android.app.NotificationManager
+import android.bluetooth.BluetoothClass
+import android.bluetooth.BluetoothDevice
 import android.content.ContentUris
 import android.content.Context
 import android.content.res.Resources
@@ -52,6 +54,13 @@ fun Animation.onEnd(action: () -> Unit) {
         override fun onAnimationStart(animation: Animation?) {
         }
     })
+}
+
+fun BluetoothClass.withPotentiallyInstalledApplication(): Boolean {
+    return this.majorDeviceClass == BluetoothClass.Device.Major.PHONE ||
+            this.majorDeviceClass == BluetoothClass.Device.Major.COMPUTER ||
+            this.majorDeviceClass == BluetoothClass.Device.Major.UNCATEGORIZED ||
+            this.majorDeviceClass == BluetoothClass.Device.Major.MISC
 }
 
 fun Date.getRelativeTime(context: Context): String {
