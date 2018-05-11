@@ -36,7 +36,7 @@
                 android:id="@+id/tv_text"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:textColor="#222"
+                android:textColor="@color/text_text_message"
                 android:textIsSelectable="true"
                 tools:text="@tools:sample/lorem" />
 

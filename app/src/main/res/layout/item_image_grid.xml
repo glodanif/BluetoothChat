@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.glodanif.bluetoothchat.ui.widget.SquareImageFrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="4dp">
@@ -11,6 +12,7 @@
         android:background="@color/background_image"
         android:contentDescription="@string/image__cd__image_preview"
         android:scaleType="centerCrop"
-        android:transitionName="@string/id_transition_image" />
+        android:transitionName="@string/id_transition_image"
+        tools:src="@tools:sample/backgrounds/scenic" />
 
 </com.glodanif.bluetoothchat.ui.widget.SquareImageFrameLayout>

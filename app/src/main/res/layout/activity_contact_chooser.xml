@@ -8,7 +8,8 @@
         android:id="@+id/rv_contacts"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:listitem="@layout/item_contact" />
+        tools:listitem="@layout/item_contact"
+        tools:itemCount="3"/>
 
     <TextView
         android:id="@+id/tv_no_contacts"
