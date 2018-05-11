@@ -8,22 +8,22 @@ import android.graphics.Rect
 import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import android.support.annotation.ColorInt
-import android.util.DisplayMetrics
-import android.view.*
+import android.view.Gravity
+import android.view.View
+import android.view.ViewAnimationUtils
+import android.view.WindowManager
 import android.widget.ImageView
 import android.widget.PopupWindow
 import android.widget.TextView
 import com.amulyakhare.textdrawable.TextDrawable
 import com.glodanif.bluetoothchat.R
-import com.glodanif.bluetoothchat.utils.getFirstLetter
 import com.glodanif.bluetoothchat.ui.util.EmptyAnimatorListener
+import com.glodanif.bluetoothchat.utils.getFirstLetter
+import com.glodanif.bluetoothchat.utils.getLayoutInflater
 
 class SettingsPopup(context: Context) : PopupWindow() {
 
     private val APPEARING_ANIMATION_DURATION: Long = 200
-
-    private var inflater =
-            context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
 
     @ColorInt
     private var color = Color.GRAY
@@ -53,7 +53,7 @@ class SettingsPopup(context: Context) : PopupWindow() {
     init {
 
         @SuppressLint("InflateParams")
-        rootView = inflater.inflate(R.layout.popup_settings, null)
+        rootView = context.getLayoutInflater().inflate(R.layout.popup_settings, null)
         container = rootView.findViewById(R.id.fl_container)
         avatar = rootView.findViewById(R.id.iv_avatar)
         userNameLabel = rootView.findViewById(R.id.tv_username)
