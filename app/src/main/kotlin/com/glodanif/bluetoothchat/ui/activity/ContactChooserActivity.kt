@@ -19,7 +19,7 @@ import javax.inject.Inject
 class ContactChooserActivity : SkeletonActivity(), ContactChooserView {
 
     @Inject
-    lateinit var presenter: ContactChooserPresenter
+    internal lateinit var presenter: ContactChooserPresenter
 
     private val contactsList: RecyclerView by bind(R.id.rv_contacts)
     private val noContactsLabel: TextView by bind(R.id.tv_no_contacts)

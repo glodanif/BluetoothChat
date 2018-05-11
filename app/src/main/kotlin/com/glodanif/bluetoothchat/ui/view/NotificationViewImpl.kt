@@ -19,6 +19,7 @@ class NotificationViewImpl(private val context: Context) : NotificationView {
 
     private val notificationManager = context.getNotificationManager()
     private val resources = context.resources
+    private val vibration = longArrayOf(1000, 1000)
 
     override fun getForegroundNotification(message: String): Notification {
 
@@ -74,6 +75,8 @@ class NotificationViewImpl(private val context: Context) : NotificationView {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel(NotificationView.CHANNEL_MESSAGE, context.getString(R.string.notification__channel_message), NotificationManager.IMPORTANCE_HIGH).apply {
                 setShowBadge(true)
+                vibrationPattern = vibration
+                enableVibration(settings.vibrationEnabled)
             }
             notificationManager.createNotificationChannel(channel)
         }
@@ -81,6 +84,7 @@ class NotificationViewImpl(private val context: Context) : NotificationView {
         val builder = NotificationCompat.Builder(context, NotificationView.CHANNEL_MESSAGE)
                 .setContentTitle(name)
                 .setContentText(message)
+                .setVibrate(vibration)
                 .setLights(Color.BLUE, 3000, 3000)
                 .setSmallIcon(R.drawable.ic_new_message)
                 .setContentIntent(pendingIntent)
@@ -93,11 +97,13 @@ class NotificationViewImpl(private val context: Context) : NotificationView {
 
         val notification = builder.build()
 
-        if (settings.soundEnabled) {
-            notification.defaults = notification.defaults or Notification.DEFAULT_SOUND
-        }
-        if (settings.vibrationEnabled) {
-            notification.defaults = notification.defaults or Notification.DEFAULT_VIBRATE
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+            if (settings.soundEnabled) {
+                notification.defaults = notification.defaults or Notification.DEFAULT_SOUND
+            }
+            if (settings.vibrationEnabled) {
+                notification.defaults = notification.defaults or Notification.DEFAULT_VIBRATE
+            }
         }
 
         notificationManager.notify(NotificationView.NOTIFICATION_TAG_MESSAGE,
@@ -115,6 +121,8 @@ class NotificationViewImpl(private val context: Context) : NotificationView {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel(NotificationView.CHANNEL_REQUEST, context.getString(R.string.notification__channel_request), NotificationManager.IMPORTANCE_HIGH).apply {
                 setShowBadge(true)
+                vibrationPattern = vibration
+                enableVibration(settings.vibrationEnabled)
             }
             notificationManager.createNotificationChannel(channel)
         }
@@ -122,6 +130,7 @@ class NotificationViewImpl(private val context: Context) : NotificationView {
         val builder = NotificationCompat.Builder(context, NotificationView.CHANNEL_REQUEST)
                 .setContentTitle(context.getString(R.string.notification__connection_request))
                 .setContentText(context.getString(R.string.notification__connection_request_body, deviceName))
+                .setVibrate(vibration)
                 .setLights(Color.BLUE, 3000, 3000)
                 .setSmallIcon(R.drawable.ic_connection_request)
                 .setContentIntent(pendingIntent)
@@ -134,11 +143,13 @@ class NotificationViewImpl(private val context: Context) : NotificationView {
 
         val notification = builder.build()
 
-        if (settings.soundEnabled) {
-            notification.defaults = notification.defaults or Notification.DEFAULT_SOUND
-        }
-        if (settings.vibrationEnabled) {
-            notification.defaults = notification.defaults or Notification.DEFAULT_VIBRATE
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+            if (settings.soundEnabled) {
+                notification.defaults = notification.defaults or Notification.DEFAULT_SOUND
+            }
+            if (settings.vibrationEnabled) {
+                notification.defaults = notification.defaults or Notification.DEFAULT_VIBRATE
+            }
         }
 
         notificationManager.notify(NotificationView.NOTIFICATION_TAG_CONNECTION,
@@ -181,16 +192,7 @@ class NotificationViewImpl(private val context: Context) : NotificationView {
         }
 
         val notification = builder.build()
-
-        if (settings.soundEnabled && !silently) {
-            notification.defaults = notification.defaults or Notification.DEFAULT_SOUND
-        }
-        if (settings.vibrationEnabled && !silently) {
-            notification.defaults = notification.defaults or Notification.DEFAULT_VIBRATE
-        }
-
         transferBuilder = builder
-
         notificationManager.notify(NotificationView.NOTIFICATION_TAG_FILE,
                 NotificationView.NOTIFICATION_ID_FILE, notification)
     }

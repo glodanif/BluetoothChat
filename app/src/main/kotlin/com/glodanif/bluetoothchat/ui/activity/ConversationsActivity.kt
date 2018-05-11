@@ -42,9 +42,9 @@ import javax.inject.Inject
 class ConversationsActivity : SkeletonActivity(), ConversationsView {
 
     @Inject
-    lateinit var presenter: ConversationsPresenter
+    internal lateinit var presenter: ConversationsPresenter
     @Inject
-    lateinit var shortcutsManager: ShortcutManager
+    internal lateinit var shortcutsManager: ShortcutManager
 
     private val conversationsList: RecyclerView by bind(R.id.rv_conversations)
     private val noConversations: View by bind(R.id.ll_empty_holder)

@@ -10,6 +10,7 @@ import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.os.Handler
+import android.support.constraint.ConstraintLayout
 import android.support.v7.widget.CardView
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
@@ -44,10 +45,11 @@ import javax.inject.Inject
 class ChatActivity : SkeletonActivity(), ChatView {
 
     @Inject
-    lateinit var presenter: ChatPresenter
+    internal lateinit var presenter: ChatPresenter
 
     private val layoutManager = LinearLayoutManager(this)
 
+    private val chatContainer: ConstraintLayout by bind(R.id.cl_chat_container)
     private val actions: ActionView by bind(R.id.av_actions)
     private val chatList: RecyclerView by bind(R.id.rv_chat)
     private val messageField: EditText by bind(R.id.et_message)
@@ -156,6 +158,8 @@ class ChatActivity : SkeletonActivity(), ChatView {
             })
         }
 
+        presenter.onViewCreated()
+
         if (Intent.ACTION_SEND == intent.action) {
 
             val textToShare = intent.getStringExtra(EXTRA_MESSAGE)
@@ -181,6 +185,10 @@ class ChatActivity : SkeletonActivity(), ChatView {
     override fun onStop() {
         super.onStop()
         presenter.releaseConnection()
+    }
+
+    override fun setBackgroundColor(color: Int) {
+        chatContainer.setBackgroundColor(color)
     }
 
     override fun dismissMessageNotification() {

@@ -3,7 +3,6 @@ package com.glodanif.bluetoothchat.utils
 import android.app.Activity
 import android.app.NotificationManager
 import android.bluetooth.BluetoothClass
-import android.bluetooth.BluetoothDevice
 import android.content.ContentUris
 import android.content.Context
 import android.content.res.Resources
@@ -18,11 +17,9 @@ import android.support.annotation.IdRes
 import android.support.annotation.PluralsRes
 import android.util.DisplayMetrics
 import android.view.LayoutInflater
-import android.view.Menu
 import android.view.View
 import android.view.WindowManager
 import android.view.animation.Animation
-
 import com.amulyakhare.textdrawable.TextDrawable
 import com.glodanif.bluetoothchat.R
 import java.lang.Exception
@@ -39,6 +36,9 @@ fun Context.getDisplayMetrics(): DisplayMetrics {
 
 fun Context.getNotificationManager() =
         this.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+
+fun Context.getLayoutInflater() =
+        this.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
 
 fun Animation.onEnd(action: () -> Unit) {
 

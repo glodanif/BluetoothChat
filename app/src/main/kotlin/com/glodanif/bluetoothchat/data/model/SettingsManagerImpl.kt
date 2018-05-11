@@ -10,7 +10,8 @@ class SettingsManagerImpl(context: Context) : SettingsManager {
     private val KEY_USER_NAME = "key.user_name"
     private val KEY_USER_COLOR = "key.user_color"
 
-    private val preferences = context.getSharedPreferences(KEY_PREFERENCES, Context.MODE_PRIVATE)
+    private val preferences
+            by lazy { context.getSharedPreferences(KEY_PREFERENCES, Context.MODE_PRIVATE) }
 
     override fun saveUserName(name: String) {
         preferences.edit().putString(KEY_USER_NAME, name).apply()
@@ -24,7 +25,6 @@ class SettingsManagerImpl(context: Context) : SettingsManager {
         return preferences.getString(KEY_USER_NAME, "")
     }
 
-    override fun getUserColor(): Int {
-        return preferences.getInt(KEY_USER_COLOR, Color.parseColor("#008756"))
-    }
+    override fun getUserColor() =
+            preferences.getInt(KEY_USER_COLOR, Color.parseColor("#008756"))
 }

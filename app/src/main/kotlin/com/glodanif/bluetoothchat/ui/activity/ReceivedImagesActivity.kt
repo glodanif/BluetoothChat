@@ -19,7 +19,7 @@ import javax.inject.Inject
 class ReceivedImagesActivity : SkeletonActivity(), ReceivedImagesView {
 
     @Inject
-    lateinit var presenter: ReceivedImagesPresenter
+    internal lateinit var presenter: ReceivedImagesPresenter
 
     private var address: String? = null
 

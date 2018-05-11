@@ -62,7 +62,7 @@ class BluetoothConnectionService : Service() {
     private var currentConversation: Conversation? = null
 
     private val db: ChatDatabase = Storage.getInstance(this).db
-    private lateinit var preferences: Preferences
+    private lateinit var preferences: UserPreferences
     private lateinit var settings: SettingsManager
 
     private lateinit var application: ChatApplication
@@ -84,7 +84,7 @@ class BluetoothConnectionService : Service() {
         super.onCreate()
         application = getApplication() as ChatApplication
         settings = SettingsManagerImpl(this)
-        preferences = UserPreferences(this)
+        preferences = UserPreferencesImpl(this)
         notificationView = NotificationViewImpl(this)
         shortcutManager = ShortcutManagerImpl(this)
         isRunning = true

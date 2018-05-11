@@ -14,8 +14,9 @@ class ChatModule(private val address: String, private val activity: ChatActivity
     @Provides
     @PerActivity
     internal fun providePresenter(messages: MessagesStorage, conversations: ConversationsStorage,
-                                  scanner: BluetoothScanner, connector: BluetoothConnector, converter: ChatMessageConverter): ChatPresenter =
-            ChatPresenter(address, activity, conversations, messages, scanner, connector, converter)
+                                  scanner: BluetoothScanner, connector: BluetoothConnector,
+                                  preferences: UserPreferences, converter: ChatMessageConverter): ChatPresenter =
+            ChatPresenter(address, activity, conversations, messages, scanner, connector, preferences, converter)
 
     @Provides
     @PerActivity

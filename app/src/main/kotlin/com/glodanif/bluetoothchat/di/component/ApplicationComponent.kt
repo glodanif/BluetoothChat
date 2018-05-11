@@ -1,9 +1,6 @@
 package com.glodanif.bluetoothchat.di.component
 
-import com.glodanif.bluetoothchat.data.model.ConversationsStorage
-import com.glodanif.bluetoothchat.data.model.FileManager
-import com.glodanif.bluetoothchat.data.model.MessagesStorage
-import com.glodanif.bluetoothchat.data.model.SettingsManager
+import com.glodanif.bluetoothchat.data.model.*
 import com.glodanif.bluetoothchat.di.module.ApplicationModule
 import com.glodanif.bluetoothchat.ui.viewmodel.converter.ChatMessageConverter
 import com.glodanif.bluetoothchat.ui.viewmodel.converter.ContactConverter
@@ -19,6 +16,7 @@ interface ApplicationComponent {
     fun conversationsStorage(): ConversationsStorage
     fun messagesStorage(): MessagesStorage
     fun settingsManager(): SettingsManager
+    fun preferences(): UserPreferences
 
     fun shortcutManager(): ShortcutManager
     fun fileManager(): FileManager

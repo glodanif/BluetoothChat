@@ -1,5 +1,6 @@
 package com.glodanif.bluetoothchat.ui.view
 
+import android.support.annotation.ColorInt
 import com.glodanif.bluetoothchat.ui.viewmodel.ChatMessageViewModel
 
 interface ChatView {
@@ -30,6 +31,7 @@ interface ChatView {
     fun showBluetoothEnablingFailed()
     fun requestBluetoothEnabling()
     fun dismissMessageNotification()
+    fun setBackgroundColor(@ColorInt color: Int)
 
     fun showPresharingImage(path: String)
     fun showImageTooBig(maxSize: Long)

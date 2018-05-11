@@ -1,16 +1,13 @@
 package com.glodanif.bluetoothchat.data.model
 
 import android.bluetooth.BluetoothAdapter
-import android.bluetooth.BluetoothClass
 import android.bluetooth.BluetoothDevice
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.os.Handler
-import android.util.Log
 import com.glodanif.bluetoothchat.data.model.BluetoothScanner.ScanningListener
-import com.glodanif.bluetoothchat.utils.withPotentiallyInstalledApplication
 
 class BluetoothScannerImpl(val context: Context) : BluetoothScanner {
 

@@ -26,7 +26,7 @@ import javax.inject.Inject
 class ProfileActivity : SkeletonActivity(), ProfileView {
 
     @Inject
-    lateinit var presenter: ProfilePresenter
+    internal lateinit var presenter: ProfilePresenter
 
     private val nameField: EditText by bind(R.id.et_name)
     private val nameLabel: TextView by bind(R.id.tv_name)
@@ -80,6 +80,7 @@ class ProfileActivity : SkeletonActivity(), ProfileView {
     }
 
     override fun showColorPicker(@ColorInt color: Int) {
+
         ChromaDialog.Builder()
                 .initialColor(color)
                 .colorMode(ColorMode.RGB)

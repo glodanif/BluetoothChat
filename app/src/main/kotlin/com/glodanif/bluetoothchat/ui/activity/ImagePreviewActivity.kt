@@ -28,7 +28,7 @@ class ImagePreviewActivity : SkeletonActivity(), ImagePreviewView {
     private val imageView: PhotoView by bind(R.id.pv_preview)
 
     @Inject
-    lateinit var presenter: ImagePreviewPresenter
+    internal lateinit var presenter: ImagePreviewPresenter
 
     private var own = false
 

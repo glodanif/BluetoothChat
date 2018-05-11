@@ -21,6 +21,7 @@ class ChatPresenter(private val deviceAddress: String,
                     private val messagesStorage: MessagesStorage,
                     private val scanModel: BluetoothScanner,
                     private val connectionModel: BluetoothConnector,
+                    private val preferences: UserPreferences,
                     private val converter: ChatMessageConverter,
                     private val uiContext: CoroutineContext = UI,
                     private val bgContext: CoroutineContext = CommonPool) {
@@ -194,6 +195,10 @@ class ChatPresenter(private val deviceAddress: String,
                 view.dismissMessageNotification()
             }
         }
+    }
+
+    fun onViewCreated() {
+        view.setBackgroundColor(preferences.getChatBackgroundColor())
     }
 
     fun prepareConnection() {

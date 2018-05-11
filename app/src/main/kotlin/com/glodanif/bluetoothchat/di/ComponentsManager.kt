@@ -73,5 +73,13 @@ class ComponentsManager {
                     .build()
                     .inject(activity)
         }
+
+        fun injectSettings(activity: SettingsActivity) {
+            DaggerSettingsComponent.builder()
+                    .applicationComponent(appComponent)
+                    .settingsModule(SettingsModule(activity))
+                    .build()
+                    .inject(activity)
+        }
     }
 }

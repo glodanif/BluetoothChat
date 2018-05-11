@@ -46,7 +46,7 @@ class ScanActivity : SkeletonActivity(), ScanView {
     private val devicesAdapter: DevicesAdapter = DevicesAdapter(this)
 
     @Inject
-    lateinit var presenter: ScanPresenter
+    internal lateinit var presenter: ScanPresenter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
