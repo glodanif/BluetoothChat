@@ -91,7 +91,7 @@
   <string name="conversations__storage_permission"><![CDATA[Перейдите в настройки и предоставте разрешение <b>\"ПАМЯТЬ\"</b> для использования этого приложения.]]></string>
   <string name="scan__no_devices">Устройств не найдено</string>
   <string name="scan__scan_for_devices">Поиск устройств</string>
-  <string name="scan__start_scanning">Начните сканирование чтобы найти вашего партнера или сделайте ваше устройство обнаружаемым чтобы он смог найти вас</string>
+  <string name="scan__start_scanning">Scan for devices to find your partner or make your device discoverable and he/she will be able to find you</string>
   <string name="scan__scanning">Поиск</string>
   <string name="scan__turn_on">Включить</string>
   <string name="scan__turn_bluetooth_on">Включите Bluetooth чтобы найти вашего партнера</string>
