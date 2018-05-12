@@ -13,8 +13,8 @@
   <string name="general__disconnect">Відключитись</string>
   <string name="general__storage_permission">Bluetooth Chat надає вам можливість ділитися зображеннями. Ця функція потребує дозволу <b>"ЗБЕРІГАННЯ"</b> для корректної роботи</string>
   <string name="general__time_format">dd MMM, yyyy</string>
-  <string name="general__time_unknown">невідомл</string>
-  <string name="general__time_just_now">тільки що</string>
+  <string name="general__time_unknown">невідомо</string>
+  <string name="general__time_just_now">щойно</string>
   <string name="general__time_a_minute_ago">хвилину назад</string>
   <string name="general__time_an_hour_ago">годину назад</string>
   <string name="general__time_yesterday">вчора</string>
@@ -128,6 +128,8 @@
   <string name="contact_chooser__no_contacts">Ваш список контактів порожній</string>
   <string name="settings__title">Налаштування</string>
   <string name="settings__notifications">Сповіщення</string>
+  <string name="settings__appearance">Зовнішній вигляд</string>
+  <string name="settings__chat_background_color">Фоновий колір чату</string>
   <string name="settings__sound">Звук</string>
   <string name="settings__vibration">Вібрація</string>
   <string name="images__image">Зображення</string>
