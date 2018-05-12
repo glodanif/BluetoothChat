@@ -1,5 +1,6 @@
 package com.glodanif.bluetoothchat.presenter
 
+import android.bluetooth.BluetoothClass
 import android.bluetooth.BluetoothDevice
 import android.net.Uri
 import com.glodanif.bluetoothchat.data.model.BluetoothConnector
@@ -61,7 +62,9 @@ class ScanPresenterUnitTest {
 
     @Test
     fun enabling_isEnabled_isNotDiscoverable() {
-        val paired = mockk<List<BluetoothDevice>>()
+        val device = mockk<BluetoothDevice>()
+        every { device.bluetoothClass.majorDeviceClass } returns BluetoothClass.Device.Major.PHONE
+        val paired = listOf(device)
         every { scanner.getBondedDevices() } returns paired
         every { scanner.isBluetoothEnabled() } returns true
         every { scanner.isDiscoverable() } returns false

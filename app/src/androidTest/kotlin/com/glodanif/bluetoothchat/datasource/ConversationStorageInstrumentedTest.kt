@@ -20,7 +20,7 @@ class ConversationStorageInstrumentedTest {
 
     private val address1 = "00:00:00:00:00:01"
     private val conversation1 = Conversation(address1, "deviceName1", "displayName1", Color.BLACK)
-    private val _conversation1 = Conversation(address1, "deviceName1_1", "displayName1_1", Color.GREEN)
+    private val editedConversation1 = Conversation(address1, "deviceName1_1", "displayName1_1", Color.GREEN)
 
     private val address2 = "00:00:00:00:00:02"
     private val conversation2 = Conversation(address2, "deviceName2", "displayName2", Color.WHITE)
@@ -53,10 +53,10 @@ class ConversationStorageInstrumentedTest {
 
     @Test
     fun updateConversation() = runBlocking {
-        storage.insertConversation(_conversation1)
+        storage.insertConversation(editedConversation1)
         val dbConversation: Conversation? = storage.getConversationByAddress(address1)
         assertNotNull(dbConversation)
-        assertTrue(equal(_conversation1, dbConversation))
+        assertTrue(equal(editedConversation1, dbConversation))
     }
 
     @Test

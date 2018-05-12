@@ -1,9 +1,6 @@
 package com.glodanif.bluetoothchat.presenter
 
-import com.glodanif.bluetoothchat.data.model.BluetoothConnector
-import com.glodanif.bluetoothchat.data.model.BluetoothScanner
-import com.glodanif.bluetoothchat.data.model.ConversationsStorage
-import com.glodanif.bluetoothchat.data.model.MessagesStorage
+import com.glodanif.bluetoothchat.data.model.*
 import com.glodanif.bluetoothchat.ui.presenter.ChatPresenter
 import com.glodanif.bluetoothchat.ui.view.ChatView
 import com.glodanif.bluetoothchat.ui.viewmodel.converter.ChatMessageConverter
@@ -27,6 +24,8 @@ class ChatPresenterUnitTest {
     lateinit var connector: BluetoothConnector
     @RelaxedMockK
     lateinit var converter: ChatMessageConverter
+    @RelaxedMockK
+    lateinit var preferences: UserPreferences
 
     lateinit var presenter: ChatPresenter
 
@@ -34,7 +33,7 @@ class ChatPresenterUnitTest {
     fun setup() {
         MockKAnnotations.init(this)
         presenter = ChatPresenter(address, view, conversationStorage, messageStorage,
-                scanner, connector, converter, EmptyCoroutineContext, EmptyCoroutineContext)
+                scanner, connector, preferences, converter, EmptyCoroutineContext, EmptyCoroutineContext)
     }
 
     /*@Test
