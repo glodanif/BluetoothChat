@@ -12,8 +12,8 @@ class ScanModule(private val activity: ScanActivity) {
 
     @Provides
     @PerActivity
-    internal fun providePresenter(scanner: BluetoothScanner, connector: BluetoothConnector, fileManager: FileManager): ScanPresenter =
-            ScanPresenter(activity, scanner, connector, fileManager)
+    internal fun providePresenter(scanner: BluetoothScanner, connector: BluetoothConnector, fileManager: FileManager, preferences: UserPreferences): ScanPresenter =
+            ScanPresenter(activity, scanner, connector, fileManager, preferences)
 
     @Provides
     @PerActivity

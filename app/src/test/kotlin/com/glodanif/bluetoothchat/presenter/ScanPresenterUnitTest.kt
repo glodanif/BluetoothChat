@@ -3,10 +3,7 @@ package com.glodanif.bluetoothchat.presenter
 import android.bluetooth.BluetoothClass
 import android.bluetooth.BluetoothDevice
 import android.net.Uri
-import com.glodanif.bluetoothchat.data.model.BluetoothConnector
-import com.glodanif.bluetoothchat.data.model.BluetoothScanner
-import com.glodanif.bluetoothchat.data.model.FileManager
-import com.glodanif.bluetoothchat.data.model.OnPrepareListener
+import com.glodanif.bluetoothchat.data.model.*
 import com.glodanif.bluetoothchat.ui.presenter.ScanPresenter
 import com.glodanif.bluetoothchat.ui.view.ScanView
 import io.mockk.*
@@ -25,6 +22,8 @@ class ScanPresenterUnitTest {
     private lateinit var fileModel: FileManager
     @RelaxedMockK
     private lateinit var view: ScanView
+    @RelaxedMockK
+    private lateinit var preferences: UserPreferences
 
     lateinit var presenter: ScanPresenter
 
@@ -32,7 +31,7 @@ class ScanPresenterUnitTest {
     fun setup() {
         MockKAnnotations.init(this)
         presenter = ScanPresenter(view, scanner, connector,
-                fileModel, EmptyCoroutineContext, EmptyCoroutineContext)
+                fileModel, preferences, EmptyCoroutineContext, EmptyCoroutineContext)
     }
 
     @Test
@@ -51,7 +50,9 @@ class ScanPresenterUnitTest {
 
     @Test
     fun enabling_isEnabled_isDiscoverable() {
-        val paired = mockk<List<BluetoothDevice>>()
+        val device = mockk<BluetoothDevice>()
+        every { device.bluetoothClass.majorDeviceClass } returns BluetoothClass.Device.Major.PHONE
+        val paired = listOf(device)
         every { scanner.getBondedDevices() } returns paired
         every { scanner.isBluetoothEnabled() } returns true
         every { scanner.isDiscoverable() } returns true

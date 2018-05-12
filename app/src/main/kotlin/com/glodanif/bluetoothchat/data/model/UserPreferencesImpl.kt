@@ -13,6 +13,7 @@ class UserPreferencesImpl(private val context: Context) : UserPreferences {
     private val keyVersion = "storage_version"
     private val keyNotificationSound = "notifications_sound"
     private val keyAppearanceChatBgColor = "notifications_chat_bg_color"
+    private val keyDiscoveryClassification = "notifications_classification"
 
     private val preferences
             by lazy { context.getSharedPreferences(keyPreferencesName, Context.MODE_PRIVATE) }
@@ -23,6 +24,9 @@ class UserPreferencesImpl(private val context: Context) : UserPreferences {
 
     override fun isSoundEnabled() =
             preferences.getBoolean(keyNotificationSound, false)
+
+    override fun isClassificationEnabled() =
+            preferences.getBoolean(keyDiscoveryClassification, true)
 
     override fun getChatBackgroundColor() =
             preferences.getInt(keyAppearanceChatBgColor, Color.parseColor("#ADE9C5"))
@@ -36,6 +40,12 @@ class UserPreferencesImpl(private val context: Context) : UserPreferences {
     override fun saveNewSoundPreference(enabled: Boolean) {
         preferences.edit()
                 .putBoolean(keyNotificationSound, enabled)
+                .apply()
+    }
+
+    override fun saveNewClassificationPreference(enabled: Boolean) {
+        preferences.edit()
+                .putBoolean(keyDiscoveryClassification, enabled)
                 .apply()
     }
 

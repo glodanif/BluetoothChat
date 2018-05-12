@@ -14,6 +14,7 @@ class ScanPresenter(private val view: ScanView,
                     private val scanner: BluetoothScanner,
                     private val connection: BluetoothConnector,
                     private val fileManager: FileManager,
+                    private val preferences: UserPreferences,
                     private val uiContext: CoroutineContext = UI,
                     private val bgContext: CoroutineContext = CommonPool) {
 
@@ -42,7 +43,7 @@ class ScanPresenter(private val view: ScanView,
             }
 
             override fun onDeviceFind(device: BluetoothDevice) {
-                if (device.bluetoothClass.withPotentiallyInstalledApplication()) {
+                if (!preferences.isClassificationEnabled() || device.bluetoothClass.withPotentiallyInstalledApplication()) {
                     view.addFoundDevice(device)
                 }
             }
@@ -128,7 +129,7 @@ class ScanPresenter(private val view: ScanView,
 
     fun onPairedDevicesReady() {
         val devices = scanner.getBondedDevices().filter {
-            it.bluetoothClass.withPotentiallyInstalledApplication()
+            !preferences.isClassificationEnabled() || it.bluetoothClass.withPotentiallyInstalledApplication()
         }
         view.showPairedDevices(devices)
     }

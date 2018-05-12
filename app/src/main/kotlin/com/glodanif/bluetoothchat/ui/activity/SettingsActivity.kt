@@ -27,6 +27,7 @@ class SettingsActivity : SkeletonActivity(), SettingsView {
     private val colorPreview: View by bind(R.id.v_color)
     private val notificationsHeader: TextView by bind(R.id.tv_notifications_header)
     private val soundPreference: SwitchPreference by bind(R.id.sp_sound)
+    private val classificationPreference: SwitchPreference by bind(R.id.sp_class_filter)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,6 +40,8 @@ class SettingsActivity : SkeletonActivity(), SettingsView {
         } else {
             soundPreference.listener = { presenter.onNewSoundPreference(it) }
         }
+
+        classificationPreference.listener = { presenter.onNewClassificationPreference(it) }
 
         findViewById<RelativeLayout>(R.id.rl_chat_bg_color_button).setOnClickListener {
             presenter.prepareColorPicker()
@@ -53,6 +56,10 @@ class SettingsActivity : SkeletonActivity(), SettingsView {
 
     override fun displayAppearanceSettings(@ColorInt color: Int) {
         colorPreview.setBackgroundColor(color)
+    }
+
+    override fun displayDiscoverySetting(classification: Boolean) {
+        classificationPreference.setChecked(classification)
     }
 
     override fun displayColorPicker(@ColorInt color: Int) {

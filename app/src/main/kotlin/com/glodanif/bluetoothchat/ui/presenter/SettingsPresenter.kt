@@ -9,6 +9,7 @@ class SettingsPresenter(private val view: SettingsView, private val preferences:
     fun loadPreferences() {
         view.displayNotificationSetting(preferences.isSoundEnabled())
         view.displayAppearanceSettings(preferences.getChatBackgroundColor())
+        view.displayDiscoverySetting(preferences.isClassificationEnabled())
     }
 
     fun prepareColorPicker() {
@@ -22,5 +23,9 @@ class SettingsPresenter(private val view: SettingsView, private val preferences:
 
     fun onNewSoundPreference(enabled: Boolean) {
         preferences.saveNewSoundPreference(enabled)
+    }
+
+    fun onNewClassificationPreference(enabled: Boolean) {
+        preferences.saveNewClassificationPreference(enabled)
     }
 }

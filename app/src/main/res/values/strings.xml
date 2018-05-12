@@ -139,9 +139,11 @@
 
     <string name="settings__title">Settings</string>
     <string name="settings__notifications">Notifications</string>
+    <string name="settings__discovery">Discovery</string>
     <string name="settings__appearance">Appearance</string>
     <string name="settings__chat_background_color">Chat background color</string>
     <string name="settings__sound">Sound</string>
+    <string name="settings__classification">Show only phones or computers</string>
 
     <string name="images__image">Image</string>
     <string name="images__remove">Remove</string>

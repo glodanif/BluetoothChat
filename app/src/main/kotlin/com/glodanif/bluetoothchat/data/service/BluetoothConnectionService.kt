@@ -61,7 +61,7 @@ class BluetoothConnectionService : Service() {
     private var currentSocket: BluetoothSocket? = null
     private var currentConversation: Conversation? = null
 
-    private val db: ChatDatabase = Storage.getInstance(this).db
+    private lateinit var db: ChatDatabase
     private lateinit var preferences: UserPreferences
     private lateinit var settings: SettingsManager
 
@@ -83,6 +83,7 @@ class BluetoothConnectionService : Service() {
     override fun onCreate() {
         super.onCreate()
         application = getApplication() as ChatApplication
+        db = Storage.getInstance(this).db
         settings = SettingsManagerImpl(this)
         preferences = UserPreferencesImpl(this)
         notificationView = NotificationViewImpl(this)
