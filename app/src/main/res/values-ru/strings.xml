@@ -131,7 +131,6 @@
   <string name="settings__appearance">Внешний вид</string>
   <string name="settings__chat_background_color">Фоновый цвет чата</string>
   <string name="settings__sound">Звук</string>
-  <string name="settings__vibration">Вибрация</string>
   <string name="images__image">Изображение</string>
   <string name="images__remove">Удалить</string>
   <string name="images__removal_confirmation">Вы уверенны что хотите удалить это изображение?</string>

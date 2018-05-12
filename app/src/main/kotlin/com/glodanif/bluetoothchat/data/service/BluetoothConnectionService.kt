@@ -208,7 +208,7 @@ class BluetoothConnectionService : Service() {
                             application.currentChat.equals(currentSocket?.remoteDevice?.address)
 
                     notificationView.showFileTransferNotification(it.displayName, it.deviceName,
-                            it.deviceAddress, file, 0, silently, preferences.getSettings())
+                            it.deviceAddress, file, 0, silently)
                 }
             }
 
@@ -279,7 +279,7 @@ class BluetoothConnectionService : Service() {
                                 application.currentChat.equals(currentSocket?.remoteDevice?.address)
 
                         notificationView.showFileTransferNotification(it.displayName, it.deviceName,
-                                it.deviceAddress, file, 0, silently, preferences.getSettings())
+                                it.deviceAddress, file, 0, silently)
                     }
                 }
             }
@@ -309,7 +309,7 @@ class BluetoothConnectionService : Service() {
                     if (messageListener == null || application.currentChat == null || !application.currentChat.equals(address)) {
                         notificationView.dismissMessageNotification()
                         notificationView.showNewMessageNotification(getString(R.string.chat__image_message, "\uD83D\uDCCE"), currentConversation?.displayName,
-                                it.name, address, preferences.getSettings())
+                                it.name, address, preferences.isSoundEnabled())
                     } else {
                         message.seenHere = true
                     }
@@ -500,7 +500,7 @@ class BluetoothConnectionService : Service() {
 
         if (messageListener == null || application.currentChat == null || !application.currentChat.equals(device.address)) {
             notificationView.showNewMessageNotification(text, currentConversation?.displayName,
-                    device.name, device.address, preferences.getSettings())
+                    device.name, device.address, preferences.isSoundEnabled())
         } else {
             receivedMessage.seenHere = true
         }
@@ -532,7 +532,7 @@ class BluetoothConnectionService : Service() {
 
         if (!application.isConversationsOpened && !(application.currentChat != null && application.currentChat.equals(device.address))) {
             notificationView.showConnectionRequestNotification(
-                    "${conversation.displayName} (${conversation.deviceName})", preferences.getSettings())
+                    "${conversation.displayName} (${conversation.deviceName})", preferences.isSoundEnabled())
         }
     }
 

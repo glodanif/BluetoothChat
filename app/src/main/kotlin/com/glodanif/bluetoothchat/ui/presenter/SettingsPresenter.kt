@@ -7,9 +7,7 @@ import com.glodanif.bluetoothchat.ui.view.SettingsView
 class SettingsPresenter(private val view: SettingsView, private val preferences: UserPreferences) {
 
     fun loadPreferences() {
-
-        view.displayNotificationSetting(
-                preferences.isSoundEnabled(), preferences.isVibrationEnabled())
+        view.displayNotificationSetting(preferences.isSoundEnabled())
         view.displayAppearanceSettings(preferences.getChatBackgroundColor())
     }
 
@@ -24,9 +22,5 @@ class SettingsPresenter(private val view: SettingsView, private val preferences:
 
     fun onNewSoundPreference(enabled: Boolean) {
         preferences.saveNewSoundPreference(enabled)
-    }
-
-    fun onNewVibrationPreference(enabled: Boolean) {
-        preferences.saveNewVibrationPreference(enabled)
     }
 }

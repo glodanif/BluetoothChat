@@ -142,7 +142,6 @@
     <string name="settings__appearance">Appearance</string>
     <string name="settings__chat_background_color">Chat background color</string>
     <string name="settings__sound">Sound</string>
-    <string name="settings__vibration">Vibration</string>
 
     <string name="images__image">Image</string>
     <string name="images__remove">Remove</string>

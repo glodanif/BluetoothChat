@@ -3,7 +3,6 @@ package com.glodanif.bluetoothchat.data.model
 import android.content.Context
 import android.graphics.Color
 import android.preference.PreferenceManager
-import com.glodanif.bluetoothchat.ui.util.NotificationSettings
 
 class UserPreferencesImpl(private val context: Context) : UserPreferences {
 
@@ -13,7 +12,6 @@ class UserPreferencesImpl(private val context: Context) : UserPreferences {
 
     private val keyVersion = "storage_version"
     private val keyNotificationSound = "notifications_sound"
-    private val keyNotificationVibration = "notifications_vibration"
     private val keyAppearanceChatBgColor = "notifications_chat_bg_color"
 
     private val preferences
@@ -26,16 +24,8 @@ class UserPreferencesImpl(private val context: Context) : UserPreferences {
     override fun isSoundEnabled() =
             preferences.getBoolean(keyNotificationSound, false)
 
-    override fun isVibrationEnabled() =
-            preferences.getBoolean(keyNotificationVibration, false)
-
     override fun getChatBackgroundColor() =
             preferences.getInt(keyAppearanceChatBgColor, Color.parseColor("#ADE9C5"))
-
-    override fun getSettings() = NotificationSettings().apply {
-        soundEnabled = isSoundEnabled()
-        vibrationEnabled = isVibrationEnabled()
-    }
 
     override fun saveChatBgColor(color: Int) {
         preferences.edit()
@@ -46,12 +36,6 @@ class UserPreferencesImpl(private val context: Context) : UserPreferences {
     override fun saveNewSoundPreference(enabled: Boolean) {
         preferences.edit()
                 .putBoolean(keyNotificationSound, enabled)
-                .apply()
-    }
-
-    override fun saveNewVibrationPreference(enabled: Boolean) {
-        preferences.edit()
-                .putBoolean(keyNotificationVibration, enabled)
                 .apply()
     }
 
@@ -69,7 +53,6 @@ class UserPreferencesImpl(private val context: Context) : UserPreferences {
 
             preferences.edit()
                     .putBoolean(keyNotificationSound, oldPreferences.getBoolean("notifications_sound", false))
-                    .putBoolean(keyNotificationVibration, oldPreferences.getBoolean("notifications_vibration", false))
                     .apply()
 
             oldPreferences.edit()

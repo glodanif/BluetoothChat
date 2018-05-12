@@ -48,6 +48,7 @@
     </RelativeLayout>
 
     <TextView
+        android:id="@+id/tv_notifications_header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
@@ -63,19 +64,4 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:text="@string/settings__sound" />
-
-    <View
-        android:id="@+id/v_notification_settings_divider"
-        android:layout_width="match_parent"
-        android:layout_height="1px"
-        android:layout_marginEnd="16dp"
-        android:layout_marginStart="16dp"
-        android:background="@color/text_dark" />
-
-    <com.glodanif.bluetoothchat.ui.widget.SwitchPreference
-        android:id="@+id/sp_vibration"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:text="@string/settings__vibration" />
-
 </LinearLayout>

@@ -1,9 +1,7 @@
 package com.glodanif.bluetoothchat.ui.view
 
 import android.app.Notification
-import android.content.Context
 import com.glodanif.bluetoothchat.data.entity.TransferringFile
-import com.glodanif.bluetoothchat.ui.util.NotificationSettings
 
 interface NotificationView {
 
@@ -24,9 +22,9 @@ interface NotificationView {
     }
 
     fun getForegroundNotification(message: String): Notification
-    fun showNewMessageNotification(message: String, displayName: String?, deviceName: String?, address: String, settings: NotificationSettings)
-    fun showConnectionRequestNotification(deviceName: String, settings: NotificationSettings)
-    fun showFileTransferNotification(displayName: String?, deviceName: String, address: String, file: TransferringFile, transferredBytes: Long, silently: Boolean, settings: NotificationSettings)
+    fun showNewMessageNotification(message: String, displayName: String?, deviceName: String?, address: String, soundEnabled: Boolean)
+    fun showConnectionRequestNotification(deviceName: String, soundEnabled: Boolean)
+    fun showFileTransferNotification(displayName: String?, deviceName: String, address: String, file: TransferringFile, transferredBytes: Long, silently: Boolean)
     fun updateFileTransferNotification(transferredBytes: Long, totalBytes: Long)
     fun dismissMessageNotification()
     fun dismissConnectionNotification()

@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.support.annotation.ColorInt
 import android.view.View
 import android.widget.RelativeLayout
+import android.widget.TextView
 import com.glodanif.bluetoothchat.R
 import com.glodanif.bluetoothchat.di.ComponentsManager
 import com.glodanif.bluetoothchat.ui.presenter.SettingsPresenter
@@ -24,9 +25,8 @@ class SettingsActivity : SkeletonActivity(), SettingsView {
     internal lateinit var presenter: SettingsPresenter
 
     private val colorPreview: View by bind(R.id.v_color)
+    private val notificationsHeader: TextView by bind(R.id.tv_notifications_header)
     private val soundPreference: SwitchPreference by bind(R.id.sp_sound)
-    private val vibrationPreference: SwitchPreference by bind(R.id.sp_vibration)
-    private val notificationSettingsDivider: View by bind(R.id.v_notification_settings_divider)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,13 +34,11 @@ class SettingsActivity : SkeletonActivity(), SettingsView {
         ComponentsManager.injectSettings(this)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            notificationsHeader.visibility = View.GONE
             soundPreference.visibility = View.GONE
-            notificationSettingsDivider.visibility = View.GONE
         } else {
             soundPreference.listener = { presenter.onNewSoundPreference(it) }
         }
-
-        vibrationPreference.listener = { presenter.onNewVibrationPreference(it) }
 
         findViewById<RelativeLayout>(R.id.rl_chat_bg_color_button).setOnClickListener {
             presenter.prepareColorPicker()
@@ -49,9 +47,8 @@ class SettingsActivity : SkeletonActivity(), SettingsView {
         presenter.loadPreferences()
     }
 
-    override fun displayNotificationSetting(sound: Boolean, vibration: Boolean) {
+    override fun displayNotificationSetting(sound: Boolean) {
         soundPreference.setChecked(sound)
-        vibrationPreference.setChecked(vibration)
     }
 
     override fun displayAppearanceSettings(@ColorInt color: Int) {
