@@ -128,9 +128,11 @@
   <string name="contact_chooser__no_contacts">Ваш список контактів порожній</string>
   <string name="settings__title">Налаштування</string>
   <string name="settings__notifications">Сповіщення</string>
+  <string name="settings__discovery">Виявлення</string>
   <string name="settings__appearance">Зовнішній вигляд</string>
   <string name="settings__chat_background_color">Фоновий колір чату</string>
   <string name="settings__sound">Звук</string>
+  <string name="settings__classification">Показувати лиш телефони або комп\'ютери</string>
   <string name="images__image">Зображення</string>
   <string name="images__remove">Видалити</string>
   <string name="images__removal_confirmation">Ви впевнені, що хочете видалити це зображення?</string>
