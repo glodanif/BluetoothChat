@@ -98,7 +98,7 @@
 
     <string name="scan__no_devices">No devices were found</string>
     <string name="scan__scan_for_devices">Scan for devices</string>
-    <string name="scan__start_scanning">Scan for devices to find your partner or make your device discoverable so he/she will be able to find you</string>
+    <string name="scan__start_scanning">Scan for devices to find your partner or make your device discoverable and he/she will be able to find you</string>
     <string name="scan__scanning">Scanning for devices</string>
     <string name="scan__turn_on">Turn on</string>
     <string name="scan__turn_bluetooth_on">Turn on Bluetooth to find your partner</string>
