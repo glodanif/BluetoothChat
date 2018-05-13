@@ -138,6 +138,11 @@
   <string name="images__removal_confirmation">Вы уверенны что хотите удалить это изображение?</string>
   <string name="images__received_images">Полученные изображения</string>
   <string name="images__no_images">Вы еще не приняли ни одного изображения</string>
+  <string name="rate_dialog__title">Rate this app</string>
+  <string name="rate_dialog__message">If you enjoy using this app, would you mind taking a moment to rate it? It won\'t take more than a minute. Thank you for your support!</string>
+  <string name="rate_dialog__rate">Rate now</string>
+  <string name="rate_dialog__no">No, thanks</string>
+  <string name="rate_dialog__cancel">Later</string>
   <string name="chat__cd__send_text_button">Кнопка отправки текста</string>
   <string name="chat__cd__send_image_button">Кнопка отправки изображения</string>
   <string name="chat__cd__transferring_image">Передающееся изображение</string>
