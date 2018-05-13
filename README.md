@@ -21,6 +21,7 @@ Third Party Libraries
 * [Picasso](https://github.com/square/picasso)
 * [Chroma](https://github.com/ItsPriyesh/chroma)
 * [PhotoView](https://github.com/chrisbanes/PhotoView)
+* [Android-RateThisApp](https://github.com/kobakei/Android-RateThisApp)
 * [Dagger](https://github.com/google/dagger)
 * [MockK](https://github.com/oleksiyp/mockk)
 

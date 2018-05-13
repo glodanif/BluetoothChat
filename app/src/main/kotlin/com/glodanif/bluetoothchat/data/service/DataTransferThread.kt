@@ -124,6 +124,12 @@ abstract class DataTransferThread(private val socket: BluetoothSocket,
 
     fun writeFile(file: File) {
 
+        if (!file.exists()) {
+            fileListener.onFileSendingFailed()
+            resetFileTransferState()
+            return
+        }
+
         fileName = file.absolutePath
         fileSize = file.length()
 
@@ -154,7 +160,7 @@ abstract class DataTransferThread(private val socket: BluetoothSocket,
                                 bufferedOutputStream.write(buffer, 0, length)
                                 bufferedOutputStream.flush()
                             } catch (e: IOException) {
-                                Thread.sleep(250)
+                                Thread.sleep(200)
                                 fileListener.onFileSendingFailed()
                                 break
                             }
@@ -184,20 +190,22 @@ abstract class DataTransferThread(private val socket: BluetoothSocket,
                 } catch (e: Exception) {
                     e.printStackTrace()
                     fileListener.onFileSendingFailed()
-                    throw e
                 } finally {
-
                     fileStream.close()
-
-                    isFileUploading = false
-                    isFileTransferCanceledByMe = false
-                    isFileTransferCanceledByPartner = false
-
-                    fileName = null
-                    fileSize = 0
+                    resetFileTransferState()
                 }
             }
         }
+    }
+
+    private fun resetFileTransferState() {
+
+        isFileUploading = false
+        isFileTransferCanceledByMe = false
+        isFileTransferCanceledByPartner = false
+
+        fileName = null
+        fileSize = 0
     }
 
     fun cancel() {

@@ -37,6 +37,7 @@ import com.glodanif.bluetoothchat.ui.widget.SettingsPopup
 import com.glodanif.bluetoothchat.ui.widget.ShortcutManager
 import com.glodanif.bluetoothchat.utils.bind
 import com.glodanif.bluetoothchat.utils.getNotificationManager
+import com.kobakei.ratethisapp.RateThisApp
 import javax.inject.Inject
 
 class ConversationsActivity : SkeletonActivity(), ConversationsView {
@@ -117,6 +118,9 @@ class ConversationsActivity : SkeletonActivity(), ConversationsView {
                 .create()
 
         shortcutsManager.addSearchShortcut()
+
+        RateThisApp.onCreate(this)
+        RateThisApp.showRateDialogIfNeeded(this)
     }
 
     private fun showContextMenu(conversation: ConversationViewModel, isCurrent: Boolean) {

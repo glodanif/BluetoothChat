@@ -8,6 +8,7 @@ import com.glodanif.bluetoothchat.di.ComponentsManager
 import com.glodanif.bluetoothchat.ui.activity.ChatActivity
 import com.glodanif.bluetoothchat.ui.activity.ConversationsActivity
 import com.glodanif.bluetoothchat.ui.util.StartStopActivityLifecycleCallbacks
+import com.kobakei.ratethisapp.RateThisApp
 import io.fabric.sdk.android.Fabric
 
 class ChatApplication : Application() {
@@ -46,6 +47,15 @@ class ChatApplication : Application() {
                 }
             }
         })
+
+        val config = RateThisApp.Config().apply {
+            setTitle(R.string.rate_dialog__title)
+            setMessage(R.string.rate_dialog__message)
+            setYesButtonText(R.string.rate_dialog__rate)
+            setNoButtonText(R.string.rate_dialog__no)
+            setCancelButtonText(R.string.rate_dialog__cancel)
+        }
+        RateThisApp.init(config)
 
         if (BuildConfig.DEBUG) {
 

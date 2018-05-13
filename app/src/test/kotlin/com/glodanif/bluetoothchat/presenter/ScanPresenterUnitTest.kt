@@ -171,12 +171,33 @@ class ScanPresenterUnitTest {
     }
 
     @Test
-    fun scanning_onFoundDevice() {
+    fun scanning_onFoundDevice_noClassification() {
+
+        every { preferences.isClassificationEnabled() } returns false
+
         val slot = slot<BluetoothScanner.ScanningListener>()
+
         val device = mockk<BluetoothDevice>()
+        every {device.bluetoothClass.majorDeviceClass} returns BluetoothClass.Device.Major.WEARABLE
+
         verify { scanner.setScanningListener(capture(slot)) }
         slot.captured.onDeviceFind(device)
         verify { view.addFoundDevice(device) }
+    }
+
+    @Test
+    fun scanning_onFoundDevice_withClassification() {
+
+        every { preferences.isClassificationEnabled() } returns true
+
+        val slot = slot<BluetoothScanner.ScanningListener>()
+
+        val device = mockk<BluetoothDevice>()
+        every {device.bluetoothClass.majorDeviceClass} returns BluetoothClass.Device.Major.WEARABLE
+
+        verify { scanner.setScanningListener(capture(slot)) }
+        slot.captured.onDeviceFind(device)
+        verify(exactly = 0) { view.addFoundDevice(device) }
     }
 
     @Test
