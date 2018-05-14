@@ -168,6 +168,7 @@ class ChatActivity : SkeletonActivity(), ChatView {
             if (textToShare != null) {
                 messageField.setText(textToShare)
             } else if (fileToShare != null) {
+                //FIXME
                 Handler().postDelayed({
                     presenter.sendFile(File(fileToShare))
                 }, 1000)
@@ -445,7 +446,13 @@ class ChatActivity : SkeletonActivity(), ChatView {
                 }
 
                 override fun onImagePickerError(e: Exception?, source: EasyImage.ImageSource?, type: Int) {
-                    Toast.makeText(this@ChatActivity, "${e?.message}", Toast.LENGTH_LONG).show()
+                    Toast.makeText(this@ChatActivity, R.string.chat__unable_to_pick_image, Toast.LENGTH_LONG).show()
+                }
+
+                override fun onCanceled(source: EasyImage.ImageSource?, type: Int) {
+                    if (source == EasyImage.ImageSource.CAMERA) {
+                        EasyImage.lastlyTakenButCanceledPhoto(this@ChatActivity)?.delete()
+                    }
                 }
             })
         }

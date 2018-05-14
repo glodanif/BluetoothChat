@@ -16,12 +16,12 @@ You can help to localize Bluetooth Chat to your language using [Crowdin](https:/
 
 Third Party Libraries
 --------
+* [Android-RateThisApp](https://github.com/kobakei/Android-RateThisApp)
 * [TextDrawable](https://github.com/amulyakhare/TextDrawable)
 * [EasyImage](https://github.com/jkwiecien/EasyImage)
+* [PhotoView](https://github.com/chrisbanes/PhotoView)
 * [Picasso](https://github.com/square/picasso)
 * [Chroma](https://github.com/ItsPriyesh/chroma)
-* [PhotoView](https://github.com/chrisbanes/PhotoView)
-* [Android-RateThisApp](https://github.com/kobakei/Android-RateThisApp)
 * [Dagger](https://github.com/google/dagger)
 * [MockK](https://github.com/oleksiyp/mockk)
 
