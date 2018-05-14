@@ -109,7 +109,7 @@
   <string name="scan__permission_explanation_storage">Для извлечения файла это приложение требует разрешение \"ПАМЯТЬ\"</string>
   <string name="scan__share_intent">Отправить .apk</string>
   <string name="scan__paired_devices">Подключенные устройства</string>
-  <string name="scan__available_devices">Доступные устройства</string>
+  <string name="scan__available_devices">Найденные устройства</string>
   <string name="scan__discoverable">Обнаружаемый</string>
   <string name="scan__make_discoverable">Сделать обнаружаемым</string>
   <string name="initial_setup__initial_setup">Первоначальная настройка</string>

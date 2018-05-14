@@ -109,7 +109,7 @@
   <string name="scan__permission_explanation_storage">Щоб витягнути файл цей додаток потребує дозвіл \"ЗБЕРІГАННЯ\"</string>
   <string name="scan__share_intent">Відправти .apk</string>
   <string name="scan__paired_devices">Під\'єднані пристрої</string>
-  <string name="scan__available_devices">Доступні пристрої</string>
+  <string name="scan__available_devices">Знайдені пристрої</string>
   <string name="scan__discoverable">Видимий</string>
   <string name="scan__make_discoverable">Зробити видимим</string>
   <string name="initial_setup__initial_setup">Первинне налаштування</string>

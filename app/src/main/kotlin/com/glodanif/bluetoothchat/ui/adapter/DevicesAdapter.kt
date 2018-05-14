@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import com.glodanif.bluetoothchat.R
+import java.util.*
 
 class DevicesAdapter(private val context: Context) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
@@ -16,22 +17,22 @@ class DevicesAdapter(private val context: Context) : RecyclerView.Adapter<Recycl
 
     var listener: ((BluetoothDevice) -> Unit)? = null
 
+    var availableList = LinkedList<BluetoothDevice>()
     var pairedList = ArrayList<BluetoothDevice>()
-    var availableList = ArrayList<BluetoothDevice>()
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
 
         if (holder is HeaderViewHolder) {
 
             holder.header.text = context.getString(if (position == 0)
-                R.string.scan__paired_devices else R.string.scan__available_devices)
+                R.string.scan__available_devices else R.string.scan__paired_devices)
             holder.emptyMessage.visibility = if (if (position == 0)
-                        pairedList.isEmpty() else availableList.isEmpty()) View.VISIBLE else View.GONE
+                        availableList.isEmpty() else pairedList.isEmpty()) View.VISIBLE else View.GONE
 
         } else if (holder is DeviceViewHolder) {
 
-            val device = if (position >= 1 && position < pairedList.size + 1)
-                pairedList[position - 1] else availableList[position - pairedList.size - 2]
+            val device = if (position >= 1 && position < availableList.size + 1)
+                availableList[position - 1] else pairedList[position - availableList.size - 2]
             holder.name.text = device.name
             holder.macAddress.text = device.address
             holder.itemView.setOnClickListener { listener?.invoke(device) }
@@ -41,7 +42,7 @@ class DevicesAdapter(private val context: Context) : RecyclerView.Adapter<Recycl
     override fun getItemViewType(position: Int): Int {
         return when (position) {
             0 -> typeHeader
-            pairedList.size + 1 -> typeHeader
+            availableList.size + 1 -> typeHeader
             else -> typeItem
         }
     }
@@ -66,7 +67,7 @@ class DevicesAdapter(private val context: Context) : RecyclerView.Adapter<Recycl
     fun addNewFoundDevice(device: BluetoothDevice) {
         val exists = availableList.filter { it.address == device.address }.any()
         if (!exists) {
-            availableList.add(device)
+            availableList.addFirst(device)
         }
     }
 

@@ -99,7 +99,7 @@
     <string name="scan__no_devices">No devices were found</string>
     <string name="scan__scan_for_devices">Scan for devices</string>
     <string name="scan__start_scanning">Scan for devices to find your partner or make your device discoverable and he/she will be able to find you</string>
-    <string name="scan__scanning">Scanning for devices</string>
+    <string name="scan__scanning">Scanning</string>
     <string name="scan__turn_on">Turn on</string>
     <string name="scan__turn_bluetooth_on">Turn on Bluetooth to find your partner</string>
     <string name="scan__share_apk">Don\'t have an Internet connection? Send the .apk file of this application to your partner via Bluetooth</string>
@@ -116,7 +116,7 @@
     <string name="scan__permission_explanation_storage">To be able to extract a file this app requires \"STORAGE\" permission</string>
     <string name="scan__share_intent">Share .apk</string>
     <string name="scan__paired_devices">Paired devices</string>
-    <string name="scan__available_devices">Available devices</string>
+    <string name="scan__available_devices">Found devices</string>
     <string name="scan__discoverable">Discoverable</string>
     <string name="scan__make_discoverable">Make discoverable</string>
 

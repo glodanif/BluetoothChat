@@ -42,6 +42,17 @@
             app:layout_constraintTop_toBottomOf="parent"
             tools:visibility="visible">
 
+            <View
+                android:id="@+id/textView7"
+                android:layout_width="wrap_content"
+                android:layout_height="2dp"
+                android:layout_marginTop="8dp"
+                android:background="@color/colorPrimary"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/btn_scan" />
+
             <Button
                 android:id="@+id/btn_make_discoverable"
                 style="@style/Widget.AppCompat.Button.Borderless"
@@ -90,12 +101,11 @@
                 android:id="@+id/rv_paired_devices"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
-                android:layout_marginTop="8dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/btn_scan"
+                app:layout_constraintTop_toBottomOf="@+id/textView7"
                 app:layout_constraintVertical_bias="0.0"
                 tools:listitem="@layout/item_paired_device" />
 
@@ -103,26 +113,33 @@
                 android:id="@+id/tv_discovery_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="8dp"
+                android:layout_marginBottom="8dp"
                 android:layout_marginRight="8dp"
-                android:layout_marginTop="16dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
+                android:textSize="16dp"
+                android:textColor="@color/text_dark"
                 android:text="@string/scan__scanning"
                 android:visibility="gone"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tv_info" />
+                app:layout_constraintBottom_toBottomOf="@+id/epb_progress"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/epb_progress"
+                app:layout_constraintTop_toTopOf="@+id/epb_progress"
+                tools:visibility="visible" />
 
             <com.glodanif.bluetoothchat.ui.widget.ExpiringProgressBar
                 android:id="@+id/epb_progress"
                 android:layout_width="80dp"
                 android:layout_height="80dp"
                 android:layout_marginLeft="8dp"
-                android:layout_marginRight="8dp"
                 android:layout_marginTop="8dp"
                 android:visibility="gone"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tv_discovery_label"
+                app:layout_constraintEnd_toStartOf="@+id/tv_discovery_label"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintHorizontal_chainStyle="packed"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_info"
                 tools:visibility="visible" />
         </android.support.constraint.ConstraintLayout>
 
@@ -155,7 +172,6 @@
 
         </LinearLayout>
     </FrameLayout>
-
 
     <View
         android:id="@+id/textView3"

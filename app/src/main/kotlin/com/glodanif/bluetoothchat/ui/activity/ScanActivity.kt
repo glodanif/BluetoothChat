@@ -224,7 +224,6 @@ class ScanActivity : SkeletonActivity(), ScanView {
     override fun addFoundDevice(device: BluetoothDevice) {
         devicesAdapter.addNewFoundDevice(device)
         devicesAdapter.notifyDataSetChanged()
-        pairedDevicesList.smoothScrollToPosition(pairedDevicesList.adapter.itemCount)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
