@@ -92,7 +92,7 @@
   <string name="scan__no_devices">Пристроїв не знайдено</string>
   <string name="scan__scan_for_devices">Пошук пристроїв</string>
   <string name="scan__start_scanning">Почніть сканування щоб знайти вашого партнера, або зробіть ваш пристрій видимим щоб він міг знайти вас</string>
-  <string name="scan__scanning">Пошук</string>
+  <string name="scan__scanning">Scanning</string>
   <string name="scan__turn_on">Ввімкнути</string>
   <string name="scan__turn_bluetooth_on">Ввімкніть Bluetooth щоб знайти вашого партнера</string>
   <string name="scan__share_apk">Немає Інтернет з\'єднання? Надішліть .apk файл цього додатку за допомогою Bluetooth</string>
@@ -109,7 +109,7 @@
   <string name="scan__permission_explanation_storage">Щоб витягнути файл цей додаток потребує дозвіл \"ЗБЕРІГАННЯ\"</string>
   <string name="scan__share_intent">Відправти .apk</string>
   <string name="scan__paired_devices">Під\'єднані пристрої</string>
-  <string name="scan__available_devices">Доступні пристрої</string>
+  <string name="scan__available_devices">Found devices</string>
   <string name="scan__discoverable">Видимий</string>
   <string name="scan__make_discoverable">Зробити видимим</string>
   <string name="initial_setup__initial_setup">Первинне налаштування</string>
