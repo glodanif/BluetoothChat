@@ -78,7 +78,7 @@
   <string name="chat__image_message">%s [Зображення]</string>
   <string name="chat__presharing">Зараз ви не підєднані до даного пристрою, під\'єднайтесь і спробуйте ще раз.</string>
   <string name="chat__presharing_share">Відправити</string>
-  <string name="chat__unable_to_pick_image">Unable to pick this image, please try again</string>
+  <string name="chat__unable_to_pick_image">Не вдалося отримати це зображення, будь ласка, спробуйте ще раз</string>
   <string name="conversations__no_conversations">У вас поки що немає жодної розмови\nПочніть сканування щоб знайти вашого пратнера</string>
   <string name="conversations__scan">Сканувати</string>
   <string name="conversations__options">Опції розмови</string>
