@@ -1,10 +1,11 @@
 package com.glodanif.bluetoothchat.ui.presenter
 
 import android.support.annotation.ColorInt
+import com.glodanif.bluetoothchat.data.model.BluetoothScanner
 import com.glodanif.bluetoothchat.data.model.SettingsManager
 import com.glodanif.bluetoothchat.ui.view.ProfileView
 
-class ProfilePresenter(private val view: ProfileView, private val settings: SettingsManager) {
+class ProfilePresenter(private val view: ProfileView, private val settings: SettingsManager, private val scanner: BluetoothScanner) {
 
     @ColorInt
     private var currentColor = settings.getUserColor()
@@ -37,5 +38,6 @@ class ProfilePresenter(private val view: ProfileView, private val settings: Sett
     fun loadSavedUser() {
         view.prefillUsername(currentName)
         view.showUserData(currentName, currentColor)
+        view.showDeviceName(scanner.getMyDeviceName())
     }
 }

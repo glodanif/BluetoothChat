@@ -1,9 +1,11 @@
 package com.glodanif.bluetoothchat.presenter
 
+import com.glodanif.bluetoothchat.data.model.BluetoothScanner
 import com.glodanif.bluetoothchat.data.model.SettingsManager
 import com.glodanif.bluetoothchat.ui.presenter.ProfilePresenter
 import com.glodanif.bluetoothchat.ui.view.ProfileView
 import io.mockk.MockKAnnotations
+import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.verify
 import org.junit.Before
@@ -14,6 +16,8 @@ class ProfilePresenterUnitTest {
     @RelaxedMockK
     private lateinit var model: SettingsManager
     @RelaxedMockK
+    private lateinit var scanner: BluetoothScanner
+    @RelaxedMockK
     private lateinit var view: ProfileView
 
     private lateinit var presenter: ProfilePresenter
@@ -21,7 +25,7 @@ class ProfilePresenterUnitTest {
     @Before
     fun setup() {
         MockKAnnotations.init(this)
-        presenter = ProfilePresenter(view, model)
+        presenter = ProfilePresenter(view, model, scanner)
     }
 
     @Test
@@ -75,5 +79,12 @@ class ProfilePresenterUnitTest {
         presenter.loadSavedUser()
         verify { view.prefillUsername(any()) }
         verify { view.showUserData(any(), 0) }
+    }
+
+    @Test
+    fun onStart_displayDeviceName() {
+        every { scanner.getMyDeviceName() } returns "Name"
+        presenter.loadSavedUser()
+        verify { view.showDeviceName("Name") }
     }
 }

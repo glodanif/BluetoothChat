@@ -65,6 +65,8 @@ class BluetoothScannerImpl(val context: Context) : BluetoothScanner {
         }
     }
 
+    override fun getMyDeviceName() = adapter?.name
+
     override fun scanForDevices(seconds: Int) {
 
         adapter?.startDiscovery()

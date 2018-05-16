@@ -46,6 +46,8 @@
     <string name="profile__edit">Edit</string>
     <string name="profile__name">Name</string>
     <string name="profile__color">Color</string>
+    <string name="profile__device">Device</string>
+    <string name="profile__no_name">No name</string>
     <string name="profile__save">Save</string>
 
     <string name="chat__not_connected">Not connected</string>

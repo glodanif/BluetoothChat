@@ -30,6 +30,7 @@ class ProfileActivity : SkeletonActivity(), ProfileView {
 
     private val nameField: EditText by bind(R.id.et_name)
     private val nameLabel: TextView by bind(R.id.tv_name)
+    private val deviceNameLabel: TextView by bind(R.id.tv_device_name)
     private val avatar: ImageView by bind(R.id.iv_avatar)
     private val colorPicker: View by bind(R.id.v_color)
 
@@ -56,6 +57,13 @@ class ProfileActivity : SkeletonActivity(), ProfileView {
         findViewById<Button>(R.id.btn_save).setOnClickListener {
             presenter.saveUser()
         }
+
+        deviceNameLabel.setOnClickListener {
+            val bluetoothSettings = Intent().apply {
+                action = android.provider.Settings.ACTION_BLUETOOTH_SETTINGS
+            }
+            startActivity(bluetoothSettings)
+        }
     }
 
     override fun onStart() {
@@ -68,6 +76,10 @@ class ProfileActivity : SkeletonActivity(), ProfileView {
         super.onStop()
         nameField.removeTextChangedListener(textWatcher)
         hideKeyboard()
+    }
+
+    override fun showDeviceName(name: String?) {
+        deviceNameLabel.text = name ?: getString(R.string.profile__no_name)
     }
 
     override fun showUserData(name: String, color: Int) {
