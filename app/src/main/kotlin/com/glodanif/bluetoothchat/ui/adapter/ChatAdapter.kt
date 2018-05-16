@@ -15,6 +15,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.glodanif.bluetoothchat.R
 import com.glodanif.bluetoothchat.data.entity.MessageType
+import com.glodanif.bluetoothchat.ui.util.ClickableMovementMethod
 import com.glodanif.bluetoothchat.ui.viewmodel.ChatMessageViewModel
 import com.squareup.picasso.Picasso
 import java.util.*
@@ -73,7 +74,7 @@ class ChatAdapter(private val context: Context) : RecyclerView.Adapter<RecyclerV
             LinkifyCompat.addLinks(spannableMessage,
                     Linkify.WEB_URLS or Linkify.PHONE_NUMBERS or Linkify.EMAIL_ADDRESSES)
 
-            holder.text.movementMethod = LinkMovementMethod.getInstance()
+            holder.text.movementMethod = ClickableMovementMethod
             holder.text.setText(spannableMessage, TextView.BufferType.SPANNABLE)
             holder.date.text = message.date
         }

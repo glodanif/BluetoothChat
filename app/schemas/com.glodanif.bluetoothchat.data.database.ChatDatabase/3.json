@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 3,
-    "identityHash": "5077d93110222f3d6b5fe103fbded2ff",
+    "identityHash": "2c742b30a6a937e4413a31a143f10046",
     "entities": [
       {
         "tableName": "message",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`uid` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `seenHere` INTEGER NOT NULL, `seenThere` INTEGER NOT NULL, `delivered` INTEGER NOT NULL, `edited` INTEGER NOT NULL, `messageType` INTEGER, `filePath` TEXT, `fileInfo` TEXT, `deviceAddress` TEXT NOT NULL, `date` INTEGER NOT NULL, `own` INTEGER NOT NULL, `text` TEXT NOT NULL, FOREIGN KEY(`deviceAddress`) REFERENCES `conversation`(`address`) ON UPDATE CASCADE ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`uid` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `seenHere` INTEGER NOT NULL, `seenThere` INTEGER NOT NULL, `delivered` INTEGER NOT NULL, `edited` INTEGER NOT NULL, `messageType` INTEGER, `filePath` TEXT, `fileInfo` TEXT, `deviceAddress` TEXT NOT NULL, `date` INTEGER NOT NULL, `own` INTEGER NOT NULL, `text` TEXT NOT NULL)",
         "fields": [
           {
             "fieldPath": "uid",
@@ -88,19 +88,7 @@
           "autoGenerate": true
         },
         "indices": [],
-        "foreignKeys": [
-          {
-            "table": "conversation",
-            "onDelete": "CASCADE",
-            "onUpdate": "CASCADE",
-            "columns": [
-              "deviceAddress"
-            ],
-            "referencedColumns": [
-              "address"
-            ]
-          }
-        ]
+        "foreignKeys": []
       },
       {
         "tableName": "conversation",
@@ -143,7 +131,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"5077d93110222f3d6b5fe103fbded2ff\")"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"2c742b30a6a937e4413a31a143f10046\")"
     ]
   }
 }
