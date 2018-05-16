@@ -8,7 +8,7 @@ import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.widget.TextView
 import com.glodanif.bluetoothchat.R
-import com.glodanif.bluetoothchat.data.entity.ChatMessage
+import com.glodanif.bluetoothchat.data.entity.MessageFile
 import com.glodanif.bluetoothchat.di.ComponentsManager
 import com.glodanif.bluetoothchat.ui.adapter.ImagesAdapter
 import com.glodanif.bluetoothchat.ui.presenter.ReceivedImagesPresenter
@@ -49,7 +49,7 @@ class ReceivedImagesActivity : SkeletonActivity(), ReceivedImagesView {
         presenter.loadImages()
     }
 
-    override fun displayImages(imageMessages: List<ChatMessage>) {
+    override fun displayImages(imageMessages: List<MessageFile>) {
         imagesAdapter.images = ArrayList(imageMessages)
         imagesAdapter.notifyDataSetChanged()
     }

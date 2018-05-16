@@ -6,6 +6,7 @@ import android.arch.persistence.room.Insert
 import android.arch.persistence.room.Query
 import com.glodanif.bluetoothchat.data.entity.ChatMessage
 import android.arch.persistence.room.Update
+import com.glodanif.bluetoothchat.data.entity.MessageFile
 
 @Dao
 interface MessagesDao {
@@ -13,14 +14,14 @@ interface MessagesDao {
     @Query("SELECT * FROM message WHERE deviceAddress = :address ORDER BY date DESC")
     fun getMessagesByDevice(address: String): List<ChatMessage>
 
-    @Query("SELECT * FROM message WHERE deviceAddress = :address AND messageType = 1 AND own = 0 ORDER BY date DESC")
-    fun getFileMessagesByDevice(address: String): List<ChatMessage>
+    @Query("SELECT uid, filePath, own FROM message WHERE deviceAddress = :address AND messageType = 1 AND own = 0 AND filePath IS NOT NULL ORDER BY date DESC")
+    fun getFileMessagesByDevice(address: String): List<MessageFile>
 
-    @Query("SELECT * FROM message WHERE uid = :uid")
-    fun getFileMessageById(uid: Long): ChatMessage?
+    @Query("SELECT uid, filePath, own FROM message WHERE uid = :uid")
+    fun getFileMessageById(uid: Long): MessageFile?
 
-    @Query("SELECT * FROM message WHERE messageType = 1 AND own = 0 ORDER BY date DESC")
-    fun getAllFilesMessages(): List<ChatMessage>
+    @Query("SELECT uid, filePath, own FROM message WHERE messageType = 1 AND own = 0 AND filePath IS NOT NULL ORDER BY date DESC")
+    fun getAllFilesMessages(): List<MessageFile>
 
     @Insert
     fun insert(message: ChatMessage)

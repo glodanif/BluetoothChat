@@ -15,13 +15,6 @@ data class Conversation(
         var displayName: String,
         var color: Int
 ) {
-    @ColumnInfo(name = "date")
-    var lastActivity: Date? = null
-    @ColumnInfo(name = "text")
-    var lastMessage: String? = null
-    var notSeen: Int = 0
-
-    var messageType: MessageType? = null
 
     @Ignore
     var messageContractVersion: Int = 0

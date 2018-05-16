@@ -9,19 +9,19 @@ class Storage private constructor(context: Context) {
 
     val db: ChatDatabase = Room.databaseBuilder(context,
             ChatDatabase::class.java, "chat_database")
-            .addMigrations(MIGRATION_1_2)
+            .addMigrations(MIGRATION_1_2, MIGRATION_2_3)
             .build()
 
     companion object {
 
         private val MIGRATION_1_2: Migration = object : Migration(1, 2) {
 
-            override fun migrate(database: SupportSQLiteDatabase) {
+            override fun migrate(database: SupportSQLiteDatabase) = with(database) {
 
-                database.execSQL("BEGIN TRANSACTION")
+                execSQL("BEGIN TRANSACTION")
 
-                database.execSQL("ALTER TABLE 'message' RENAME TO 'tmp_message'")
-                database.execSQL("CREATE TABLE 'message' (" +
+                execSQL("ALTER TABLE 'message' RENAME TO 'tmp_message'")
+                execSQL("CREATE TABLE 'message' (" +
                         "'uid' INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, " +
                         "'deviceAddress' TEXT NOT NULL, " +
                         "'date' INTEGER NOT NULL, " +
@@ -34,13 +34,13 @@ class Storage private constructor(context: Context) {
                         "'seenThere' INTEGER NOT NULL DEFAULT 0, " +
                         "'delivered' INTEGER NOT NULL DEFAULT 0, " +
                         "'edited' INTEGER NOT NULL DEFAULT 0)")
-                database.execSQL("INSERT INTO 'message' " +
+                execSQL("INSERT INTO 'message' " +
                         "(uid, deviceAddress, date, own, text, seenHere, seenThere, edited) " +
                         "SELECT uid, deviceAddress, date, own, text, seenHere, seenThere, edited FROM 'tmp_message'")
-                database.execSQL("DROP TABLE 'tmp_message'")
+                execSQL("DROP TABLE 'tmp_message'")
 
-                database.execSQL("ALTER TABLE 'conversation' RENAME TO 'tmp_conversation'")
-                database.execSQL("CREATE TABLE 'conversation' (" +
+                execSQL("ALTER TABLE 'conversation' RENAME TO 'tmp_conversation'")
+                execSQL("CREATE TABLE 'conversation' (" +
                         "'address' TEXT PRIMARY KEY NOT NULL, " +
                         "'deviceName' TEXT NOT NULL, " +
                         "'displayName' TEXT NOT NULL, " +
@@ -49,16 +49,37 @@ class Storage private constructor(context: Context) {
                         "'text' TEXT, " +
                         "'messageType' INTEGER, " +
                         "'notSeen' INTEGER NOT NULL DEFAULT 0)")
-                database.execSQL("INSERT INTO 'conversation' " +
+                execSQL("INSERT INTO 'conversation' " +
                         "(address, deviceName, displayName, color, date, text, notSeen) " +
                         "SELECT address, deviceName, displayName, color, date, text, notSeen FROM 'tmp_conversation'")
-                database.execSQL("DROP TABLE 'tmp_conversation'")
+                execSQL("DROP TABLE 'tmp_conversation'")
 
-                database.execSQL("COMMIT")
+                execSQL("COMMIT")
             }
         }
 
-        private var instance : Storage? = null
+        private val MIGRATION_2_3: Migration = object : Migration(2, 3) {
+
+            override fun migrate(database: SupportSQLiteDatabase) = with(database) {
+
+                execSQL("BEGIN TRANSACTION")
+
+                execSQL("ALTER TABLE 'conversation' RENAME TO 'tmp_conversation'")
+                execSQL("CREATE TABLE 'conversation' (" +
+                        "'address' TEXT PRIMARY KEY NOT NULL, " +
+                        "'deviceName' TEXT NOT NULL, " +
+                        "'displayName' TEXT NOT NULL, " +
+                        "'color' INTEGER NOT NULL)")
+                execSQL("INSERT INTO 'conversation' " +
+                        "(address, deviceName, displayName, color) " +
+                        "SELECT address, deviceName, displayName, color FROM 'tmp_conversation'")
+                execSQL("DROP TABLE 'tmp_conversation'")
+
+                execSQL("COMMIT")
+            }
+        }
+
+        private var instance: Storage? = null
 
         fun getInstance(context: Context): Storage {
 

@@ -123,17 +123,17 @@ class BluetoothConnectorImpl(private val context: Context) : BluetoothConnector 
             messageListener?.onMessageSent(message)
         }
 
-        override fun onMessageDelivered(id: String) {
+        override fun onMessageDelivered(id: Long) {
             proxy?.onMessageDelivered(id)
             messageListener?.onMessageDelivered(id)
         }
 
-        override fun onMessageNotDelivered(id: String) {
+        override fun onMessageNotDelivered(id: Long) {
             proxy?.onMessageNotDelivered(id)
             messageListener?.onMessageNotDelivered(id)
         }
 
-        override fun onMessageSeen(id: String) {
+        override fun onMessageSeen(id: Long) {
             proxy?.onMessageSeen(id)
             messageListener?.onMessageSeen(id)
         }
@@ -235,7 +235,7 @@ class BluetoothConnectorImpl(private val context: Context) : BluetoothConnector 
     }
 
     override fun sendMessage(message: String) {
-        val chatMessage = Message(System.nanoTime().toString(), message, Message.Type.MESSAGE)
+        val chatMessage = Message(System.nanoTime(), message, Message.Type.MESSAGE)
         service?.sendMessage(chatMessage)
     }
 

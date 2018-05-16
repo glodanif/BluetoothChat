@@ -45,13 +45,13 @@ class EmptyProxy : CommunicationProxy {
     override fun onMessageSent(message: ChatMessage) {
     }
 
-    override fun onMessageDelivered(id: String) {
+    override fun onMessageDelivered(id: Long) {
     }
 
-    override fun onMessageNotDelivered(id: String) {
+    override fun onMessageNotDelivered(id: Long) {
     }
 
-    override fun onMessageSeen(id: String) {
+    override fun onMessageSeen(id: Long) {
     }
 
     override fun onFileSendingStarted(fileAddress: String?, fileSize: Long) {

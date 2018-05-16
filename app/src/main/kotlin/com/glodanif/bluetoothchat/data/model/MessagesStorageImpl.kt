@@ -4,6 +4,7 @@ import android.content.Context
 import com.glodanif.bluetoothchat.data.database.MessagesDao
 import com.glodanif.bluetoothchat.data.database.Storage
 import com.glodanif.bluetoothchat.data.entity.ChatMessage
+import com.glodanif.bluetoothchat.data.entity.MessageFile
 import java.io.File
 
 class MessagesStorageImpl(val context: Context) : MessagesStorage {
@@ -24,14 +25,14 @@ class MessagesStorageImpl(val context: Context) : MessagesStorage {
         return messages
     }
 
-    override suspend fun getMessageById(uid: Long): ChatMessage? {
+    override suspend fun getFileMessageById(uid: Long): MessageFile? {
         return dao.getFileMessageById(uid)
     }
 
-    override suspend fun getFileMessagesByDevice(address: String?): List<ChatMessage> {
+    override suspend fun getFileMessagesByDevice(address: String?): List<MessageFile> {
         return (if (address != null)
             dao.getFileMessagesByDevice(address) else dao.getAllFilesMessages())
-                .filter { !it.filePath.isNullOrEmpty() && File(it.filePath).exists() }
+                .filter { File(it.filePath).exists() }
     }
 
     override suspend fun updateMessage(message: ChatMessage) {

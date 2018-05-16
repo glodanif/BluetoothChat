@@ -9,12 +9,13 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import com.glodanif.bluetoothchat.R
 import com.glodanif.bluetoothchat.data.entity.ChatMessage
+import com.glodanif.bluetoothchat.data.entity.MessageFile
 import com.squareup.picasso.Picasso
 
 class ImagesAdapter(private val context: Context) : RecyclerView.Adapter<ImagesAdapter.ImageViewHolder>() {
 
-    var clickListener: ((ImageView, ChatMessage) -> Unit)? = null
-    var images: ArrayList<ChatMessage> = ArrayList()
+    var clickListener: ((ImageView, MessageFile) -> Unit)? = null
+    var images: ArrayList<MessageFile> = ArrayList()
 
     override fun onBindViewHolder(holder: ImageViewHolder, position: Int) {
 

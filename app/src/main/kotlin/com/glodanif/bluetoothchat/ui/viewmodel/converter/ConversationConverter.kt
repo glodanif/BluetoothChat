@@ -3,25 +3,54 @@ package com.glodanif.bluetoothchat.ui.viewmodel.converter
 import android.content.Context
 import com.glodanif.bluetoothchat.R
 import com.glodanif.bluetoothchat.data.entity.Conversation
+import com.glodanif.bluetoothchat.data.entity.ConversationWithMessages
 import com.glodanif.bluetoothchat.data.entity.MessageType
 import com.glodanif.bluetoothchat.utils.getRelativeTime
 import com.glodanif.bluetoothchat.ui.viewmodel.ConversationViewModel
+import java.util.*
 
 class ConversationConverter(private val context: Context) {
 
-    fun transform(conversation: Conversation): ConversationViewModel {
+    fun transform(conversation: ConversationWithMessages): ConversationViewModel {
 
-        val lastMessage = when {
-            conversation.messageType == MessageType.IMAGE -> context.getString(R.string.chat__image_message, "\uD83D\uDCCE")
-            !conversation.lastMessage.isNullOrEmpty() -> conversation.lastMessage
+        val lastMessage = conversation.messages.sortedByDescending { it.date }.firstOrNull()
+        val notSeen = conversation.messages.filterNot { it.seenHere }.size
+
+        val lastMessageText = when {
+            lastMessage?.messageType == MessageType.IMAGE ->
+                context.getString(R.string.chat__image_message, "\uD83D\uDCCE")
+            !lastMessage?.text.isNullOrEmpty() ->
+                lastMessage?.text
             else -> null
         }
 
-        val lastActivity = if (!conversation.lastMessage.isNullOrEmpty() || conversation.messageType == MessageType.IMAGE) {
-            conversation.lastActivity?.getRelativeTime(context)
+        val lastActivity = if (!lastMessage?.text.isNullOrEmpty() || lastMessage?.messageType == MessageType.IMAGE) {
+            lastMessage?.date?.getRelativeTime(context)
         } else {
             null
         }
+
+        return ConversationViewModel(
+                conversation.address,
+                conversation.deviceName,
+                conversation.displayName,
+                "${conversation.displayName} (${conversation.deviceName})",
+                conversation.color,
+                lastMessageText,
+                lastMessage?.date,
+                lastActivity,
+                notSeen
+
+        )
+    }
+
+    fun transform(conversationCollection: Collection<ConversationWithMessages>): List<ConversationViewModel> {
+        return conversationCollection.map {
+            transform(it)
+        }
+    }
+
+    fun transform(conversation: Conversation): ConversationViewModel {
 
         return ConversationViewModel(
                 conversation.deviceAddress,
@@ -29,17 +58,11 @@ class ConversationConverter(private val context: Context) {
                 conversation.displayName,
                 "${conversation.displayName} (${conversation.deviceName})",
                 conversation.color,
-                lastMessage,
-                conversation.lastActivity,
-                lastActivity,
-                conversation.notSeen
+                null,
+                Date(),
+                null,
+                0
 
         )
-    }
-
-    fun transform(conversationCollection: Collection<Conversation>): List<ConversationViewModel> {
-        return conversationCollection.map {
-            transform(it)
-        }
     }
 }

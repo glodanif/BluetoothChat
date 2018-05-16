@@ -17,7 +17,7 @@ class ContactChooserPresenter(private val view: ContactChooserView,
 
     fun loadContacts() = launch(uiContext) {
 
-        val contacts = async(bgContext) { model.getConversations() }.await()
+        val contacts = async(bgContext) { model.getContacts() }.await()
 
         if (contacts.isNotEmpty()) {
             val viewModels = converter.transform(contacts)

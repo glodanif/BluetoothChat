@@ -24,7 +24,7 @@ class Message() {
     }
 
     var type: Type = Type.MESSAGE
-    var uid: String = ""
+    var uid: Long = 0
     var flag: Boolean = false
     var body: String = ""
 
@@ -41,7 +41,8 @@ class Message() {
         type = Type.from(parsedType.toInt())
         messageText = messageText.substring(messageText.indexOf(DIVIDER) + 1, messageText.length)
 
-        uid = messageText.substring(0, messageText.indexOf(DIVIDER))
+        val parsedUid = messageText.substring(0, messageText.indexOf(DIVIDER))
+        uid = if (parsedType.isNumber()) parsedUid.toLong() else 0
         messageText = messageText.substring(messageText.indexOf(DIVIDER) + 1, messageText.length)
 
         flag = messageText.substring(0, messageText.indexOf(DIVIDER)).toInt() == 1
@@ -50,20 +51,20 @@ class Message() {
         body = messageText
     }
 
-    constructor(uid: String, body: String, flag: Boolean, type: Type) : this() {
+    constructor(uid: Long, body: String, flag: Boolean, type: Type) : this() {
         this.uid = uid
         this.body = body
         this.type = type
         this.flag = flag
     }
 
-    constructor(uid: String, body: String, type: Type) : this() {
+    constructor(uid: Long, body: String, type: Type) : this() {
         this.uid = uid
         this.body = body
         this.type = type
     }
 
-    constructor(uid: String, flag: Boolean, type: Type) : this() {
+    constructor(uid: Long, flag: Boolean, type: Type) : this() {
         this.uid = uid
         this.flag = flag
         this.type = type
@@ -85,31 +86,31 @@ class Message() {
         const val MESSAGE_CONTRACT_VERSION = 1
 
         fun createConnectMessage(name: String, @ColorInt color: Int): Message {
-            return Message("0", "$name#$color#$MESSAGE_CONTRACT_VERSION", true, Type.CONNECTION_REQUEST)
+            return Message(0, "$name#$color#$MESSAGE_CONTRACT_VERSION", true, Type.CONNECTION_REQUEST)
         }
 
         fun createDisconnectMessage(): Message {
-            return Message("0", "", false, Type.CONNECTION_REQUEST)
+            return Message(0, "", false, Type.CONNECTION_REQUEST)
         }
 
         fun createAcceptConnectionMessage(name: String, @ColorInt color: Int): Message {
-            return Message("0", "$name#$color#$MESSAGE_CONTRACT_VERSION", true, Type.CONNECTION_RESPONSE)
+            return Message(0, "$name#$color#$MESSAGE_CONTRACT_VERSION", true, Type.CONNECTION_RESPONSE)
         }
 
         fun createRejectConnectionMessage(name: String, @ColorInt color: Int): Message {
-            return Message("0", "$name#$color#$MESSAGE_CONTRACT_VERSION", false, Type.CONNECTION_RESPONSE)
+            return Message(0, "$name#$color#$MESSAGE_CONTRACT_VERSION", false, Type.CONNECTION_RESPONSE)
         }
 
-        fun createFileStartMessage(file: File, type: MessageType): Message {
-            return Message("0", "${file.name.replace("#", "")}#${file.length()}#${type.value}", false, Type.FILE_START)
+        fun createFileStartMessage(uid: Long, file: File, type: MessageType): Message {
+            return Message(uid, "${file.name.replace("#", "")}#${file.length()}#${type.value}", false, Type.FILE_START)
         }
 
         fun createFileEndMessage(): Message {
-            return Message("0", "", false, Type.FILE_START)
+            return Message(0, "", false, Type.FILE_START)
         }
 
         fun createFileCanceledMessage(byPartner: Boolean): Message {
-            return Message("0", "", byPartner, Type.FILE_CANCELED)
+            return Message(0, "", byPartner, Type.FILE_CANCELED)
         }
     }
 }
