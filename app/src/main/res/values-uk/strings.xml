@@ -42,6 +42,8 @@
   <string name="profile__edit">Знінити</string>
   <string name="profile__name">Ім\'я</string>
   <string name="profile__color">Колір</string>
+  <string name="profile__device">Device</string>
+  <string name="profile__no_name">No name</string>
   <string name="profile__save">Зберегти</string>
   <string name="chat__not_connected">Не з\'єднано</string>
   <string name="chat__connected">З\'єднано</string>
