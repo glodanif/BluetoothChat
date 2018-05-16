@@ -1,6 +1,7 @@
 package com.glodanif.bluetoothchat.presenter
 
 import com.glodanif.bluetoothchat.data.entity.ChatMessage
+import com.glodanif.bluetoothchat.data.entity.MessageFile
 import com.glodanif.bluetoothchat.data.model.MessagesStorage
 import com.glodanif.bluetoothchat.ui.presenter.ReceivedImagesPresenter
 import com.glodanif.bluetoothchat.ui.view.ReceivedImagesView
@@ -38,7 +39,7 @@ class ReceivedImagesPresenterUnitTest {
 
     @Test
     fun loading_notEmpty() {
-        val list = arrayListOf<ChatMessage>(mockk())
+        val list = arrayListOf<MessageFile>(mockk())
         coEvery { storage.getFileMessagesByDevice(null) } returns list
         presenter.loadImages()
         verify { view.displayImages(list) }

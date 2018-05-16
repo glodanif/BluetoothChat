@@ -31,7 +31,7 @@ class ContactChooserPresenterUnitTest {
 
     @Test
     fun loading_empty() {
-        coEvery { storage.getConversations() } returns ArrayList()
+        coEvery { storage.getContacts() } returns ArrayList()
         presenter.loadContacts()
         verify { view.showNoContacts() }
     }
@@ -40,7 +40,7 @@ class ContactChooserPresenterUnitTest {
     fun loading_notEmpty() {
         val list = arrayListOf<Conversation>(mockk())
         val viewModels = arrayListOf<ContactViewModel>(mockk())
-        coEvery { storage.getConversations() } returns list
+        coEvery { storage.getContacts() } returns list
         every { converter.transform(list) } returns viewModels
         presenter.loadContacts()
         verify { view.showContacts(viewModels) }

@@ -7,7 +7,7 @@ import com.glodanif.bluetoothchat.data.entity.ConversationWithMessages
 @Dao
 interface ConversationsDao {
 
-    @Query("SELECT address, deviceName, displayName, color FROM conversation")
+    @Query("SELECT * FROM conversation")
     fun getContacts(): List<Conversation>
 
     @Transaction
