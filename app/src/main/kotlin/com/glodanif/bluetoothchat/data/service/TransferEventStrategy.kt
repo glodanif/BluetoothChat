@@ -4,15 +4,17 @@ import com.glodanif.bluetoothchat.utils.isNumber
 
 class TransferEventStrategy : DataTransferThread.EventsStrategy {
 
-    private val regex = Regex("\\d+#\\d+#\\d+#*")
+    private val generalMessageRegex = Regex("\\d+#\\d+#\\d+#*")
+    private val fileStartRegex = Regex("6#\\d+#0#*")
 
-    override fun isMessage(message: String?) = message != null && regex.containsMatchIn(message)
+    override fun isMessage(message: String?) = message != null && generalMessageRegex.containsMatchIn(message)
 
     override fun isFileStart(message: String?): DataTransferThread.FileInfo? =
 
-            if (message != null && message.contains("6#0#0#")) {
+            if (message != null && fileStartRegex.containsMatchIn(message)) {
 
-                val info = message.replace("6#0#0#", "")
+                val info = fileStartRegex.replace(message, "")
+                val uid = message.substring(2).substringBefore("#").toLong()
 
                 if (info.isEmpty()) {
                     null
@@ -20,6 +22,7 @@ class TransferEventStrategy : DataTransferThread.EventsStrategy {
                     val size = info.substringAfter("#").substringBefore("#")
                     if (size.isNumber()) {
                         DataTransferThread.FileInfo(
+                                uid,
                                 info.substringBefore("#"),
                                 size.toLong()
                         )

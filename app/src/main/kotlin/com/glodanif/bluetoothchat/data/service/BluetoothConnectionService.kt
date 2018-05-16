@@ -225,7 +225,7 @@ class BluetoothConnectionService : Service() {
                 }
             }
 
-            override fun onFileSendingFinished(path: String) {
+            override fun onFileSendingFinished(uid: Long, path: String) {
 
                 val endMessage = Message.createFileEndMessage()
                 dataTransferThread?.write(endMessage.getDecodedMessage())
@@ -233,6 +233,7 @@ class BluetoothConnectionService : Service() {
                 currentSocket?.let {
 
                     val message = ChatMessage(it.remoteDevice.address, Date(), true, "").apply {
+                        this.uid = uid
                         seenHere = true
                         messageType = MessageType.IMAGE
                         filePath = path
@@ -297,12 +298,13 @@ class BluetoothConnectionService : Service() {
                 }
             }
 
-            override fun onFileReceivingFinished(path: String) {
+            override fun onFileReceivingFinished(uid: Long, path: String) {
 
                 currentSocket?.remoteDevice?.let {
 
                     val address = it.address
                     val message = ChatMessage(address, Date(), false, "").apply {
+                        this.uid = uid
                         messageType = MessageType.IMAGE
                         filePath = path
                     }
@@ -419,9 +421,9 @@ class BluetoothConnectionService : Service() {
     fun sendFile(file: File, type: MessageType) {
 
         if (isConnected()) {
-            val startMessage = Message.createFileStartMessage(file, type)
+            val startMessage = Message.createFileStartMessage(System.nanoTime(), file, type)
             dataTransferThread?.write(startMessage.getDecodedMessage())
-            dataTransferThread?.writeFile(file)
+            dataTransferThread?.writeFile(startMessage.uid, file)
         }
     }
 
@@ -457,7 +459,7 @@ class BluetoothConnectionService : Service() {
 
         if (message.type == Message.Type.MESSAGE && currentSocket != null) {
 
-            handleReceivedMessage(message.body)
+            handleReceivedMessage(message.uid, message.body)
 
         } else if (message.type == Message.Type.DELIVERY) {
 
@@ -493,11 +495,12 @@ class BluetoothConnectionService : Service() {
         }
     }
 
-    private fun handleReceivedMessage(text: String) = currentSocket?.let {
+    private fun handleReceivedMessage(uid: Long, text: String) = currentSocket?.let {
 
         val device: BluetoothDevice = it.remoteDevice
 
         val receivedMessage = ChatMessage(device.address, Date(), false, text)
+        receivedMessage.uid = uid
 
         if (messageListener == null || application.currentChat == null || !application.currentChat.equals(device.address)) {
             notificationView.showNewMessageNotification(text, currentConversation?.displayName,

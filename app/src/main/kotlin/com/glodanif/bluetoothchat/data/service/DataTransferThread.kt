@@ -35,6 +35,7 @@ abstract class DataTransferThread(private val socket: BluetoothSocket,
     private var isFileUploading = false
     @Volatile
     private var fileName: String? = null
+    private var fileMessageId: Long = 0
     private var fileSize: Long = 0
 
     fun prepare() {
@@ -64,10 +65,11 @@ abstract class DataTransferThread(private val socket: BluetoothSocket,
 
                 readString()?.let { message ->
 
-                    val potentialFile = eventsStrategy.isFileStart(message)
+                    val potentialFile = eventsStrategy. isFileStart(message)
                     if (potentialFile != null) {
 
                         isFileDownloading = true
+                        fileMessageId = potentialFile.uid
                         fileName = potentialFile.name
                         fileSize = potentialFile.size
 
@@ -122,7 +124,7 @@ abstract class DataTransferThread(private val socket: BluetoothSocket,
         }
     }
 
-    fun writeFile(file: File) {
+    fun writeFile(uid: Long, file: File) {
 
         if (!file.exists()) {
             fileListener.onFileSendingFailed()
@@ -130,6 +132,7 @@ abstract class DataTransferThread(private val socket: BluetoothSocket,
             return
         }
 
+        fileMessageId = uid
         fileName = file.absolutePath
         fileSize = file.length()
 
@@ -179,7 +182,7 @@ abstract class DataTransferThread(private val socket: BluetoothSocket,
                     Thread.sleep(250)
 
                     if (!isFileTransferCanceledByMe && !isFileTransferCanceledByPartner) {
-                        fileListener.onFileSendingFinished(file.absolutePath)
+                        fileListener.onFileSendingFinished(fileMessageId, file.absolutePath)
                     } else {
                         if (isFileTransferCanceledByMe) {
                             val canceledMessage = Message.createFileCanceledMessage(true)
@@ -206,6 +209,7 @@ abstract class DataTransferThread(private val socket: BluetoothSocket,
 
         fileName = null
         fileSize = 0
+        fileMessageId = 0
     }
 
     fun cancel() {
@@ -312,7 +316,7 @@ abstract class DataTransferThread(private val socket: BluetoothSocket,
                 Thread.sleep(250)
 
                 if (!isCanceled && !isFileTransferCanceledByMe && !isFileTransferCanceledByPartner) {
-                    fileListener.onFileReceivingFinished(file.absolutePath)
+                    fileListener.onFileReceivingFinished(fileMessageId, file.absolutePath)
                 }
 
             } catch (e: Exception) {
@@ -331,6 +335,7 @@ abstract class DataTransferThread(private val socket: BluetoothSocket,
                 isFileDownloading = false
                 fileName = null
                 fileSize = 0
+                fileMessageId = 0
             }
         }
     }
@@ -349,11 +354,11 @@ abstract class DataTransferThread(private val socket: BluetoothSocket,
     interface OnFileListener {
         fun onFileSendingStarted(file: TransferringFile)
         fun onFileSendingProgress(file: TransferringFile, sentBytes: Long)
-        fun onFileSendingFinished(path: String)
+        fun onFileSendingFinished(uid: Long, path: String)
         fun onFileSendingFailed()
         fun onFileReceivingStarted(file: TransferringFile)
         fun onFileReceivingProgress(file: TransferringFile, receivedBytes: Long)
-        fun onFileReceivingFinished(path: String)
+        fun onFileReceivingFinished(uid: Long, path: String)
         fun onFileReceivingFailed()
         fun onFileTransferCanceled(byPartner: Boolean)
     }
@@ -365,6 +370,6 @@ abstract class DataTransferThread(private val socket: BluetoothSocket,
         fun isFileFinish(message: String?): Boolean
     }
 
-    data class FileInfo(val name: String, val size: Long)
+    data class FileInfo(val uid: Long, val name: String, val size: Long)
     data class CancelInfo(val byPartner: Boolean)
 }

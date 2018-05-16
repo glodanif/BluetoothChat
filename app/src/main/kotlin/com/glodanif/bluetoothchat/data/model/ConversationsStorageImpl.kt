@@ -9,13 +9,11 @@ class ConversationsStorageImpl(context: Context) : ConversationsStorage {
     private val dao = Storage.getInstance(context).db.conversationsDao()
     private val messageDao = Storage.getInstance(context).db.messagesDao()
 
-    override suspend fun getConversations(): List<Conversation> {
-        return dao.getAllConversationsWithMessages()
-    }
+    override suspend fun getContacts() = dao.getContacts()
 
-    override suspend fun getConversationByAddress(address: String): Conversation? {
-        return dao.getConversationByAddress(address)
-    }
+    override suspend fun getConversations() = dao.getAllConversationsWithMessages()
+
+    override suspend fun getConversationByAddress(address: String) = dao.getConversationByAddress(address)
 
     override suspend fun insertConversation(conversation: Conversation) {
         dao.insert(conversation)

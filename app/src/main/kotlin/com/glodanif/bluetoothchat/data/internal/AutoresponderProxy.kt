@@ -75,7 +75,7 @@ class AutoresponderProxy(private val service: BluetoothConnectionService?) : Com
 
                 when {
                     message.text == COMMAND_SEND_TEXT -> {
-                        val chatMessage = Message(System.nanoTime().toString(), RESPONSE_RECEIVED, Message.Type.MESSAGE)
+                        val chatMessage = Message(System.nanoTime(), RESPONSE_RECEIVED, Message.Type.MESSAGE)
                         it.sendMessage(chatMessage)
                     }
                     message.text == COMMAND_SEND_FILE -> {
@@ -99,13 +99,13 @@ class AutoresponderProxy(private val service: BluetoothConnectionService?) : Com
     override fun onMessageSent(message: ChatMessage) {
     }
 
-    override fun onMessageDelivered(id: String) {
+    override fun onMessageDelivered(id: Long) {
     }
 
-    override fun onMessageNotDelivered(id: String) {
+    override fun onMessageNotDelivered(id: Long) {
     }
 
-    override fun onMessageSeen(id: String) {
+    override fun onMessageSeen(id: Long) {
     }
 
     override fun onFileSendingStarted(fileAddress: String?, fileSize: Long) {

@@ -12,7 +12,7 @@ import android.view.MenuItem
 import android.widget.ImageView
 import com.github.chrisbanes.photoview.PhotoView
 import com.glodanif.bluetoothchat.R
-import com.glodanif.bluetoothchat.data.entity.ChatMessage
+import com.glodanif.bluetoothchat.data.entity.MessageFile
 import com.glodanif.bluetoothchat.di.ComponentsManager
 import com.glodanif.bluetoothchat.ui.presenter.ImagePreviewPresenter
 import com.glodanif.bluetoothchat.ui.view.ImagePreviewView
@@ -115,7 +115,7 @@ class ImagePreviewActivity : SkeletonActivity(), ImagePreviewView {
         const val EXTRA_IMAGE_PATH = "extra.image_path"
         const val EXTRA_OWN = "extra.own"
 
-        fun start(activity: Activity, transitionView: ImageView, message: ChatMessage) {
+        fun start(activity: Activity, transitionView: ImageView, message: MessageFile) {
             start(activity, transitionView, message.uid, message.filePath ?: "unknown", message.own)
         }
 
