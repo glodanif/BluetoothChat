@@ -62,7 +62,6 @@ class ConversationConverter(private val context: Context) {
                 Date(),
                 null,
                 0
-
         )
     }
 }
