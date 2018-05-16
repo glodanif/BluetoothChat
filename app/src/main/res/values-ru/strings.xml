@@ -42,8 +42,8 @@
   <string name="profile__edit">Изменить</string>
   <string name="profile__name">Имя</string>
   <string name="profile__color">Цвет</string>
-  <string name="profile__device">Device</string>
-  <string name="profile__no_name">No name</string>
+  <string name="profile__device">Устройство</string>
+  <string name="profile__no_name">Без имени</string>
   <string name="profile__save">Сохранить</string>
   <string name="chat__not_connected">Не соединено</string>
   <string name="chat__connected">Соединено</string>
