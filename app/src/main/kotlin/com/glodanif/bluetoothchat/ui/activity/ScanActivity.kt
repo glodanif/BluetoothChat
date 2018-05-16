@@ -52,6 +52,7 @@ class ScanActivity : SkeletonActivity(), ScanView {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_scan, ActivityType.CHILD_ACTIVITY)
         ComponentsManager.injectScan(this)
+        lifecycle.addObserver(presenter)
 
         pairedDevicesList.layoutManager = LinearLayoutManager(this)
         pairedDevicesList.adapter = devicesAdapter
@@ -284,11 +285,6 @@ class ScanActivity : SkeletonActivity(), ScanView {
                 .setMessage(R.string.scan__unable_to_fetch_apk)
                 .setPositiveButton(R.string.general__ok, null)
                 .show()
-    }
-
-    override fun onStop() {
-        super.onStop()
-        presenter.cancelScanning()
     }
 
     companion object {

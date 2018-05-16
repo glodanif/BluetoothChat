@@ -1,5 +1,8 @@
 package com.glodanif.bluetoothchat.ui.presenter
 
+import android.arch.lifecycle.Lifecycle
+import android.arch.lifecycle.LifecycleObserver
+import android.arch.lifecycle.OnLifecycleEvent
 import android.bluetooth.BluetoothDevice
 import com.glodanif.bluetoothchat.data.entity.ChatMessage
 import com.glodanif.bluetoothchat.data.entity.Conversation
@@ -16,7 +19,7 @@ class ConversationsPresenter(private val view: ConversationsView,
                              private val connection: BluetoothConnector,
                              private val conversationStorage: ConversationsStorage,
                              private val settings: SettingsManager,
-                             private val converter: ConversationConverter) {
+                             private val converter: ConversationConverter): LifecycleObserver {
 
     private val prepareListener = object : OnPrepareListener {
 
@@ -117,16 +120,19 @@ class ConversationsPresenter(private val view: ConversationsView,
         }
     }
 
+    @OnLifecycleEvent(Lifecycle.Event.ON_START)
     fun prepareConnection() {
         connection.setOnPrepareListener(prepareListener)
         connection.prepare()
         view.dismissConversationNotification()
     }
 
+    @OnLifecycleEvent(Lifecycle.Event.ON_START)
     fun loadUserProfile() {
         view.showUserProfile(settings.getUserName(), settings.getUserColor())
     }
 
+    @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
     fun releaseConnection() {
         connection.release()
     }

@@ -1,5 +1,8 @@
 package com.glodanif.bluetoothchat.ui.presenter
 
+import android.arch.lifecycle.Lifecycle
+import android.arch.lifecycle.LifecycleObserver
+import android.arch.lifecycle.OnLifecycleEvent
 import android.bluetooth.BluetoothDevice
 import com.glodanif.bluetoothchat.data.entity.ChatMessage
 import com.glodanif.bluetoothchat.data.entity.Conversation
@@ -24,7 +27,7 @@ class ChatPresenter(private val deviceAddress: String,
                     private val preferences: UserPreferences,
                     private val converter: ChatMessageConverter,
                     private val uiContext: CoroutineContext = UI,
-                    private val bgContext: CoroutineContext = CommonPool) {
+                    private val bgContext: CoroutineContext = CommonPool): LifecycleObserver {
 
     private val maxFileSize = 5_242_880
 
@@ -201,6 +204,7 @@ class ChatPresenter(private val deviceAddress: String,
         view.setBackgroundColor(preferences.getChatBackgroundColor())
     }
 
+    @OnLifecycleEvent(Lifecycle.Event.ON_START)
     fun prepareConnection() {
 
         if (!scanModel.isBluetoothEnabled()) {
@@ -256,6 +260,7 @@ class ChatPresenter(private val deviceAddress: String,
         }
     }
 
+    @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
     fun releaseConnection() = with(connectionModel) {
 
         setOnPrepareListener(null)

@@ -40,6 +40,7 @@ class ProfileActivity : SkeletonActivity(), ProfileView {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_profile, ActivityType.CHILD_ACTIVITY)
         ComponentsManager.injectProfile(this)
+        lifecycle.addObserver(presenter)
 
         editMode = intent.getBooleanExtra(EXTRA_EDIT_MODE, false)
         supportActionBar?.setDisplayHomeAsUpEnabled(editMode)
@@ -68,7 +69,6 @@ class ProfileActivity : SkeletonActivity(), ProfileView {
 
     override fun onStart() {
         super.onStart()
-        presenter.loadSavedUser()
         nameField.addTextChangedListener(textWatcher)
     }
 

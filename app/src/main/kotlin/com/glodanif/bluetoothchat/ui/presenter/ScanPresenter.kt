@@ -1,5 +1,8 @@
 package com.glodanif.bluetoothchat.ui.presenter
 
+import android.arch.lifecycle.Lifecycle
+import android.arch.lifecycle.LifecycleObserver
+import android.arch.lifecycle.OnLifecycleEvent
 import android.bluetooth.BluetoothDevice
 import com.glodanif.bluetoothchat.data.model.*
 import com.glodanif.bluetoothchat.ui.view.ScanView
@@ -16,7 +19,7 @@ class ScanPresenter(private val view: ScanView,
                     private val fileManager: FileManager,
                     private val preferences: UserPreferences,
                     private val uiContext: CoroutineContext = UI,
-                    private val bgContext: CoroutineContext = CommonPool) {
+                    private val bgContext: CoroutineContext = CommonPool): LifecycleObserver {
 
     companion object {
         const val SCAN_DURATION_SECONDS = 30
@@ -157,6 +160,7 @@ class ScanPresenter(private val view: ScanView,
         }
     }
 
+    @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
     fun cancelScanning() {
         view.showScanningStopped()
         scanner.stopScanning()

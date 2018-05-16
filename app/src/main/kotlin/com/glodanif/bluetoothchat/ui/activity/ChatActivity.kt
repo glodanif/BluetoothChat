@@ -99,6 +99,7 @@ class ChatActivity : SkeletonActivity(), ChatView {
         deviceAddress = intent.getStringExtra(EXTRA_ADDRESS)
 
         ComponentsManager.injectChat(this, deviceAddress.toString())
+        lifecycle.addObserver(presenter)
 
         title = if (deviceAddress.isNullOrEmpty()) getString(R.string.app_name) else deviceAddress
         toolbar?.let {
@@ -176,16 +177,6 @@ class ChatActivity : SkeletonActivity(), ChatView {
 
             intent.action = Intent.ACTION_VIEW
         }
-    }
-
-    override fun onStart() {
-        super.onStart()
-        presenter.prepareConnection()
-    }
-
-    override fun onStop() {
-        super.onStop()
-        presenter.releaseConnection()
     }
 
     override fun setBackgroundColor(color: Int) {

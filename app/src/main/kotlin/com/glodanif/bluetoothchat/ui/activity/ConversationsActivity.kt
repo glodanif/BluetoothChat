@@ -62,6 +62,7 @@ class ConversationsActivity : SkeletonActivity(), ConversationsView {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_conversations, ActivityType.CUSTOM_TOOLBAR_ACTIVITY)
         ComponentsManager.injectConversations(this)
+        lifecycle.addObserver(presenter)
 
         supportActionBar?.setDisplayShowTitleEnabled(false)
 
@@ -177,19 +178,11 @@ class ConversationsActivity : SkeletonActivity(), ConversationsView {
                         Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED && !storagePermissionDialog.isShowing) {
             storagePermissionDialog.show()
         }
-
-        presenter.prepareConnection()
-        presenter.loadUserProfile()
     }
 
     override fun dismissConversationNotification() {
         getNotificationManager()
                 .cancel(NotificationView.NOTIFICATION_TAG_CONNECTION, NotificationView.NOTIFICATION_ID_CONNECTION)
-    }
-
-    override fun onStop() {
-        super.onStop()
-        presenter.releaseConnection()
     }
 
     override fun hideActions() {
