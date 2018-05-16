@@ -25,6 +25,12 @@ Third Party Libraries
 * [Dagger](https://github.com/google/dagger)
 * [MockK](https://github.com/oleksiyp/mockk)
 
+Donations
+--------
+Just in case...
+
+BTC: [17Uqe6E1kswkmdkQCjTz5owQruHJwxPPsp](bitcoin:17Uqe6E1kswkmdkQCjTz5owQruHJwxPPsp)
+
 License
 --------
     Copyright 2018 Vasyl Glodan
