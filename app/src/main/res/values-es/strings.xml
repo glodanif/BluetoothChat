@@ -19,16 +19,16 @@
   <string name="general__time_an_hour_ago">hace una hora</string>
   <string name="general__time_yesterday">ayer</string>
   <plurals name="general__time_minutes_ago">
-    <item quantity="one">%d minuto atrás</item>
-    <item quantity="other">%d minutos atrás</item>
+    <item quantity="one">hace %d minuto</item>
+    <item quantity="other">hace %d minutos</item>
   </plurals>
   <plurals name="general__time_hours_ago">
-    <item quantity="one">%d hora atrás</item>
-    <item quantity="other">%d hora atrás</item>
+    <item quantity="one">hace %d hora</item>
+    <item quantity="other">hace %d horas</item>
   </plurals>
   <plurals name="general__time_days_ago">
-    <item quantity="one">%d día atrás</item>
-    <item quantity="other">%d días atrás</item>
+    <item quantity="one">hace %d día</item>
+    <item quantity="other">hace %d días</item>
   </plurals>
   <string name="profile__profile">Perfil</string>
   <string name="profile__your_name">Tu nombre</string>
@@ -60,16 +60,16 @@
   <string name="chat__device_is_not_available">Este dispositivo no está disponible ahora, asegúrate de que está sincronizado</string>
   <string name="chat__bluetooth_required">Esta aplicación requiere que Bluetooth esté habilitado para que funcione correctamente</string>
   <string name="chat__connected_to_another"><![CDATA[Actualmente estás conectado a <b>%s</b>. Puedes conectarte a este dispositivo, pero se interrumpirá la conexión actual]]></string>
-  <string name="chat__message_hint">Message</string>
+  <string name="chat__message_hint">Mensaje</string>
   <string name="chat__chat">Chat</string>
-  <string name="chat__too_big_image">This image it too big. Max file size which you can send via Bluetooth Chat is %s</string>
-  <string name="chat__removed_image">Removed image</string>
-  <string name="chat__missing_image">Missing image</string>
-  <string name="chat__partner_canceled_image_transfer">Your partner has canceled image transfer</string>
-  <string name="chat__problem_during_file_transfer">Problem during image transfer</string>
-  <string name="chat__file_not_exist">Unable to find this file, please try again</string>
-  <string name="chat__sending_image">Sending image</string>
-  <string name="chat__receiving_images">Receiving image</string>
+  <string name="chat__too_big_image">Esta imagen es demasiado grande. El tamaño máximo de archivo que puedes enviar vía Bluetooth Chat es %s</string>
+  <string name="chat__removed_image">Imagen eliminada</string>
+  <string name="chat__missing_image">Imagen no encontrada</string>
+  <string name="chat__partner_canceled_image_transfer">Tu contacto canceló la transferencia de imagen</string>
+  <string name="chat__problem_during_file_transfer">Ocurrió un problema durante la transferencia de imagen</string>
+  <string name="chat__file_not_exist">No se pudo encontrar este archivo, por favor, intenta de nuevo</string>
+  <string name="chat__sending_image">Enviando imagen</string>
+  <string name="chat__receiving_images">Recibiendo imagen</string>
   <string name="chat__partner_unable_to_receive_images">Your partner uses an old version of Bluetooth Chat which is not able to receive images.</string>
   <string name="chat__image_message">%s [Image]</string>
   <string name="chat__presharing">You are not connected to this device, please connect and try again.</string>
