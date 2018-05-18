@@ -18,7 +18,8 @@ import com.glodanif.bluetoothchat.ChatApplication
 import com.glodanif.bluetoothchat.R
 import com.glodanif.bluetoothchat.data.database.ChatDatabase
 import com.glodanif.bluetoothchat.data.database.Storage
-import com.glodanif.bluetoothchat.data.entity.*
+import com.glodanif.bluetoothchat.data.entity.ChatMessage
+import com.glodanif.bluetoothchat.data.entity.Conversation
 import com.glodanif.bluetoothchat.data.model.*
 import com.glodanif.bluetoothchat.ui.view.NotificationView
 import com.glodanif.bluetoothchat.ui.view.NotificationViewImpl

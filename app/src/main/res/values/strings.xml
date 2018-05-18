@@ -155,6 +155,10 @@
     <string name="images__no_images">You haven\'t received any images yet</string>
 
     <string name="about__about">About</string>
+    <string name="about__description">Bluetooth Chat is an open source project.  You can review source code, submit issue or fork the repo on a GitHub page.</string>
+    <string name="about__go_to_github">Go to GitHub</string>
+    <string name="about__localization">You can help to translate Bluetooth Chat in more languages on Crowdin</string>
+    <string name="about__go_to_crowdin">Go to Crowdin</string>
 
     <string name="rate_dialog__title">Rate this app</string>
     <string name="rate_dialog__message">If you enjoy using this app, would you mind taking a moment to rate it? It won\'t take more than a minute. Thank you for your support!</string>

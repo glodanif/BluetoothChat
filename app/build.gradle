@@ -137,6 +137,7 @@ dependencies {
 
     debugImplementation "com.squareup.leakcanary:leakcanary-android:$LEAK_CANARY_VERSION"
     releaseImplementation "com.squareup.leakcanary:leakcanary-android-no-op:$LEAK_CANARY_VERSION"
+    testImplementation "com.squareup.leakcanary:leakcanary-android-no-op:$LEAK_CANARY_VERSION"
 
     testImplementation "org.jetbrains.kotlin:kotlin-stdlib:$KOTLIN_VERSION"
     testImplementation "org.jetbrains.kotlin:kotlin-test-junit:$KOTLIN_VERSION"
