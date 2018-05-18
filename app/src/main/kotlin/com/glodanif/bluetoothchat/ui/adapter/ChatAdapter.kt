@@ -5,7 +5,6 @@ import android.graphics.Bitmap
 import android.support.v4.text.util.LinkifyCompat
 import android.support.v7.widget.RecyclerView
 import android.text.SpannableString
-import android.text.method.LinkMovementMethod
 import android.text.util.Linkify
 import android.view.LayoutInflater
 import android.view.View
@@ -14,7 +13,7 @@ import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
 import com.glodanif.bluetoothchat.R
-import com.glodanif.bluetoothchat.data.entity.MessageType
+import com.glodanif.bluetoothchat.data.service.PayloadType
 import com.glodanif.bluetoothchat.ui.util.ClickableMovementMethod
 import com.glodanif.bluetoothchat.ui.viewmodel.ChatMessageViewModel
 import com.squareup.picasso.Picasso
@@ -88,12 +87,12 @@ class ChatAdapter(private val context: Context) : RecyclerView.Adapter<RecyclerV
         val message = messages[position]
         return if (messages[position].own) {
             when (message.type) {
-                MessageType.IMAGE -> OWN_IMAGE_MESSAGE
+                PayloadType.IMAGE -> OWN_IMAGE_MESSAGE
                 else -> OWN_TEXT_MESSAGE
             }
         } else {
             when (message.type) {
-                MessageType.IMAGE -> FOREIGN_IMAGE_MESSAGE
+                PayloadType.IMAGE -> FOREIGN_IMAGE_MESSAGE
                 else -> FOREIGN_TEXT_MESSAGE
             }
         }

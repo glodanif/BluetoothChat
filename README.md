@@ -29,11 +29,11 @@ Donations
 --------
 Just in case...
 
-BTC: [17Uqe6E1kswkmdkQCjTz5owQruHJwxPPsp](bitcoin:17Uqe6E1kswkmdkQCjTz5owQruHJwxPPsp)
+BTC: 17Uqe6E1kswkmdkQCjTz5owQruHJwxPPsp
 
 License
 --------
-    Copyright 2018 Vasyl Glodan
+    Copyright 2017 - 2018 Vasyl Glodan
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.

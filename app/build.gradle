@@ -98,6 +98,7 @@ dependencies {
     def final ROOM_VERSION = '1.1.0'
     def final LIFECYCLE_VERSION = '1.1.1'
     def final DAGGER_VERSION = '2.4'
+    def final LEAK_CANARY_VERSION = '1.5.4'
     def final ESPRESSO_VERSION = '3.0.0'
     def final COROUTINES_VERSION = '0.22.5'
 
@@ -133,6 +134,9 @@ dependencies {
 
     implementation "com.google.dagger:dagger:$DAGGER_VERSION"
     kapt "com.google.dagger:dagger-compiler:$DAGGER_VERSION"
+
+    debugImplementation "com.squareup.leakcanary:leakcanary-android:$LEAK_CANARY_VERSION"
+    releaseImplementation "com.squareup.leakcanary:leakcanary-android-no-op:$LEAK_CANARY_VERSION"
 
     testImplementation "org.jetbrains.kotlin:kotlin-stdlib:$KOTLIN_VERSION"
     testImplementation "org.jetbrains.kotlin:kotlin-test-junit:$KOTLIN_VERSION"

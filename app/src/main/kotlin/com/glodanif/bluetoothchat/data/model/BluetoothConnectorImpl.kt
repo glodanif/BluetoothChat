@@ -11,6 +11,9 @@ import com.glodanif.bluetoothchat.data.internal.AutoresponderProxy
 import com.glodanif.bluetoothchat.data.internal.CommunicationProxy
 import com.glodanif.bluetoothchat.data.internal.EmptyProxy
 import com.glodanif.bluetoothchat.data.service.BluetoothConnectionService
+import com.glodanif.bluetoothchat.data.service.Contract
+import com.glodanif.bluetoothchat.data.service.Message
+import com.glodanif.bluetoothchat.data.service.PayloadType
 import java.io.File
 
 class BluetoothConnectorImpl(private val context: Context) : BluetoothConnector {
@@ -24,6 +27,8 @@ class BluetoothConnectorImpl(private val context: Context) : BluetoothConnector 
 
     private var service: BluetoothConnectionService? = null
     private var bound = false
+
+    private val settings = SettingsManagerImpl(context)
 
     private val connection = object : ServiceConnection {
 
@@ -234,12 +239,14 @@ class BluetoothConnectorImpl(private val context: Context) : BluetoothConnector 
         service?.stop()
     }
 
-    override fun sendMessage(message: String) {
-        val chatMessage = Message(System.nanoTime(), message, Message.Type.MESSAGE)
-        service?.sendMessage(chatMessage)
+    override fun sendMessage(messageText: String) {
+
+        service?.getCurrentContract()?.createChatMessage(messageText)?.let {message->
+            service?.sendMessage(message)
+        }
     }
 
-    override fun sendFile(file: File, type: MessageType) {
+    override fun sendFile(file: File, type: PayloadType) {
         service?.sendFile(file, type)
     }
 
@@ -272,19 +279,23 @@ class BluetoothConnectorImpl(private val context: Context) : BluetoothConnector 
     }
 
     override fun acceptConnection() {
-        val settings = SettingsManagerImpl(context)
-        val message = Message.createAcceptConnectionMessage(settings.getUserName(), settings.getUserColor())
-        service?.sendMessage(message)
+
+        service?.getCurrentContract()?.createAcceptConnectionMessage(settings.getUserName(), settings.getUserColor())?.let { message ->
+            service?.sendMessage(message)
+        }
     }
 
     override fun rejectConnection() {
-        val settings = SettingsManagerImpl(context)
-        val message = Message.createRejectConnectionMessage(settings.getUserName(), settings.getUserColor())
-        service?.sendMessage(message)
+
+        service?.getCurrentContract()?.createRejectConnectionMessage(settings.getUserName(), settings.getUserColor())?.let { message ->
+            service?.sendMessage(message)
+        }
     }
 
     override fun sendDisconnectRequest() {
-        val message = Message.createDisconnectMessage()
-        service?.sendMessage(message)
+
+        service?.getCurrentContract()?.createDisconnectMessage()?.let { message ->
+            service?.sendMessage(message)
+        }
     }
 }

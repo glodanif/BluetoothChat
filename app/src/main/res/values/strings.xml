@@ -154,6 +154,8 @@
     <string name="images__received_images">Received Images</string>
     <string name="images__no_images">You haven\'t received any images yet</string>
 
+    <string name="about__about">About</string>
+
     <string name="rate_dialog__title">Rate this app</string>
     <string name="rate_dialog__message">If you enjoy using this app, would you mind taking a moment to rate it? It won\'t take more than a minute. Thank you for your support!</string>
     <string name="rate_dialog__rate">Rate now</string>

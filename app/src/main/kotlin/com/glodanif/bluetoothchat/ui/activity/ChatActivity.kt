@@ -3,6 +3,7 @@ package com.glodanif.bluetoothchat.ui.activity
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.AlertDialog
+import android.arch.lifecycle.Lifecycle
 import android.bluetooth.BluetoothAdapter
 import android.content.Context
 import android.content.Intent
@@ -283,7 +284,7 @@ class ChatActivity : SkeletonActivity(), ChatView {
     }
 
     override fun showLostConnection() = doIfStarted {
-        AlertDialog.Builder(this)
+                AlertDialog.Builder(this)
                 .setMessage(getString(R.string.chat__connection_lost))
                 .setPositiveButton(getString(R.string.chat__reconnect), { _, _ -> presenter.reconnect() })
                 .setNegativeButton(getString(R.string.general__cancel), null)
@@ -347,6 +348,8 @@ class ChatActivity : SkeletonActivity(), ChatView {
 
         Picasso.with(this)
                 .load("file://$path")
+                .centerCrop()
+                .fit()
                 .into(presharingImage)
     }
 

@@ -9,6 +9,7 @@ import com.glodanif.bluetoothchat.ui.activity.ChatActivity
 import com.glodanif.bluetoothchat.ui.activity.ConversationsActivity
 import com.glodanif.bluetoothchat.ui.util.StartStopActivityLifecycleCallbacks
 import com.kobakei.ratethisapp.RateThisApp
+import com.squareup.leakcanary.LeakCanary
 import io.fabric.sdk.android.Fabric
 
 class ChatApplication : Application() {
@@ -18,6 +19,11 @@ class ChatApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
+
+        if (LeakCanary.isInAnalyzerProcess(this)) {
+            return
+        }
+        LeakCanary.install(this)
 
         if (!BuildConfig.DEBUG) {
             Fabric.with(this, Crashlytics())

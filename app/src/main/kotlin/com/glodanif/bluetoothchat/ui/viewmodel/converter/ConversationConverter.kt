@@ -4,7 +4,7 @@ import android.content.Context
 import com.glodanif.bluetoothchat.R
 import com.glodanif.bluetoothchat.data.entity.Conversation
 import com.glodanif.bluetoothchat.data.entity.ConversationWithMessages
-import com.glodanif.bluetoothchat.data.entity.MessageType
+import com.glodanif.bluetoothchat.data.service.PayloadType
 import com.glodanif.bluetoothchat.utils.getRelativeTime
 import com.glodanif.bluetoothchat.ui.viewmodel.ConversationViewModel
 import java.util.*
@@ -17,14 +17,14 @@ class ConversationConverter(private val context: Context) {
         val notSeen = conversation.messages.filterNot { it.seenHere }.size
 
         val lastMessageText = when {
-            lastMessage?.messageType == MessageType.IMAGE ->
+            lastMessage?.messageType == PayloadType.IMAGE ->
                 context.getString(R.string.chat__image_message, "\uD83D\uDCCE")
             !lastMessage?.text.isNullOrEmpty() ->
                 lastMessage?.text
             else -> null
         }
 
-        val lastActivity = if (!lastMessage?.text.isNullOrEmpty() || lastMessage?.messageType == MessageType.IMAGE) {
+        val lastActivity = if (!lastMessage?.text.isNullOrEmpty() || lastMessage?.messageType == PayloadType.IMAGE) {
             lastMessage?.date?.getRelativeTime(context)
         } else {
             null

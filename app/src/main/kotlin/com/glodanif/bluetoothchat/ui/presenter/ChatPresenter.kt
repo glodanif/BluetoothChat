@@ -6,7 +6,7 @@ import android.arch.lifecycle.OnLifecycleEvent
 import android.bluetooth.BluetoothDevice
 import com.glodanif.bluetoothchat.data.entity.ChatMessage
 import com.glodanif.bluetoothchat.data.entity.Conversation
-import com.glodanif.bluetoothchat.data.entity.MessageType
+import com.glodanif.bluetoothchat.data.service.PayloadType
 import com.glodanif.bluetoothchat.data.entity.TransferringFile
 import com.glodanif.bluetoothchat.data.model.*
 import com.glodanif.bluetoothchat.ui.view.ChatView
@@ -51,7 +51,7 @@ class ChatPresenter(private val deviceAddress: String,
                 if (it.length() > maxFileSize) {
                     view.showImageTooBig(maxFileSize.toLong())
                 } else {
-                    connectionModel.sendFile(it, MessageType.IMAGE)
+                    connectionModel.sendFile(it, PayloadType.IMAGE)
                 }
                 fileToSend = null
             }
@@ -241,7 +241,7 @@ class ChatPresenter(private val deviceAddress: String,
             if (it.length() > maxFileSize) {
                 view.showImageTooBig(maxFileSize.toLong())
             } else {
-                connectionModel.sendFile(it, MessageType.IMAGE)
+                connectionModel.sendFile(it, PayloadType.IMAGE)
             }
             fileToSend = null
         }
@@ -347,7 +347,7 @@ class ChatPresenter(private val deviceAddress: String,
             } else if (it.length() > maxFileSize) {
                 view.showImageTooBig(maxFileSize.toLong())
             } else {
-                connectionModel.sendFile(it, MessageType.IMAGE)
+                connectionModel.sendFile(it, PayloadType.IMAGE)
                 filePresharing = null
             }
         }

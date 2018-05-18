@@ -1,5 +1,6 @@
 package com.glodanif.bluetoothchat.ui.activity
 
+import android.arch.lifecycle.Lifecycle
 import android.os.Bundle
 import android.support.annotation.LayoutRes
 import android.support.v7.app.AppCompatActivity
@@ -17,21 +18,9 @@ SkeletonActivity : AppCompatActivity() {
 
     protected var toolbar: Toolbar? = null
 
-    var isStarted = false
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true)
-    }
-
-    override fun onStart() {
-        super.onStart()
-        isStarted = true
-    }
-
-    override fun onStop() {
-        super.onStop()
-        isStarted = false
     }
 
     protected fun setContentView(@LayoutRes layoutId: Int, type: ActivityType) {
@@ -59,7 +48,7 @@ SkeletonActivity : AppCompatActivity() {
     }
 
     inline fun doIfStarted(action: () -> Unit) {
-        if (isStarted) {
+        if (lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)) {
             action.invoke()
         }
     }

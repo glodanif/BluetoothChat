@@ -2,7 +2,7 @@ package com.glodanif.bluetoothchat.data.model
 
 import android.bluetooth.BluetoothDevice
 import com.glodanif.bluetoothchat.data.entity.Conversation
-import com.glodanif.bluetoothchat.data.entity.MessageType
+import com.glodanif.bluetoothchat.data.service.PayloadType
 import com.glodanif.bluetoothchat.data.entity.TransferringFile
 import java.io.File
 
@@ -17,8 +17,8 @@ interface BluetoothConnector {
     fun setOnMessageListener(listener: OnMessageListener?)
     fun setOnFileListener(listener: OnFileListener?)
     fun connect(device: BluetoothDevice)
-    fun sendMessage(message: String)
-    fun sendFile(file: File, type: MessageType)
+    fun sendMessage(messageText: String)
+    fun sendFile(file: File, type: PayloadType)
     fun cancelFileTransfer()
     fun isConnected(): Boolean
     fun isConnectedOrPending(): Boolean
