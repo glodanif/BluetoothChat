@@ -19,16 +19,16 @@
   <string name="general__time_an_hour_ago">hace una hora</string>
   <string name="general__time_yesterday">ayer</string>
   <plurals name="general__time_minutes_ago">
-    <item quantity="one">%d minute ago</item>
-    <item quantity="other">hace %d minutos</item>
+    <item quantity="one">%d minuto atrás</item>
+    <item quantity="other">%d minutos atrás</item>
   </plurals>
   <plurals name="general__time_hours_ago">
-    <item quantity="one">%d hour ago</item>
-    <item quantity="other">hace %d horas</item>
+    <item quantity="one">%d hora atrás</item>
+    <item quantity="other">%d hora atrás</item>
   </plurals>
   <plurals name="general__time_days_ago">
-    <item quantity="one">%d day ago</item>
-    <item quantity="other">hace %d días</item>
+    <item quantity="one">%d día atrás</item>
+    <item quantity="other">%d días atrás</item>
   </plurals>
   <string name="profile__profile">Perfil</string>
   <string name="profile__your_name">Tu nombre</string>
