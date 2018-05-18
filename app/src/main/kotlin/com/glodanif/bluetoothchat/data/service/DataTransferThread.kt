@@ -1,7 +1,6 @@
 package com.glodanif.bluetoothchat.data.service
 
 import android.bluetooth.BluetoothSocket
-import com.glodanif.bluetoothchat.data.entity.TransferringFile
 import com.glodanif.bluetoothchat.utils.safeLet
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.launch

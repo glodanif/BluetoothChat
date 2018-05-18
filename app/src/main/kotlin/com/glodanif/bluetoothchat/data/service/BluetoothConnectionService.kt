@@ -96,6 +96,8 @@ class BluetoothConnectionService : Service() {
 
         if (intent?.action == ACTION_STOP) {
 
+            isRunning = false
+
             connectionState = ConnectionState.NOT_CONNECTED
             cancelConnections()
             acceptThread?.cancel()
@@ -131,9 +133,12 @@ class BluetoothConnectionService : Service() {
     @Synchronized
     private fun prepareForAccept() {
         cancelConnections()
-        acceptThread = AcceptThread()
-        acceptThread?.start()
-        showNotification(getString(R.string.notification__ready_to_connect))
+
+        if (isRunning) {
+            acceptThread = AcceptThread()
+            acceptThread?.start()
+            showNotification(getString(R.string.notification__ready_to_connect))
+        }
     }
 
     @Synchronized

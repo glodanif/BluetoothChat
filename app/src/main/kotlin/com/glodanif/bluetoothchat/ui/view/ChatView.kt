@@ -33,6 +33,7 @@ interface ChatView {
     fun dismissMessageNotification()
     fun setBackgroundColor(@ColorInt color: Int)
 
+    fun openImagePicker()
     fun showPresharingImage(path: String)
     fun showImageTooBig(maxSize: Long)
     fun showImageNotExist()

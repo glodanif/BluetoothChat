@@ -7,7 +7,7 @@ import android.graphics.Color
 import android.os.Build
 import android.support.v4.app.NotificationCompat
 import com.glodanif.bluetoothchat.R
-import com.glodanif.bluetoothchat.data.entity.TransferringFile
+import com.glodanif.bluetoothchat.data.service.TransferringFile
 import com.glodanif.bluetoothchat.ui.activity.ChatActivity
 import com.glodanif.bluetoothchat.ui.activity.ConversationsActivity
 import com.glodanif.bluetoothchat.data.service.BluetoothConnectionService

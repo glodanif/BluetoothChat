@@ -16,32 +16,32 @@ class Contract {
     }
 
     fun createChatMessage(message: String): Message {
-        return Message(generateUniqueId(), message, Contract.MessageType.MESSAGE)
+        return Message(generateUniqueId(), message, MessageType.MESSAGE)
     }
 
     fun createConnectMessage(name: String, @ColorInt color: Int): Message {
-        return Message(0, "$name#$color#$MESSAGE_CONTRACT_VERSION", true, Contract.MessageType.CONNECTION_REQUEST)
+        return Message(0, "$name#$color#$MESSAGE_CONTRACT_VERSION", true, MessageType.CONNECTION_REQUEST)
     }
 
     fun createDisconnectMessage(): Message {
-        return Message(0, "", false, Contract.MessageType.CONNECTION_REQUEST)
+        return Message(0, "", false, MessageType.CONNECTION_REQUEST)
     }
 
     fun createAcceptConnectionMessage(name: String, @ColorInt color: Int): Message {
-        return Message(0, "$name#$color#$MESSAGE_CONTRACT_VERSION", true, Contract.MessageType.CONNECTION_RESPONSE)
+        return Message(0, "$name#$color#$MESSAGE_CONTRACT_VERSION", true, MessageType.CONNECTION_RESPONSE)
     }
 
     fun createRejectConnectionMessage(name: String, @ColorInt color: Int): Message {
-        return Message(0, "$name#$color#$MESSAGE_CONTRACT_VERSION", false, Contract.MessageType.CONNECTION_RESPONSE)
+        return Message(0, "$name#$color#$MESSAGE_CONTRACT_VERSION", false, MessageType.CONNECTION_RESPONSE)
     }
 
     fun createFileStartMessage(file: File, type: PayloadType): Message {
         val uid = if (partnerVersion >= 2) generateUniqueId() else 0L
-        return Message(uid, "${file.name.replace("#", "")}#${file.length()}#${type.value}", false, Contract.MessageType.FILE_START)
+        return Message(uid, "${file.name.replace("#", "")}#${file.length()}#${type.value}", false, MessageType.FILE_START)
     }
 
     fun createFileEndMessage(): Message {
-        return Message(0, "", false, Contract.MessageType.FILE_START)
+        return Message(0, "", false, MessageType.FILE_START)
     }
 
     fun isFeatureAvailable(feature: Feature) = when (feature) {
@@ -62,17 +62,12 @@ class Contract {
         FILE_CANCELED(8);
 
         companion object {
-            fun from(findValue: Int) = MessageType.values().first { it.value == findValue }
+            fun from(findValue: Int) = values().first { it.value == findValue }
         }
     }
 
-    enum class Feature(val value: Int) {
-
-        IMAGE_SHARING(1);
-
-        companion object {
-            fun from(findValue: Int) = Feature.values().first { it.value == findValue }
-        }
+    enum class Feature {
+        IMAGE_SHARING;
     }
 
     companion object {

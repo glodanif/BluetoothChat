@@ -79,7 +79,7 @@ class AutoresponderProxy(private val service: BluetoothConnectionService?) : Com
 
                 when {
                     message.text == COMMAND_SEND_TEXT -> {
-                        val chatMessage = Message(Contract.generateUniqueId(), RESPONSE_RECEIVED, Contract.MessageType.MESSAGE)
+                        val chatMessage = contract.createChatMessage(RESPONSE_RECEIVED)
                         it.sendMessage(chatMessage)
                     }
                     message.text == COMMAND_SEND_FILE -> {

@@ -7,7 +7,7 @@ import android.bluetooth.BluetoothDevice
 import com.glodanif.bluetoothchat.data.entity.ChatMessage
 import com.glodanif.bluetoothchat.data.entity.Conversation
 import com.glodanif.bluetoothchat.data.service.PayloadType
-import com.glodanif.bluetoothchat.data.entity.TransferringFile
+import com.glodanif.bluetoothchat.data.service.TransferringFile
 import com.glodanif.bluetoothchat.data.model.*
 import com.glodanif.bluetoothchat.data.service.Contract
 import com.glodanif.bluetoothchat.ui.view.ChatView
@@ -313,6 +313,15 @@ class ChatPresenter(private val deviceAddress: String,
         } else {
             connectionModel.sendMessage(message)
             view.afterMessageSent()
+        }
+    }
+
+    fun performFilePicking() {
+
+        if (connectionModel.isFeatureAvailable(Contract.Feature.IMAGE_SHARING)) {
+            view.openImagePicker()
+        } else {
+            view.showReceiverUnableToReceiveImages()
         }
     }
 

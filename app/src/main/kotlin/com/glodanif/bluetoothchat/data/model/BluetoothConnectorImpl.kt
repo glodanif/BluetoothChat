@@ -10,10 +10,7 @@ import com.glodanif.bluetoothchat.data.entity.*
 import com.glodanif.bluetoothchat.data.internal.AutoresponderProxy
 import com.glodanif.bluetoothchat.data.internal.CommunicationProxy
 import com.glodanif.bluetoothchat.data.internal.EmptyProxy
-import com.glodanif.bluetoothchat.data.service.BluetoothConnectionService
-import com.glodanif.bluetoothchat.data.service.Contract
-import com.glodanif.bluetoothchat.data.service.Message
-import com.glodanif.bluetoothchat.data.service.PayloadType
+import com.glodanif.bluetoothchat.data.service.*
 import java.io.File
 
 class BluetoothConnectorImpl(private val context: Context) : BluetoothConnector {
@@ -209,6 +206,11 @@ class BluetoothConnectorImpl(private val context: Context) : BluetoothConnector 
             service = null
             proxy = null
         }
+
+        prepareListener = null
+        messageListener = null
+        connectListener = null
+        fileListener = null
     }
 
     override fun isConnectionPrepared(): Boolean {

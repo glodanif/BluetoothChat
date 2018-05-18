@@ -116,7 +116,7 @@ class ChatActivity : SkeletonActivity(), ChatView {
         }
 
         findViewById<ImageButton>(R.id.ib_image).setOnClickListener {
-            EasyImage.openChooserWithGallery(this, "chooserTitle", 0)
+            presenter.performFilePicking()
         }
 
         findViewById<ImageButton>(R.id.ib_cancel).setOnClickListener {
@@ -351,6 +351,10 @@ class ChatActivity : SkeletonActivity(), ChatView {
                 .centerCrop()
                 .fit()
                 .into(presharingImage)
+    }
+
+    override fun openImagePicker() {
+        EasyImage.openChooserWithGallery(this, "chooserTitle", 0)
     }
 
     override fun showImageTransferLayout(fileAddress: String?, fileSize: Long, transferType: ChatView.FileTransferType) {
