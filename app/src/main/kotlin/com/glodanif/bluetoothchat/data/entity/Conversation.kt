@@ -14,8 +14,4 @@ data class Conversation(
         var deviceName: String,
         var displayName: String,
         var color: Int
-) {
-
-    @Ignore
-    var messageContractVersion: Int = 0
-}
+)

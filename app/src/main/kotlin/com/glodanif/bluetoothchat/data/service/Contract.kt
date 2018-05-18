@@ -44,6 +44,10 @@ class Contract {
         return Message(0, "", false, Contract.MessageType.FILE_START)
     }
 
+    fun isFeatureAvailable(feature: Feature) = when (feature) {
+        Feature.IMAGE_SHARING -> partnerVersion >= 1
+    }
+
     enum class MessageType(val value: Int) {
 
         UNEXPECTED(-1),

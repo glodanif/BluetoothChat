@@ -4,6 +4,7 @@ import android.bluetooth.BluetoothDevice
 import com.glodanif.bluetoothchat.data.entity.Conversation
 import com.glodanif.bluetoothchat.data.service.PayloadType
 import com.glodanif.bluetoothchat.data.entity.TransferringFile
+import com.glodanif.bluetoothchat.data.service.Contract
 import java.io.File
 
 interface BluetoothConnector {
@@ -29,4 +30,5 @@ interface BluetoothConnector {
     fun acceptConnection()
     fun rejectConnection()
     fun sendDisconnectRequest()
+    fun isFeatureAvailable(feature: Contract.Feature): Boolean
 }

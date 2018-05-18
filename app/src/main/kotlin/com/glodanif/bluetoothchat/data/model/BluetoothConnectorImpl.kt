@@ -241,7 +241,7 @@ class BluetoothConnectorImpl(private val context: Context) : BluetoothConnector 
 
     override fun sendMessage(messageText: String) {
 
-        service?.getCurrentContract()?.createChatMessage(messageText)?.let {message->
+        service?.getCurrentContract()?.createChatMessage(messageText)?.let { message ->
             service?.sendMessage(message)
         }
     }
@@ -298,4 +298,8 @@ class BluetoothConnectorImpl(private val context: Context) : BluetoothConnector 
             service?.sendMessage(message)
         }
     }
+
+    override fun isFeatureAvailable(feature: Contract.Feature) =
+            service?.getCurrentContract()?.isFeatureAvailable(feature) ?: true
+
 }

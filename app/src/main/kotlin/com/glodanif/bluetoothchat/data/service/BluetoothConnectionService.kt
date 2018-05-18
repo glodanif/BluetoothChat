@@ -536,13 +536,10 @@ class BluetoothConnectionService : Service() {
         val conversation = Conversation(device.address, device.name
                 ?: "?", parts[0], parts[1].toInt())
 
-        val messageContractVersion = if (parts.size >= 3) parts[2].toInt() else 0
-        conversation.messageContractVersion = messageContractVersion
-
         launch(bgContext) { db.conversationsDao().insert(conversation) }
 
         currentConversation = conversation
-        contract setupWith conversation.messageContractVersion
+        contract setupWith if (parts.size >= 3) parts[2].toInt() else 0
 
         connectionListener?.onConnectedIn(conversation)
 
@@ -560,13 +557,10 @@ class BluetoothConnectionService : Service() {
         val conversation = Conversation(device.address, device.name
                 ?: "?", parts[0], parts[1].toInt())
 
-        val messageContractVersion = if (parts.size >= 3) parts[2].toInt() else 0
-        conversation.messageContractVersion = messageContractVersion
-
         launch(bgContext) { db.conversationsDao().insert(conversation) }
 
         currentConversation = conversation
-        contract setupWith conversation.messageContractVersion
+        contract setupWith if (parts.size >= 3) parts[2].toInt() else 0
 
         connectionState = ConnectionState.CONNECTED
         connectionListener?.onConnectionAccepted()

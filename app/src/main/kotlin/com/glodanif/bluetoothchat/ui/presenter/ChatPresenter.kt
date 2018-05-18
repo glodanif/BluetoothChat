@@ -9,6 +9,7 @@ import com.glodanif.bluetoothchat.data.entity.Conversation
 import com.glodanif.bluetoothchat.data.service.PayloadType
 import com.glodanif.bluetoothchat.data.entity.TransferringFile
 import com.glodanif.bluetoothchat.data.model.*
+import com.glodanif.bluetoothchat.data.service.Contract
 import com.glodanif.bluetoothchat.ui.view.ChatView
 import com.glodanif.bluetoothchat.ui.viewmodel.converter.ChatMessageConverter
 import kotlinx.coroutines.experimental.CommonPool
@@ -338,11 +339,9 @@ class ChatPresenter(private val deviceAddress: String,
 
         filePresharing?.let {
 
-            val currentConversation: Conversation? = connectionModel.getCurrentConversation()
-
             if (!connectionModel.isConnected()) {
                 view.showPresharingImage(it.absolutePath)
-            } else if (currentConversation != null && currentConversation.messageContractVersion < 1) {
+            } else if (!connectionModel.isFeatureAvailable(Contract.Feature.IMAGE_SHARING)) {
                 view.showReceiverUnableToReceiveImages()
             } else if (it.length() > maxFileSize) {
                 view.showImageTooBig(maxFileSize.toLong())
