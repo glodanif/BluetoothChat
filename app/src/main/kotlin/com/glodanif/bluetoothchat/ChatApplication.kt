@@ -2,8 +2,14 @@ package com.glodanif.bluetoothchat
 
 import android.app.Activity
 import android.app.Application
+import android.arch.lifecycle.Lifecycle
+import android.arch.lifecycle.LifecycleObserver
+import android.arch.lifecycle.OnLifecycleEvent
+import android.arch.lifecycle.ProcessLifecycleOwner
 import android.os.StrictMode
 import com.crashlytics.android.Crashlytics
+import com.glodanif.bluetoothchat.data.model.BluetoothConnector
+import com.glodanif.bluetoothchat.data.model.SettingsManager
 import com.glodanif.bluetoothchat.di.ComponentsManager
 import com.glodanif.bluetoothchat.ui.activity.ChatActivity
 import com.glodanif.bluetoothchat.ui.activity.ConversationsActivity
@@ -11,11 +17,17 @@ import com.glodanif.bluetoothchat.ui.util.StartStopActivityLifecycleCallbacks
 import com.kobakei.ratethisapp.RateThisApp
 import com.squareup.leakcanary.LeakCanary
 import io.fabric.sdk.android.Fabric
+import javax.inject.Inject
 
-class ChatApplication : Application() {
+class ChatApplication : Application(), LifecycleObserver {
 
     var isConversationsOpened = false
     var currentChat: String? = null
+
+    @Inject
+    internal lateinit var connector: BluetoothConnector
+    @Inject
+    internal lateinit var settings: SettingsManager
 
     override fun onCreate() {
         super.onCreate()
@@ -30,6 +42,7 @@ class ChatApplication : Application() {
         }
 
         ComponentsManager.initialize(this)
+        ProcessLifecycleOwner.get().lifecycle.addObserver(this)
 
         registerActivityLifecycleCallbacks(object : StartStopActivityLifecycleCallbacks() {
 
@@ -74,5 +87,17 @@ class ChatApplication : Application() {
                     .penaltyLog()
                     .build())
         }
+    }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_START)
+    internal fun prepareConnection() {
+        if (!settings.getUserName().isEmpty()) {
+            connector.prepare()
+        }
+    }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
+    internal fun releaseConnection() {
+        connector.release()
     }
 }

@@ -19,14 +19,14 @@ class ConversationsPresenter(private val view: ConversationsView,
                              private val connection: BluetoothConnector,
                              private val conversationStorage: ConversationsStorage,
                              private val settings: SettingsManager,
-                             private val converter: ConversationConverter): LifecycleObserver {
+                             private val converter: ConversationConverter) : LifecycleObserver {
 
     private val prepareListener = object : OnPrepareListener {
 
         override fun onPrepared() {
 
-            connection.setOnConnectListener(connectionListener)
-            connection.setOnMessageListener(messageListener)
+            connection.addOnConnectListener(connectionListener)
+            connection.addOnMessageListener(messageListener)
 
             loadConversations()
 
@@ -39,10 +39,8 @@ class ConversationsPresenter(private val view: ConversationsView,
             }
         }
 
-        override fun onError() = with(connection) {
-            setOnPrepareListener(null)
-            setOnConnectListener(null)
-            setOnMessageListener(null)
+        override fun onError() {
+            releaseConnection()
         }
     }
 
@@ -121,20 +119,44 @@ class ConversationsPresenter(private val view: ConversationsView,
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_START)
-    fun prepareConnection() {
-        connection.setOnPrepareListener(prepareListener)
-        connection.prepare()
-        view.dismissConversationNotification()
-    }
-
-    @OnLifecycleEvent(Lifecycle.Event.ON_START)
     fun loadUserProfile() {
         view.showUserProfile(settings.getUserName(), settings.getUserColor())
     }
 
+    @OnLifecycleEvent(Lifecycle.Event.ON_START)
+    fun prepareConnection() {
+
+        view.dismissConversationNotification()
+
+        connection.addOnPrepareListener(prepareListener)
+
+        if (connection.isConnectionPrepared()) {
+            with(connection) {
+                addOnConnectListener(connectionListener)
+                addOnMessageListener(messageListener)
+            }
+
+            loadConversations()
+
+            val device = connection.getCurrentConversation()
+
+            if (device != null && connection.isPending()) {
+                view.notifyAboutConnectedDevice(converter.transform(device))
+            } else {
+                view.hideActions()
+            }
+        } else {
+            connection.prepare()
+        }
+    }
+
     @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
     fun releaseConnection() {
-        connection.release()
+        with(connection) {
+            removeOnPrepareListener(prepareListener)
+            removeOnConnectListener(connectionListener)
+            removeOnMessageListener(messageListener)
+        }
     }
 
     fun startChat(conversation: ConversationViewModel) {

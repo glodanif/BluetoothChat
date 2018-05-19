@@ -58,22 +58,24 @@ class ScanPresenter(private val view: ScanView,
         val device = scanner.getDeviceByAddress(address)
 
         if (connection.isConnectionPrepared()) {
+            connection.addOnConnectListener(connectionListener)
             connectDevice(device)
             return
         }
 
-        connection.setOnPrepareListener(object : OnPrepareListener {
+        connection.addOnPrepareListener(object : OnPrepareListener {
 
             override fun onPrepared() {
                 connectDevice(device)
+                connection.removeOnPrepareListener(this)
             }
 
             override fun onError() {
                 view.showServiceUnavailable()
+                connection.removeOnPrepareListener(this)
             }
         })
 
-        connection.setOnConnectListener(connectionListener)
         connection.prepare()
     }
 
@@ -89,14 +91,17 @@ class ScanPresenter(private val view: ScanView,
 
         override fun onConnected(device: BluetoothDevice) {
             view.openChat(device)
+            connection.removeOnConnectListener(this)
         }
 
         override fun onConnectionLost() {
             view.showUnableToConnect()
+            connection.removeOnConnectListener(this)
         }
 
         override fun onConnectionFailed() {
             view.showUnableToConnect()
+            connection.removeOnConnectListener(this)
         }
     }
 

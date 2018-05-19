@@ -28,7 +28,7 @@ class ChatPresenter(private val deviceAddress: String,
                     private val preferences: UserPreferences,
                     private val converter: ChatMessageConverter,
                     private val uiContext: CoroutineContext = UI,
-                    private val bgContext: CoroutineContext = CommonPool): LifecycleObserver {
+                    private val bgContext: CoroutineContext = CommonPool) : LifecycleObserver {
 
     private val maxFileSize = 5_242_880
 
@@ -40,21 +40,34 @@ class ChatPresenter(private val deviceAddress: String,
         override fun onPrepared() {
 
             with(connectionModel) {
-                setOnConnectListener(connectionListener)
-                setOnMessageListener(messageListener)
-                setOnFileListener(fileListener)
+                addOnConnectListener(connectionListener)
+                addOnMessageListener(messageListener)
+                addOnFileListener(fileListener)
             }
             updateState()
             dismissNotification()
 
-            fileToSend?.let {
-
-                if (it.length() > maxFileSize) {
-                    view.showImageTooBig(maxFileSize.toLong())
-                } else {
-                    connectionModel.sendFile(it, PayloadType.IMAGE)
+            if (!connectionModel.isConnected()) {
+                fileToSend?.let {
+                    filePresharing = fileToSend
+                    view.showPresharingImage(it.absolutePath)
                 }
-                fileToSend = null
+            } else {
+
+                if (filePresharing != null) {
+                    return
+                }
+
+                fileToSend?.let {
+
+                    if (it.length() > maxFileSize) {
+                        view.showImageTooBig(maxFileSize.toLong())
+                    } else {
+                        connectionModel.sendFile(it, PayloadType.IMAGE)
+                    }
+                    fileToSend = null
+                    filePresharing = null
+                }
             }
         }
 
@@ -100,6 +113,7 @@ class ChatPresenter(private val deviceAddress: String,
             if (currentConversation?.deviceAddress == deviceAddress) {
                 view.showStatusPending()
                 view.showConnectionRequest(conversation.displayName, conversation.deviceName)
+                view.showPartnerName(conversation.displayName, conversation.deviceName)
             }
         }
 
@@ -212,13 +226,13 @@ class ChatPresenter(private val deviceAddress: String,
             view.showBluetoothDisabled()
         } else {
 
-            connectionModel.setOnPrepareListener(prepareListener)
+            connectionModel.addOnPrepareListener(prepareListener)
 
             if (connectionModel.isConnectionPrepared()) {
                 with(connectionModel) {
-                    setOnConnectListener(connectionListener)
-                    setOnMessageListener(messageListener)
-                    setOnFileListener(fileListener)
+                    addOnConnectListener(connectionListener)
+                    addOnMessageListener(messageListener)
+                    addOnFileListener(fileListener)
                 }
                 updateState()
                 dismissNotification()
@@ -235,6 +249,16 @@ class ChatPresenter(private val deviceAddress: String,
         }
     }
 
+    @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
+    fun releaseConnection() {
+        with(connectionModel) {
+            removeOnPrepareListener(prepareListener)
+            removeOnConnectListener(connectionListener)
+            removeOnMessageListener(messageListener)
+            removeOnFileListener(fileListener)
+        }
+    }
+
     private fun sendFileIfPrepared() {
 
         fileToSend?.let {
@@ -245,6 +269,7 @@ class ChatPresenter(private val deviceAddress: String,
                 connectionModel.sendFile(it, PayloadType.IMAGE)
             }
             fileToSend = null
+            filePresharing = null
         }
     }
 
@@ -258,19 +283,6 @@ class ChatPresenter(private val deviceAddress: String,
 
         launch(bgContext) {
             messagesStorage.updateMessages(messages)
-        }
-    }
-
-    @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
-    fun releaseConnection() = with(connectionModel) {
-
-        setOnPrepareListener(null)
-        setOnConnectListener(null)
-        setOnMessageListener(null)
-        setOnFileListener(null)
-
-        if (!isConnectedOrPending()) {
-            release()
         }
     }
 
@@ -329,6 +341,10 @@ class ChatPresenter(private val deviceAddress: String,
 
         if (!file.exists()) {
             view.showImageNotExist()
+        } else if (!connectionModel.isConnectionPrepared()) {
+            fileToSend = file
+            connectionModel.addOnPrepareListener(prepareListener)
+            connectionModel.prepare()
         } else if (!connectionModel.isConnected()) {
             view.showPresharingImage(file.absolutePath)
             filePresharing = file
@@ -341,6 +357,7 @@ class ChatPresenter(private val deviceAddress: String,
     }
 
     fun cancelPresharing() {
+        fileToSend = null
         filePresharing = null
     }
 
@@ -356,6 +373,7 @@ class ChatPresenter(private val deviceAddress: String,
                 view.showImageTooBig(maxFileSize.toLong())
             } else {
                 connectionModel.sendFile(it, PayloadType.IMAGE)
+                fileToSend = null
                 filePresharing = null
             }
         }

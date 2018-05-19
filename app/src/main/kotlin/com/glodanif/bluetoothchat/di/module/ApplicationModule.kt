@@ -2,6 +2,7 @@ package com.glodanif.bluetoothchat.di.module
 
 import android.content.Context
 import com.glodanif.bluetoothchat.data.model.*
+import com.glodanif.bluetoothchat.di.PerActivity
 import com.glodanif.bluetoothchat.ui.viewmodel.converter.ChatMessageConverter
 import com.glodanif.bluetoothchat.ui.viewmodel.converter.ContactConverter
 import com.glodanif.bluetoothchat.ui.viewmodel.converter.ConversationConverter
@@ -49,4 +50,8 @@ class ApplicationModule(private val context: Context) {
     @Provides
     @Singleton
     internal fun provideChatMessageConverter(): ChatMessageConverter = ChatMessageConverter(context)
+
+    @Provides
+    @Singleton
+    internal fun provideConnector(): BluetoothConnector = BluetoothConnectorImpl(context)
 }
