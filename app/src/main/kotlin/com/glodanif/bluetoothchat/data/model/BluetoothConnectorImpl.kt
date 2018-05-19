@@ -113,7 +113,7 @@ class BluetoothConnectorImpl(private val context: Context) : BluetoothConnector 
         override fun onConnectionDestroyed() {
             proxy?.onConnectionDestroyed()
             connectListeners.forEach { it.onConnectionDestroyed() }
-            //TODO: Unbind, make null?
+            release()
         }
     }
 
@@ -206,12 +206,14 @@ class BluetoothConnectorImpl(private val context: Context) : BluetoothConnector 
     }
 
     override fun release() {
+
         if (bound) {
             context.unbindService(connection)
-            bound = false
-            service = null
-            proxy = null
         }
+
+        bound = false
+        service = null
+        proxy = null
 
         connectListeners.clear()
         prepareListeners.clear()
