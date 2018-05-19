@@ -12,22 +12,22 @@
   <string name="general__service_lost">El servicio Bluetooth Chat ha sido detenido, reinicia el servicio para poder usar la aplicación</string>
   <string name="general__disconnect">Desconectar</string>
   <string name="general__storage_permission">Bluetooth Chat te da la opción de compartir imágenes. Esta característica requiere permisos de <b>"Almacenamiento"</b> para funcionar correctamente.</string>
-  <string name="general__time_format">dd MM, aaaa</string>
+  <string name="general__time_format">dd/MM/yyyy</string>
   <string name="general__time_unknown">desconocido</string>
   <string name="general__time_just_now">reciente</string>
   <string name="general__time_a_minute_ago">hace un minuto</string>
   <string name="general__time_an_hour_ago">hace una hora</string>
   <string name="general__time_yesterday">ayer</string>
   <plurals name="general__time_minutes_ago">
-    <item quantity="one">hace %d minuto</item>
+    <item quantity="one">%d minuto atrás</item>
     <item quantity="other">hace %d minutos</item>
   </plurals>
   <plurals name="general__time_hours_ago">
-    <item quantity="one">hace %d hora</item>
+    <item quantity="one">%d hora atrás</item>
     <item quantity="other">hace %d horas</item>
   </plurals>
   <plurals name="general__time_days_ago">
-    <item quantity="one">hace %d día</item>
+    <item quantity="one">%d día atrás</item>
     <item quantity="other">hace %d días</item>
   </plurals>
   <string name="profile__profile">Perfil</string>
