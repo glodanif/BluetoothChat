@@ -222,7 +222,7 @@ class ScanPresenterUnitTest {
         every { connector.isConnectionPrepared() } returns false
         presenter.onDevicePicked("any")
         val slot = slot<OnPrepareListener>()
-        verify { connector.setOnPrepareListener(capture(slot)) }
+        verify { connector.addOnPrepareListener(capture(slot)) }
         slot.captured.onError()
         verify { view.showServiceUnavailable() }
     }
@@ -234,7 +234,7 @@ class ScanPresenterUnitTest {
         every { connector.isConnectionPrepared() } returns false
         presenter.onDevicePicked("any")
         val slot = slot<OnPrepareListener>()
-        verify { connector.setOnPrepareListener(capture(slot)) }
+        verify { connector.addOnPrepareListener(capture(slot)) }
         slot.captured.onPrepared()
         verify { connector.connect(device) }
     }
@@ -245,7 +245,7 @@ class ScanPresenterUnitTest {
         every { connector.isConnectionPrepared() } returns false
         presenter.onDevicePicked("any")
         val slot = slot<OnPrepareListener>()
-        verify { connector.setOnPrepareListener(capture(slot)) }
+        verify { connector.addOnPrepareListener(capture(slot)) }
         slot.captured.onPrepared()
         verify { view.showServiceUnavailable() }
     }
