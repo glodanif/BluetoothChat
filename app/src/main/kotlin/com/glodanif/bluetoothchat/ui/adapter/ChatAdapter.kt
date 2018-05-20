@@ -3,6 +3,7 @@ package com.glodanif.bluetoothchat.ui.adapter
 import android.content.Context
 import android.graphics.Bitmap
 import android.support.v4.text.util.LinkifyCompat
+import android.support.v4.view.ViewCompat
 import android.support.v7.widget.RecyclerView
 import android.text.SpannableString
 import android.text.util.Linkify
@@ -48,6 +49,8 @@ class ChatAdapter(private val context: Context) : RecyclerView.Adapter<RecyclerV
 
                 holder.image.visibility = View.VISIBLE
                 holder.missingLabel.visibility = View.GONE
+
+                ViewCompat.setTransitionName(holder.image, message.uid.toString())
 
                 val size = message.imageSize
                 holder.image.layoutParams = FrameLayout.LayoutParams(size.width, size.height)

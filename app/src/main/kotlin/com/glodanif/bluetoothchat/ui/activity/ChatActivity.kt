@@ -78,6 +78,9 @@ class ChatActivity : SkeletonActivity(), ChatView {
         }
     }
 
+    private var disconnectedDialog: AlertDialog? = null
+    private var lostConnectionDialog: AlertDialog? = null
+
     private val textWatcher = object : SimpleTextWatcher() {
 
         private var previousText: String? = null
@@ -284,19 +287,29 @@ class ChatActivity : SkeletonActivity(), ChatView {
     }
 
     override fun showLostConnection() = doIfStarted {
-                AlertDialog.Builder(this)
+        lostConnectionDialog = AlertDialog.Builder(this)
                 .setMessage(getString(R.string.chat__connection_lost))
                 .setPositiveButton(getString(R.string.chat__reconnect), { _, _ -> presenter.reconnect() })
                 .setNegativeButton(getString(R.string.general__cancel), null)
                 .show()
     }
 
+    override fun hideLostConnection() {
+        lostConnectionDialog?.dismiss()
+        lostConnectionDialog = null
+    }
+
     override fun showDisconnected() = doIfStarted {
-        AlertDialog.Builder(this)
+        disconnectedDialog = AlertDialog.Builder(this)
                 .setMessage(getString(R.string.chat__partner_disconnected))
                 .setPositiveButton(getString(R.string.chat__reconnect), { _, _ -> presenter.reconnect() })
                 .setNegativeButton(getString(R.string.general__cancel), null)
                 .show()
+    }
+
+    override fun hideDisconnected() {
+        disconnectedDialog?.dismiss()
+        disconnectedDialog = null
     }
 
     override fun showFailedConnection() = doIfStarted {

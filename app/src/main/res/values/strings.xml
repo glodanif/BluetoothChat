@@ -4,7 +4,6 @@
 
     <string name="app_name" translatable="false">Bluetooth Chat</string>
     <string name="main_title" translatable="false">Bluetooth Chat</string>
-    <string name="id_transition_image" translatable="false">chatImage</string>
 
     <string name="general__ok">OK</string>
     <string name="general__cancel">Cancel</string>
