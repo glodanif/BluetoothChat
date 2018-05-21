@@ -1,7 +1,7 @@
 package com.glodanif.bluetoothchat.data.database
 
 import android.arch.persistence.room.TypeConverter
-import com.glodanif.bluetoothchat.data.entity.MessageType
+import com.glodanif.bluetoothchat.data.service.PayloadType
 import java.util.*
 
 class Converter {
@@ -17,12 +17,12 @@ class Converter {
     }
 
     @TypeConverter
-    fun toFileType(value: Int?): MessageType? {
-        return if (value == null) MessageType.TEXT else MessageType.from(value)
+    fun toFileType(value: Int?): PayloadType? {
+        return if (value == null) PayloadType.TEXT else PayloadType.from(value)
     }
 
     @TypeConverter
-    fun fromFileType(fileType: MessageType?): Int? {
+    fun fromFileType(fileType: PayloadType?): Int? {
         return fileType?.value ?: 0
     }
 }

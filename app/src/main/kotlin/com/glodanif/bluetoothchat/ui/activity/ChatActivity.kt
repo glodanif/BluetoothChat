@@ -3,6 +3,7 @@ package com.glodanif.bluetoothchat.ui.activity
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.AlertDialog
+import android.arch.lifecycle.Lifecycle
 import android.bluetooth.BluetoothAdapter
 import android.content.Context
 import android.content.Intent
@@ -77,6 +78,9 @@ class ChatActivity : SkeletonActivity(), ChatView {
         }
     }
 
+    private var disconnectedDialog: AlertDialog? = null
+    private var lostConnectionDialog: AlertDialog? = null
+
     private val textWatcher = object : SimpleTextWatcher() {
 
         private var previousText: String? = null
@@ -99,6 +103,7 @@ class ChatActivity : SkeletonActivity(), ChatView {
         deviceAddress = intent.getStringExtra(EXTRA_ADDRESS)
 
         ComponentsManager.injectChat(this, deviceAddress.toString())
+        lifecycle.addObserver(presenter)
 
         title = if (deviceAddress.isNullOrEmpty()) getString(R.string.app_name) else deviceAddress
         toolbar?.let {
@@ -114,7 +119,7 @@ class ChatActivity : SkeletonActivity(), ChatView {
         }
 
         findViewById<ImageButton>(R.id.ib_image).setOnClickListener {
-            EasyImage.openChooserWithGallery(this, "chooserTitle", 0)
+            presenter.performFilePicking()
         }
 
         findViewById<ImageButton>(R.id.ib_cancel).setOnClickListener {
@@ -176,16 +181,6 @@ class ChatActivity : SkeletonActivity(), ChatView {
 
             intent.action = Intent.ACTION_VIEW
         }
-    }
-
-    override fun onStart() {
-        super.onStart()
-        presenter.prepareConnection()
-    }
-
-    override fun onStop() {
-        super.onStop()
-        presenter.releaseConnection()
     }
 
     override fun setBackgroundColor(color: Int) {
@@ -292,19 +287,29 @@ class ChatActivity : SkeletonActivity(), ChatView {
     }
 
     override fun showLostConnection() = doIfStarted {
-        AlertDialog.Builder(this)
+        lostConnectionDialog = AlertDialog.Builder(this)
                 .setMessage(getString(R.string.chat__connection_lost))
                 .setPositiveButton(getString(R.string.chat__reconnect), { _, _ -> presenter.reconnect() })
                 .setNegativeButton(getString(R.string.general__cancel), null)
                 .show()
     }
 
+    override fun hideLostConnection() {
+        lostConnectionDialog?.dismiss()
+        lostConnectionDialog = null
+    }
+
     override fun showDisconnected() = doIfStarted {
-        AlertDialog.Builder(this)
+        disconnectedDialog = AlertDialog.Builder(this)
                 .setMessage(getString(R.string.chat__partner_disconnected))
                 .setPositiveButton(getString(R.string.chat__reconnect), { _, _ -> presenter.reconnect() })
                 .setNegativeButton(getString(R.string.general__cancel), null)
                 .show()
+    }
+
+    override fun hideDisconnected() {
+        disconnectedDialog?.dismiss()
+        disconnectedDialog = null
     }
 
     override fun showFailedConnection() = doIfStarted {
@@ -356,7 +361,13 @@ class ChatActivity : SkeletonActivity(), ChatView {
 
         Picasso.with(this)
                 .load("file://$path")
+                .centerCrop()
+                .fit()
                 .into(presharingImage)
+    }
+
+    override fun openImagePicker() {
+        EasyImage.openChooserWithGallery(this, "chooserTitle", 0)
     }
 
     override fun showImageTransferLayout(fileAddress: String?, fileSize: Long, transferType: ChatView.FileTransferType) {

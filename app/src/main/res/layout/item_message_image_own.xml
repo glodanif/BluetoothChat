@@ -52,7 +52,6 @@
                     android:layout_marginTop="8dp"
                     android:contentDescription="@string/chat__cd__sent_image"
                     android:scaleType="centerCrop"
-                    android:transitionName="@string/id_transition_image"
                     tools:src="@tools:sample/backgrounds/scenic"  />
             </FrameLayout>
 

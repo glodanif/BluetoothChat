@@ -31,6 +31,7 @@ class SettingsPopup(context: Context) : PopupWindow() {
     private var profileClickListener: (() -> (Unit))? = null
     private var settingsClickListener: (() -> (Unit))? = null
     private var imagesClickListener: (() -> (Unit))? = null
+    private var aboutClickListener: (() -> (Unit))? = null
 
     private var rootView: View
     private var container: View
@@ -44,10 +45,11 @@ class SettingsPopup(context: Context) : PopupWindow() {
         this.color = color
     }
 
-    fun setCallbacks(profileClickListener: () -> (Unit), imagesClickListener: () -> (Unit), settingsClickListener: () -> (Unit)) {
+    fun setCallbacks(profileClickListener: () -> (Unit), imagesClickListener: () -> (Unit), settingsClickListener: () -> (Unit), aboutClickListener: () -> (Unit)) {
         this.profileClickListener = profileClickListener
         this.imagesClickListener = imagesClickListener
         this.settingsClickListener = settingsClickListener
+        this.aboutClickListener = aboutClickListener
     }
 
     init {
@@ -71,6 +73,11 @@ class SettingsPopup(context: Context) : PopupWindow() {
         rootView.findViewById<View>(R.id.ll_settings_button).setOnClickListener({
             dismiss()
             settingsClickListener?.invoke()
+        })
+
+        rootView.findViewById<View>(R.id.ll_about_button).setOnClickListener({
+            dismiss()
+            aboutClickListener?.invoke()
         })
 
         contentView = rootView

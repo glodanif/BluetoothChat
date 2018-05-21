@@ -31,8 +31,8 @@ class SplashActivity : AppCompatActivity() {
             }
 
             startActivity(newIntent)
-
             finish()
+
         }, 500)
     }
 }

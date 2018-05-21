@@ -30,6 +30,7 @@ class ContactChooserActivity : SkeletonActivity(), ContactChooserView {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_contact_chooser, ActivityType.CHILD_ACTIVITY)
         ComponentsManager.injectContactChooser(this)
+        lifecycle.addObserver(presenter)
 
         contactsList.layoutManager = LinearLayoutManager(this)
         contactsList.adapter = contactsAdapter
@@ -41,11 +42,6 @@ class ContactChooserActivity : SkeletonActivity(), ContactChooserView {
             ChatActivity.start(this, it.address, message, filePath)
             finish()
         }
-    }
-
-    override fun onStart() {
-        super.onStart()
-        presenter.loadContacts()
     }
 
     override fun showContacts(contacts: List<ContactViewModel>) {

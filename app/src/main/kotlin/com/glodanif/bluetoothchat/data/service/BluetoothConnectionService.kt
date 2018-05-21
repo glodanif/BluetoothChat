@@ -18,7 +18,8 @@ import com.glodanif.bluetoothchat.ChatApplication
 import com.glodanif.bluetoothchat.R
 import com.glodanif.bluetoothchat.data.database.ChatDatabase
 import com.glodanif.bluetoothchat.data.database.Storage
-import com.glodanif.bluetoothchat.data.entity.*
+import com.glodanif.bluetoothchat.data.entity.ChatMessage
+import com.glodanif.bluetoothchat.data.entity.Conversation
 import com.glodanif.bluetoothchat.data.model.*
 import com.glodanif.bluetoothchat.ui.view.NotificationView
 import com.glodanif.bluetoothchat.ui.view.NotificationViewImpl
@@ -60,6 +61,7 @@ class BluetoothConnectionService : Service() {
 
     private var currentSocket: BluetoothSocket? = null
     private var currentConversation: Conversation? = null
+    private var contract = Contract()
 
     private lateinit var db: ChatDatabase
     private lateinit var preferences: UserPreferences
@@ -95,6 +97,8 @@ class BluetoothConnectionService : Service() {
 
         if (intent?.action == ACTION_STOP) {
 
+            isRunning = false
+
             connectionState = ConnectionState.NOT_CONNECTED
             cancelConnections()
             acceptThread?.cancel()
@@ -113,6 +117,8 @@ class BluetoothConnectionService : Service() {
 
     fun getCurrentConversation() = currentConversation
 
+    fun getCurrentContract() = contract
+
     private fun showNotification(message: String) {
         val notification = notificationView.getForegroundNotification(message)
         startForeground(FOREGROUND_SERVICE, notification)
@@ -128,9 +134,12 @@ class BluetoothConnectionService : Service() {
     @Synchronized
     private fun prepareForAccept() {
         cancelConnections()
-        acceptThread = AcceptThread()
-        acceptThread?.start()
-        showNotification(getString(R.string.notification__ready_to_connect))
+
+        if (isRunning) {
+            acceptThread = AcceptThread()
+            acceptThread?.start()
+            showNotification(getString(R.string.notification__ready_to_connect))
+        }
     }
 
     @Synchronized
@@ -147,6 +156,7 @@ class BluetoothConnectionService : Service() {
         acceptThread = null
         currentSocket = null
         currentConversation = null
+        contract.reset()
         connectionType = null
 
         connectThread = ConnectThread(device)
@@ -178,18 +188,21 @@ class BluetoothConnectionService : Service() {
 
             override fun onConnectionPrepared(type: ConnectionType) {
 
-                showNotification(getString(R.string.notification__connected_to, socket.remoteDevice.name ?: "?"))
+                showNotification(getString(R.string.notification__connected_to, socket.remoteDevice.name
+                        ?: "?"))
                 connectionState = ConnectionState.PENDING
 
                 if (type == ConnectionType.OUTCOMING) {
-                    val message = Message.createConnectMessage(settings.getUserName(), settings.getUserColor())
-                    dataTransferThread?.write(message.getDecodedMessage())
+                    contract.createConnectMessage(settings.getUserName(), settings.getUserColor()).let { message ->
+                        dataTransferThread?.write(message.getDecodedMessage())
+                    }
                 }
             }
 
             override fun onConnectionCanceled() {
                 currentSocket = null
                 currentConversation = null
+                contract.reset()
             }
 
             override fun onConnectionLost() {
@@ -227,15 +240,16 @@ class BluetoothConnectionService : Service() {
 
             override fun onFileSendingFinished(uid: Long, path: String) {
 
-                val endMessage = Message.createFileEndMessage()
-                dataTransferThread?.write(endMessage.getDecodedMessage())
+                contract.createFileEndMessage().let { message ->
+                    dataTransferThread?.write(message.getDecodedMessage())
+                }
 
                 currentSocket?.let {
 
                     val message = ChatMessage(it.remoteDevice.address, Date(), true, "").apply {
                         this.uid = uid
                         seenHere = true
-                        messageType = MessageType.IMAGE
+                        messageType = PayloadType.IMAGE
                         filePath = path
                     }
 
@@ -305,7 +319,7 @@ class BluetoothConnectionService : Service() {
                     val address = it.address
                     val message = ChatMessage(address, Date(), false, "").apply {
                         this.uid = uid
-                        messageType = MessageType.IMAGE
+                        messageType = PayloadType.IMAGE
                         filePath = path
                     }
 
@@ -390,6 +404,7 @@ class BluetoothConnectionService : Service() {
         dataTransferThread = null
         currentSocket = null
         currentConversation = null
+        contract.reset()
         connectionType = null
     }
 
@@ -397,7 +412,7 @@ class BluetoothConnectionService : Service() {
 
         if (isConnectedOrPending()) {
 
-            val disconnect = message.type == Message.Type.CONNECTION_REQUEST && !message.flag
+            val disconnect = message.type == Contract.MessageType.CONNECTION_REQUEST && !message.flag
 
             dataTransferThread?.write(message.getDecodedMessage(), disconnect)
 
@@ -408,7 +423,7 @@ class BluetoothConnectionService : Service() {
             }
         }
 
-        if (message.type == Message.Type.CONNECTION_RESPONSE) {
+        if (message.type == Contract.MessageType.CONNECTION_RESPONSE) {
             if (message.flag) {
                 connectionState = ConnectionState.CONNECTED
             } else {
@@ -418,12 +433,13 @@ class BluetoothConnectionService : Service() {
         }
     }
 
-    fun sendFile(file: File, type: MessageType) {
+    fun sendFile(file: File, type: PayloadType) {
 
         if (isConnected()) {
-            val startMessage = Message.createFileStartMessage(System.nanoTime(), file, type)
-            dataTransferThread?.write(startMessage.getDecodedMessage())
-            dataTransferThread?.writeFile(startMessage.uid, file)
+            contract.createFileStartMessage(file, type).let { message ->
+                dataTransferThread?.write(message.getDecodedMessage())
+                dataTransferThread?.writeFile(message.uid, file)
+            }
         }
     }
 
@@ -441,7 +457,7 @@ class BluetoothConnectionService : Service() {
         val message = Message(messageBody)
         val sentMessage = ChatMessage(it.remoteDevice.address, Date(), true, message.body)
 
-        if (message.type == Message.Type.MESSAGE) {
+        if (message.type == Contract.MessageType.MESSAGE) {
             sentMessage.seenHere = true
             launch(bgContext) {
                 db.messagesDao().insert(sentMessage)
@@ -457,23 +473,23 @@ class BluetoothConnectionService : Service() {
 
         val message = Message(messageBody)
 
-        if (message.type == Message.Type.MESSAGE && currentSocket != null) {
+        if (message.type == Contract.MessageType.MESSAGE && currentSocket != null) {
 
             handleReceivedMessage(message.uid, message.body)
 
-        } else if (message.type == Message.Type.DELIVERY) {
+        } else if (message.type == Contract.MessageType.DELIVERY) {
 
             if (message.flag) {
                 messageListener?.onMessageDelivered(message.uid)
             } else {
                 messageListener?.onMessageNotDelivered(message.uid)
             }
-        } else if (message.type == Message.Type.SEEING) {
+        } else if (message.type == Contract.MessageType.SEEING) {
 
             if (message.flag) {
                 messageListener?.onMessageSeen(message.uid)
             }
-        } else if (message.type == Message.Type.CONNECTION_RESPONSE) {
+        } else if (message.type == Contract.MessageType.CONNECTION_RESPONSE) {
 
             if (message.flag) {
                 handleConnectionApproval(message)
@@ -482,7 +498,7 @@ class BluetoothConnectionService : Service() {
                 prepareForAccept()
                 connectionListener?.onConnectionRejected()
             }
-        } else if (message.type == Message.Type.CONNECTION_REQUEST && currentSocket != null) {
+        } else if (message.type == Contract.MessageType.CONNECTION_REQUEST && currentSocket != null) {
 
             if (message.flag) {
                 handleConnectionRequest(message)
@@ -490,7 +506,7 @@ class BluetoothConnectionService : Service() {
                 disconnect()
                 connectionListener?.onDisconnected()
             }
-        } else if (message.type == Message.Type.FILE_CANCELED) {
+        } else if (message.type == Contract.MessageType.FILE_CANCELED) {
             dataTransferThread?.cancelFileTransfer()
         }
     }
@@ -523,14 +539,13 @@ class BluetoothConnectionService : Service() {
         val device: BluetoothDevice = it.remoteDevice
 
         val parts = message.body.split("#")
-        val conversation = Conversation(device.address, device.name ?: "?", parts[0], parts[1].toInt())
-
-        val messageContractVersion = if (parts.size >= 3) parts[2].toInt() else 0
-        conversation.messageContractVersion = messageContractVersion
+        val conversation = Conversation(device.address, device.name
+                ?: "?", parts[0], parts[1].toInt())
 
         launch(bgContext) { db.conversationsDao().insert(conversation) }
 
         currentConversation = conversation
+        contract setupWith if (parts.size >= 3) parts[2].toInt() else 0
 
         connectionListener?.onConnectedIn(conversation)
 
@@ -545,14 +560,13 @@ class BluetoothConnectionService : Service() {
         val device: BluetoothDevice = it.remoteDevice
 
         val parts = message.body.split("#")
-        val conversation = Conversation(device.address, device.name ?: "?", parts[0], parts[1].toInt())
-
-        val messageContractVersion = if (parts.size >= 3) parts[2].toInt() else 0
-        conversation.messageContractVersion = messageContractVersion
+        val conversation = Conversation(device.address, device.name
+                ?: "?", parts[0], parts[1].toInt())
 
         launch(bgContext) { db.conversationsDao().insert(conversation) }
 
         currentConversation = conversation
+        contract setupWith if (parts.size >= 3) parts[2].toInt() else 0
 
         connectionState = ConnectionState.CONNECTED
         connectionListener?.onConnectionAccepted()
@@ -562,6 +576,7 @@ class BluetoothConnectionService : Service() {
     private fun connectionFailed() {
         currentSocket = null
         currentConversation = null
+        contract.reset()
         launch(uiContext) { connectionListener?.onConnectionFailed() }
         connectionState = ConnectionState.NOT_CONNECTED
         prepareForAccept()
@@ -571,6 +586,7 @@ class BluetoothConnectionService : Service() {
 
         currentSocket = null
         currentConversation = null
+        contract.reset()
         if (isConnectedOrPending()) {
             launch(uiContext) {
                 if (isPending() && connectionType == ConnectionType.INCOMING) {

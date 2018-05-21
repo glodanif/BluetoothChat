@@ -19,8 +19,4 @@ class ConversationsModule(private val activity: ConversationsActivity) {
     internal fun providePresenter(connector: BluetoothConnector, storage: ConversationsStorage,
                                   settings: SettingsManager, converter: ConversationConverter): ConversationsPresenter =
             ConversationsPresenter(activity, connector, storage, settings, converter)
-
-    @Provides
-    @PerActivity
-    internal fun provideConnector(): BluetoothConnector = BluetoothConnectorImpl(activity)
 }

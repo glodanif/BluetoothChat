@@ -5,6 +5,9 @@ import android.os.Handler
 import com.glodanif.bluetoothchat.data.entity.*
 import com.glodanif.bluetoothchat.data.model.SettingsManagerImpl
 import com.glodanif.bluetoothchat.data.service.BluetoothConnectionService
+import com.glodanif.bluetoothchat.data.service.Contract
+import com.glodanif.bluetoothchat.data.service.Message
+import com.glodanif.bluetoothchat.data.service.PayloadType
 import java.io.File
 
 class AutoresponderProxy(private val service: BluetoothConnectionService?) : CommunicationProxy {
@@ -19,6 +22,7 @@ class AutoresponderProxy(private val service: BluetoothConnectionService?) : Com
         const val RESPONSE_RECEIVED = "+text_message"
     }
 
+    private val contract = Contract()
     private val handler = Handler()
     private val file = File("/storage/emulated/0/BLC DEV/image.jpg")
 
@@ -37,7 +41,7 @@ class AutoresponderProxy(private val service: BluetoothConnectionService?) : Com
         runWithDelay {
             service?.let {
                 val settings = SettingsManagerImpl(it)
-                val message = Message.createAcceptConnectionMessage(settings.getUserName(), settings.getUserColor())
+                val message = contract.createAcceptConnectionMessage(settings.getUserName(), settings.getUserColor())
                 it.sendMessage(message)
             }
         }
@@ -75,20 +79,20 @@ class AutoresponderProxy(private val service: BluetoothConnectionService?) : Com
 
                 when {
                     message.text == COMMAND_SEND_TEXT -> {
-                        val chatMessage = Message(System.nanoTime(), RESPONSE_RECEIVED, Message.Type.MESSAGE)
+                        val chatMessage = contract.createChatMessage(RESPONSE_RECEIVED)
                         it.sendMessage(chatMessage)
                     }
                     message.text == COMMAND_SEND_FILE -> {
-                        it.sendFile(file, MessageType.IMAGE)
+                        it.sendFile(file, PayloadType.IMAGE)
                     }
                     message.text == COMMAND_SEND_FILE_AND_CANCEL -> {
-                        it.sendFile(file, MessageType.IMAGE)
+                        it.sendFile(file, PayloadType.IMAGE)
                         runWithDelay(2000) {
                             it.cancelFileTransfer()
                         }
                     }
                     message.text == COMMAND_DISCONNECT -> {
-                        val chatMessage = Message.createDisconnectMessage()
+                        val chatMessage = contract.createDisconnectMessage()
                         it.sendMessage(chatMessage)
                     }
                 }

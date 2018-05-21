@@ -3,6 +3,7 @@ package com.glodanif.bluetoothchat.data.entity
 import android.arch.persistence.room.Entity
 import android.arch.persistence.room.Ignore
 import android.arch.persistence.room.PrimaryKey
+import com.glodanif.bluetoothchat.data.service.PayloadType
 import java.util.*
 
 @Entity(tableName = "message")
@@ -20,7 +21,7 @@ data class ChatMessage(
     var delivered: Boolean = false
     var edited: Boolean = false
 
-    var messageType: MessageType? = null
+    var messageType: PayloadType? = null
     var filePath: String? = null
     var fileInfo: String? = null
 

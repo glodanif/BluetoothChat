@@ -17,9 +17,5 @@ class ScanModule(private val activity: ScanActivity) {
 
     @Provides
     @PerActivity
-    internal fun provideConnector(): BluetoothConnector = BluetoothConnectorImpl(activity)
-
-    @Provides
-    @PerActivity
     internal fun provideScanner(): BluetoothScanner = BluetoothScannerImpl(activity)
 }

@@ -64,7 +64,8 @@
             android:name=".ui.activity.ProfileActivity"
             android:label="@string/initial_setup__initial_setup"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme" />
+            android:theme="@style/AppTheme"
+            android:windowSoftInputMode="stateHidden" />
 
         <activity
             android:name=".ui.activity.SettingsActivity"
@@ -84,6 +85,11 @@
         <activity
             android:name=".ui.activity.ReceivedImagesActivity"
             android:label="@string/images__received_images"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".ui.activity.AboutActivity"
+            android:label="@string/about__about"
             android:screenOrientation="portrait" />
 
         <service android:name=".data.service.BluetoothConnectionService" />

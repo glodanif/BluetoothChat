@@ -1,5 +1,5 @@
-def final VERSION_CODE = 21
-def final VERSION_NAME = '1.1.1'
+def final VERSION_CODE = 22
+def final VERSION_NAME = '1.2.0'
 
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
@@ -95,8 +95,10 @@ android {
 dependencies {
 
     def final SUPPORT_VERSION = '27.1.1'
-    def final ARCH_VERSION = '1.1.0'
+    def final ROOM_VERSION = '1.1.1-rc1'
+    def final LIFECYCLE_VERSION = '1.1.1'
     def final DAGGER_VERSION = '2.4'
+    def final LEAK_CANARY_VERSION = '1.5.4'
     def final ESPRESSO_VERSION = '3.0.0'
     def final COROUTINES_VERSION = '0.22.5'
 
@@ -108,8 +110,12 @@ dependencies {
     implementation "com.android.support:recyclerview-v7:$SUPPORT_VERSION"
     implementation "com.android.support:cardview-v7:$SUPPORT_VERSION"
 
-    implementation "android.arch.persistence.room:runtime:$ARCH_VERSION"
-    kapt "android.arch.persistence.room:compiler:$ARCH_VERSION"
+    implementation "android.arch.persistence.room:runtime:$ROOM_VERSION"
+    kapt "android.arch.persistence.room:compiler:$ROOM_VERSION"
+
+    implementation "android.arch.lifecycle:runtime:$LIFECYCLE_VERSION"
+    implementation "android.arch.lifecycle:extensions:$LIFECYCLE_VERSION"
+    kapt "android.arch.lifecycle:compiler:$LIFECYCLE_VERSION"
 
     implementation 'com.android.support.constraint:constraint-layout:1.1.0'
     implementation 'com.amulyakhare:com.amulyakhare.textdrawable:1.0.1'
@@ -129,6 +135,10 @@ dependencies {
 
     implementation "com.google.dagger:dagger:$DAGGER_VERSION"
     kapt "com.google.dagger:dagger-compiler:$DAGGER_VERSION"
+
+    debugImplementation "com.squareup.leakcanary:leakcanary-android:$LEAK_CANARY_VERSION"
+    releaseImplementation "com.squareup.leakcanary:leakcanary-android-no-op:$LEAK_CANARY_VERSION"
+    testImplementation "com.squareup.leakcanary:leakcanary-android-no-op:$LEAK_CANARY_VERSION"
 
     testImplementation "org.jetbrains.kotlin:kotlin-stdlib:$KOTLIN_VERSION"
     testImplementation "org.jetbrains.kotlin:kotlin-test-junit:$KOTLIN_VERSION"

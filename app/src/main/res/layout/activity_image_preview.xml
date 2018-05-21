@@ -8,6 +8,5 @@
     <com.github.chrisbanes.photoview.PhotoView
         android:id="@+id/pv_preview"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:transitionName="@string/id_transition_image" />
+        android:layout_height="match_parent" />
 </FrameLayout>

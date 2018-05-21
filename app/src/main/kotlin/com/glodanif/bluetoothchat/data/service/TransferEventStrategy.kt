@@ -47,4 +47,6 @@ class TransferEventStrategy : DataTransferThread.EventsStrategy {
             }
 
     override fun isFileFinish(message: String?) = message != null && message.contains("7#0#0#")
+
+    override fun getCancellationMessage(byPartner: Boolean) = "8#0#${if (byPartner) "1" else "0"}#"
 }

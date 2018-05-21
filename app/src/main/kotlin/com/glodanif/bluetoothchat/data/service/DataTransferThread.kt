@@ -1,8 +1,6 @@
 package com.glodanif.bluetoothchat.data.service
 
 import android.bluetooth.BluetoothSocket
-import com.glodanif.bluetoothchat.data.entity.Message
-import com.glodanif.bluetoothchat.data.entity.TransferringFile
 import com.glodanif.bluetoothchat.utils.safeLet
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.launch
@@ -65,7 +63,7 @@ abstract class DataTransferThread(private val socket: BluetoothSocket,
 
                 readString()?.let { message ->
 
-                    val potentialFile = eventsStrategy. isFileStart(message)
+                    val potentialFile = eventsStrategy.isFileStart(message)
                     if (potentialFile != null) {
 
                         isFileDownloading = true
@@ -185,8 +183,7 @@ abstract class DataTransferThread(private val socket: BluetoothSocket,
                         fileListener.onFileSendingFinished(fileMessageId, file.absolutePath)
                     } else {
                         if (isFileTransferCanceledByMe) {
-                            val canceledMessage = Message.createFileCanceledMessage(true)
-                            write(canceledMessage.getDecodedMessage())
+                            write(eventsStrategy.getCancellationMessage(true))
                         }
                     }
 
@@ -265,7 +262,6 @@ abstract class DataTransferThread(private val socket: BluetoothSocket,
             try {
 
                 var bytesRead: Long = 0
-                var len = 0
                 val buffer = ByteArray(bufferSize)
                 var timeOut = 0
                 val maxTimeOut = 16
@@ -282,8 +278,7 @@ abstract class DataTransferThread(private val socket: BluetoothSocket,
                     val remainingSize = size - bytesRead
                     val byteCount = Math.min(remainingSize, bufferSize.toLong()).toInt()
 
-                    len = bis.read(buffer, 0, byteCount)
-
+                    val len = bis.read(buffer, 0, byteCount)
                     val str = String(buffer, 0, byteCount)
 
                     if (eventsStrategy.isFileFinish(str)) {
@@ -328,8 +323,7 @@ abstract class DataTransferThread(private val socket: BluetoothSocket,
                     isFileTransferCanceledByMe = false
                     isFileTransferCanceledByPartner = false
                     file.delete()
-                    val canceledMessage = Message.createFileCanceledMessage(true)
-                    write(canceledMessage.getDecodedMessage())
+                    write(eventsStrategy.getCancellationMessage(true))
                 }
 
                 isFileDownloading = false
@@ -368,6 +362,7 @@ abstract class DataTransferThread(private val socket: BluetoothSocket,
         fun isFileStart(message: String?): FileInfo?
         fun isFileCanceled(message: String?): CancelInfo?
         fun isFileFinish(message: String?): Boolean
+        fun getCancellationMessage(byPartner: Boolean): String
     }
 
     data class FileInfo(val uid: Long, val name: String, val size: Long)

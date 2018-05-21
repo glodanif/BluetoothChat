@@ -4,8 +4,8 @@ import android.app.Activity
 import android.app.AlertDialog
 import android.content.Intent
 import android.graphics.Bitmap
+import android.os.Build
 import android.os.Bundle
-import android.support.v4.app.ActivityCompat
 import android.support.v4.app.ActivityOptionsCompat
 import android.view.Menu
 import android.view.MenuItem
@@ -35,11 +35,16 @@ class ImagePreviewActivity : SkeletonActivity(), ImagePreviewView {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_image_preview, ActivityType.CHILD_ACTIVITY)
+        supportPostponeEnterTransition()
 
         val messageId = intent.getLongExtra(EXTRA_MESSAGE_ID, -1)
         val imagePath = intent.getStringExtra(EXTRA_IMAGE_PATH)
         own = intent.getBooleanExtra(EXTRA_OWN, false)
         ComponentsManager.injectImagePreview(this, messageId, File(imagePath))
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            imageView.transitionName = messageId.toString()
+        }
 
         toolbar?.setTitleTextAppearance(this, R.style.ActionBar_TitleTextStyle)
         toolbar?.setSubtitleTextAppearance(this, R.style.ActionBar_SubTitleTextStyle)
@@ -55,15 +60,14 @@ class ImagePreviewActivity : SkeletonActivity(), ImagePreviewView {
         val callback = object : Callback {
 
             override fun onSuccess() {
-                ActivityCompat.startPostponedEnterTransition(this@ImagePreviewActivity)
+                supportStartPostponedEnterTransition()
             }
 
             override fun onError() {
-                ActivityCompat.startPostponedEnterTransition(this@ImagePreviewActivity)
+                supportStartPostponedEnterTransition()
             }
         }
 
-        ActivityCompat.postponeEnterTransition(this)
         Picasso.with(this)
                 .load(fileUrl)
                 .config(Bitmap.Config.RGB_565)
@@ -120,7 +124,8 @@ class ImagePreviewActivity : SkeletonActivity(), ImagePreviewView {
         }
 
         fun start(activity: Activity, transitionView: ImageView, message: ChatMessageViewModel) {
-            start(activity, transitionView, message.uid, message.imagePath ?: "unknown", message.own)
+            start(activity, transitionView, message.uid, message.imagePath
+                    ?: "unknown", message.own)
         }
 
         fun start(activity: Activity, transitionView: ImageView, messageId: Long, imagePath: String, ownMessage: Boolean) {
@@ -131,7 +136,7 @@ class ImagePreviewActivity : SkeletonActivity(), ImagePreviewView {
                     .putExtra(EXTRA_OWN, ownMessage)
 
             val options = ActivityOptionsCompat
-                    .makeSceneTransitionAnimation(activity, transitionView, activity.getString(R.string.id_transition_image))
+                    .makeSceneTransitionAnimation(activity, transitionView, messageId.toString())
             activity.startActivity(intent, options.toBundle())
         }
     }

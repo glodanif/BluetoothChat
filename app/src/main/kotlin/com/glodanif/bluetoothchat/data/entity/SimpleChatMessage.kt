@@ -1,5 +1,6 @@
 package com.glodanif.bluetoothchat.data.entity
 
+import com.glodanif.bluetoothchat.data.service.PayloadType
 import java.util.*
 
 data class SimpleChatMessage(
@@ -7,5 +8,5 @@ data class SimpleChatMessage(
         var date: Date,
         var text: String,
         var seenHere: Boolean,
-        var messageType: MessageType?
+        var messageType: PayloadType?
 )

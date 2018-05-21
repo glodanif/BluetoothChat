@@ -1,0 +1,116 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 1,
+    "identityHash": "1f105baa4d4cd72f001cd044e36b127e",
+    "entities": [
+      {
+        "tableName": "message",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`uid` INTEGER PRIMARY KEY AUTOINCREMENT, `seenHere` INTEGER, `seenThere` INTEGER, `edited` INTEGER, `deviceAddress` TEXT, `date` INTEGER, `own` INTEGER, `text` TEXT)",
+        "fields": [
+          {
+            "fieldPath": "uid",
+            "columnName": "uid",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "seenHere",
+            "columnName": "seenHere",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "seenThere",
+            "columnName": "seenThere",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "edited",
+            "columnName": "edited",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "deviceAddress",
+            "columnName": "deviceAddress",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "date",
+            "columnName": "date",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "own",
+            "columnName": "own",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "text",
+            "columnName": "text",
+            "affinity": "TEXT"
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "uid"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "conversation",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`date` INTEGER, `text` TEXT, `notSeen` INTEGER, `address` TEXT, `deviceName` TEXT, `displayName` TEXT, `color` INTEGER, PRIMARY KEY(`address`))",
+        "fields": [
+          {
+            "fieldPath": "lastActivity",
+            "columnName": "date",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "lastMessage",
+            "columnName": "text",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "notSeen",
+            "columnName": "notSeen",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "deviceAddress",
+            "columnName": "address",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "deviceName",
+            "columnName": "deviceName",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "displayName",
+            "columnName": "displayName",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "color",
+            "columnName": "color",
+            "affinity": "INTEGER"
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "address"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
+      }
+    ],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"1f105baa4d4cd72f001cd044e36b127e\")"
+    ]
+  }
+}

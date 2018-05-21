@@ -1,11 +1,14 @@
 package com.glodanif.bluetoothchat.ui.presenter
 
+import android.arch.lifecycle.Lifecycle
+import android.arch.lifecycle.LifecycleObserver
+import android.arch.lifecycle.OnLifecycleEvent
 import android.support.annotation.ColorInt
 import com.glodanif.bluetoothchat.data.model.BluetoothScanner
 import com.glodanif.bluetoothchat.data.model.SettingsManager
 import com.glodanif.bluetoothchat.ui.view.ProfileView
 
-class ProfilePresenter(private val view: ProfileView, private val settings: SettingsManager, private val scanner: BluetoothScanner) {
+class ProfilePresenter(private val view: ProfileView, private val settings: SettingsManager, private val scanner: BluetoothScanner): LifecycleObserver {
 
     @ColorInt
     private var currentColor = settings.getUserColor()
@@ -35,6 +38,7 @@ class ProfilePresenter(private val view: ProfileView, private val settings: Sett
         view.showUserData(currentName, currentColor)
     }
 
+    @OnLifecycleEvent(Lifecycle.Event.ON_START)
     fun loadSavedUser() {
         view.prefillUsername(currentName)
         view.showUserData(currentName, currentColor)

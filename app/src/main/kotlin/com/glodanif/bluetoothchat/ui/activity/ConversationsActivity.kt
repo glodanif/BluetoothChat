@@ -2,8 +2,6 @@ package com.glodanif.bluetoothchat.ui.activity
 
 import android.Manifest
 import android.app.Activity
-import android.app.NotificationManager
-import android.app.Service
 import android.bluetooth.BluetoothDevice
 import android.content.Context
 import android.content.Intent
@@ -25,8 +23,6 @@ import android.widget.ImageView
 import com.amulyakhare.textdrawable.TextDrawable
 import com.glodanif.bluetoothchat.R
 import com.glodanif.bluetoothchat.di.ComponentsManager
-import com.glodanif.bluetoothchat.utils.getFilePath
-import com.glodanif.bluetoothchat.utils.getFirstLetter
 import com.glodanif.bluetoothchat.ui.adapter.ConversationsAdapter
 import com.glodanif.bluetoothchat.ui.presenter.ConversationsPresenter
 import com.glodanif.bluetoothchat.ui.view.ConversationsView
@@ -36,6 +32,8 @@ import com.glodanif.bluetoothchat.ui.widget.ActionView
 import com.glodanif.bluetoothchat.ui.widget.SettingsPopup
 import com.glodanif.bluetoothchat.ui.widget.ShortcutManager
 import com.glodanif.bluetoothchat.utils.bind
+import com.glodanif.bluetoothchat.utils.getFilePath
+import com.glodanif.bluetoothchat.utils.getFirstLetter
 import com.glodanif.bluetoothchat.utils.getNotificationManager
 import com.kobakei.ratethisapp.RateThisApp
 import javax.inject.Inject
@@ -62,6 +60,7 @@ class ConversationsActivity : SkeletonActivity(), ConversationsView {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_conversations, ActivityType.CUSTOM_TOOLBAR_ACTIVITY)
         ComponentsManager.injectConversations(this)
+        lifecycle.addObserver(presenter)
 
         supportActionBar?.setDisplayShowTitleEnabled(false)
 
@@ -70,9 +69,10 @@ class ConversationsActivity : SkeletonActivity(), ConversationsView {
 
         settingsPopup = SettingsPopup(this)
         settingsPopup.setCallbacks(
-                profileClickListener = { ProfileActivity.start(context = this, editMode = true) },
-                imagesClickListener = { ReceivedImagesActivity.start(context = this, address = null) },
-                settingsClickListener = { SettingsActivity.start(context = this) }
+                profileClickListener = { ProfileActivity.start(this, editMode = true) },
+                imagesClickListener = { ReceivedImagesActivity.start(this, address = null) },
+                settingsClickListener = { SettingsActivity.start(this) },
+                aboutClickListener = { AboutActivity.start(this) }
         )
 
         conversationsAdapter.clickListener = { ChatActivity.start(this, it.address) }
@@ -177,19 +177,11 @@ class ConversationsActivity : SkeletonActivity(), ConversationsView {
                         Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED && !storagePermissionDialog.isShowing) {
             storagePermissionDialog.show()
         }
-
-        presenter.prepareConnection()
-        presenter.loadUserProfile()
     }
 
     override fun dismissConversationNotification() {
         getNotificationManager()
                 .cancel(NotificationView.NOTIFICATION_TAG_CONNECTION, NotificationView.NOTIFICATION_ID_CONNECTION)
-    }
-
-    override fun onStop() {
-        super.onStop()
-        presenter.releaseConnection()
     }
 
     override fun hideActions() {

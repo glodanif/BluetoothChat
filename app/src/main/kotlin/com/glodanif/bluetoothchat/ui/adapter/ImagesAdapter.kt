@@ -2,6 +2,7 @@ package com.glodanif.bluetoothchat.ui.adapter
 
 import android.content.Context
 import android.graphics.Bitmap
+import android.support.v4.view.ViewCompat
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -20,6 +21,8 @@ class ImagesAdapter(private val context: Context) : RecyclerView.Adapter<ImagesA
     override fun onBindViewHolder(holder: ImageViewHolder, position: Int) {
 
         val image = images[position]
+
+        ViewCompat.setTransitionName(holder.thumbnail, image.uid.toString())
 
         holder.itemView.setOnClickListener { clickListener?.invoke(holder.thumbnail, image) }
         Picasso.with(context)

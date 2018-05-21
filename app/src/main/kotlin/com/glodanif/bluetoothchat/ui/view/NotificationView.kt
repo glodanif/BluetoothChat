@@ -1,7 +1,7 @@
 package com.glodanif.bluetoothchat.ui.view
 
 import android.app.Notification
-import com.glodanif.bluetoothchat.data.entity.TransferringFile
+import com.glodanif.bluetoothchat.data.service.TransferringFile
 
 interface NotificationView {
 

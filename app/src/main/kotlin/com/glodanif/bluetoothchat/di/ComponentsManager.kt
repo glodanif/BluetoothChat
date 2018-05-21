@@ -1,6 +1,6 @@
 package com.glodanif.bluetoothchat.di
 
-import android.content.Context
+import com.glodanif.bluetoothchat.ChatApplication
 import com.glodanif.bluetoothchat.di.component.*
 import com.glodanif.bluetoothchat.di.module.*
 import com.glodanif.bluetoothchat.ui.activity.*
@@ -12,10 +12,11 @@ class ComponentsManager {
 
         private lateinit var appComponent: ApplicationComponent
 
-        fun initialize(context: Context) {
+        fun initialize(application: ChatApplication) {
             appComponent = DaggerApplicationComponent.builder()
-                    .applicationModule(ApplicationModule(context))
+                    .applicationModule(ApplicationModule(application))
                     .build()
+            appComponent.inject(application)
         }
 
         fun injectConversations(activity: ConversationsActivity) {

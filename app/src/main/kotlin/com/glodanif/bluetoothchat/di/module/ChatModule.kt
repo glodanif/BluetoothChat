@@ -20,9 +20,5 @@ class ChatModule(private val address: String, private val activity: ChatActivity
 
     @Provides
     @PerActivity
-    internal fun provideConnector(): BluetoothConnector = BluetoothConnectorImpl(activity)
-
-    @Provides
-    @PerActivity
     internal fun provideScanner(): BluetoothScanner = BluetoothScannerImpl(activity)
 }
