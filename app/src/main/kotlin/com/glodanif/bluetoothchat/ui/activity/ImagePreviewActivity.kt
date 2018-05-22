@@ -120,6 +120,7 @@ class ImagePreviewActivity : SkeletonActivity(), ImagePreviewView {
     override fun onDestroy() {
         super.onDestroy()
 
+        //Fixes https://issuetracker.google.com/issues/37042900
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
             return
         }
