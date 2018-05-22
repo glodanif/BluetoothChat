@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.support.v4.view.ViewCompat
 import android.support.v7.widget.RecyclerView
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -30,6 +31,8 @@ class ImagesAdapter(private val context: Context) : RecyclerView.Adapter<ImagesA
                 .config(Bitmap.Config.RGB_565)
                 .error(R.color.background_image)
                 .placeholder(R.color.background_image)
+                .centerCrop()
+                .fit()
                 .into(holder.thumbnail)
     }
 

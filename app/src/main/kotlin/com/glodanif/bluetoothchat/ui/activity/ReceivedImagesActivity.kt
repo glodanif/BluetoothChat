@@ -35,7 +35,6 @@ class ReceivedImagesActivity : SkeletonActivity(), ReceivedImagesView {
         address = intent.getStringExtra(EXTRA_ADDRESS)
 
         ComponentsManager.injectReceivedImages(this, address)
-        lifecycle.addObserver(presenter)
 
         imagesGrid.layoutManager = GridLayoutManager(this, calculateNoOfColumns())
         imagesGrid.adapter = imagesAdapter
@@ -43,6 +42,8 @@ class ReceivedImagesActivity : SkeletonActivity(), ReceivedImagesView {
         imagesAdapter.clickListener = { view, message ->
             ImagePreviewActivity.start(this, view, message)
         }
+
+        presenter.loadImages()
     }
 
     override fun displayImages(imageMessages: List<MessageFile>) {

@@ -6,9 +6,14 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.os.Build
 import android.os.Bundle
+import android.support.transition.Transition
+import android.support.transition.TransitionManager
 import android.support.v4.app.ActivityOptionsCompat
+import android.support.v4.view.ViewCompat
+import android.util.ArrayMap
 import android.view.Menu
 import android.view.MenuItem
+import android.view.ViewGroup
 import android.widget.ImageView
 import com.github.chrisbanes.photoview.PhotoView
 import com.glodanif.bluetoothchat.R
@@ -21,6 +26,7 @@ import com.glodanif.bluetoothchat.utils.bind
 import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso
 import java.io.File
+import java.lang.ref.WeakReference
 import javax.inject.Inject
 
 class ImagePreviewActivity : SkeletonActivity(), ImagePreviewView {
@@ -42,9 +48,7 @@ class ImagePreviewActivity : SkeletonActivity(), ImagePreviewView {
         own = intent.getBooleanExtra(EXTRA_OWN, false)
         ComponentsManager.injectImagePreview(this, messageId, File(imagePath))
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            imageView.transitionName = messageId.toString()
-        }
+        ViewCompat.setTransitionName(imageView, messageId.toString())
 
         toolbar?.setTitleTextAppearance(this, R.style.ActionBar_TitleTextStyle)
         toolbar?.setSubtitleTextAppearance(this, R.style.ActionBar_SubTitleTextStyle)
@@ -113,6 +117,35 @@ class ImagePreviewActivity : SkeletonActivity(), ImagePreviewView {
                 .show()
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            return
+        }
+
+        val transitionManagerClass = TransitionManager::class.java
+        try {
+            val runningTransitionsField = transitionManagerClass.getDeclaredField("sRunningTransitions")
+            runningTransitionsField.isAccessible = true
+
+            val runningTransitions = runningTransitionsField.get(transitionManagerClass)
+                    as ThreadLocal<WeakReference<ArrayMap<ViewGroup, ArrayList<Transition>>>>
+            if (runningTransitions.get() == null || runningTransitions.get().get() == null) {
+                return
+            }
+            val map = runningTransitions.get().get()
+            val decorView = window.decorView
+            if (map != null && map.containsKey(decorView)) {
+                map.remove(decorView)
+            }
+        } catch (e: NoSuchFieldException) {
+            e.printStackTrace()
+        } catch (e: IllegalAccessException) {
+            e.printStackTrace()
+        }
+    }
+
     companion object {
 
         const val EXTRA_MESSAGE_ID = "extra.message_id"
@@ -124,8 +157,7 @@ class ImagePreviewActivity : SkeletonActivity(), ImagePreviewView {
         }
 
         fun start(activity: Activity, transitionView: ImageView, message: ChatMessageViewModel) {
-            start(activity, transitionView, message.uid, message.imagePath
-                    ?: "unknown", message.own)
+            start(activity, transitionView, message.uid, message.imagePath ?: "unknown", message.own)
         }
 
         fun start(activity: Activity, transitionView: ImageView, messageId: Long, imagePath: String, ownMessage: Boolean) {

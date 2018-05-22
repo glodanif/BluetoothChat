@@ -15,9 +15,8 @@ class ReceivedImagesPresenter(private val address: String?,
                               private val view: ReceivedImagesView,
                               private val model: MessagesStorage,
                               private val uiContext: CoroutineContext = UI,
-                              private val bgContext: CoroutineContext = CommonPool): LifecycleObserver {
+                              private val bgContext: CoroutineContext = CommonPool) {
 
-    @OnLifecycleEvent(Lifecycle.Event.ON_START)
     fun loadImages() = launch(uiContext) {
         val messages = async(bgContext) { model.getFileMessagesByDevice(address) }.await()
         if (messages.isNotEmpty()) {
