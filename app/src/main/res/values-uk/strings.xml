@@ -141,6 +141,11 @@
   <string name="images__removal_confirmation">Ви впевнені, що хочете видалити це зображення?</string>
   <string name="images__received_images">Отримані зображення</string>
   <string name="images__no_images">Ви ще не прийняли жодного зображення</string>
+  <string name="about__about">Про програму</string>
+  <string name="about__description">Bluetooth Chat це проект з відкритим кодом.  Ви можете переглянути вихідний код, відправити повідомлення про помилку, або форкнути репозиторій на GitHub.</string>
+  <string name="about__go_to_github">Перейти на GitHub</string>
+  <string name="about__localization">Ви можете допомогти перекласти Bluetooth Chat на більше мов з допомогою Crowdin</string>
+  <string name="about__go_to_crowdin">Перейти на Crowdin</string>
   <string name="rate_dialog__title">Оцініть додаток</string>
   <string name="rate_dialog__message">Якщо вам подобається цей додаток, будь ласка, знайдіть час, щоб оцінити його. Це займе не більше хвилини. Дякую за вашу підтримку!</string>
   <string name="rate_dialog__rate">Оцінити зараз</string>
