@@ -42,7 +42,9 @@ class BluetoothConnectorImpl(private val context: Context) : BluetoothConnector 
 
             bound = true
             isPreparing = false
-            prepareListeners.forEach { it.onPrepared() }
+            synchronized(prepareListeners) {
+                prepareListeners.forEach { it.onPrepared() }
+            }
         }
 
         override fun onServiceDisconnected(className: ComponentName) {
@@ -54,7 +56,9 @@ class BluetoothConnectorImpl(private val context: Context) : BluetoothConnector 
 
             isPreparing = false
             bound = false
-            prepareListeners.forEach { it.onError() }
+            synchronized(prepareListeners) {
+                prepareListeners.forEach { it.onError() }
+            }
         }
     }
 
@@ -62,57 +66,79 @@ class BluetoothConnectorImpl(private val context: Context) : BluetoothConnector 
 
         override fun onConnected(device: BluetoothDevice) {
             proxy?.onConnected(device)
-            connectListeners.forEach { it.onConnected(device) }
+            synchronized(connectListeners) {
+                connectListeners.forEach { it.onConnected(device) }
+            }
         }
 
         override fun onConnectionWithdrawn() {
             proxy?.onConnectionWithdrawn()
-            connectListeners.forEach { it.onConnectionWithdrawn() }
+            synchronized(connectListeners) {
+                connectListeners.forEach { it.onConnectionWithdrawn() }
+            }
         }
 
         override fun onConnectionAccepted() {
             proxy?.onConnectionAccepted()
-            connectListeners.forEach { it.onConnectionAccepted() }
+            synchronized(connectListeners) {
+                connectListeners.forEach { it.onConnectionAccepted() }
+            }
         }
 
         override fun onConnectionRejected() {
             proxy?.onConnectionRejected()
-            connectListeners.forEach { it.onConnectionRejected() }
+            synchronized(connectListeners) {
+                connectListeners.forEach { it.onConnectionRejected() }
+            }
         }
 
         override fun onConnecting() {
             proxy?.onConnecting()
-            connectListeners.forEach { it.onConnecting() }
+            synchronized(connectListeners) {
+                connectListeners.forEach { it.onConnecting() }
+            }
         }
 
         override fun onConnectedIn(conversation: Conversation) {
             proxy?.onConnectedIn(conversation)
-            connectListeners.forEach { it.onConnectedIn(conversation) }
+            synchronized(connectListeners) {
+                connectListeners.forEach { it.onConnectedIn(conversation) }
+            }
         }
 
         override fun onConnectedOut(conversation: Conversation) {
             proxy?.onConnectedOut(conversation)
-            connectListeners.forEach { it.onConnectedOut(conversation) }
+            synchronized(connectListeners) {
+                connectListeners.forEach { it.onConnectedOut(conversation) }
+            }
         }
 
         override fun onConnectionLost() {
             proxy?.onConnectionLost()
-            connectListeners.forEach { it.onConnectionLost() }
+            synchronized(connectListeners) {
+                connectListeners.forEach { it.onConnectionLost() }
+            }
         }
 
         override fun onConnectionFailed() {
             proxy?.onConnectionFailed()
-            connectListeners.forEach { it.onConnectionFailed() }
+            synchronized(connectListeners) {
+                connectListeners.forEach { it.onConnectionFailed() }
+            }
         }
 
         override fun onDisconnected() {
             proxy?.onDisconnected()
-            connectListeners.forEach { it.onDisconnected() }
+            synchronized(connectListeners) {
+                connectListeners.forEach { it.onDisconnected() }
+            }
         }
 
         override fun onConnectionDestroyed() {
             proxy?.onConnectionDestroyed()
-            connectListeners.forEach { it.onConnectionDestroyed() }
+            synchronized(connectListeners) {
+                connectListeners.forEach { it.onConnectionDestroyed() }
+            }
             release()
         }
     }
@@ -121,27 +147,37 @@ class BluetoothConnectorImpl(private val context: Context) : BluetoothConnector 
 
         override fun onMessageReceived(message: ChatMessage) {
             proxy?.onMessageReceived(message)
-            messageListeners.forEach { it.onMessageReceived(message) }
+            synchronized(messageListeners) {
+                messageListeners.forEach { it.onMessageReceived(message) }
+            }
         }
 
         override fun onMessageSent(message: ChatMessage) {
             proxy?.onMessageSent(message)
-            messageListeners.forEach { it.onMessageSent(message) }
+            synchronized(messageListeners) {
+                messageListeners.forEach { it.onMessageSent(message) }
+            }
         }
 
         override fun onMessageDelivered(id: Long) {
             proxy?.onMessageDelivered(id)
-            messageListeners.forEach { it.onMessageDelivered(id) }
+            synchronized(messageListeners) {
+                messageListeners.forEach { it.onMessageDelivered(id) }
+            }
         }
 
         override fun onMessageNotDelivered(id: Long) {
             proxy?.onMessageNotDelivered(id)
-            messageListeners.forEach { it.onMessageNotDelivered(id) }
+            synchronized(messageListeners) {
+                messageListeners.forEach { it.onMessageNotDelivered(id) }
+            }
         }
 
         override fun onMessageSeen(id: Long) {
             proxy?.onMessageSeen(id)
-            messageListeners.forEach { it.onMessageSeen(id) }
+            synchronized(messageListeners) {
+                messageListeners.forEach { it.onMessageSeen(id) }
+            }
         }
     }
 
@@ -149,47 +185,65 @@ class BluetoothConnectorImpl(private val context: Context) : BluetoothConnector 
 
         override fun onFileSendingStarted(fileAddress: String?, fileSize: Long) {
             proxy?.onFileSendingStarted(fileAddress, fileSize)
-            fileListeners.forEach { it.onFileSendingStarted(fileAddress, fileSize) }
+            synchronized(fileListeners) {
+                fileListeners.forEach { it.onFileSendingStarted(fileAddress, fileSize) }
+            }
         }
 
         override fun onFileSendingProgress(sentBytes: Long, totalBytes: Long) {
             proxy?.onFileSendingProgress(sentBytes, totalBytes)
-            fileListeners.forEach { it.onFileSendingProgress(sentBytes, totalBytes) }
+            synchronized(fileListeners) {
+                fileListeners.forEach { it.onFileSendingProgress(sentBytes, totalBytes) }
+            }
         }
 
         override fun onFileSendingFinished() {
             proxy?.onFileSendingFinished()
-            fileListeners.forEach { it.onFileSendingFinished() }
+            synchronized(fileListeners) {
+                fileListeners.forEach { it.onFileSendingFinished() }
+            }
         }
 
         override fun onFileSendingFailed() {
             proxy?.onFileSendingFailed()
-            fileListeners.forEach { it.onFileSendingFailed() }
+            synchronized(fileListeners) {
+                fileListeners.forEach { it.onFileSendingFailed() }
+            }
         }
 
         override fun onFileReceivingStarted(fileSize: Long) {
             proxy?.onFileReceivingStarted(fileSize)
-            fileListeners.forEach { it.onFileReceivingStarted(fileSize) }
+            synchronized(fileListeners) {
+                fileListeners.forEach { it.onFileReceivingStarted(fileSize) }
+            }
         }
 
         override fun onFileReceivingProgress(sentBytes: Long, totalBytes: Long) {
             proxy?.onFileReceivingProgress(sentBytes, totalBytes)
-            fileListeners.forEach { it.onFileReceivingProgress(sentBytes, totalBytes) }
+            synchronized(fileListeners) {
+                fileListeners.forEach { it.onFileReceivingProgress(sentBytes, totalBytes) }
+            }
         }
 
         override fun onFileReceivingFinished() {
             proxy?.onFileReceivingFinished()
-            fileListeners.forEach { it.onFileReceivingFinished() }
+            synchronized(fileListeners) {
+                fileListeners.forEach { it.onFileReceivingFinished() }
+            }
         }
 
         override fun onFileReceivingFailed() {
             proxy?.onFileReceivingFailed()
-            fileListeners.forEach { it.onFileReceivingFailed() }
+            synchronized(fileListeners) {
+                fileListeners.forEach { it.onFileReceivingFailed() }
+            }
         }
 
         override fun onFileTransferCanceled(byPartner: Boolean) {
             proxy?.onFileTransferCanceled(byPartner)
-            fileListeners.forEach { it.onFileTransferCanceled(byPartner) }
+            synchronized(fileListeners) {
+                fileListeners.forEach { it.onFileTransferCanceled(byPartner) }
+            }
         }
     }
 
@@ -215,10 +269,18 @@ class BluetoothConnectorImpl(private val context: Context) : BluetoothConnector 
         service = null
         proxy = null
 
-        connectListeners.clear()
-        prepareListeners.clear()
-        messageListeners.clear()
-        fileListeners.clear()
+        synchronized(connectListeners) {
+            connectListeners.clear()
+        }
+        synchronized(prepareListeners) {
+            prepareListeners.clear()
+        }
+        synchronized(messageListeners) {
+            messageListeners.clear()
+        }
+        synchronized(fileListeners) {
+            fileListeners.clear()
+        }
     }
 
     override fun isConnectionPrepared(): Boolean {
@@ -226,35 +288,51 @@ class BluetoothConnectorImpl(private val context: Context) : BluetoothConnector 
     }
 
     override fun addOnPrepareListener(listener: OnPrepareListener) {
-        this.prepareListeners.add(listener)
+        synchronized(prepareListeners) {
+            this.prepareListeners.add(listener)
+        }
     }
 
     override fun addOnConnectListener(listener: OnConnectionListener) {
-        this.connectListeners.add(listener)
+        synchronized(connectListeners) {
+            this.connectListeners.add(listener)
+        }
     }
 
     override fun addOnMessageListener(listener: OnMessageListener) {
-        this.messageListeners.add(listener)
+        synchronized(messageListeners) {
+            this.messageListeners.add(listener)
+        }
     }
 
     override fun addOnFileListener(listener: OnFileListener) {
-        this.fileListeners.add(listener)
+        synchronized(fileListeners) {
+            fileListeners.add(listener)
+        }
     }
 
     override fun removeOnPrepareListener(listener: OnPrepareListener) {
-        this.prepareListeners.remove(listener)
+        synchronized(prepareListeners) {
+            this.prepareListeners.remove(listener)
+        }
     }
 
     override fun removeOnConnectListener(listener: OnConnectionListener) {
-        this.connectListeners.remove(listener)
+        synchronized(connectListeners) {
+            this.connectListeners.remove(listener)
+        }
     }
 
     override fun removeOnMessageListener(listener: OnMessageListener) {
-        this.messageListeners.remove(listener)
+        synchronized(messageListeners) {
+            this.messageListeners.remove(listener)
+        }
     }
 
     override fun removeOnFileListener(listener: OnFileListener) {
-        this.fileListeners.remove(listener)
+        synchronized(fileListeners) {
+            fileListeners.remove(listener)
+        }
     }
 
     override fun connect(device: BluetoothDevice) {
