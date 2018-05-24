@@ -202,7 +202,7 @@ fun String.getFirstLetter(): String {
 
 fun TextDrawable.getBitmap(): Bitmap {
 
-    val bitmap = Bitmap.createBitmap(128, 128, Bitmap.Config.RGB_565)
+    val bitmap = Bitmap.createBitmap(128, 128, Bitmap.Config.ARGB_8888)
     val canvas = Canvas(bitmap)
     this.setBounds(0, 0, canvas.width, canvas.height)
     this.draw(canvas)
