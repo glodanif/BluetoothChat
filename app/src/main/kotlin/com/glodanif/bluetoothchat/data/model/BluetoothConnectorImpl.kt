@@ -11,7 +11,6 @@ import com.glodanif.bluetoothchat.data.internal.AutoresponderProxy
 import com.glodanif.bluetoothchat.data.internal.CommunicationProxy
 import com.glodanif.bluetoothchat.data.internal.EmptyProxy
 import com.glodanif.bluetoothchat.data.service.*
-import com.glodanif.bluetoothchat.utils.safeClear
 import com.glodanif.bluetoothchat.utils.safeRemove
 import java.io.File
 
@@ -272,16 +271,16 @@ class BluetoothConnectorImpl(private val context: Context) : BluetoothConnector 
         proxy = null
 
         synchronized(connectListeners) {
-            connectListeners.safeClear()
+            connectListeners = mutableSetOf()
         }
         synchronized(prepareListeners) {
-            prepareListeners.safeClear()
+            prepareListeners = mutableSetOf()
         }
         synchronized(messageListeners) {
-            messageListeners.safeClear()
+            messageListeners = mutableSetOf()
         }
         synchronized(fileListeners) {
-            fileListeners.safeClear()
+            fileListeners = mutableSetOf()
         }
     }
 

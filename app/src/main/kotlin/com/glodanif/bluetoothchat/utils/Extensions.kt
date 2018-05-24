@@ -65,13 +65,6 @@ infix fun <T> MutableSet<T>.safeRemove(item: T) = this.iterator().let {
     }
 }
 
-fun <T> MutableSet<T>.safeClear() = this.iterator().let {
-
-    while (it.hasNext()) {
-        it.remove()
-    }
-}
-
 fun BluetoothClass.withPotentiallyInstalledApplication(): Boolean {
     return this.majorDeviceClass == BluetoothClass.Device.Major.PHONE ||
             this.majorDeviceClass == BluetoothClass.Device.Major.COMPUTER ||
