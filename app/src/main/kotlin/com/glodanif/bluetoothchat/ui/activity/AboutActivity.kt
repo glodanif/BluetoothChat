@@ -37,8 +37,7 @@ class AboutActivity : SkeletonActivity() {
 
     companion object {
         fun start(context: Context) {
-            val intent = Intent(context, AboutActivity::class.java)
-            context.startActivity(intent)
+            context.startActivity(Intent(context, AboutActivity::class.java))
         }
     }
 }

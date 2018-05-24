@@ -67,13 +67,20 @@ class ConversationsActivity : SkeletonActivity(), ConversationsView {
         conversationsList.layoutManager = LinearLayoutManager(this)
         conversationsList.adapter = conversationsAdapter
 
-        settingsPopup = SettingsPopup(this)
-        settingsPopup.setCallbacks(
-                profileClickListener = { ProfileActivity.start(this, editMode = true) },
-                imagesClickListener = { ReceivedImagesActivity.start(this, address = null) },
-                settingsClickListener = { SettingsActivity.start(this) },
-                aboutClickListener = { AboutActivity.start(this) }
-        )
+        settingsPopup = SettingsPopup(this).apply {
+            setOnOptionClickListener {
+                when (it) {
+                    SettingsPopup.Option.PROFILE ->
+                        ProfileActivity.start(this@ConversationsActivity, editMode = true)
+                    SettingsPopup.Option.IMAGES ->
+                        ReceivedImagesActivity.start(this@ConversationsActivity, address = null)
+                    SettingsPopup.Option.SETTINGS ->
+                        SettingsActivity.start(this@ConversationsActivity)
+                    SettingsPopup.Option.ABOUT ->
+                        AboutActivity.start(this@ConversationsActivity)
+                }
+            }
+        }
 
         conversationsAdapter.clickListener = { ChatActivity.start(this, it.address) }
         conversationsAdapter.longClickListener = { conversation, isCurrent ->
@@ -100,8 +107,8 @@ class ConversationsActivity : SkeletonActivity(), ConversationsView {
             if ("text/plain" == intent.type) {
                 textToShare = intent.getStringExtra(Intent.EXTRA_TEXT).trim()
             } else if (intent.type.startsWith("image/")) {
-                val imageUri = intent.getParcelableExtra(Intent.EXTRA_STREAM) as Uri
-                fileToShare = imageUri.getFilePath(this)
+                val imageUri = intent.getParcelableExtra(Intent.EXTRA_STREAM) as Uri?
+                fileToShare = imageUri?.getFilePath(this)
             }
 
             ContactChooserActivity.start(this, textToShare, fileToShare)

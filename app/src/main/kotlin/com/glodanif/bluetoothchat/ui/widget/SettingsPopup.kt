@@ -23,15 +23,19 @@ import com.glodanif.bluetoothchat.utils.getLayoutInflater
 
 class SettingsPopup(context: Context) : PopupWindow() {
 
+    enum class Option {
+        PROFILE,
+        IMAGES,
+        SETTINGS,
+        ABOUT;
+    }
+
     private val APPEARING_ANIMATION_DURATION: Long = 200
 
     @ColorInt
     private var color = Color.GRAY
     private var userName = ""
-    private var profileClickListener: (() -> (Unit))? = null
-    private var settingsClickListener: (() -> (Unit))? = null
-    private var imagesClickListener: (() -> (Unit))? = null
-    private var aboutClickListener: (() -> (Unit))? = null
+    private var clickListener: ((Option) -> (Unit))? = null
 
     private var rootView: View
     private var container: View
@@ -45,11 +49,8 @@ class SettingsPopup(context: Context) : PopupWindow() {
         this.color = color
     }
 
-    fun setCallbacks(profileClickListener: () -> (Unit), imagesClickListener: () -> (Unit), settingsClickListener: () -> (Unit), aboutClickListener: () -> (Unit)) {
-        this.profileClickListener = profileClickListener
-        this.imagesClickListener = imagesClickListener
-        this.settingsClickListener = settingsClickListener
-        this.aboutClickListener = aboutClickListener
+    fun setOnOptionClickListener(clickListener: (Option) -> (Unit)) {
+        this.clickListener = clickListener
     }
 
     init {
@@ -62,22 +63,22 @@ class SettingsPopup(context: Context) : PopupWindow() {
 
         rootView.findViewById<View>(R.id.ll_user_profile_container).setOnClickListener({
             dismiss()
-            profileClickListener?.invoke()
+            clickListener?.invoke(Option.PROFILE)
         })
 
         rootView.findViewById<View>(R.id.ll_images_button).setOnClickListener({
             dismiss()
-            imagesClickListener?.invoke()
+            clickListener?.invoke(Option.IMAGES)
         })
 
         rootView.findViewById<View>(R.id.ll_settings_button).setOnClickListener({
             dismiss()
-            settingsClickListener?.invoke()
+            clickListener?.invoke(Option.SETTINGS)
         })
 
         rootView.findViewById<View>(R.id.ll_about_button).setOnClickListener({
             dismiss()
-            aboutClickListener?.invoke()
+            clickListener?.invoke(Option.ABOUT)
         })
 
         contentView = rootView

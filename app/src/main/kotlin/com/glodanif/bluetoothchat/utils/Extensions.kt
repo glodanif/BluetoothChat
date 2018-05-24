@@ -56,6 +56,22 @@ fun Animation.onEnd(action: () -> Unit) {
     })
 }
 
+infix fun <T> MutableSet<T>.safeRemove(item: T) = this.iterator().let {
+
+    while (it.hasNext()) {
+        if (it.next() == item) {
+            it.remove()
+        }
+    }
+}
+
+fun <T> MutableSet<T>.safeClear() = this.iterator().let {
+
+    while (it.hasNext()) {
+        it.remove()
+    }
+}
+
 fun BluetoothClass.withPotentiallyInstalledApplication(): Boolean {
     return this.majorDeviceClass == BluetoothClass.Device.Major.PHONE ||
             this.majorDeviceClass == BluetoothClass.Device.Major.COMPUTER ||
@@ -186,7 +202,7 @@ fun String.getFirstLetter(): String {
 
 fun TextDrawable.getBitmap(): Bitmap {
 
-    val bitmap = Bitmap.createBitmap(128, 128, Bitmap.Config.ARGB_8888)
+    val bitmap = Bitmap.createBitmap(128, 128, Bitmap.Config.RGB_565)
     val canvas = Canvas(bitmap)
     this.setBounds(0, 0, canvas.width, canvas.height)
     this.draw(canvas)

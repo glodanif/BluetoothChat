@@ -11,6 +11,8 @@ import com.glodanif.bluetoothchat.data.internal.AutoresponderProxy
 import com.glodanif.bluetoothchat.data.internal.CommunicationProxy
 import com.glodanif.bluetoothchat.data.internal.EmptyProxy
 import com.glodanif.bluetoothchat.data.service.*
+import com.glodanif.bluetoothchat.utils.safeClear
+import com.glodanif.bluetoothchat.utils.safeRemove
 import java.io.File
 
 class BluetoothConnectorImpl(private val context: Context) : BluetoothConnector {
@@ -270,16 +272,16 @@ class BluetoothConnectorImpl(private val context: Context) : BluetoothConnector 
         proxy = null
 
         synchronized(connectListeners) {
-            connectListeners.clear()
+            connectListeners.safeClear()
         }
         synchronized(prepareListeners) {
-            prepareListeners.clear()
+            prepareListeners.safeClear()
         }
         synchronized(messageListeners) {
-            messageListeners.clear()
+            messageListeners.safeClear()
         }
         synchronized(fileListeners) {
-            fileListeners.clear()
+            fileListeners.safeClear()
         }
     }
 
@@ -289,19 +291,19 @@ class BluetoothConnectorImpl(private val context: Context) : BluetoothConnector 
 
     override fun addOnPrepareListener(listener: OnPrepareListener) {
         synchronized(prepareListeners) {
-            this.prepareListeners.add(listener)
+            prepareListeners.add(listener)
         }
     }
 
     override fun addOnConnectListener(listener: OnConnectionListener) {
         synchronized(connectListeners) {
-            this.connectListeners.add(listener)
+            connectListeners.add(listener)
         }
     }
 
     override fun addOnMessageListener(listener: OnMessageListener) {
         synchronized(messageListeners) {
-            this.messageListeners.add(listener)
+            messageListeners.add(listener)
         }
     }
 
@@ -313,25 +315,25 @@ class BluetoothConnectorImpl(private val context: Context) : BluetoothConnector 
 
     override fun removeOnPrepareListener(listener: OnPrepareListener) {
         synchronized(prepareListeners) {
-            this.prepareListeners.remove(listener)
+            prepareListeners safeRemove listener
         }
     }
 
     override fun removeOnConnectListener(listener: OnConnectionListener) {
         synchronized(connectListeners) {
-            this.connectListeners.remove(listener)
+            connectListeners safeRemove listener
         }
     }
 
     override fun removeOnMessageListener(listener: OnMessageListener) {
         synchronized(messageListeners) {
-            this.messageListeners.remove(listener)
+            messageListeners safeRemove listener
         }
     }
 
     override fun removeOnFileListener(listener: OnFileListener) {
         synchronized(fileListeners) {
-            fileListeners.remove(listener)
+            fileListeners safeRemove listener
         }
     }
 
