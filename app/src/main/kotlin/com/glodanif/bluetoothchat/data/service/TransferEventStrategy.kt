@@ -1,6 +1,8 @@
 package com.glodanif.bluetoothchat.data.service
 
+import com.crashlytics.android.Crashlytics
 import com.glodanif.bluetoothchat.utils.isNumber
+import io.fabric.sdk.android.Fabric
 
 class TransferEventStrategy : DataTransferThread.EventsStrategy {
 
@@ -14,7 +16,18 @@ class TransferEventStrategy : DataTransferThread.EventsStrategy {
             if (message != null && fileStartRegex.containsMatchIn(message)) {
 
                 val info = fileStartRegex.replace(message, "")
-                val uid = message.substring(2).substringBefore("#").toLong()
+                val uid = try {
+                    message.substring(2).substringBefore("#").toLong()
+                } catch (e: NumberFormatException) {
+
+                    val exception = NumberFormatException(e.message + " | " + message)
+
+                    if (Fabric.isInitialized()) {
+                        Crashlytics.getInstance().core.logException(exception)
+                    }
+
+                    throw exception
+                }
 
                 if (info.isEmpty()) {
                     null

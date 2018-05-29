@@ -261,17 +261,19 @@ class ChatPresenter(private val deviceAddress: String,
         }
     }
 
-    private fun sendFileIfPrepared() {
+    private fun sendFileIfPrepared() = fileToSend?.let { file ->
 
-        fileToSend?.let {
-
-            if (it.length() > maxFileSize) {
+        if (connectionModel.isConnected()) {
+            if (file.length() > maxFileSize) {
                 view.showImageTooBig(maxFileSize.toLong())
             } else {
-                connectionModel.sendFile(it, PayloadType.IMAGE)
+                connectionModel.sendFile(file, PayloadType.IMAGE)
             }
             fileToSend = null
             filePresharing = null
+        } else {
+            filePresharing = fileToSend
+            view.showPresharingImage(file.absolutePath)
         }
     }
 

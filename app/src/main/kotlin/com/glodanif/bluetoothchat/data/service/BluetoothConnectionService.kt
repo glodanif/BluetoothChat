@@ -545,7 +545,7 @@ class BluetoothConnectionService : Service() {
         launch(bgContext) { db.conversationsDao().insert(conversation) }
 
         currentConversation = conversation
-        contract setupWith if (parts.size >= 3) parts[2].toInt() else 0
+        contract setupWith if (parts.size >= 3) parts[2].trim().toInt() else 0
 
         connectionListener?.onConnectedIn(conversation)
 
@@ -566,7 +566,7 @@ class BluetoothConnectionService : Service() {
         launch(bgContext) { db.conversationsDao().insert(conversation) }
 
         currentConversation = conversation
-        contract setupWith if (parts.size >= 3) parts[2].toInt() else 0
+        contract setupWith if (parts.size >= 3) parts[2].trim().toInt() else 0
 
         connectionState = ConnectionState.CONNECTED
         connectionListener?.onConnectionAccepted()

@@ -11,6 +11,7 @@ import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.net.Uri
 import android.os.Environment
+import android.os.Handler
 import android.provider.DocumentsContract
 import android.provider.MediaStore
 import android.support.annotation.IdRes
@@ -39,6 +40,10 @@ fun Context.getNotificationManager() =
 
 fun Context.getLayoutInflater() =
         this.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+
+fun Handler.delayedPost(milliseconds: Long, action: () -> Unit) {
+    this.postDelayed(action, milliseconds)
+}
 
 fun Animation.onEnd(action: () -> Unit) {
 
@@ -204,9 +209,10 @@ fun TextDrawable.getBitmap(): Bitmap {
 }
 
 fun Long.toReadableFileSize(): String {
-    if (this <= 0) return "0"
-    val units = arrayOf("B", "kB", "MB", "GB", "TB")
+    if (this <= 0) return "?"
+    val units = arrayOf("B", "kB", "MB", "GB", "TB", "PB")
     val digitGroups = (Math.log10(this.toDouble()) / Math.log10(1024.0)).toInt()
+    if (digitGroups > 6) return "?"
     return DecimalFormat("#,##0.#").format(
             this / Math.pow(1024.0, digitGroups.toDouble())) + " " + units[digitGroups]
 }
