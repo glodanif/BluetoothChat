@@ -379,6 +379,8 @@ class BluetoothConnectionService : Service() {
         dataTransferThread?.prepare()
         dataTransferThread?.start()
 
+        //FIXME: workaround for CAE
+        Thread.sleep(150)
         launch(uiContext) { connectionListener?.onConnected(socket.remoteDevice) }
     }
 
@@ -577,6 +579,9 @@ class BluetoothConnectionService : Service() {
         currentSocket = null
         currentConversation = null
         contract.reset()
+
+        //FIXME: workaround for CAE
+        Thread.sleep(150)
         launch(uiContext) { connectionListener?.onConnectionFailed() }
         connectionState = ConnectionState.NOT_CONNECTED
         prepareForAccept()

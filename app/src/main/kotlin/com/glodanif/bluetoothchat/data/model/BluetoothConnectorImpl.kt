@@ -7,12 +7,15 @@ import android.content.ServiceConnection
 import android.os.Handler
 import android.os.IBinder
 import com.glodanif.bluetoothchat.BuildConfig
-import com.glodanif.bluetoothchat.data.entity.*
+import com.glodanif.bluetoothchat.data.entity.ChatMessage
+import com.glodanif.bluetoothchat.data.entity.Conversation
 import com.glodanif.bluetoothchat.data.internal.AutoresponderProxy
 import com.glodanif.bluetoothchat.data.internal.CommunicationProxy
 import com.glodanif.bluetoothchat.data.internal.EmptyProxy
-import com.glodanif.bluetoothchat.data.service.*
-import com.glodanif.bluetoothchat.utils.delayedPost
+import com.glodanif.bluetoothchat.data.service.BluetoothConnectionService
+import com.glodanif.bluetoothchat.data.service.Contract
+import com.glodanif.bluetoothchat.data.service.PayloadType
+import com.glodanif.bluetoothchat.data.service.TransferringFile
 import com.glodanif.bluetoothchat.utils.safeRemove
 import java.io.File
 
@@ -71,11 +74,8 @@ class BluetoothConnectorImpl(private val context: Context) : BluetoothConnector 
 
         override fun onConnected(device: BluetoothDevice) {
             proxy?.onConnected(device)
-            //FIXME: workaround for ConcurrentModificationException
-            handler.delayedPost(100) {
-                synchronized(connectListeners) {
-                    connectListeners.forEach { it.onConnected(device) }
-                }
+            synchronized(connectListeners) {
+                connectListeners.forEach { it.onConnected(device) }
             }
         }
 
@@ -130,11 +130,8 @@ class BluetoothConnectorImpl(private val context: Context) : BluetoothConnector 
 
         override fun onConnectionFailed() {
             proxy?.onConnectionFailed()
-            //FIXME: workaround for ConcurrentModificationException
-            handler.delayedPost(100) {
-                synchronized(connectListeners) {
-                    connectListeners.forEach { it.onConnectionFailed() }
-                }
+            synchronized(connectListeners) {
+                connectListeners.forEach { it.onConnectionFailed() }
             }
         }
 
