@@ -50,8 +50,8 @@ class BluetoothConnectionService : Service() {
     private var messageListener: OnMessageListener? = null
     private var fileListener: OnFileListener? = null
 
-    private var acceptThread: AcceptThread? = null
-    private var connectThread: ConnectThread? = null
+    private var acceptThread: AcceptJob? = null
+    private var connectThread: ConnectJob? = null
     private var dataTransferThread: DataTransferThread? = null
 
     @Volatile
@@ -136,7 +136,7 @@ class BluetoothConnectionService : Service() {
         cancelConnections()
 
         if (isRunning) {
-            acceptThread = AcceptThread()
+            acceptThread = AcceptJob()
             acceptThread?.start()
             showNotification(getString(R.string.notification__ready_to_connect))
         }
@@ -159,7 +159,7 @@ class BluetoothConnectionService : Service() {
         contract.reset()
         connectionType = null
 
-        connectThread = ConnectThread(device)
+        connectThread = ConnectJob(device)
         connectThread?.start()
 
         launch(uiContext) { connectionListener?.onConnecting() }
@@ -379,8 +379,6 @@ class BluetoothConnectionService : Service() {
         dataTransferThread?.prepare()
         dataTransferThread?.start()
 
-        //FIXME: workaround for CAE
-        Thread.sleep(150)
         launch(uiContext) { connectionListener?.onConnected(socket.remoteDevice) }
     }
 
@@ -579,9 +577,6 @@ class BluetoothConnectionService : Service() {
         currentSocket = null
         currentConversation = null
         contract.reset()
-
-        //FIXME: workaround for CAE
-        Thread.sleep(150)
         launch(uiContext) { connectionListener?.onConnectionFailed() }
         connectionState = ConnectionState.NOT_CONNECTED
         prepareForAccept()
@@ -626,7 +621,7 @@ class BluetoothConnectionService : Service() {
         this.fileListener = listener
     }
 
-    private inner class AcceptThread : Thread() {
+    private inner class AcceptJob {
 
         private var serverSocket: BluetoothServerSocket? = null
 
@@ -640,30 +635,26 @@ class BluetoothConnectionService : Service() {
             connectionState = ConnectionState.LISTENING
         }
 
-        override fun run() {
-
-            var socket: BluetoothSocket?
+        fun start() = launch(bgContext) {
 
             while (!isConnectedOrPending()) {
 
                 try {
-                    socket = serverSocket?.accept()
+                    serverSocket?.accept()?.let { socket ->
+                        when (connectionState) {
+                            ConnectionState.LISTENING, ConnectionState.CONNECTING -> {
+                                connected(socket, ConnectionType.INCOMING)
+                            }
+                            ConnectionState.NOT_CONNECTED, ConnectionState.CONNECTED, ConnectionState.PENDING, ConnectionState.REJECTED -> try {
+                                socket.close()
+                            } catch (e: IOException) {
+                                e.printStackTrace()
+                            }
+                        }
+                    }
                 } catch (e: IOException) {
                     e.printStackTrace()
                     break
-                }
-
-                socket?.let {
-                    when (connectionState) {
-                        ConnectionState.LISTENING, ConnectionState.CONNECTING -> {
-                            connected(it, ConnectionType.INCOMING)
-                        }
-                        ConnectionState.NOT_CONNECTED, ConnectionState.CONNECTED, ConnectionState.PENDING, ConnectionState.REJECTED -> try {
-                            it.close()
-                        } catch (e: IOException) {
-                            e.printStackTrace()
-                        }
-                    }
                 }
             }
         }
@@ -677,11 +668,11 @@ class BluetoothConnectionService : Service() {
         }
     }
 
-    private inner class ConnectThread(private val bluetoothDevice: BluetoothDevice) : Thread() {
+    private inner class ConnectJob(private val bluetoothDevice: BluetoothDevice) {
 
         private var socket: BluetoothSocket? = null
 
-        override fun run() {
+        fun start() = launch(bgContext) {
 
             try {
                 socket = bluetoothDevice.createRfcommSocketToServiceRecord(APP_UUID)
@@ -700,7 +691,7 @@ class BluetoothConnectionService : Service() {
                     e.printStackTrace()
                 }
                 connectionFailed()
-                return
+                return@launch
             }
 
             synchronized(this@BluetoothConnectionService) {
