@@ -20,7 +20,7 @@ class TransferEventStrategy : DataTransferThread.EventsStrategy {
                     message.substring(2).substringBefore("#").toLong()
                 } catch (e: NumberFormatException) {
 
-                    val exception = NumberFormatException(e.message + " | " + message)
+                    val exception = NumberFormatException(e.message + " | " + fileStartRegex.find(message)?.value)
 
                     if (Fabric.isInitialized()) {
                         Crashlytics.getInstance().core.logException(exception)

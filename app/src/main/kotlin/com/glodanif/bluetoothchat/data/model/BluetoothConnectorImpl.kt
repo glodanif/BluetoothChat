@@ -312,25 +312,25 @@ class BluetoothConnectorImpl(private val context: Context) : BluetoothConnector 
 
     override fun removeOnPrepareListener(listener: OnPrepareListener) {
         synchronized(monitor) {
-            prepareListeners safeRemove listener
+            prepareListeners.safeRemove(listener)
         }
     }
 
     override fun removeOnConnectListener(listener: OnConnectionListener) {
         synchronized(monitor) {
-            connectListeners safeRemove listener
+            connectListeners.safeRemove(listener)
         }
     }
 
     override fun removeOnMessageListener(listener: OnMessageListener) {
         synchronized(monitor) {
-            messageListeners safeRemove listener
+            messageListeners.safeRemove(listener)
         }
     }
 
     override fun removeOnFileListener(listener: OnFileListener) {
         synchronized(monitor) {
-            fileListeners safeRemove listener
+            fileListeners.safeRemove(listener)
         }
     }
 
