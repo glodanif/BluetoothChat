@@ -169,6 +169,8 @@ class ScanPresenter(private val view: ScanView,
     fun cancelScanning() {
         view.showScanningStopped()
         scanner.stopScanning()
+        connection.removeOnConnectListener(connectionListener)
+        connection.disconnect()
     }
 
     fun shareApk() = launch(uiContext) {

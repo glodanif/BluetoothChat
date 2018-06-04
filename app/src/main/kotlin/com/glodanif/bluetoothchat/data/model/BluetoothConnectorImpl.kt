@@ -359,7 +359,7 @@ class BluetoothConnectorImpl(private val context: Context) : BluetoothConnector 
         service?.cancelFileTransfer()
     }
 
-    override fun restart() {
+    override fun disconnect() {
         service?.disconnect()
     }
 

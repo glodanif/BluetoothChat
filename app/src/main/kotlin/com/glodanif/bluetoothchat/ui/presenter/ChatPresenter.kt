@@ -291,7 +291,7 @@ class ChatPresenter(private val deviceAddress: String,
     }
 
     fun resetConnection() {
-        connectionModel.restart()
+        connectionModel.disconnect()
         view.showStatusNotConnected()
         view.showNotConnectedToAnyDevice()
     }
