@@ -151,14 +151,14 @@ class ScanActivity : SkeletonActivity(), ScanView {
         startActivityForResult(enableBtIntent, REQUEST_ENABLE_BLUETOOTH)
     }
 
-    override fun showBluetoothIsNotAvailableMessage() {
+    override fun showBluetoothIsNotAvailableMessage() = doIfStarted {
         AlertDialog.Builder(this)
                 .setMessage(R.string.scan__no_access_to_bluetooth)
                 .setPositiveButton(R.string.general__ok, { _, _ -> finish() })
                 .show()
     }
 
-    override fun showBluetoothEnablingFailed() {
+    override fun showBluetoothEnablingFailed() = doIfStarted {
         AlertDialog.Builder(this)
                 .setMessage(R.string.scan__bluetooth_disabled)
                 .setPositiveButton(R.string.general__ok, null)
@@ -195,7 +195,7 @@ class ScanActivity : SkeletonActivity(), ScanView {
         scanForDevicesButton.text = getString(R.string.scan__scan_for_devices)
     }
 
-    override fun showBluetoothDiscoverableFailure() {
+    override fun showBluetoothDiscoverableFailure() = doIfStarted {
         AlertDialog.Builder(this)
                 .setMessage(R.string.scan__unable_to_make_discoverable)
                 .setPositiveButton(R.string.general__ok, null)
@@ -280,7 +280,7 @@ class ScanActivity : SkeletonActivity(), ScanView {
                 .show()
     }
 
-    override fun showExtractionApkFailureMessage() {
+    override fun showExtractionApkFailureMessage() = doIfStarted {
         AlertDialog.Builder(this)
                 .setMessage(R.string.scan__unable_to_fetch_apk)
                 .setPositiveButton(R.string.general__ok, null)

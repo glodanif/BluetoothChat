@@ -57,13 +57,6 @@ fun Animation.onEnd(action: () -> Unit) {
     })
 }
 
-inline fun <T> MutableSet<T>.safeForEach(action: (T) -> Unit) = this.iterator().let {
-
-    while (it.hasNext()) {
-        action.invoke(it.next())
-    }
-}
-
 fun <T> MutableSet<T>.safeRemove(item: T) = this.iterator().let {
 
     while (it.hasNext()) {

@@ -76,6 +76,7 @@ class ExpiringProgressBar : View {
     }
 
     private val tick = object : Runnable {
+
         override fun run() {
             if (!isCanceled && timeLeft > 0) {
                 timeLeft--

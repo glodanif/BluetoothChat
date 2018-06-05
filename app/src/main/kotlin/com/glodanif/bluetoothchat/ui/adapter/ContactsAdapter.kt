@@ -15,7 +15,6 @@ class ContactsAdapter : RecyclerView.Adapter<ContactsAdapter.ContactViewHolder>(
     var clickListener: ((ContactViewModel) -> Unit)? = null
     var conversations: ArrayList<ContactViewModel> = ArrayList()
 
-    @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: ContactViewHolder, position: Int) {
 
         val contact = conversations[position]

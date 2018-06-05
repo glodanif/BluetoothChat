@@ -15,12 +15,15 @@ class TransferEventStrategy : DataTransferThread.EventsStrategy {
 
             if (message != null && fileStartRegex.containsMatchIn(message)) {
 
-                val info = fileStartRegex.replace(message, "")
+                val messageBody = "6#" + message.substringAfter("6#")
+
+                val info = fileStartRegex.replace(messageBody, "")
                 val uid = try {
-                    message.substring(2).substringBefore("#").toLong()
+                    messageBody.substring(2).substringBefore("#").toLong()
                 } catch (e: NumberFormatException) {
 
-                    val exception = NumberFormatException(e.message + " | " + fileStartRegex.find(message)?.value)
+                    //TODO: remove if crash doesn't appear anymore
+                    val exception = NumberFormatException(e.message + " | " + fileStartRegex.find(messageBody)?.value)
 
                     if (Fabric.isInitialized()) {
                         Crashlytics.getInstance().core.logException(exception)
@@ -47,7 +50,7 @@ class TransferEventStrategy : DataTransferThread.EventsStrategy {
                 null
             }
 
-    override fun isFileCanceled(message: String?): DataTransferThread.CancelInfo? =
+    override fun isFileCanceled(message: String?) =
 
             if (message != null && (message.contains("8#0#0#") || message.contains("8#0#1#"))) {
                 val byPartner = message
