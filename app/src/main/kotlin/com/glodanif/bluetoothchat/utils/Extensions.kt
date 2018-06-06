@@ -41,6 +41,8 @@ fun Context.getNotificationManager() =
 fun Context.getLayoutInflater() =
         this.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
 
+fun Int.toPx() = (this * Resources.getSystem().displayMetrics.density).toInt()
+
 fun Animation.onEnd(action: () -> Unit) {
 
     this.setAnimationListener(object : Animation.AnimationListener {
