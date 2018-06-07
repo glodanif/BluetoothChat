@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.AlertDialog
 import android.bluetooth.BluetoothAdapter
+import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
@@ -355,7 +356,18 @@ class ChatActivity : SkeletonActivity(), ChatView {
 
     override fun requestBluetoothEnabling() {
         val enableBtIntent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
-        startActivityForResult(enableBtIntent, REQUEST_ENABLE_BLUETOOTH)
+        try {
+            startActivityForResult(enableBtIntent, REQUEST_ENABLE_BLUETOOTH)
+        } catch (e: ActivityNotFoundException) {
+            showUnableToActivateBluetoothMessage()
+        }
+    }
+
+    private fun showUnableToActivateBluetoothMessage() = doIfStarted {
+        AlertDialog.Builder(this)
+                .setMessage(R.string.scan__unable_to_activate)
+                .setPositiveButton(R.string.general__ok, null)
+                .show()
     }
 
     override fun showBluetoothEnablingFailed() = doIfStarted {
