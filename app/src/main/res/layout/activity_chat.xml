@@ -146,11 +146,9 @@
                 android:padding="8dp"
                 app:srcCompat="@drawable/ic_close" />
         </LinearLayout>
-
     </FrameLayout>
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/rv_chat"
+    <android.support.design.widget.CoordinatorLayout
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginTop="0dp"
@@ -159,9 +157,25 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/av_actions"
-        app:layout_constraintVertical_bias="1.0"
-        app:stackFromEnd="true"
-        tools:listitem="@layout/item_message_text_foreign" />
+        app:layout_constraintVertical_bias="1.0">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rv_chat"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:stackFromEnd="true"
+            tools:listitem="@layout/item_message_text_foreign" />
+
+        <com.glodanif.bluetoothchat.ui.widget.GoDownButton
+            android:id="@+id/gdb_go_down"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:visibility="invisible"
+            app:layout_anchor="@id/rv_chat"
+            app:layout_anchorGravity="bottom|end" />
+
+    </android.support.design.widget.CoordinatorLayout>
 
     <android.support.v7.widget.CardView
         android:id="@+id/cv_presharing_image_holder"
@@ -179,8 +193,7 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        tools:visibility="visible">
+        app:layout_constraintStart_toStartOf="parent">
 
         <android.support.constraint.ConstraintLayout
             android:id="@+id/relativeLayout"

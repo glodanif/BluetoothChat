@@ -11,7 +11,6 @@ import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.net.Uri
 import android.os.Environment
-import android.os.Handler
 import android.provider.DocumentsContract
 import android.provider.MediaStore
 import android.support.annotation.IdRes
@@ -40,6 +39,8 @@ fun Context.getNotificationManager() =
 
 fun Context.getLayoutInflater() =
         this.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+
+fun Int.toPx() = (this * Resources.getSystem().displayMetrics.density).toInt()
 
 fun Animation.onEnd(action: () -> Unit) {
 

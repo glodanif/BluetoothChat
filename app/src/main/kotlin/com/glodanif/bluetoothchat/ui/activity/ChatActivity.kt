@@ -3,8 +3,8 @@ package com.glodanif.bluetoothchat.ui.activity
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.AlertDialog
-import android.arch.lifecycle.Lifecycle
 import android.bluetooth.BluetoothAdapter
+import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
@@ -12,6 +12,7 @@ import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.os.Handler
 import android.support.constraint.ConstraintLayout
+import android.support.design.widget.CoordinatorLayout
 import android.support.v7.widget.CardView
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
@@ -23,17 +24,19 @@ import android.view.animation.AnimationUtils
 import android.widget.*
 import com.glodanif.bluetoothchat.R
 import com.glodanif.bluetoothchat.di.ComponentsManager
-import com.glodanif.bluetoothchat.utils.toReadableFileSize
 import com.glodanif.bluetoothchat.ui.adapter.ChatAdapter
 import com.glodanif.bluetoothchat.ui.presenter.ChatPresenter
+import com.glodanif.bluetoothchat.ui.util.ScrollAwareBehavior
 import com.glodanif.bluetoothchat.ui.util.SimpleTextWatcher
 import com.glodanif.bluetoothchat.ui.view.ChatView
 import com.glodanif.bluetoothchat.ui.view.NotificationView
 import com.glodanif.bluetoothchat.ui.viewmodel.ChatMessageViewModel
 import com.glodanif.bluetoothchat.ui.widget.ActionView
+import com.glodanif.bluetoothchat.ui.widget.GoDownButton
 import com.glodanif.bluetoothchat.utils.bind
 import com.glodanif.bluetoothchat.utils.getNotificationManager
 import com.glodanif.bluetoothchat.utils.onEnd
+import com.glodanif.bluetoothchat.utils.toReadableFileSize
 import com.squareup.picasso.Picasso
 import com.squareup.picasso.Target
 import pl.aprilapps.easyphotopicker.DefaultCallback
@@ -64,7 +67,9 @@ class ChatActivity : SkeletonActivity(), ChatView {
     private val transferringImageProgressBar: ProgressBar by bind(R.id.pb_transferring_progress)
     private val presharingContainer: CardView  by bind(R.id.cv_presharing_image_holder)
     private val presharingImage: ImageView by bind(R.id.iv_presharing_image)
+    private val goDownButton: GoDownButton by bind(R.id.gdb_go_down)
 
+    private lateinit var scrollBehavior: ScrollAwareBehavior
     private lateinit var chatAdapter: ChatAdapter
 
     private var deviceAddress: String? = null
@@ -135,6 +140,20 @@ class ChatActivity : SkeletonActivity(), ChatView {
             presharingContainer.startAnimation(hideAnimation)
             presenter.cancelPresharing()
         }
+
+        goDownButton.setOnClickListener {
+            layoutManager.scrollToPosition(0)
+            scrollBehavior.hideChild()
+            goDownButton.setUnreadMessageNumber(0)
+        }
+
+        scrollBehavior = ScrollAwareBehavior(this).apply {
+            onHideListener = { goDownButton.setUnreadMessageNumber(0) }
+        }
+
+        val params = goDownButton.layoutParams as CoordinatorLayout.LayoutParams
+        params.behavior = scrollBehavior
+        goDownButton.requestLayout()
 
         chatAdapter = ChatAdapter(this).apply {
             imageClickListener = { view, message ->
@@ -263,7 +282,11 @@ class ChatActivity : SkeletonActivity(), ChatView {
     override fun showReceivedMessage(message: ChatMessageViewModel) {
         chatAdapter.messages.addFirst(message)
         chatAdapter.notifyItemInserted(0)
-        layoutManager.scrollToPosition(0)
+        if (!scrollBehavior.isChildShown()) {
+            layoutManager.scrollToPosition(0)
+        } else {
+            goDownButton.setUnreadMessageNumber(goDownButton.getUnreadMessageNumber() + 1)
+        }
     }
 
     override fun showSentMessage(message: ChatMessageViewModel) {
@@ -333,7 +356,18 @@ class ChatActivity : SkeletonActivity(), ChatView {
 
     override fun requestBluetoothEnabling() {
         val enableBtIntent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
-        startActivityForResult(enableBtIntent, REQUEST_ENABLE_BLUETOOTH)
+        try {
+            startActivityForResult(enableBtIntent, REQUEST_ENABLE_BLUETOOTH)
+        } catch (e: ActivityNotFoundException) {
+            showUnableToActivateBluetoothMessage()
+        }
+    }
+
+    private fun showUnableToActivateBluetoothMessage() = doIfStarted {
+        AlertDialog.Builder(this)
+                .setMessage(R.string.scan__unable_to_activate)
+                .setPositiveButton(R.string.general__ok, null)
+                .show()
     }
 
     override fun showBluetoothEnablingFailed() = doIfStarted {
