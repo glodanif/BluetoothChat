@@ -95,6 +95,7 @@
   <string name="scan__share_apk">¿No tienes una conexión a Internet? Envia el archivo .apk de la aplicación a tu contacto a través de Bluetooth</string>
   <string name="scan__unable_to_share_apk">No se puede iniciar el compartir de Bluetooth</string>
   <string name="scan__no_access_to_bluetooth">No se pudo obtener acceso a Bluetooth en tu dispositivo</string>
+  <string name="scan__unable_to_activate">Unable to activate Bluetooth, please activate it manually.</string>
   <string name="scan__bluetooth_disabled">Esta aplicación requiere que Bluetooth esté activado para funcionar correctamente</string>
   <string name="scan__stop_scanning">Detener la exploración</string>
   <string name="scan__scan">Escanear</string>
