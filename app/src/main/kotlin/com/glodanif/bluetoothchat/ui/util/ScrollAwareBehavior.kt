@@ -24,8 +24,6 @@ class ScrollAwareBehavior(val context: Context) : CoordinatorLayout.Behavior<GoD
 
         AnimationUtils.loadAnimation(context, R.anim.switcher_scale_in).apply {
 
-            fillAfter = true
-
             setAnimationListener(object : Animation.AnimationListener {
 
                 override fun onAnimationStart(animation: Animation) {
@@ -48,8 +46,6 @@ class ScrollAwareBehavior(val context: Context) : CoordinatorLayout.Behavior<GoD
     private val closeAnimation: Animation by lazy {
 
         AnimationUtils.loadAnimation(context, R.anim.switcher_scale_out).apply {
-
-            fillAfter = true
 
             setAnimationListener(object : Animation.AnimationListener {
 

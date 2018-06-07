@@ -148,7 +148,18 @@ class ScanActivity : SkeletonActivity(), ScanView {
 
     override fun requestBluetoothEnabling() {
         val enableBtIntent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
-        startActivityForResult(enableBtIntent, REQUEST_ENABLE_BLUETOOTH)
+        try {
+            startActivityForResult(enableBtIntent, REQUEST_ENABLE_BLUETOOTH)
+        } catch (e: ActivityNotFoundException) {
+            showUnableToActivateBluetoothMessage()
+        }
+    }
+
+    private fun showUnableToActivateBluetoothMessage() = doIfStarted {
+        AlertDialog.Builder(this)
+                .setMessage(R.string.scan__unable_to_activate)
+                .setPositiveButton(R.string.general__ok, null)
+                .show()
     }
 
     override fun showBluetoothIsNotAvailableMessage() = doIfStarted {

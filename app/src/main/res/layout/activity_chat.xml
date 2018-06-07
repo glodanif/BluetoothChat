@@ -170,7 +170,7 @@
             android:id="@+id/gdb_go_down"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="24dp"
+            android:layout_margin="8dp"
             android:visibility="invisible"
             app:layout_anchor="@id/rv_chat"
             app:layout_anchorGravity="bottom|end" />
