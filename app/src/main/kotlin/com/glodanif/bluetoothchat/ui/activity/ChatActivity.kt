@@ -3,7 +3,6 @@ package com.glodanif.bluetoothchat.ui.activity
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.AlertDialog
-import android.arch.lifecycle.Lifecycle
 import android.bluetooth.BluetoothAdapter
 import android.content.Context
 import android.content.Intent
@@ -13,7 +12,6 @@ import android.os.Bundle
 import android.os.Handler
 import android.support.constraint.ConstraintLayout
 import android.support.design.widget.CoordinatorLayout
-import android.support.design.widget.FloatingActionButton
 import android.support.v7.widget.CardView
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
@@ -25,7 +23,6 @@ import android.view.animation.AnimationUtils
 import android.widget.*
 import com.glodanif.bluetoothchat.R
 import com.glodanif.bluetoothchat.di.ComponentsManager
-import com.glodanif.bluetoothchat.utils.toReadableFileSize
 import com.glodanif.bluetoothchat.ui.adapter.ChatAdapter
 import com.glodanif.bluetoothchat.ui.presenter.ChatPresenter
 import com.glodanif.bluetoothchat.ui.util.ScrollAwareBehavior
@@ -38,6 +35,7 @@ import com.glodanif.bluetoothchat.ui.widget.GoDownButton
 import com.glodanif.bluetoothchat.utils.bind
 import com.glodanif.bluetoothchat.utils.getNotificationManager
 import com.glodanif.bluetoothchat.utils.onEnd
+import com.glodanif.bluetoothchat.utils.toReadableFileSize
 import com.squareup.picasso.Picasso
 import com.squareup.picasso.Target
 import pl.aprilapps.easyphotopicker.DefaultCallback

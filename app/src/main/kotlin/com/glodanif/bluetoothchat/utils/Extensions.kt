@@ -11,7 +11,6 @@ import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.net.Uri
 import android.os.Environment
-import android.os.Handler
 import android.provider.DocumentsContract
 import android.provider.MediaStore
 import android.support.annotation.IdRes

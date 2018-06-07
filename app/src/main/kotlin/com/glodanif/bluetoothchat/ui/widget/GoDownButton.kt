@@ -4,7 +4,6 @@ import android.content.Context
 import android.support.design.widget.FloatingActionButton
 import android.support.v4.view.ViewCompat
 import android.util.AttributeSet
-import android.view.View
 import android.widget.FrameLayout
 import android.widget.TextView
 import com.glodanif.bluetoothchat.R
