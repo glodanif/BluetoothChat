@@ -101,6 +101,7 @@
   <string name="scan__share_apk">Немає Інтернет з\'єднання? Надішліть .apk файл цього додатку за допомогою Bluetooth</string>
   <string name="scan__unable_to_share_apk">Не вда\'ється надіслати файл по Bluetooth</string>
   <string name="scan__no_access_to_bluetooth">Не вда\'ється отримати доступ до Bluetooth на вашому пристрої</string>
+  <string name="scan__unable_to_activate">Не вдалося активувати Bluetooth, будь ласка, ввімкніть його вручну.</string>
   <string name="scan__bluetooth_disabled">Для коректної роботи цього додатку необхідно ввімкнути Bluetooth</string>
   <string name="scan__stop_scanning">Зупинити пошук</string>
   <string name="scan__scan">Пошук</string>
