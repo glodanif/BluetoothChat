@@ -1,5 +1,5 @@
-def final VERSION_CODE = 28
-def final VERSION_NAME = '1.2.6'
+def final VERSION_CODE = 29
+def final VERSION_NAME = '1.2.7'
 
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
@@ -88,7 +88,7 @@ android {
     }
 
     packagingOptions {
-        exclude 'META-INF/app_debug.kotlin_module'
+        exclude 'META-INF/main.kotlin_module'
     }
 }
 
@@ -100,7 +100,7 @@ dependencies {
     def final DAGGER_VERSION = '2.4'
     def final LEAK_CANARY_VERSION = '1.5.4'
     def final ESPRESSO_VERSION = '3.0.0'
-    def final COROUTINES_VERSION = '0.22.5'
+    def final COROUTINES_VERSION = '0.23.1'
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
@@ -116,7 +116,7 @@ dependencies {
     implementation "android.arch.lifecycle:extensions:$LIFECYCLE_VERSION"
     kapt "android.arch.lifecycle:compiler:$LIFECYCLE_VERSION"
 
-    implementation 'com.android.support.constraint:constraint-layout:1.1.0'
+    implementation 'com.android.support.constraint:constraint-layout:1.1.2'
     implementation 'com.amulyakhare:com.amulyakhare.textdrawable:1.0.1'
     implementation 'com.github.jkwiecien:EasyImage:2.0.4'
     implementation 'com.squareup.picasso:picasso:2.6.0-SNAPSHOT'
@@ -146,19 +146,11 @@ dependencies {
 
     androidTestImplementation "com.android.support:support-annotations:$SUPPORT_VERSION"
     androidTestImplementation "com.android.support.test.espresso:espresso-core:$ESPRESSO_VERSION"
-    androidTestImplementation("com.android.support.test.espresso:espresso-contrib:$ESPRESSO_VERSION") {
-        exclude group: 'com.android.support', module: 'appcompat'
-        exclude group: 'com.android.support', module: 'support-v4'
-        exclude group: 'com.android.support', module: 'support-v7'
-        exclude group: 'com.android.support', module: 'design'
-        exclude module: 'support-annotations'
-        exclude module: 'recyclerview-v7'
-    }
+    androidTestImplementation "com.android.support.test.espresso:espresso-contrib:$ESPRESSO_VERSION"
 }
 
 task assembleReleaseAndOpen << {
-    Runtime.getRuntime().exec("explorer.exe /select," +
-            buildDir.getAbsolutePath() + "\\outputs\\apk\\release\\app-release.apk")
+    Runtime.getRuntime().exec("explorer.exe /select,${buildDir.getAbsolutePath()}\\outputs\\apk\\release\\app-release.apk")
 }
 
 assembleReleaseAndOpen.dependsOn 'assembleRelease'
