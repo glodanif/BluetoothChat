@@ -101,7 +101,11 @@ abstract class DataTransferThread(private val socket: BluetoothSocket,
 
     private fun readString(): String? {
         return inputStream?.read(buffer)?.let {
-            String(buffer, 0, it)
+            try {
+                String(buffer, 0, it)
+            } catch (e: StringIndexOutOfBoundsException) {
+                null
+            }
         }
     }
 

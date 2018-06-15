@@ -19,15 +19,16 @@ class SplashActivity : AppCompatActivity() {
         Handler().postDelayed({
 
             val settings = SettingsManagerImpl(this)
-            val newIntent = Intent(this,
-                    if (settings.getUserName().isEmpty())
-                        ProfileActivity::class.java else ConversationsActivity::class.java)
+            val nextScreen = if (settings.getUserName().isEmpty())
+                ProfileActivity::class.java else ConversationsActivity::class.java
+            val newIntent = Intent(this, nextScreen)
 
             if (intent.action == Intent.ACTION_SEND) {
                 newIntent.action = Intent.ACTION_SEND
                 newIntent.type = intent.type
                 newIntent.putExtra(Intent.EXTRA_TEXT, intent.getStringExtra(Intent.EXTRA_TEXT))
                 newIntent.putExtra(Intent.EXTRA_STREAM, intent.getParcelableExtra<Uri>(Intent.EXTRA_STREAM))
+                newIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
             }
 
             startActivity(newIntent)
