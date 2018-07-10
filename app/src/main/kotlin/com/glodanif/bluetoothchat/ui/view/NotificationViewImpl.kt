@@ -14,6 +14,7 @@ import com.glodanif.bluetoothchat.data.service.BluetoothConnectionService
 import com.glodanif.bluetoothchat.utils.toReadableFileSize
 import com.glodanif.bluetoothchat.utils.getNotificationManager
 import android.app.PendingIntent
+import android.support.v4.content.ContextCompat
 
 
 class NotificationViewImpl(private val context: Context) : NotificationView {
@@ -47,11 +48,11 @@ class NotificationViewImpl(private val context: Context) : NotificationView {
                 .setSmallIcon(R.drawable.ic_notification)
                 .setContentIntent(pendingIntent)
                 .setOngoing(true)
-                .setPriority(NotificationCompat.PRIORITY_LOW)
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                 .addAction(0, context.getString(R.string.notification__stop), stopPendingIntent)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            builder.color = resources.getColor(R.color.colorPrimary)
+            builder.color = ContextCompat.getColor(context, R.color.colorPrimary)
         }
 
         return builder.build()
@@ -94,7 +95,7 @@ class NotificationViewImpl(private val context: Context) : NotificationView {
                 .setPriority(NotificationCompat.PRIORITY_MAX)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            builder.color = resources.getColor(R.color.colorPrimary)
+            builder.color = ContextCompat.getColor(context, R.color.colorPrimary)
         }
 
         val notification = builder.build()
@@ -132,7 +133,7 @@ class NotificationViewImpl(private val context: Context) : NotificationView {
                 .setPriority(NotificationCompat.PRIORITY_MAX)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            builder.color = resources.getColor(R.color.colorPrimary)
+            builder.color = ContextCompat.getColor(context, R.color.colorPrimary)
         }
 
         val notification = builder.build()
