@@ -1,5 +1,9 @@
 # Thank you for considering to contribute!
 
+### Branches
+
+Master contains the current version of Bluetooth Chat which is deployed to Google Play. Please use `dev` branch for contributing.
+
 ### Bugs and feature requests
 
 Please, search the closed issues before creating a bug or a feature request.

@@ -15,7 +15,6 @@ import com.glodanif.bluetoothchat.utils.toReadableFileSize
 import com.glodanif.bluetoothchat.utils.getNotificationManager
 import android.app.PendingIntent
 
-
 class NotificationViewImpl(private val context: Context) : NotificationView {
 
     private val notificationManager = context.getNotificationManager()
@@ -192,10 +191,10 @@ class NotificationViewImpl(private val context: Context) : NotificationView {
 
     override fun updateFileTransferNotification(transferredBytes: Long, totalBytes: Long) {
 
-        transferBuilder?.let {
-            it.setProgress(totalBytes.toInt(), transferredBytes.toInt(), false)
+        transferBuilder?.let { builder ->
+            builder.setProgress(totalBytes.toInt(), transferredBytes.toInt(), false)
             notificationManager.notify(NotificationView.NOTIFICATION_TAG_FILE,
-                    NotificationView.NOTIFICATION_ID_FILE, it.build())
+                    NotificationView.NOTIFICATION_ID_FILE, builder.build())
         }
     }
 
