@@ -48,7 +48,7 @@ class NotificationViewImpl(private val context: Context) : NotificationView {
                 .setSmallIcon(R.drawable.ic_notification)
                 .setContentIntent(pendingIntent)
                 .setOngoing(true)
-                .setPriority(NotificationCompat.PRIORITY_MAX)
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                 .addAction(0, context.getString(R.string.notification__stop), stopPendingIntent)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
