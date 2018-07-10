@@ -100,6 +100,7 @@ abstract class DataTransferThread(private val socket: BluetoothSocket,
     }
 
     private fun readString(): String? {
+
         return inputStream?.read(buffer)?.let {
             try {
                 String(buffer, 0, it)

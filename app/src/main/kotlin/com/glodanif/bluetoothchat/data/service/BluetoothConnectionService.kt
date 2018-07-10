@@ -244,9 +244,9 @@ class BluetoothConnectionService : Service() {
                     dataTransferThread?.write(message.getDecodedMessage())
                 }
 
-                currentSocket?.let {
+                currentSocket?.let { socket ->
 
-                    val message = ChatMessage(it.remoteDevice.address, Date(), true, "").apply {
+                    val message = ChatMessage(socket.remoteDevice.address, Date(), true, "").apply {
                         this.uid = uid
                         seenHere = true
                         messageType = PayloadType.IMAGE
@@ -314,9 +314,9 @@ class BluetoothConnectionService : Service() {
 
             override fun onFileReceivingFinished(uid: Long, path: String) {
 
-                currentSocket?.remoteDevice?.let {
+                currentSocket?.remoteDevice?.let { device ->
 
-                    val address = it.address
+                    val address = device.address
                     val message = ChatMessage(address, Date(), false, "").apply {
                         this.uid = uid
                         messageType = PayloadType.IMAGE
@@ -326,7 +326,7 @@ class BluetoothConnectionService : Service() {
                     if (messageListener == null || application.currentChat == null || !application.currentChat.equals(address)) {
                         notificationView.dismissMessageNotification()
                         notificationView.showNewMessageNotification(getString(R.string.chat__image_message, "\uD83D\uDCCE"), currentConversation?.displayName,
-                                it.name, address, preferences.isSoundEnabled())
+                                device.name, address, preferences.isSoundEnabled())
                     } else {
                         message.seenHere = true
                     }
@@ -452,10 +452,10 @@ class BluetoothConnectionService : Service() {
         notificationView.dismissFileTransferNotification()
     }
 
-    private fun onMessageSent(messageBody: String) = currentSocket?.let {
+    private fun onMessageSent(messageBody: String) = currentSocket?.let { socket ->
 
         val message = Message(messageBody)
-        val sentMessage = ChatMessage(it.remoteDevice.address, Date(), true, message.body)
+        val sentMessage = ChatMessage(socket.remoteDevice.address, Date(), true, message.body)
 
         if (message.type == Contract.MessageType.MESSAGE) {
             sentMessage.seenHere = true
@@ -511,9 +511,9 @@ class BluetoothConnectionService : Service() {
         }
     }
 
-    private fun handleReceivedMessage(uid: Long, text: String) = currentSocket?.let {
+    private fun handleReceivedMessage(uid: Long, text: String) = currentSocket?.let { socket ->
 
-        val device: BluetoothDevice = it.remoteDevice
+        val device: BluetoothDevice = socket.remoteDevice
 
         val receivedMessage = ChatMessage(device.address, Date(), false, text)
         receivedMessage.uid = uid
@@ -534,9 +534,9 @@ class BluetoothConnectionService : Service() {
         }
     }
 
-    private fun handleConnectionRequest(message: Message) = currentSocket?.let {
+    private fun handleConnectionRequest(message: Message) = currentSocket?.let { socket ->
 
-        val device: BluetoothDevice = it.remoteDevice
+        val device: BluetoothDevice = socket.remoteDevice
 
         val parts = message.body.split("#")
         val conversation = Conversation(device.address, device.name
@@ -555,9 +555,9 @@ class BluetoothConnectionService : Service() {
         }
     }
 
-    private fun handleConnectionApproval(message: Message) = currentSocket?.let {
+    private fun handleConnectionApproval(message: Message) = currentSocket?.let { socket ->
 
-        val device: BluetoothDevice = it.remoteDevice
+        val device: BluetoothDevice = socket.remoteDevice
 
         val parts = message.body.split("#")
         val conversation = Conversation(device.address, device.name

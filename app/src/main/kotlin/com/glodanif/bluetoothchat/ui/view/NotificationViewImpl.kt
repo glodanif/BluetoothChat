@@ -19,7 +19,6 @@ import android.support.v4.content.ContextCompat
 class NotificationViewImpl(private val context: Context) : NotificationView {
 
     private val notificationManager = context.getNotificationManager()
-    private val resources = context.resources
 
     override fun getForegroundNotification(message: String): Notification {
 
@@ -181,7 +180,7 @@ class NotificationViewImpl(private val context: Context) : NotificationView {
                 .setPriority(NotificationCompat.PRIORITY_LOW)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            builder.color = resources.getColor(R.color.colorPrimary)
+            builder.color = ContextCompat.getColor(context, R.color.colorPrimary)
         }
 
         val notification = builder.build()
