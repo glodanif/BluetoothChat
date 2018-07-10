@@ -11,6 +11,7 @@ import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.verify
 import org.junit.Before
 import org.junit.Test
+import kotlin.coroutines.experimental.EmptyCoroutineContext
 
 class ConversationsPresenterUnitTest {
 
@@ -30,7 +31,7 @@ class ConversationsPresenterUnitTest {
     @Before
     fun setup() {
         MockKAnnotations.init(this)
-        presenter = ConversationsPresenter(view, connector, storage, settings, converter)
+        presenter = ConversationsPresenter(view, connector, storage, settings, converter, EmptyCoroutineContext, EmptyCoroutineContext)
     }
 
     @Test

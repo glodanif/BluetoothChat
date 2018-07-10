@@ -9,6 +9,7 @@ import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.async
 import kotlinx.coroutines.experimental.launch
+import kotlinx.coroutines.experimental.withContext
 import kotlin.coroutines.experimental.CoroutineContext
 
 class ReceivedImagesPresenter(private val address: String?,
@@ -18,7 +19,7 @@ class ReceivedImagesPresenter(private val address: String?,
                               private val bgContext: CoroutineContext = CommonPool) {
 
     fun loadImages() = launch(uiContext) {
-        val messages = async(bgContext) { model.getFileMessagesByDevice(address) }.await()
+        val messages = withContext(bgContext) { model.getFileMessagesByDevice(address) }
         if (messages.isNotEmpty()) {
             view.displayImages(messages)
         } else {

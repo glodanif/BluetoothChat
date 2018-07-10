@@ -188,8 +188,8 @@ class BluetoothConnectionService : Service() {
 
             override fun onConnectionPrepared(type: ConnectionType) {
 
-                showNotification(getString(R.string.notification__connected_to, socket.remoteDevice.name
-                        ?: "?"))
+                showNotification(getString(R.string.notification__connected_to,
+                        socket.remoteDevice.name ?: "?"))
                 connectionState = ConnectionState.PENDING
 
                 if (type == ConnectionType.OUTCOMING) {
@@ -539,8 +539,7 @@ class BluetoothConnectionService : Service() {
         val device: BluetoothDevice = socket.remoteDevice
 
         val parts = message.body.split("#")
-        val conversation = Conversation(device.address, device.name
-                ?: "?", parts[0], parts[1].toInt())
+        val conversation = Conversation(device.address, device.name?: "?", parts[0], parts[1].toInt())
 
         launch(bgContext) { db.conversationsDao().insert(conversation) }
 
@@ -560,8 +559,7 @@ class BluetoothConnectionService : Service() {
         val device: BluetoothDevice = socket.remoteDevice
 
         val parts = message.body.split("#")
-        val conversation = Conversation(device.address, device.name
-                ?: "?", parts[0], parts[1].toInt())
+        val conversation = Conversation(device.address, device.name ?: "?", parts[0], parts[1].toInt())
 
         launch(bgContext) { db.conversationsDao().insert(conversation) }
 

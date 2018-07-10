@@ -10,6 +10,7 @@ import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.async
 import kotlinx.coroutines.experimental.launch
+import kotlinx.coroutines.experimental.withContext
 import kotlin.coroutines.experimental.CoroutineContext
 
 class ContactChooserPresenter(private val view: ContactChooserView,
@@ -21,7 +22,7 @@ class ContactChooserPresenter(private val view: ContactChooserView,
     @OnLifecycleEvent(Lifecycle.Event.ON_START)
     fun loadContacts() = launch(uiContext) {
 
-        val contacts = async(bgContext) { model.getContacts() }.await()
+        val contacts = withContext(bgContext) { model.getContacts() }
 
         if (contacts.isNotEmpty()) {
             val viewModels = converter.transform(contacts)

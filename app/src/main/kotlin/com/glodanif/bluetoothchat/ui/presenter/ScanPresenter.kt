@@ -11,6 +11,7 @@ import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.async
 import kotlinx.coroutines.experimental.launch
+import kotlinx.coroutines.experimental.withContext
 import kotlin.coroutines.experimental.CoroutineContext
 
 class ScanPresenter(private val view: ScanView,
@@ -174,7 +175,7 @@ class ScanPresenter(private val view: ScanView,
     }
 
     fun shareApk() = launch(uiContext) {
-        val uri = async(bgContext) { fileManager.extractApkFile() }.await()
+        val uri = withContext(bgContext) { fileManager.extractApkFile() }
         if (uri != null) {
             view.shareApk(uri)
         } else {

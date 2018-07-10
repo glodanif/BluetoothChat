@@ -21,9 +21,7 @@ class SettingsManagerImpl(context: Context) : SettingsManager {
         preferences.edit().putInt(KEY_USER_COLOR, color).apply()
     }
 
-    override fun getUserName(): String {
-        return preferences.getString(KEY_USER_NAME, "")
-    }
+    override fun getUserName(): String = preferences.getString(KEY_USER_NAME, "")
 
     override fun getUserColor() =
             preferences.getInt(KEY_USER_COLOR, Color.parseColor("#008756"))

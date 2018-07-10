@@ -12,14 +12,17 @@ import com.glodanif.bluetoothchat.ui.viewmodel.ConversationViewModel
 import com.glodanif.bluetoothchat.ui.viewmodel.converter.ConversationConverter
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.android.UI
-import kotlinx.coroutines.experimental.async
 import kotlinx.coroutines.experimental.launch
+import kotlinx.coroutines.experimental.withContext
+import kotlin.coroutines.experimental.CoroutineContext
 
 class ConversationsPresenter(private val view: ConversationsView,
                              private val connection: BluetoothConnector,
                              private val conversationStorage: ConversationsStorage,
                              private val settings: SettingsManager,
-                             private val converter: ConversationConverter) : LifecycleObserver {
+                             private val converter: ConversationConverter,
+                             private val uiContext: CoroutineContext = UI,
+                             private val bgContext: CoroutineContext = CommonPool) : LifecycleObserver {
 
     private val prepareListener = object : OnPrepareListener {
 
@@ -105,9 +108,9 @@ class ConversationsPresenter(private val view: ConversationsView,
         }
     }
 
-    fun loadConversations() = launch(UI) {
+    fun loadConversations() = launch(uiContext) {
 
-        val conversations = async(CommonPool) { conversationStorage.getConversations() }.await()
+        val conversations = withContext(bgContext) { conversationStorage.getConversations() }
 
         if (conversations.isEmpty()) {
             view.showNoConversations()
@@ -131,6 +134,7 @@ class ConversationsPresenter(private val view: ConversationsView,
         connection.addOnPrepareListener(prepareListener)
 
         if (connection.isConnectionPrepared()) {
+
             with(connection) {
                 addOnConnectListener(connectionListener)
                 addOnMessageListener(messageListener)
@@ -172,7 +176,7 @@ class ConversationsPresenter(private val view: ConversationsView,
 
     fun removeConversation(address: String) {
         connection.sendDisconnectRequest()
-        launch {
+        launch(bgContext) {
             conversationStorage.removeConversationByAddress(address)
         }
         view.removeFromShortcuts(address)

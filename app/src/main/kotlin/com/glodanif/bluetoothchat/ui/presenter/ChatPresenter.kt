@@ -16,6 +16,7 @@ import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.async
 import kotlinx.coroutines.experimental.launch
+import kotlinx.coroutines.experimental.withContext
 import java.io.File
 import kotlin.coroutines.experimental.CoroutineContext
 
@@ -58,12 +59,12 @@ class ChatPresenter(private val deviceAddress: String,
                     return
                 }
 
-                fileToSend?.let {
+                fileToSend?.let { file ->
 
-                    if (it.length() > maxFileSize) {
+                    if (file.length() > maxFileSize) {
                         view.showImageTooBig(maxFileSize.toLong())
                     } else {
-                        connectionModel.sendFile(it, PayloadType.IMAGE)
+                        connectionModel.sendFile(file, PayloadType.IMAGE)
                     }
                     fileToSend = null
                     filePresharing = null
@@ -96,7 +97,7 @@ class ChatPresenter(private val deviceAddress: String,
             view.hideActions()
 
             launch(uiContext) {
-                val conversation = async(bgContext) { conversationsStorage.getConversationByAddress(deviceAddress) }.await()
+                val conversation = withContext(bgContext) { conversationsStorage.getConversationByAddress(deviceAddress) }
                 if (conversation != null) {
                     view.showPartnerName(conversation.displayName, conversation.deviceName)
                 }
@@ -304,12 +305,12 @@ class ChatPresenter(private val deviceAddress: String,
 
     fun connectToDevice() {
 
-        scanModel.getDeviceByAddress(deviceAddress).let {
+        scanModel.getDeviceByAddress(deviceAddress).let { device ->
 
-            if (it != null) {
+            if (device != null) {
                 view.showStatusPending()
                 view.showWainingForOpponent()
-                connectionModel.connect(it)
+                connectionModel.connect(device)
             } else {
                 view.showStatusNotConnected()
                 view.showDeviceIsNotAvailable()
@@ -426,20 +427,20 @@ class ChatPresenter(private val deviceAddress: String,
 
     private fun updateState() {
 
-        connectionModel.getTransferringFile().let {
+        connectionModel.getTransferringFile().let { file ->
 
-            if (it != null) {
-                val type = if (it.transferType == TransferringFile.TransferType.RECEIVING)
+            if (file != null) {
+                val type = if (file.transferType == TransferringFile.TransferType.RECEIVING)
                     ChatView.FileTransferType.RECEIVING else ChatView.FileTransferType.SENDING
-                view.showImageTransferLayout(it.name, it.size, type)
+                view.showImageTransferLayout(file.name, file.size, type)
             } else {
                 view.hideImageTransferLayout()
             }
         }
 
-        connectionModel.getCurrentConversation().let {
+        connectionModel.getCurrentConversation().let { conversation ->
 
-            if (it == null) {
+            if (conversation == null) {
                 if (connectionModel.isPending()) {
                     view.showStatusPending()
                     view.showWainingForOpponent()
@@ -447,14 +448,14 @@ class ChatPresenter(private val deviceAddress: String,
                     view.showStatusNotConnected()
                     view.showNotConnectedToAnyDevice()
                 }
-            } else if (it.deviceAddress != deviceAddress) {
+            } else if (conversation.deviceAddress != deviceAddress) {
                 view.showStatusNotConnected()
-                view.showNotConnectedToThisDevice("${it.displayName} (${it.deviceName})")
-            } else if (connectionModel.isPending() && it.deviceAddress == deviceAddress) {
+                view.showNotConnectedToThisDevice("${conversation.displayName} (${conversation.deviceName})")
+            } else if (connectionModel.isPending() && conversation.deviceAddress == deviceAddress) {
                 view.hideDisconnected()
                 view.hideLostConnection()
                 view.showStatusPending()
-                view.showConnectionRequest(it.displayName, it.deviceName)
+                view.showConnectionRequest(conversation.displayName, conversation.deviceName)
             } else {
                 view.showStatusConnected()
             }
