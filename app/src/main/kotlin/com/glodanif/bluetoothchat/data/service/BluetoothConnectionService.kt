@@ -188,8 +188,7 @@ class BluetoothConnectionService : Service() {
 
             override fun onConnectionPrepared(type: ConnectionType) {
 
-                showNotification(getString(R.string.notification__connected_to,
-                        socket.remoteDevice.name ?: "?"))
+                showNotification(getString(R.string.notification__connected_to, socket.remoteDevice.name ?: "?"))
                 connectionState = ConnectionState.PENDING
 
                 if (type == ConnectionType.OUTCOMING) {

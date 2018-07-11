@@ -1,5 +1,5 @@
-def final VERSION_CODE = 29
-def final VERSION_NAME = '1.2.7'
+def final VERSION_CODE = 30
+def final VERSION_NAME = '1.2.8'
 
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
@@ -7,6 +7,7 @@ apply plugin: 'kotlin-kapt'
 apply plugin: 'io.fabric'
 
 android {
+
     compileSdkVersion 27
 
     defaultConfig {
