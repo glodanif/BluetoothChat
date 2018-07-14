@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.support.annotation.ColorInt
+import android.support.v4.content.ContextCompat
 import android.view.View
 import android.view.WindowManager
 import android.widget.Button
@@ -84,7 +85,7 @@ class ProfileActivity : SkeletonActivity(), ProfileView {
 
     override fun showUserData(name: String, color: Int) {
         nameLabel.text = if (name.isEmpty()) getString(R.string.profile__your_name) else name
-        nameLabel.setTextColor(resources.getColor(
+        nameLabel.setTextColor(ContextCompat.getColor(this,
                 if (name.isEmpty()) R.color.text_light else R.color.text_dark))
         val drawable = TextDrawable.builder().buildRound(name.getFirstLetter(), color)
         avatar.setImageDrawable(drawable)

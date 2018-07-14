@@ -155,7 +155,7 @@ class ChatActivity : SkeletonActivity(), ChatView {
         params.behavior = scrollBehavior
         goDownButton.requestLayout()
 
-        chatAdapter = ChatAdapter(this).apply {
+        chatAdapter = ChatAdapter().apply {
             imageClickListener = { view, message ->
                 ImagePreviewActivity.start(this@ChatActivity, view, message)
             }
@@ -172,7 +172,7 @@ class ChatActivity : SkeletonActivity(), ChatView {
 
                 override fun onScrollStateChanged(recyclerView: RecyclerView?, scrollState: Int) {
 
-                    val picasso = Picasso.with(this@ChatActivity)
+                    val picasso = Picasso.get()
                     if (scrollState == RecyclerView.SCROLL_STATE_IDLE || scrollState == RecyclerView.SCROLL_STATE_DRAGGING) {
                         picasso.resumeTag(chatAdapter.picassoTag)
                     } else {
@@ -393,7 +393,7 @@ class ChatActivity : SkeletonActivity(), ChatView {
         presharingContainer.visibility = View.VISIBLE
         presharingContainer.startAnimation(showAnimation)
 
-        Picasso.with(this)
+        Picasso.get()
                 .load("file://$path")
                 .centerCrop()
                 .fit()
@@ -412,7 +412,7 @@ class ChatActivity : SkeletonActivity(), ChatView {
         transferringImageHeader.text = getString(if (transferType == ChatView.FileTransferType.SENDING)
             R.string.chat__sending_image else R.string.chat__receiving_images)
 
-        Picasso.with(this)
+        Picasso.get()
                 .load("file://$fileAddress")
                 .into(object : Target {
 
@@ -420,7 +420,7 @@ class ChatActivity : SkeletonActivity(), ChatView {
                         transferringImagePreview.setImageResource(R.drawable.ic_photo)
                     }
 
-                    override fun onBitmapFailed(errorDrawable: Drawable?) {
+                    override fun onBitmapFailed(e: Exception?, errorDrawable: Drawable?) {
                         transferringImagePreview.setImageResource(R.drawable.ic_photo)
                     }
 

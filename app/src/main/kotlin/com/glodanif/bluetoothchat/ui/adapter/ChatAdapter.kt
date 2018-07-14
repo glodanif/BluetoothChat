@@ -1,6 +1,5 @@
 package com.glodanif.bluetoothchat.ui.adapter
 
-import android.content.Context
 import android.graphics.Bitmap
 import android.support.v4.text.util.LinkifyCompat
 import android.support.v4.view.ViewCompat
@@ -20,7 +19,7 @@ import com.glodanif.bluetoothchat.ui.viewmodel.ChatMessageViewModel
 import com.squareup.picasso.Picasso
 import java.util.*
 
-class ChatAdapter(private val context: Context) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class ChatAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private val OWN_TEXT_MESSAGE = 0
     private val OWN_IMAGE_MESSAGE = 1
@@ -58,7 +57,7 @@ class ChatAdapter(private val context: Context) : RecyclerView.Adapter<RecyclerV
                     imageClickListener?.invoke(holder.image, message)
                 }
 
-                Picasso.with(context)
+                Picasso.get()
                         .load(message.imageUri)
                         .config(Bitmap.Config.RGB_565)
                         .error(R.color.background_image)

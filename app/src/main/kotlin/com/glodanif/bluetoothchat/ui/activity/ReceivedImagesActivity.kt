@@ -26,7 +26,7 @@ class ReceivedImagesActivity : SkeletonActivity(), ReceivedImagesView {
     private val imagesGrid: RecyclerView by bind(R.id.rv_images)
     private val noImagesLabel: TextView by bind(R.id.tv_no_images)
 
-    private var imagesAdapter = ImagesAdapter(this)
+    private var imagesAdapter = ImagesAdapter()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

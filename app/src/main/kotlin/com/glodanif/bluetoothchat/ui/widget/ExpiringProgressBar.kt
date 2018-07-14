@@ -12,6 +12,7 @@ import android.view.View
 import com.glodanif.bluetoothchat.R
 import android.os.Bundle
 import android.os.Parcelable
+import android.support.v4.content.ContextCompat
 
 class ExpiringProgressBar : View {
 
@@ -29,14 +30,14 @@ class ExpiringProgressBar : View {
     private val strokeThickness = resources.getDimension(R.dimen.epb_stroke_width)
 
     private val textPaint: TextPaint = TextPaint().apply {
-        color = resources.getColor(R.color.text_dark)
+        color = ContextCompat.getColor(context, R.color.text_dark)
         typeface = Typeface.create("sans-serif-light", Typeface.NORMAL)
         textSize = resources.getDimension(R.dimen.epb_text_size)
         isAntiAlias = true
     }
 
     private val strokePaint: Paint = Paint().apply {
-        color = resources.getColor(R.color.colorPrimary)
+        color = ContextCompat.getColor(context, R.color.colorPrimary)
         strokeWidth = strokeThickness
         isDither = true
         style = Paint.Style.STROKE

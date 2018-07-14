@@ -26,6 +26,7 @@ import com.glodanif.bluetoothchat.utils.bind
 import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso
 import java.io.File
+import java.lang.Exception
 import java.lang.ref.WeakReference
 import javax.inject.Inject
 
@@ -67,12 +68,12 @@ class ImagePreviewActivity : SkeletonActivity(), ImagePreviewView {
                 supportStartPostponedEnterTransition()
             }
 
-            override fun onError() {
+            override fun onError(e: Exception?) {
                 supportStartPostponedEnterTransition()
             }
         }
 
-        Picasso.with(this)
+        Picasso.get()
                 .load(fileUrl)
                 .config(Bitmap.Config.RGB_565)
                 .noFade()

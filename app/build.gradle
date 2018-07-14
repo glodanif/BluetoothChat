@@ -119,7 +119,7 @@ dependencies {
     implementation 'com.android.support.constraint:constraint-layout:1.1.2'
     implementation 'com.amulyakhare:com.amulyakhare.textdrawable:1.0.1'
     implementation 'com.github.jkwiecien:EasyImage:2.0.4'
-    implementation 'com.squareup.picasso:picasso:2.6.0-SNAPSHOT'
+    implementation 'com.squareup.picasso:picasso:2.71828'
     implementation 'me.priyesh:chroma:1.0.2'
     implementation 'com.github.chrisbanes:PhotoView:2.1.3'
     implementation 'io.github.kobakei:ratethisapp:1.2.0'
