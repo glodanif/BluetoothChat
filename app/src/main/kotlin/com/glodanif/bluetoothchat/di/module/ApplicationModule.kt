@@ -1,8 +1,11 @@
 package com.glodanif.bluetoothchat.di.module
 
-import android.content.Context
+import com.glodanif.bluetoothchat.ChatApplication
+import com.glodanif.bluetoothchat.data.database.ChatDatabase
+import com.glodanif.bluetoothchat.data.database.Database
 import com.glodanif.bluetoothchat.data.model.*
-import com.glodanif.bluetoothchat.di.PerActivity
+import com.glodanif.bluetoothchat.ui.view.NotificationView
+import com.glodanif.bluetoothchat.ui.view.NotificationViewImpl
 import com.glodanif.bluetoothchat.ui.viewmodel.converter.ChatMessageConverter
 import com.glodanif.bluetoothchat.ui.viewmodel.converter.ContactConverter
 import com.glodanif.bluetoothchat.ui.viewmodel.converter.ConversationConverter
@@ -13,31 +16,39 @@ import dagger.Provides
 import javax.inject.Singleton
 
 @Module
-class ApplicationModule(private val context: Context) {
+class ApplicationModule(private val application: ChatApplication) {
 
     @Provides
     @Singleton
-    internal fun provideMessagesStorage(): MessagesStorage = MessagesStorageImpl(context)
+    internal fun provideApplication(): ChatApplication = application
 
     @Provides
     @Singleton
-    internal fun provideConversationsStorage(): ConversationsStorage = ConversationsStorageImpl(context)
+    internal fun provideNotificationView(): NotificationView = NotificationViewImpl(application)
 
     @Provides
     @Singleton
-    internal fun provideSettingsManager(): SettingsManager = SettingsManagerImpl(context)
+    internal fun provideMessagesStorage(db: ChatDatabase): MessagesStorage = MessagesStorageImpl(db)
 
     @Provides
     @Singleton
-    internal fun provideShortcutManager(): ShortcutManager = ShortcutManagerImpl(context)
+    internal fun provideConversationsStorage(db: ChatDatabase): ConversationsStorage = ConversationsStorageImpl(db)
 
     @Provides
     @Singleton
-    internal fun provideFileManager(): FileManager = FileManagerImpl(context)
+    internal fun provideSettingsManager(): SettingsManager = SettingsManagerImpl(application)
 
     @Provides
     @Singleton
-    internal fun provideUserPreferences(): UserPreferences = UserPreferencesImpl(context)
+    internal fun provideShortcutManager(): ShortcutManager = ShortcutManagerImpl(application)
+
+    @Provides
+    @Singleton
+    internal fun provideFileManager(): FileManager = FileManagerImpl(application)
+
+    @Provides
+    @Singleton
+    internal fun provideUserPreferences(): UserPreferences = UserPreferencesImpl(application)
 
     @Provides
     @Singleton
@@ -45,13 +56,17 @@ class ApplicationModule(private val context: Context) {
 
     @Provides
     @Singleton
-    internal fun provideConversationConverter(): ConversationConverter = ConversationConverter(context)
+    internal fun provideConversationConverter(): ConversationConverter = ConversationConverter(application)
 
     @Provides
     @Singleton
-    internal fun provideChatMessageConverter(): ChatMessageConverter = ChatMessageConverter(context)
+    internal fun provideChatMessageConverter(): ChatMessageConverter = ChatMessageConverter(application)
 
     @Provides
     @Singleton
-    internal fun provideConnector(): BluetoothConnector = BluetoothConnectorImpl(context)
+    internal fun provideConnector(): BluetoothConnector = BluetoothConnectorImpl(application)
+
+    @Provides
+    @Singleton
+    internal fun provideDatabase(): ChatDatabase = Database.createDatabase(application)
 }

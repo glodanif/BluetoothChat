@@ -27,25 +27,25 @@ class ActionView : FrameLayout {
 
         container.findViewById<TextView>(R.id.tv_text).text = Html.fromHtml(textMessage)
 
-        container.findViewById<Button>(R.id.btn_first_action).let {
+        container.findViewById<Button>(R.id.btn_first_action).let { button ->
 
             if (firstAction != null) {
-                it.visibility = View.VISIBLE
-                it.text = firstAction.text
-                it.setOnClickListener { firstAction.action.invoke() }
+                button.visibility = View.VISIBLE
+                button.text = firstAction.text
+                button.setOnClickListener { firstAction.action.invoke() }
             } else {
-                it.visibility = View.GONE
+                button.visibility = View.GONE
             }
         }
 
-        container.findViewById<Button>(R.id.btn_second_action).let {
+        container.findViewById<Button>(R.id.btn_second_action).let { button ->
 
             if (secondAction != null) {
-                it.visibility = View.VISIBLE
-                it.text = secondAction.text
-                it.setOnClickListener { secondAction.action.invoke() }
+                button.visibility = View.VISIBLE
+                button.text = secondAction.text
+                button.setOnClickListener { secondAction.action.invoke() }
             } else {
-                it.visibility = View.GONE
+                button.visibility = View.GONE
             }
         }
 

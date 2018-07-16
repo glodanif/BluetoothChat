@@ -17,14 +17,12 @@ import android.support.v7.app.AppCompatActivity
 import com.glodanif.bluetoothchat.ChatApplication
 import com.glodanif.bluetoothchat.R
 import com.glodanif.bluetoothchat.data.database.ChatDatabase
-import com.glodanif.bluetoothchat.data.database.Storage
 import com.glodanif.bluetoothchat.data.entity.ChatMessage
 import com.glodanif.bluetoothchat.data.entity.Conversation
 import com.glodanif.bluetoothchat.data.model.*
+import com.glodanif.bluetoothchat.di.ComponentsManager
 import com.glodanif.bluetoothchat.ui.view.NotificationView
-import com.glodanif.bluetoothchat.ui.view.NotificationViewImpl
 import com.glodanif.bluetoothchat.ui.widget.ShortcutManager
-import com.glodanif.bluetoothchat.ui.widget.ShortcutManagerImpl
 import com.glodanif.bluetoothchat.utils.Size
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.android.UI
@@ -32,6 +30,7 @@ import kotlinx.coroutines.experimental.launch
 import java.io.File
 import java.io.IOException
 import java.util.*
+import javax.inject.Inject
 
 class BluetoothConnectionService : Service() {
 
@@ -63,13 +62,19 @@ class BluetoothConnectionService : Service() {
     private var currentConversation: Conversation? = null
     private var contract = Contract()
 
-    private lateinit var db: ChatDatabase
-    private lateinit var preferences: UserPreferences
-    private lateinit var settings: SettingsManager
+    @Inject
+    internal lateinit var db: ChatDatabase
+    @Inject
+    internal lateinit var preferences: UserPreferences
+    @Inject
+    internal lateinit var settings: SettingsManager
 
-    private lateinit var application: ChatApplication
-    private lateinit var notificationView: NotificationView
-    private lateinit var shortcutManager: ShortcutManager
+    @Inject
+    internal lateinit var application: ChatApplication
+    @Inject
+    internal lateinit var shortcutManager: ShortcutManager
+    @Inject
+    internal lateinit var notificationView: NotificationView
 
     override fun onBind(intent: Intent?): IBinder? {
         return binder
@@ -84,12 +89,7 @@ class BluetoothConnectionService : Service() {
 
     override fun onCreate() {
         super.onCreate()
-        application = getApplication() as ChatApplication
-        db = Storage.getInstance(this).db
-        settings = SettingsManagerImpl(this)
-        preferences = UserPreferencesImpl(this)
-        notificationView = NotificationViewImpl(this)
-        shortcutManager = ShortcutManagerImpl(this)
+        ComponentsManager.injectService(this)
         isRunning = true
     }
 

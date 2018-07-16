@@ -5,16 +5,16 @@ import android.arch.persistence.room.Room
 import android.arch.persistence.room.migration.Migration
 import android.content.Context
 
-class Storage private constructor(context: Context) {
-
-    val db: ChatDatabase = Room.databaseBuilder(context,
-            ChatDatabase::class.java, "chat_database")
-            .addMigrations(MIGRATION_1_2, MIGRATION_2_3)
-            .build()
+class Database {
 
     companion object {
 
-        private val MIGRATION_1_2: Migration = object : Migration(1, 2) {
+        fun createDatabase(context: Context) =
+                Room.databaseBuilder(context, ChatDatabase::class.java, "chat_database")
+                    .addMigrations(MIGRATION_1_2, MIGRATION_2_3)
+                    .build()
+
+        val MIGRATION_1_2: Migration = object : Migration(1, 2) {
 
             override fun migrate(database: SupportSQLiteDatabase) = with(database) {
 
@@ -58,7 +58,7 @@ class Storage private constructor(context: Context) {
             }
         }
 
-        private val MIGRATION_2_3: Migration = object : Migration(2, 3) {
+        val MIGRATION_2_3: Migration = object : Migration(2, 3) {
 
             override fun migrate(database: SupportSQLiteDatabase) = with(database) {
 
@@ -77,21 +77,6 @@ class Storage private constructor(context: Context) {
 
                 execSQL("COMMIT")
             }
-        }
-
-        private var instance: Storage? = null
-
-        fun getInstance(context: Context): Storage {
-
-            if (instance == null) {
-                instance = Storage(context)
-            }
-
-            instance?.let {
-                return it
-            }
-
-            throw IllegalStateException("Instance became null after initialization")
         }
     }
 }
