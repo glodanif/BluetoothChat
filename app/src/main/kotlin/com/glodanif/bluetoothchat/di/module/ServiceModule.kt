@@ -6,7 +6,7 @@ import com.glodanif.bluetoothchat.data.model.MessagesStorage
 import com.glodanif.bluetoothchat.data.model.SettingsManager
 import com.glodanif.bluetoothchat.data.model.UserPreferences
 import com.glodanif.bluetoothchat.data.service.BluetoothConnectionService
-import com.glodanif.bluetoothchat.data.service.ConnectionController
+import com.glodanif.bluetoothchat.data.service.connection.ConnectionController
 import com.glodanif.bluetoothchat.di.PerComponent
 import com.glodanif.bluetoothchat.ui.view.NotificationView
 import com.glodanif.bluetoothchat.ui.widget.ShortcutManager

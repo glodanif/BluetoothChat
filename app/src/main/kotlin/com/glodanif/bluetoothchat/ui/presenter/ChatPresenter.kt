@@ -6,10 +6,10 @@ import android.arch.lifecycle.OnLifecycleEvent
 import android.bluetooth.BluetoothDevice
 import com.glodanif.bluetoothchat.data.entity.ChatMessage
 import com.glodanif.bluetoothchat.data.entity.Conversation
-import com.glodanif.bluetoothchat.data.service.PayloadType
-import com.glodanif.bluetoothchat.data.service.TransferringFile
+import com.glodanif.bluetoothchat.data.service.message.PayloadType
+import com.glodanif.bluetoothchat.data.service.message.TransferringFile
 import com.glodanif.bluetoothchat.data.model.*
-import com.glodanif.bluetoothchat.data.service.Contract
+import com.glodanif.bluetoothchat.data.service.message.Contract
 import com.glodanif.bluetoothchat.ui.view.ChatView
 import com.glodanif.bluetoothchat.ui.viewmodel.converter.ChatMessageConverter
 import kotlinx.coroutines.experimental.CommonPool

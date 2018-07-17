@@ -1,4 +1,4 @@
-package com.glodanif.bluetoothchat.data.service
+package com.glodanif.bluetoothchat.data.service.connection
 
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
@@ -11,6 +11,11 @@ import com.glodanif.bluetoothchat.R
 import com.glodanif.bluetoothchat.data.entity.ChatMessage
 import com.glodanif.bluetoothchat.data.entity.Conversation
 import com.glodanif.bluetoothchat.data.model.*
+import com.glodanif.bluetoothchat.data.service.*
+import com.glodanif.bluetoothchat.data.service.message.Contract
+import com.glodanif.bluetoothchat.data.service.message.Message
+import com.glodanif.bluetoothchat.data.service.message.PayloadType
+import com.glodanif.bluetoothchat.data.service.message.TransferringFile
 import com.glodanif.bluetoothchat.ui.view.NotificationView
 import com.glodanif.bluetoothchat.ui.widget.ShortcutManager
 import com.glodanif.bluetoothchat.utils.Size
@@ -60,6 +65,7 @@ class ConnectionController(private val application: ChatApplication,
 
         cancelConnections()
 
+        //FIXME
         if (BluetoothConnectionService.isRunning) {
             acceptThread = AcceptJob()
             acceptThread?.start()
@@ -386,6 +392,18 @@ class ConnectionController(private val application: ChatApplication,
                 dataTransferThread?.write(message.getDecodedMessage())
                 dataTransferThread?.writeFile(message.uid, file)
             }
+        }
+    }
+
+    fun approveConnection() {
+        contract.createAcceptConnectionMessage(settings.getUserName(), settings.getUserColor()).let { message ->
+            sendMessage(message)
+        }
+    }
+
+    fun rejectConnection() {
+        contract.createRejectConnectionMessage(settings.getUserName(), settings.getUserColor()).let { message ->
+            sendMessage(message)
         }
     }
 

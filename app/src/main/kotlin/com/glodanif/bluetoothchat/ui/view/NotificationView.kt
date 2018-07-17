@@ -1,11 +1,14 @@
 package com.glodanif.bluetoothchat.ui.view
 
 import android.app.Notification
-import com.glodanif.bluetoothchat.data.service.TransferringFile
+import com.glodanif.bluetoothchat.data.service.message.TransferringFile
 
 interface NotificationView {
 
     companion object {
+
+        const val ACTION_CONNECTION = "action.connection"
+        const val EXTRA_APPROVED = "extra.approved"
 
         const val NOTIFICATION_ID_MESSAGE = 7438925
         const val NOTIFICATION_ID_CONNECTION = 5438729

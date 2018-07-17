@@ -1,4 +1,4 @@
-package com.glodanif.bluetoothchat.data.service
+package com.glodanif.bluetoothchat.data.service.message
 
 import android.support.annotation.ColorInt
 import java.io.File

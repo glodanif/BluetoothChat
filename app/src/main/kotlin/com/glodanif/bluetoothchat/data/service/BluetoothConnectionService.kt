@@ -2,9 +2,7 @@ package com.glodanif.bluetoothchat.data.service
 
 import android.app.Service
 import android.bluetooth.BluetoothDevice
-import android.content.Context
-import android.content.Intent
-import android.content.ServiceConnection
+import android.content.*
 import android.os.Binder
 import android.os.Build
 import android.os.IBinder
@@ -15,7 +13,14 @@ import com.glodanif.bluetoothchat.data.entity.Conversation
 import com.glodanif.bluetoothchat.data.model.OnConnectionListener
 import com.glodanif.bluetoothchat.data.model.OnFileListener
 import com.glodanif.bluetoothchat.data.model.OnMessageListener
+import com.glodanif.bluetoothchat.data.service.connection.ConnectionController
+import com.glodanif.bluetoothchat.data.service.connection.ConnectionSubject
+import com.glodanif.bluetoothchat.data.service.message.Contract
+import com.glodanif.bluetoothchat.data.service.message.Message
+import com.glodanif.bluetoothchat.data.service.message.PayloadType
+import com.glodanif.bluetoothchat.data.service.message.TransferringFile
 import com.glodanif.bluetoothchat.di.ComponentsManager
+import com.glodanif.bluetoothchat.ui.view.NotificationView
 import java.io.File
 import javax.inject.Inject
 
@@ -30,6 +35,20 @@ class BluetoothConnectionService : Service(), ConnectionSubject {
     @Inject
     internal lateinit var controller: ConnectionController
 
+    private val connectionActionReceiver = object : BroadcastReceiver() {
+
+        override fun onReceive(context: Context?, intent: Intent?) {
+
+            if (intent != null) {
+                if (intent.getBooleanExtra(NotificationView.EXTRA_APPROVED, false)) {
+                    controller.approveConnection()
+                } else {
+                    controller.rejectConnection()
+                }
+            }
+        }
+    }
+
     override fun onBind(intent: Intent?): IBinder? {
         return binder
     }
@@ -43,8 +62,12 @@ class BluetoothConnectionService : Service(), ConnectionSubject {
 
     override fun onCreate() {
         super.onCreate()
+
         ComponentsManager.injectService(this)
         controller.onNewForegroundMessage = { showNotification(it) }
+
+        registerReceiver(connectionActionReceiver, IntentFilter(NotificationView.ACTION_CONNECTION))
+
         isRunning = true
     }
 
@@ -55,6 +78,7 @@ class BluetoothConnectionService : Service(), ConnectionSubject {
             isRunning = false
             controller.stop()
             connectionListener?.onConnectionDestroyed()
+            unregisterReceiver(connectionActionReceiver)
 
             stopSelf()
             return START_NOT_STICKY
@@ -100,6 +124,14 @@ class BluetoothConnectionService : Service(), ConnectionSubject {
 
     fun sendFile(file: File, type: PayloadType) {
         controller.sendFile(file, type)
+    }
+
+    fun approveConnection() {
+        controller.approveConnection()
+    }
+
+    fun rejectConnection() {
+        controller.rejectConnection()
     }
 
     fun cancelFileTransfer() {
@@ -218,6 +250,9 @@ class BluetoothConnectionService : Service(), ConnectionSubject {
 
     override fun onDestroy() {
         super.onDestroy()
+
+        unregisterReceiver(connectionActionReceiver)
+
         isRunning = false
         controller.stop()
     }
