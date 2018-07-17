@@ -19,7 +19,6 @@ import javax.inject.Singleton
 interface ApplicationComponent {
 
     fun inject(application: ChatApplication)
-    fun inject(service: BluetoothConnectionService)
 
     fun application(): ChatApplication
 

@@ -22,7 +22,11 @@ class ComponentsManager {
         }
 
         fun injectService(service: BluetoothConnectionService) {
-            appComponent.inject(service)
+            DaggerServiceComponent.builder()
+                    .applicationComponent(appComponent)
+                    .serviceModule(ServiceModule(service))
+                    .build()
+                    .inject(service)
         }
 
         fun injectConversations(activity: ConversationsActivity) {

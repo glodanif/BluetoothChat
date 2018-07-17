@@ -11,10 +11,10 @@ class Database {
 
         fun createDatabase(context: Context) =
                 Room.databaseBuilder(context, ChatDatabase::class.java, "chat_database")
-                    .addMigrations(MIGRATION_1_2, MIGRATION_2_3)
-                    .build()
+                        .addMigrations(MIGRATION_1_2, MIGRATION_2_3)
+                        .build()
 
-        val MIGRATION_1_2: Migration = object : Migration(1, 2) {
+        private val MIGRATION_1_2: Migration = object : Migration(1, 2) {
 
             override fun migrate(database: SupportSQLiteDatabase) = with(database) {
 
@@ -58,7 +58,7 @@ class Database {
             }
         }
 
-        val MIGRATION_2_3: Migration = object : Migration(2, 3) {
+        private val MIGRATION_2_3: Migration = object : Migration(2, 3) {
 
             override fun migrate(database: SupportSQLiteDatabase) = with(database) {
 
