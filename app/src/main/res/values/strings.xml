@@ -138,6 +138,9 @@
     <string name="notification__channel_request">Connection Request</string>
     <string name="notification__channel_message">New Message</string>
     <string name="notification__channel_file">File Transfer</string>
+    <string name="notification__me">Me</string>
+    <string name="notification__reply">Reply</string>
+    <string name="notification__sent">Sent</string>
 
     <string name="contact_chooser__title">Select Chat</string>
     <string name="contact_chooser__no_contacts">Your contact list is empty</string>

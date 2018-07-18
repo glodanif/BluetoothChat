@@ -23,6 +23,9 @@ import com.glodanif.bluetoothchat.di.ComponentsManager
 import com.glodanif.bluetoothchat.ui.view.NotificationView
 import java.io.File
 import javax.inject.Inject
+import android.os.Bundle
+import android.support.v4.app.RemoteInput
+
 
 class BluetoothConnectionService : Service(), ConnectionSubject {
 
@@ -35,6 +38,8 @@ class BluetoothConnectionService : Service(), ConnectionSubject {
     @Inject
     internal lateinit var controller: ConnectionController
 
+
+
     private val connectionActionReceiver = object : BroadcastReceiver() {
 
         override fun onReceive(context: Context?, intent: Intent?) {
@@ -44,6 +49,20 @@ class BluetoothConnectionService : Service(), ConnectionSubject {
                     controller.approveConnection()
                 } else {
                     controller.rejectConnection()
+                }
+            }
+        }
+    }
+
+    private val replyActionReceiver = object : BroadcastReceiver() {
+
+        override fun onReceive(context: Context?, intent: Intent?) {
+
+            if (intent != null) {
+                val remoteInput = RemoteInput.getResultsFromIntent(intent)
+                if (remoteInput != null) {
+                     val replyText = remoteInput.getCharSequence(NotificationView.EXTRA_TEXT_REPLY)
+                    controller.replyFromNotification(replyText.toString())
                 }
             }
         }
@@ -67,6 +86,7 @@ class BluetoothConnectionService : Service(), ConnectionSubject {
         controller.onNewForegroundMessage = { showNotification(it) }
 
         registerReceiver(connectionActionReceiver, IntentFilter(NotificationView.ACTION_CONNECTION))
+        registerReceiver(replyActionReceiver, IntentFilter(NotificationView.ACTION_REPLY))
 
         isRunning = true
     }
@@ -253,6 +273,7 @@ class BluetoothConnectionService : Service(), ConnectionSubject {
         super.onDestroy()
 
         unregisterReceiver(connectionActionReceiver)
+        unregisterReceiver(replyActionReceiver)
 
         isRunning = false
         controller.stop()

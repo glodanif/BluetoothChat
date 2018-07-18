@@ -54,6 +54,8 @@ class ConnectionController(private val application: ChatApplication,
     private var currentConversation: Conversation? = null
     private var contract = Contract()
 
+    private var justRepliedFromNotification = false
+    private val imageText = application.getString(R.string.chat__image_message, "\uD83D\uDCCE")
     private val shallowHistory = LimitedQueue<NotificationMessageItem>(4)
 
     var onNewForegroundMessage: ((String) -> Unit)? = null
@@ -111,6 +113,7 @@ class ConnectionController(private val application: ChatApplication,
         currentConversation = null
         contract.reset()
         connectionType = null
+        justRepliedFromNotification = false
     }
 
     private fun cancelAccept() {
@@ -147,11 +150,15 @@ class ConnectionController(private val application: ChatApplication,
         val transferEventsListener = object : DataTransferThread.TransferEventsListener {
 
             override fun onMessageReceived(message: String) {
-                launch(uiContext) { this@ConnectionController.onMessageReceived(message) }
+                launch(uiContext) {
+                    this@ConnectionController.onMessageReceived(message)
+                }
             }
 
             override fun onMessageSent(message: String) {
-                launch(uiContext) { this@ConnectionController.onMessageSent(message) }
+                launch(uiContext) {
+                    this@ConnectionController.onMessageSent(message)
+                }
             }
 
             override fun onConnectionPrepared(type: ConnectionType) {
@@ -228,7 +235,7 @@ class ConnectionController(private val application: ChatApplication,
                         message.fileExists = true
 
                         messagesStorage.insertMessage(message)
-                        shallowHistory.add(NotificationMessageItem(message.text, message.date.time, null))
+                        shallowHistory.add(NotificationMessageItem(imageText, message.date.time, null))
 
                         launch(uiContext) {
 
@@ -292,10 +299,11 @@ class ConnectionController(private val application: ChatApplication,
                         filePath = path
                     }
 
+                    shallowHistory.add(NotificationMessageItem(imageText, message.date.time, currentConversation?.displayName))
                     if (!subject.isAnybodyListeningForMessages() || application.currentChat == null || !application.currentChat.equals(address)) {
                         view.dismissMessageNotification()
-                        view.showNewMessageNotification(application.getString(R.string.chat__image_message, "\uD83D\uDCCE"), currentConversation?.displayName,
-                                device.name, address, preferences.isSoundEnabled())
+                        view.showNewMessageNotification(imageText, currentConversation?.displayName,
+                                device.name, address, shallowHistory, preferences.isSoundEnabled())
                     } else {
                         message.seenHere = true
                     }
@@ -307,8 +315,6 @@ class ConnectionController(private val application: ChatApplication,
                         message.fileExists = true
 
                         messagesStorage.insertMessage(message)
-                        shallowHistory.add(NotificationMessageItem(
-                                message.text, message.date.time, currentConversation?.displayName))
 
                         launch(uiContext) {
                             subject.handleFileReceivingFinished()
@@ -362,6 +368,13 @@ class ConnectionController(private val application: ChatApplication,
     fun isPending() = connectionState == ConnectionState.PENDING
 
     fun isConnectedOrPending() = isConnected() || isPending()
+
+    fun replyFromNotification(text: String) {
+        contract.createChatMessage(text).let { message ->
+            justRepliedFromNotification = true
+            sendMessage(message)
+        }
+    }
 
     fun sendMessage(message: Message) {
 
@@ -421,14 +434,25 @@ class ConnectionController(private val application: ChatApplication,
 
     private fun onMessageSent(messageBody: String) = currentSocket?.let { socket ->
 
+        val device = socket.remoteDevice
         val message = Message(messageBody)
         val sentMessage = ChatMessage(socket.remoteDevice.address, Date(), true, message.body)
 
         if (message.type == Contract.MessageType.MESSAGE) {
+
             sentMessage.seenHere = true
+
             launch(bgContext) {
+
                 messagesStorage.insertMessage(sentMessage)
                 shallowHistory.add(NotificationMessageItem(sentMessage.text, sentMessage.date.time, null))
+
+                if ((!subject.isAnybodyListeningForMessages() || application.currentChat == null || !application.currentChat.equals(device.address)) && justRepliedFromNotification) {
+                    view.showNewMessageNotification(message.body, currentConversation?.displayName,
+                            device.name, device.address, shallowHistory, preferences.isSoundEnabled())
+                    justRepliedFromNotification = false
+                }
+
                 launch(uiContext) { subject.handleMessageSent(sentMessage) }
                 currentConversation?.let {
                     shortcutManager.addConversationShortcut(sentMessage.deviceAddress, it.displayName, it.color)
@@ -486,17 +510,17 @@ class ConnectionController(private val application: ChatApplication,
         val receivedMessage = ChatMessage(device.address, Date(), false, text)
         receivedMessage.uid = uid
 
+        shallowHistory.add(NotificationMessageItem(
+                receivedMessage.text, receivedMessage.date.time, currentConversation?.displayName))
         if (!subject.isAnybodyListeningForMessages() || application.currentChat == null || !application.currentChat.equals(device.address)) {
             view.showNewMessageNotification(text, currentConversation?.displayName,
-                    device.name, device.address, preferences.isSoundEnabled())
+                    device.name, device.address, shallowHistory, preferences.isSoundEnabled())
         } else {
             receivedMessage.seenHere = true
         }
 
         launch(bgContext) {
             messagesStorage.insertMessage(receivedMessage)
-            shallowHistory.add(NotificationMessageItem(
-                    receivedMessage.text, receivedMessage.date.time, currentConversation?.displayName))
             launch(uiContext) { subject.handleMessageReceived(receivedMessage) }
             currentConversation?.let {
                 shortcutManager.addConversationShortcut(device.address, it.displayName, it.color)

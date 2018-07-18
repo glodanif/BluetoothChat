@@ -14,7 +14,10 @@ import com.glodanif.bluetoothchat.data.service.BluetoothConnectionService
 import com.glodanif.bluetoothchat.utils.toReadableFileSize
 import com.glodanif.bluetoothchat.utils.getNotificationManager
 import android.app.PendingIntent
+import android.os.Handler
+import android.support.v4.app.RemoteInput
 import android.support.v4.content.ContextCompat
+import com.glodanif.bluetoothchat.data.service.message.NotificationMessageItem
 import java.util.*
 
 class NotificationViewImpl(private val context: Context) : NotificationView {
@@ -57,7 +60,7 @@ class NotificationViewImpl(private val context: Context) : NotificationView {
         return builder.build()
     }
 
-    override fun showNewMessageNotification(message: String, displayName: String?, deviceName: String?, address: String, soundEnabled: Boolean) {
+    override fun showNewMessageNotification(message: String, displayName: String?, deviceName: String?, address: String, history: List<NotificationMessageItem>, soundEnabled: Boolean) {
 
         val resultIntent = Intent(context, ChatActivity::class.java).apply {
             putExtra(ChatActivity.EXTRA_ADDRESS, address)
@@ -77,13 +80,20 @@ class NotificationViewImpl(private val context: Context) : NotificationView {
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val channel = NotificationChannel(NotificationView.CHANNEL_MESSAGE, context.getString(R.string.notification__channel_message), NotificationManager.IMPORTANCE_HIGH).apply {
+            val channel = NotificationChannel(NotificationView.CHANNEL_MESSAGE, context.getString(R.string.notification__channel_message),
+                    NotificationManager.IMPORTANCE_HIGH).apply {
                 setShowBadge(true)
             }
             notificationManager.createNotificationChannel(channel)
         }
 
+        val style = NotificationCompat.MessagingStyle(context.getString(R.string.notification__me))
+        history.forEach {
+            style.addMessage(it.text, it.timestamp, it.name)
+        }
+
         val builder = NotificationCompat.Builder(context, NotificationView.CHANNEL_MESSAGE)
+                .setStyle(style)
                 .setContentTitle(name)
                 .setContentText(message)
                 .setLights(Color.BLUE, 3000, 3000)
@@ -91,6 +101,21 @@ class NotificationViewImpl(private val context: Context) : NotificationView {
                 .setContentIntent(pendingIntent)
                 .setAutoCancel(true)
                 .setPriority(NotificationCompat.PRIORITY_MAX)
+                .setCategory(NotificationCompat.CATEGORY_MESSAGE)
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+
+            val remoteInput = RemoteInput.Builder(NotificationView.EXTRA_TEXT_REPLY)
+                    .setLabel(context.getString(R.string.notification__reply))
+                    .build()
+            val replyIntent = Intent(NotificationView.ACTION_REPLY)
+            val replyPendingIntent = PendingIntent.getBroadcast(context, generateCode(), replyIntent, PendingIntent.FLAG_UPDATE_CURRENT)
+            val replyAction = NotificationCompat.Action.Builder(R.drawable.ic_reply, context.getString(R.string.notification__reply), replyPendingIntent)
+                    .addRemoteInput(remoteInput)
+                    .build()
+
+            builder.addAction(replyAction)
+        }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             builder.color = ContextCompat.getColor(context, R.color.colorPrimary)
@@ -141,6 +166,7 @@ class NotificationViewImpl(private val context: Context) : NotificationView {
                 .setContentIntent(pendingIntent)
                 .setAutoCancel(true)
                 .setPriority(NotificationCompat.PRIORITY_MAX)
+                .setCategory(NotificationCompat.CATEGORY_CALL)
                 .addAction(approveAction)
                 .addAction(rejectAction)
 
@@ -191,6 +217,7 @@ class NotificationViewImpl(private val context: Context) : NotificationView {
                 .setContentIntent(pendingIntent)
                 .setAutoCancel(false)
                 .setPriority(NotificationCompat.PRIORITY_LOW)
+                .setCategory(NotificationCompat.CATEGORY_PROGRESS)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             builder.color = ContextCompat.getColor(context, R.color.colorPrimary)
