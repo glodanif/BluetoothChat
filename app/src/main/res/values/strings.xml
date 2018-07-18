@@ -48,6 +48,7 @@
     <string name="profile__device">Device</string>
     <string name="profile__no_name">No name</string>
     <string name="profile__save">Save</string>
+    <string name="profile__no_bluetooth_settings_activity">Unable to open Bluetooth Settings, if you want to rename your device please do it manually</string>
 
     <string name="chat__not_connected">Not connected</string>
     <string name="chat__connected">Connected</string>
@@ -122,6 +123,7 @@
     <string name="scan__available_devices">Found devices</string>
     <string name="scan__discoverable">Discoverable</string>
     <string name="scan__make_discoverable">Make discoverable</string>
+    <string name="scan__no_discoverable_activity">Unable to make your device discoverable, please do it manually</string>
 
     <string name="initial_setup__initial_setup">Initial Setup</string>
 
@@ -180,4 +182,5 @@
     <string name="conversations__cd__partners_avatar">Partner\'s avatar</string>
     <string name="conversations__cd__connected_indicator">Connected indicator</string>
     <string name="conversations__cd__users_avatar">User\'s avatar</string>
+
 </resources>

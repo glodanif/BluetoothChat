@@ -16,8 +16,6 @@ interface ConnectionSubject {
     fun handleConnectionFailed()
     fun handleConnectionLost()
     fun handleConnectionWithdrawn()
-    fun handleMessageDelivered(uid: Long)
-    fun handleMessageNotDelivered(uid: Long)
 
     fun handleFileSendingStarted(fileAddress: String?, fileSize: Long)
     fun handleFileSendingProgress(sentBytes: Long, totalBytes: Long)
@@ -32,5 +30,9 @@ interface ConnectionSubject {
     fun handleMessageReceived(message: ChatMessage)
     fun handleMessageSent(message: ChatMessage)
     fun handleMessageSeen(uid: Long)
+    fun handleMessageDelivered(uid: Long)
+    fun handleMessageNotDelivered(uid: Long)
     fun isAnybodyListeningForMessages(): Boolean
+
+    fun isRunning(): Boolean
 }

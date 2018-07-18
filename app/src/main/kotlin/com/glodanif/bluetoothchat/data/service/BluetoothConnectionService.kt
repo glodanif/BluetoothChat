@@ -78,7 +78,6 @@ class BluetoothConnectionService : Service(), ConnectionSubject {
             isRunning = false
             controller.stop()
             connectionListener?.onConnectionDestroyed()
-            unregisterReceiver(connectionActionReceiver)
 
             stopSelf()
             return START_NOT_STICKY
@@ -137,6 +136,8 @@ class BluetoothConnectionService : Service(), ConnectionSubject {
     fun cancelFileTransfer() {
         controller.cancelFileTransfer()
     }
+
+    override fun isRunning() = isRunning
 
     override fun handleConnectedOut(conversation: Conversation) {
         connectionListener?.onConnectedOut(conversation)

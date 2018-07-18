@@ -1,5 +1,6 @@
 package com.glodanif.bluetoothchat.ui.activity
 
+import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -7,10 +8,7 @@ import android.support.annotation.ColorInt
 import android.support.v4.content.ContextCompat
 import android.view.View
 import android.view.WindowManager
-import android.widget.Button
-import android.widget.EditText
-import android.widget.ImageView
-import android.widget.TextView
+import android.widget.*
 import com.amulyakhare.textdrawable.TextDrawable
 import com.glodanif.bluetoothchat.R
 import com.glodanif.bluetoothchat.di.ComponentsManager
@@ -64,7 +62,11 @@ class ProfileActivity : SkeletonActivity(), ProfileView {
             val bluetoothSettings = Intent().apply {
                 action = android.provider.Settings.ACTION_BLUETOOTH_SETTINGS
             }
-            startActivity(bluetoothSettings)
+            try {
+                startActivity(bluetoothSettings)
+            } catch (e: ActivityNotFoundException) {
+                Toast.makeText(this@ProfileActivity, getString(R.string.profile__no_bluetooth_settings_activity), Toast.LENGTH_LONG).show()
+            }
         }
     }
 

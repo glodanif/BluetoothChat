@@ -10,14 +10,14 @@ import com.glodanif.bluetoothchat.ChatApplication
 import com.glodanif.bluetoothchat.R
 import com.glodanif.bluetoothchat.data.entity.ChatMessage
 import com.glodanif.bluetoothchat.data.entity.Conversation
-import com.glodanif.bluetoothchat.data.model.*
-import com.glodanif.bluetoothchat.data.service.*
-import com.glodanif.bluetoothchat.data.service.message.Contract
-import com.glodanif.bluetoothchat.data.service.message.Message
-import com.glodanif.bluetoothchat.data.service.message.PayloadType
-import com.glodanif.bluetoothchat.data.service.message.TransferringFile
+import com.glodanif.bluetoothchat.data.model.ConversationsStorage
+import com.glodanif.bluetoothchat.data.model.MessagesStorage
+import com.glodanif.bluetoothchat.data.model.SettingsManager
+import com.glodanif.bluetoothchat.data.model.UserPreferences
+import com.glodanif.bluetoothchat.data.service.message.*
 import com.glodanif.bluetoothchat.ui.view.NotificationView
 import com.glodanif.bluetoothchat.ui.widget.ShortcutManager
+import com.glodanif.bluetoothchat.utils.LimitedQueue
 import com.glodanif.bluetoothchat.utils.Size
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.android.UI
@@ -38,8 +38,6 @@ class ConnectionController(private val application: ChatApplication,
                            private val uiContext: CoroutineContext = UI,
                            private val bgContext: CoroutineContext = CommonPool) {
 
-    private val adapter: BluetoothAdapter? = BluetoothAdapter.getDefaultAdapter()
-
     private val APP_NAME = "BluetoothChat"
     private val APP_UUID = UUID.fromString("220da3b2-41f5-11e7-a919-92ebcb67fe33")
 
@@ -56,6 +54,8 @@ class ConnectionController(private val application: ChatApplication,
     private var currentConversation: Conversation? = null
     private var contract = Contract()
 
+    private val shallowHistory = LimitedQueue<NotificationMessageItem>(4)
+
     var onNewForegroundMessage: ((String) -> Unit)? = null
 
     fun createForegroundNotification(message: String) = view.getForegroundNotification(message)
@@ -65,8 +65,7 @@ class ConnectionController(private val application: ChatApplication,
 
         cancelConnections()
 
-        //FIXME
-        if (BluetoothConnectionService.isRunning) {
+        if (subject.isRunning()) {
             acceptThread = AcceptJob()
             acceptThread?.start()
             onNewForegroundMessage?.invoke(application.getString(R.string.notification__ready_to_connect))
@@ -157,7 +156,8 @@ class ConnectionController(private val application: ChatApplication,
 
             override fun onConnectionPrepared(type: ConnectionType) {
 
-                onNewForegroundMessage?.invoke(application.getString(R.string.notification__connected_to, socket.remoteDevice.name ?: "?"))
+                onNewForegroundMessage?.invoke(application.getString(R.string.notification__connected_to, socket.remoteDevice.name
+                        ?: "?"))
                 connectionState = ConnectionState.PENDING
 
                 if (type == ConnectionType.OUTCOMING) {
@@ -228,6 +228,7 @@ class ConnectionController(private val application: ChatApplication,
                         message.fileExists = true
 
                         messagesStorage.insertMessage(message)
+                        shallowHistory.add(NotificationMessageItem(message.text, message.date.time, null))
 
                         launch(uiContext) {
 
@@ -306,6 +307,8 @@ class ConnectionController(private val application: ChatApplication,
                         message.fileExists = true
 
                         messagesStorage.insertMessage(message)
+                        shallowHistory.add(NotificationMessageItem(
+                                message.text, message.date.time, currentConversation?.displayName))
 
                         launch(uiContext) {
                             subject.handleFileReceivingFinished()
@@ -425,6 +428,7 @@ class ConnectionController(private val application: ChatApplication,
             sentMessage.seenHere = true
             launch(bgContext) {
                 messagesStorage.insertMessage(sentMessage)
+                shallowHistory.add(NotificationMessageItem(sentMessage.text, sentMessage.date.time, null))
                 launch(uiContext) { subject.handleMessageSent(sentMessage) }
                 currentConversation?.let {
                     shortcutManager.addConversationShortcut(sentMessage.deviceAddress, it.displayName, it.color)
@@ -491,6 +495,8 @@ class ConnectionController(private val application: ChatApplication,
 
         launch(bgContext) {
             messagesStorage.insertMessage(receivedMessage)
+            shallowHistory.add(NotificationMessageItem(
+                    receivedMessage.text, receivedMessage.date.time, currentConversation?.displayName))
             launch(uiContext) { subject.handleMessageReceived(receivedMessage) }
             currentConversation?.let {
                 shortcutManager.addConversationShortcut(device.address, it.displayName, it.color)
@@ -503,7 +509,8 @@ class ConnectionController(private val application: ChatApplication,
         val device: BluetoothDevice = socket.remoteDevice
 
         val parts = message.body.split("#")
-        val conversation = Conversation(device.address, device.name?: "?", parts[0], parts[1].toInt())
+        val conversation = Conversation(device.address, device.name
+                ?: "?", parts[0], parts[1].toInt())
 
         launch(bgContext) { conversationStorage.insertConversation(conversation) }
 
@@ -523,7 +530,8 @@ class ConnectionController(private val application: ChatApplication,
         val device: BluetoothDevice = socket.remoteDevice
 
         val parts = message.body.split("#")
-        val conversation = Conversation(device.address, device.name ?: "?", parts[0], parts[1].toInt())
+        val conversation = Conversation(device.address, device.name
+                ?: "?", parts[0], parts[1].toInt())
 
         launch(bgContext) { conversationStorage.insertConversation(conversation) }
 
@@ -563,13 +571,14 @@ class ConnectionController(private val application: ChatApplication,
         return Size(options.outWidth, options.outHeight)
     }
 
-    private inner class AcceptJob {
+    private inner class AcceptJob: Thread() {
 
         private var serverSocket: BluetoothServerSocket? = null
 
         init {
             try {
-                serverSocket = adapter?.listenUsingRfcommWithServiceRecord(APP_NAME, APP_UUID)
+                serverSocket = BluetoothAdapter.getDefaultAdapter()
+                        ?.listenUsingRfcommWithServiceRecord(APP_NAME, APP_UUID)
             } catch (e: IOException) {
                 e.printStackTrace()
             }
@@ -577,7 +586,7 @@ class ConnectionController(private val application: ChatApplication,
             connectionState = ConnectionState.LISTENING
         }
 
-        fun start() = launch(bgContext) {
+        override fun run() {
 
             while (!isConnectedOrPending()) {
 
@@ -610,11 +619,11 @@ class ConnectionController(private val application: ChatApplication,
         }
     }
 
-    private inner class ConnectJob(private val bluetoothDevice: BluetoothDevice) {
+    private inner class ConnectJob(private val bluetoothDevice: BluetoothDevice): Thread() {
 
         private var socket: BluetoothSocket? = null
 
-        fun start() = launch(bgContext) {
+        override fun run() {
 
             try {
                 socket = bluetoothDevice.createRfcommSocketToServiceRecord(APP_UUID)
@@ -633,7 +642,7 @@ class ConnectionController(private val application: ChatApplication,
                     e.printStackTrace()
                 }
                 connectionFailed()
-                return@launch
+                return
             }
 
             synchronized(this@ConnectionController) {
