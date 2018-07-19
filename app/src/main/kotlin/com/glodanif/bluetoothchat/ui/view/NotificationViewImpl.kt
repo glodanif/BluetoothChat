@@ -14,10 +14,8 @@ import com.glodanif.bluetoothchat.data.service.BluetoothConnectionService
 import com.glodanif.bluetoothchat.utils.toReadableFileSize
 import com.glodanif.bluetoothchat.utils.getNotificationManager
 import android.app.PendingIntent
-import android.os.Handler
 import android.support.v4.app.RemoteInput
 import android.support.v4.content.ContextCompat
-import com.glodanif.bluetoothchat.data.service.message.NotificationMessageItem
 import java.util.*
 
 class NotificationViewImpl(private val context: Context) : NotificationView {
@@ -60,7 +58,7 @@ class NotificationViewImpl(private val context: Context) : NotificationView {
         return builder.build()
     }
 
-    override fun showNewMessageNotification(message: String, displayName: String?, deviceName: String?, address: String, history: List<NotificationMessageItem>, soundEnabled: Boolean) {
+    override fun showNewMessageNotification(message: String, displayName: String?, deviceName: String?, address: String, history: List<NotificationCompat.MessagingStyle.Message>, soundEnabled: Boolean) {
 
         val resultIntent = Intent(context, ChatActivity::class.java).apply {
             putExtra(ChatActivity.EXTRA_ADDRESS, address)
@@ -88,9 +86,7 @@ class NotificationViewImpl(private val context: Context) : NotificationView {
         }
 
         val style = NotificationCompat.MessagingStyle(context.getString(R.string.notification__me))
-        history.forEach {
-            style.addMessage(it.text, it.timestamp, it.name)
-        }
+        history.forEach { style.addMessage(it) }
 
         val builder = NotificationCompat.Builder(context, NotificationView.CHANNEL_MESSAGE)
                 .setStyle(style)
@@ -138,7 +134,6 @@ class NotificationViewImpl(private val context: Context) : NotificationView {
         }
         val pendingIntent = PendingIntent.getActivity(context, generateCode(), notificationIntent, 0)
 
-        //TODO: Check Android 4 (vector drawable)
         val approveIntent = Intent(NotificationView.ACTION_CONNECTION).apply {
             putExtra(NotificationView.EXTRA_APPROVED, true)
         }

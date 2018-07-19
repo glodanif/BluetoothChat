@@ -6,6 +6,7 @@ import android.content.*
 import android.os.Binder
 import android.os.Build
 import android.os.IBinder
+import android.support.v4.app.RemoteInput
 import android.support.v7.app.AppCompatActivity
 import com.glodanif.bluetoothchat.R
 import com.glodanif.bluetoothchat.data.entity.ChatMessage
@@ -23,9 +24,6 @@ import com.glodanif.bluetoothchat.di.ComponentsManager
 import com.glodanif.bluetoothchat.ui.view.NotificationView
 import java.io.File
 import javax.inject.Inject
-import android.os.Bundle
-import android.support.v4.app.RemoteInput
-
 
 class BluetoothConnectionService : Service(), ConnectionSubject {
 
@@ -37,8 +35,6 @@ class BluetoothConnectionService : Service(), ConnectionSubject {
 
     @Inject
     internal lateinit var controller: ConnectionController
-
-
 
     private val connectionActionReceiver = object : BroadcastReceiver() {
 

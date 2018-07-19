@@ -6,6 +6,7 @@ import android.bluetooth.BluetoothServerSocket
 import android.bluetooth.BluetoothSocket
 import android.graphics.BitmapFactory
 import android.os.Environment
+import android.support.v4.app.NotificationCompat
 import com.glodanif.bluetoothchat.ChatApplication
 import com.glodanif.bluetoothchat.R
 import com.glodanif.bluetoothchat.data.entity.ChatMessage
@@ -56,7 +57,7 @@ class ConnectionController(private val application: ChatApplication,
 
     private var justRepliedFromNotification = false
     private val imageText = application.getString(R.string.chat__image_message, "\uD83D\uDCCE")
-    private val shallowHistory = LimitedQueue<NotificationMessageItem>(4)
+    private val shallowHistory = LimitedQueue<NotificationCompat.MessagingStyle.Message>(4)
 
     var onNewForegroundMessage: ((String) -> Unit)? = null
 
@@ -235,7 +236,7 @@ class ConnectionController(private val application: ChatApplication,
                         message.fileExists = true
 
                         messagesStorage.insertMessage(message)
-                        shallowHistory.add(NotificationMessageItem(imageText, message.date.time, null))
+                        shallowHistory.add(NotificationCompat.MessagingStyle.Message(imageText, message.date.time, null))
 
                         launch(uiContext) {
 
@@ -299,9 +300,8 @@ class ConnectionController(private val application: ChatApplication,
                         filePath = path
                     }
 
-                    shallowHistory.add(NotificationMessageItem(imageText, message.date.time, currentConversation?.displayName))
+                    shallowHistory.add(NotificationCompat.MessagingStyle.Message(imageText, message.date.time, currentConversation?.displayName))
                     if (!subject.isAnybodyListeningForMessages() || application.currentChat == null || !application.currentChat.equals(address)) {
-                        view.dismissMessageNotification()
                         view.showNewMessageNotification(imageText, currentConversation?.displayName,
                                 device.name, address, shallowHistory, preferences.isSoundEnabled())
                     } else {
@@ -445,7 +445,7 @@ class ConnectionController(private val application: ChatApplication,
             launch(bgContext) {
 
                 messagesStorage.insertMessage(sentMessage)
-                shallowHistory.add(NotificationMessageItem(sentMessage.text, sentMessage.date.time, null))
+                shallowHistory.add(NotificationCompat.MessagingStyle.Message(sentMessage.text, sentMessage.date.time, null))
 
                 if ((!subject.isAnybodyListeningForMessages() || application.currentChat == null || !application.currentChat.equals(device.address)) && justRepliedFromNotification) {
                     view.showNewMessageNotification(message.body, currentConversation?.displayName,
@@ -510,7 +510,7 @@ class ConnectionController(private val application: ChatApplication,
         val receivedMessage = ChatMessage(device.address, Date(), false, text)
         receivedMessage.uid = uid
 
-        shallowHistory.add(NotificationMessageItem(
+        shallowHistory.add(NotificationCompat.MessagingStyle.Message(
                 receivedMessage.text, receivedMessage.date.time, currentConversation?.displayName))
         if (!subject.isAnybodyListeningForMessages() || application.currentChat == null || !application.currentChat.equals(device.address)) {
             view.showNewMessageNotification(text, currentConversation?.displayName,
