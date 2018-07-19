@@ -45,7 +45,7 @@
   <string name="profile__device">Пристрій</string>
   <string name="profile__no_name">Без імені</string>
   <string name="profile__save">Зберегти</string>
-  <string name="profile__no_bluetooth_settings_activity">Unable to open Bluetooth Settings, if you want to rename your device please do it manually</string>
+  <string name="profile__no_bluetooth_settings_activity">Не вдалося відкрити налаштування Bluetooth, якщо ви хочете, щоб перейменувати пристрій будь ласка зробіть це вручну</string>
   <string name="chat__not_connected">Не з\'єднано</string>
   <string name="chat__connected">З\'єднано</string>
   <string name="chat__pending">Очікується</string>
@@ -117,7 +117,7 @@
   <string name="scan__available_devices">Знайдені пристрої</string>
   <string name="scan__discoverable">Видимий</string>
   <string name="scan__make_discoverable">Зробити видимим</string>
-  <string name="scan__no_discoverable_activity">Unable to make your device discoverable, please do it manually</string>
+  <string name="scan__no_discoverable_activity">Не вдалося зробити пристрій видимим, будь ласка, зробіть це вручну</string>
   <string name="initial_setup__initial_setup">Первинне налаштування</string>
   <string name="notification__ready_to_connect">Готовий до з\'єднання</string>
   <string name="notification__connected_to">З\'єднання з %s</string>
@@ -130,9 +130,9 @@
   <string name="notification__channel_request">Запит на з\'єднання</string>
   <string name="notification__channel_message">Нове повідомлення</string>
   <string name="notification__channel_file">Передача файлів</string>
-  <string name="notification__me">Me</string>
-  <string name="notification__reply">Reply</string>
-  <string name="notification__sent">Sent</string>
+  <string name="notification__me">Я</string>
+  <string name="notification__reply">Відповісти</string>
+  <string name="notification__sent">Відправлено</string>
   <string name="contact_chooser__title">Виберіть Чат</string>
   <string name="contact_chooser__no_contacts">Ваш список контактів порожній</string>
   <string name="settings__title">Налаштування</string>
