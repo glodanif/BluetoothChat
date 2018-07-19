@@ -45,7 +45,7 @@
   <string name="profile__device">Устройство</string>
   <string name="profile__no_name">Без имени</string>
   <string name="profile__save">Сохранить</string>
-  <string name="profile__no_bluetooth_settings_activity">Unable to open Bluetooth Settings, if you want to rename your device please do it manually</string>
+  <string name="profile__no_bluetooth_settings_activity">Не удается открыть настройки Bluetooth, если вы хотите переименовать устройство пожалуйста, сделайте это вручную</string>
   <string name="chat__not_connected">Не соединено</string>
   <string name="chat__connected">Соединено</string>
   <string name="chat__pending">Ожидание</string>
@@ -117,7 +117,7 @@
   <string name="scan__available_devices">Найденные устройства</string>
   <string name="scan__discoverable">Обнаружаемый</string>
   <string name="scan__make_discoverable">Сделать обнаружаемым</string>
-  <string name="scan__no_discoverable_activity">Unable to make your device discoverable, please do it manually</string>
+  <string name="scan__no_discoverable_activity">Не удается сделать устройство видимым, пожалуйста, сделайте это вручную</string>
   <string name="initial_setup__initial_setup">Первоначальная настройка</string>
   <string name="notification__ready_to_connect">Готов к подключению</string>
   <string name="notification__connected_to">Соединение с %s</string>
@@ -130,9 +130,9 @@
   <string name="notification__channel_request">Запрос на соединение</string>
   <string name="notification__channel_message">Новое сообщение</string>
   <string name="notification__channel_file">Передача файлов</string>
-  <string name="notification__me">Me</string>
-  <string name="notification__reply">Reply</string>
-  <string name="notification__sent">Sent</string>
+  <string name="notification__me">Я</string>
+  <string name="notification__reply">Ответить</string>
+  <string name="notification__sent">Отправлено</string>
   <string name="contact_chooser__title">Выберете Чат</string>
   <string name="contact_chooser__no_contacts">Ваш список контактов пуст</string>
   <string name="settings__title">Настройки</string>
