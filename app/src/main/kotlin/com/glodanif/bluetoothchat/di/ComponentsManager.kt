@@ -1,6 +1,7 @@
 package com.glodanif.bluetoothchat.di
 
 import com.glodanif.bluetoothchat.ChatApplication
+import com.glodanif.bluetoothchat.data.service.BluetoothConnectionService
 import com.glodanif.bluetoothchat.di.component.*
 import com.glodanif.bluetoothchat.di.module.*
 import com.glodanif.bluetoothchat.ui.activity.*
@@ -15,8 +16,17 @@ class ComponentsManager {
         fun initialize(application: ChatApplication) {
             appComponent = DaggerApplicationComponent.builder()
                     .applicationModule(ApplicationModule(application))
+                    .build().also {
+                        it.inject(application)
+                    }
+        }
+
+        fun injectService(service: BluetoothConnectionService) {
+            DaggerServiceComponent.builder()
+                    .applicationComponent(appComponent)
+                    .serviceModule(ServiceModule(service))
                     .build()
-            appComponent.inject(application)
+                    .inject(service)
         }
 
         fun injectConversations(activity: ConversationsActivity) {

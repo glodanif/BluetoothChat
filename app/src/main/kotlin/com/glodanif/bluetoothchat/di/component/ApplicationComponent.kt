@@ -1,9 +1,12 @@
 package com.glodanif.bluetoothchat.di.component
 
 import com.glodanif.bluetoothchat.ChatApplication
+import com.glodanif.bluetoothchat.data.database.ChatDatabase
 import com.glodanif.bluetoothchat.data.model.*
+import com.glodanif.bluetoothchat.data.service.BluetoothConnectionService
 import com.glodanif.bluetoothchat.di.module.ApplicationModule
 import com.glodanif.bluetoothchat.ui.activity.ConversationsActivity
+import com.glodanif.bluetoothchat.ui.view.NotificationView
 import com.glodanif.bluetoothchat.ui.viewmodel.converter.ChatMessageConverter
 import com.glodanif.bluetoothchat.ui.viewmodel.converter.ContactConverter
 import com.glodanif.bluetoothchat.ui.viewmodel.converter.ConversationConverter
@@ -17,6 +20,10 @@ interface ApplicationComponent {
 
     fun inject(application: ChatApplication)
 
+    fun application(): ChatApplication
+
+    fun notificationView(): NotificationView
+
     fun conversationsStorage(): ConversationsStorage
     fun messagesStorage(): MessagesStorage
     fun settingsManager(): SettingsManager
@@ -29,5 +36,7 @@ interface ApplicationComponent {
     fun conversationConverter(): ConversationConverter
     fun chatMessageConverter(): ChatMessageConverter
 
-    fun getBluetoothConnector(): BluetoothConnector
+    fun bluetoothConnector(): BluetoothConnector
+
+    fun database(): ChatDatabase
 }

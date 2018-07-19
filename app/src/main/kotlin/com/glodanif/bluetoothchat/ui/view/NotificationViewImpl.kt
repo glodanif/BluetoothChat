@@ -7,17 +7,20 @@ import android.graphics.Color
 import android.os.Build
 import android.support.v4.app.NotificationCompat
 import com.glodanif.bluetoothchat.R
-import com.glodanif.bluetoothchat.data.service.TransferringFile
+import com.glodanif.bluetoothchat.data.service.message.TransferringFile
 import com.glodanif.bluetoothchat.ui.activity.ChatActivity
 import com.glodanif.bluetoothchat.ui.activity.ConversationsActivity
 import com.glodanif.bluetoothchat.data.service.BluetoothConnectionService
 import com.glodanif.bluetoothchat.utils.toReadableFileSize
 import com.glodanif.bluetoothchat.utils.getNotificationManager
 import android.app.PendingIntent
+import android.support.v4.app.RemoteInput
 import android.support.v4.content.ContextCompat
+import java.util.*
 
 class NotificationViewImpl(private val context: Context) : NotificationView {
 
+    private val random = Random()
     private val notificationManager = context.getNotificationManager()
 
     override fun getForegroundNotification(message: String): Notification {
@@ -30,8 +33,7 @@ class NotificationViewImpl(private val context: Context) : NotificationView {
         val stopIntent = Intent(context, BluetoothConnectionService::class.java).apply {
             action = BluetoothConnectionService.ACTION_STOP
         }
-        val requestCode = (System.currentTimeMillis() / 1000).toInt()
-        val stopPendingIntent = PendingIntent.getService(context, requestCode, stopIntent, 0)
+        val stopPendingIntent = PendingIntent.getService(context, generateCode(), stopIntent, 0)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel(NotificationView.CHANNEL_FOREGROUND, context.getString(R.string.notification__channel_background), NotificationManager.IMPORTANCE_LOW).apply {
@@ -56,7 +58,7 @@ class NotificationViewImpl(private val context: Context) : NotificationView {
         return builder.build()
     }
 
-    override fun showNewMessageNotification(message: String, displayName: String?, deviceName: String?, address: String, soundEnabled: Boolean) {
+    override fun showNewMessageNotification(message: String, displayName: String?, deviceName: String?, address: String, history: List<NotificationCompat.MessagingStyle.Message>, soundEnabled: Boolean) {
 
         val resultIntent = Intent(context, ChatActivity::class.java).apply {
             putExtra(ChatActivity.EXTRA_ADDRESS, address)
@@ -67,8 +69,7 @@ class NotificationViewImpl(private val context: Context) : NotificationView {
             addNextIntentWithParentStack(resultIntent)
         }
 
-        val requestCode = (System.currentTimeMillis() / 1000).toInt()
-        val pendingIntent = stackBuilder.getPendingIntent(requestCode, PendingIntent.FLAG_UPDATE_CURRENT)
+        val pendingIntent = stackBuilder.getPendingIntent(generateCode(), PendingIntent.FLAG_UPDATE_CURRENT)
 
         val name = when {
             deviceName == null -> "?"
@@ -77,13 +78,18 @@ class NotificationViewImpl(private val context: Context) : NotificationView {
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val channel = NotificationChannel(NotificationView.CHANNEL_MESSAGE, context.getString(R.string.notification__channel_message), NotificationManager.IMPORTANCE_HIGH).apply {
+            val channel = NotificationChannel(NotificationView.CHANNEL_MESSAGE, context.getString(R.string.notification__channel_message),
+                    NotificationManager.IMPORTANCE_HIGH).apply {
                 setShowBadge(true)
             }
             notificationManager.createNotificationChannel(channel)
         }
 
+        val style = NotificationCompat.MessagingStyle(context.getString(R.string.notification__me))
+        history.forEach { style.addMessage(it) }
+
         val builder = NotificationCompat.Builder(context, NotificationView.CHANNEL_MESSAGE)
+                .setStyle(style)
                 .setContentTitle(name)
                 .setContentText(message)
                 .setLights(Color.BLUE, 3000, 3000)
@@ -91,6 +97,21 @@ class NotificationViewImpl(private val context: Context) : NotificationView {
                 .setContentIntent(pendingIntent)
                 .setAutoCancel(true)
                 .setPriority(NotificationCompat.PRIORITY_MAX)
+                .setCategory(NotificationCompat.CATEGORY_MESSAGE)
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+
+            val remoteInput = RemoteInput.Builder(NotificationView.EXTRA_TEXT_REPLY)
+                    .setLabel(context.getString(R.string.notification__reply))
+                    .build()
+            val replyIntent = Intent(NotificationView.ACTION_REPLY)
+            val replyPendingIntent = PendingIntent.getBroadcast(context, generateCode(), replyIntent, PendingIntent.FLAG_UPDATE_CURRENT)
+            val replyAction = NotificationCompat.Action.Builder(R.drawable.ic_reply, context.getString(R.string.notification__reply), replyPendingIntent)
+                    .addRemoteInput(remoteInput)
+                    .build()
+
+            builder.addAction(replyAction)
+        }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             builder.color = ContextCompat.getColor(context, R.color.colorPrimary)
@@ -111,8 +132,19 @@ class NotificationViewImpl(private val context: Context) : NotificationView {
         val notificationIntent = Intent(context, ConversationsActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         }
-        val requestCode = (System.currentTimeMillis() / 1000).toInt()
-        val pendingIntent = PendingIntent.getActivity(context, requestCode, notificationIntent, 0)
+        val pendingIntent = PendingIntent.getActivity(context, generateCode(), notificationIntent, 0)
+
+        val approveIntent = Intent(NotificationView.ACTION_CONNECTION).apply {
+            putExtra(NotificationView.EXTRA_APPROVED, true)
+        }
+        val approvePendingIntent = PendingIntent.getBroadcast(context, generateCode(), approveIntent, 0)
+        val approveAction = NotificationCompat.Action(R.drawable.ic_start_chat, context.getString(R.string.chat__connect), approvePendingIntent)
+
+        val rejectIntent = Intent(NotificationView.ACTION_CONNECTION).apply {
+            putExtra(NotificationView.EXTRA_APPROVED, false)
+        }
+        val rejectPendingIntent = PendingIntent.getBroadcast(context, generateCode(), rejectIntent, 0)
+        val rejectAction = NotificationCompat.Action(R.drawable.ic_cancel, context.getString(R.string.chat__disconnect), rejectPendingIntent)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel(NotificationView.CHANNEL_REQUEST, context.getString(R.string.notification__channel_request), NotificationManager.IMPORTANCE_HIGH).apply {
@@ -129,6 +161,9 @@ class NotificationViewImpl(private val context: Context) : NotificationView {
                 .setContentIntent(pendingIntent)
                 .setAutoCancel(true)
                 .setPriority(NotificationCompat.PRIORITY_MAX)
+                .setCategory(NotificationCompat.CATEGORY_CALL)
+                .addAction(approveAction)
+                .addAction(rejectAction)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             builder.color = ContextCompat.getColor(context, R.color.colorPrimary)
@@ -157,8 +192,7 @@ class NotificationViewImpl(private val context: Context) : NotificationView {
             addNextIntentWithParentStack(resultIntent)
         }
 
-        val requestCode = (System.currentTimeMillis() / 1000).toInt()
-        val pendingIntent = stackBuilder.getPendingIntent(requestCode, PendingIntent.FLAG_UPDATE_CURRENT)
+        val pendingIntent = stackBuilder.getPendingIntent(generateCode(), PendingIntent.FLAG_UPDATE_CURRENT)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel(NotificationView.CHANNEL_FILE,
@@ -178,6 +212,7 @@ class NotificationViewImpl(private val context: Context) : NotificationView {
                 .setContentIntent(pendingIntent)
                 .setAutoCancel(false)
                 .setPriority(NotificationCompat.PRIORITY_LOW)
+                .setCategory(NotificationCompat.CATEGORY_PROGRESS)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             builder.color = ContextCompat.getColor(context, R.color.colorPrimary)
@@ -213,4 +248,6 @@ class NotificationViewImpl(private val context: Context) : NotificationView {
                 NotificationView.NOTIFICATION_TAG_FILE, NotificationView.NOTIFICATION_ID_FILE)
         transferBuilder = null
     }
+
+    private fun generateCode() = random.nextInt(10_000)
 }

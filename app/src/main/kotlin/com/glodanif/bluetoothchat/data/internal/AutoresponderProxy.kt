@@ -5,9 +5,8 @@ import android.os.Handler
 import com.glodanif.bluetoothchat.data.entity.*
 import com.glodanif.bluetoothchat.data.model.SettingsManagerImpl
 import com.glodanif.bluetoothchat.data.service.BluetoothConnectionService
-import com.glodanif.bluetoothchat.data.service.Contract
-import com.glodanif.bluetoothchat.data.service.Message
-import com.glodanif.bluetoothchat.data.service.PayloadType
+import com.glodanif.bluetoothchat.data.service.message.Contract
+import com.glodanif.bluetoothchat.data.service.message.PayloadType
 import java.io.File
 
 class AutoresponderProxy(private val service: BluetoothConnectionService?) : CommunicationProxy {

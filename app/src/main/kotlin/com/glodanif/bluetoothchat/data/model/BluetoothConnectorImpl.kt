@@ -12,9 +12,8 @@ import com.glodanif.bluetoothchat.data.internal.AutoresponderProxy
 import com.glodanif.bluetoothchat.data.internal.CommunicationProxy
 import com.glodanif.bluetoothchat.data.internal.EmptyProxy
 import com.glodanif.bluetoothchat.data.service.BluetoothConnectionService
-import com.glodanif.bluetoothchat.data.service.Contract
-import com.glodanif.bluetoothchat.data.service.PayloadType
-import com.glodanif.bluetoothchat.data.service.TransferringFile
+import com.glodanif.bluetoothchat.data.service.message.Contract
+import com.glodanif.bluetoothchat.data.service.message.PayloadType
 import com.glodanif.bluetoothchat.utils.safeRemove
 import java.io.File
 
@@ -372,17 +371,11 @@ class BluetoothConnectorImpl(private val context: Context) : BluetoothConnector 
     override fun getCurrentConversation() = service?.getCurrentConversation()
 
     override fun acceptConnection() {
-
-        service?.getCurrentContract()?.createAcceptConnectionMessage(settings.getUserName(), settings.getUserColor())?.let { message ->
-            service?.sendMessage(message)
-        }
+        service?.approveConnection()
     }
 
     override fun rejectConnection() {
-
-        service?.getCurrentContract()?.createRejectConnectionMessage(settings.getUserName(), settings.getUserColor())?.let { message ->
-            service?.sendMessage(message)
-        }
+        service?.rejectConnection()
     }
 
     override fun sendDisconnectRequest() {

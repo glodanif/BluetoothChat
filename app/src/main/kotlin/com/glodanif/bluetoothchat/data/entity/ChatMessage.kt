@@ -3,7 +3,7 @@ package com.glodanif.bluetoothchat.data.entity
 import android.arch.persistence.room.Entity
 import android.arch.persistence.room.Ignore
 import android.arch.persistence.room.PrimaryKey
-import com.glodanif.bluetoothchat.data.service.PayloadType
+import com.glodanif.bluetoothchat.data.service.message.PayloadType
 import java.util.*
 
 @Entity(tableName = "message")

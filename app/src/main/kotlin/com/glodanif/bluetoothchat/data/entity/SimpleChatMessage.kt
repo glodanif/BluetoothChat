@@ -1,6 +1,6 @@
 package com.glodanif.bluetoothchat.data.entity
 
-import com.glodanif.bluetoothchat.data.service.PayloadType
+import com.glodanif.bluetoothchat.data.service.message.PayloadType
 import java.util.*
 
 data class SimpleChatMessage(

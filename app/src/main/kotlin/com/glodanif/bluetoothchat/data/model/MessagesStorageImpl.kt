@@ -1,15 +1,14 @@
 package com.glodanif.bluetoothchat.data.model
 
-import android.content.Context
+import com.glodanif.bluetoothchat.data.database.ChatDatabase
 import com.glodanif.bluetoothchat.data.database.MessagesDao
-import com.glodanif.bluetoothchat.data.database.Storage
 import com.glodanif.bluetoothchat.data.entity.ChatMessage
 import com.glodanif.bluetoothchat.data.entity.MessageFile
 import java.io.File
 
-class MessagesStorageImpl(val context: Context) : MessagesStorage {
+class MessagesStorageImpl(db: ChatDatabase) : MessagesStorage {
 
-    private val dao: MessagesDao = Storage.getInstance(context).db.messagesDao()
+    private val dao: MessagesDao = db.messagesDao()
 
     override suspend fun insertMessage(message: ChatMessage) {
         dao.insert(message)

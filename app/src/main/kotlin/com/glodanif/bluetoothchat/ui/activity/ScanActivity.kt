@@ -179,7 +179,11 @@ class ScanActivity : SkeletonActivity(), ScanView {
     override fun requestMakingDiscoverable() {
         val discoverableIntent = Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE)
         discoverableIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 60)
-        startActivityForResult(discoverableIntent, REQUEST_MAKE_DISCOVERABLE)
+        try {
+            startActivityForResult(discoverableIntent, REQUEST_MAKE_DISCOVERABLE)
+        } catch (e: ActivityNotFoundException) {
+            Toast.makeText(this, getString(R.string.scan__no_discoverable_activity), Toast.LENGTH_LONG).show()
+        }
     }
 
     override fun showDiscoverableProcess() {

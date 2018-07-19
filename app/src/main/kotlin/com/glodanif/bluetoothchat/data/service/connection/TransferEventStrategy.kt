@@ -1,4 +1,4 @@
-package com.glodanif.bluetoothchat.data.service
+package com.glodanif.bluetoothchat.data.service.connection
 
 import com.glodanif.bluetoothchat.utils.isNumber
 

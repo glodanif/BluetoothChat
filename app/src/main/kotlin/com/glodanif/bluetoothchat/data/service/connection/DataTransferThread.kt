@@ -1,13 +1,14 @@
-package com.glodanif.bluetoothchat.data.service
+package com.glodanif.bluetoothchat.data.service.connection
 
 import android.bluetooth.BluetoothSocket
+import com.glodanif.bluetoothchat.data.service.message.TransferringFile
 import com.glodanif.bluetoothchat.utils.safeLet
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.launch
 import java.io.*
 
 abstract class DataTransferThread(private val socket: BluetoothSocket,
-                                  private val type: BluetoothConnectionService.ConnectionType,
+                                  private val type: ConnectionType,
                                   private val transferListener: TransferEventsListener,
                                   private val filesDirectory: File,
                                   private val fileListener: OnFileListener,
@@ -344,7 +345,7 @@ abstract class DataTransferThread(private val socket: BluetoothSocket,
         fun onMessageReceived(message: String)
         fun onMessageSent(message: String)
 
-        fun onConnectionPrepared(type: BluetoothConnectionService.ConnectionType)
+        fun onConnectionPrepared(type: ConnectionType)
 
         fun onConnectionCanceled()
         fun onConnectionLost()
