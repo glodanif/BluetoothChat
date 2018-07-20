@@ -9,7 +9,7 @@ class Database {
 
     companion object {
 
-        fun createDatabase(context: Context) =
+        fun getInstance(context: Context) =
                 Room.databaseBuilder(context, ChatDatabase::class.java, "chat_database")
                         .addMigrations(MIGRATION_1_2, MIGRATION_2_3)
                         .build()

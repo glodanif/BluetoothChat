@@ -16,6 +16,7 @@ import com.glodanif.bluetoothchat.utils.getNotificationManager
 import android.app.PendingIntent
 import android.support.v4.app.RemoteInput
 import android.support.v4.content.ContextCompat
+import android.util.Log
 import java.util.*
 
 class NotificationViewImpl(private val context: Context) : NotificationView {
@@ -127,7 +128,7 @@ class NotificationViewImpl(private val context: Context) : NotificationView {
                 NotificationView.NOTIFICATION_ID_MESSAGE, notification)
     }
 
-    override fun showConnectionRequestNotification(deviceName: String, soundEnabled: Boolean) {
+    override fun showConnectionRequestNotification(deviceName: String, address: String, soundEnabled: Boolean) {
 
         val notificationIntent = Intent(context, ConversationsActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
@@ -136,9 +137,10 @@ class NotificationViewImpl(private val context: Context) : NotificationView {
 
         val approveIntent = Intent(NotificationView.ACTION_CONNECTION).apply {
             putExtra(NotificationView.EXTRA_APPROVED, true)
+            putExtra(NotificationView.EXTRA_ADDRESS, address)
         }
         val approvePendingIntent = PendingIntent.getBroadcast(context, generateCode(), approveIntent, 0)
-        val approveAction = NotificationCompat.Action(R.drawable.ic_start_chat, context.getString(R.string.chat__connect), approvePendingIntent)
+        val approveAction = NotificationCompat.Action(R.drawable.ic_start_chat, context.getString(R.string.general__start_chat), approvePendingIntent)
 
         val rejectIntent = Intent(NotificationView.ACTION_CONNECTION).apply {
             putExtra(NotificationView.EXTRA_APPROVED, false)

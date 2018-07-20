@@ -68,5 +68,5 @@ class ApplicationModule(private val application: ChatApplication) {
 
     @Provides
     @Singleton
-    internal fun provideDatabase(): ChatDatabase = Database.createDatabase(application)
+    internal fun provideDatabase(): ChatDatabase = Database.getInstance(application)
 }

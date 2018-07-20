@@ -7,6 +7,7 @@ import android.bluetooth.BluetoothSocket
 import android.graphics.BitmapFactory
 import android.os.Environment
 import android.support.v4.app.NotificationCompat
+import android.util.Log
 import com.glodanif.bluetoothchat.ChatApplication
 import com.glodanif.bluetoothchat.R
 import com.glodanif.bluetoothchat.data.entity.ChatMessage
@@ -300,9 +301,9 @@ class ConnectionController(private val application: ChatApplication,
                         filePath = path
                     }
 
-                    shallowHistory.add(NotificationCompat.MessagingStyle.Message(imageText, message.date.time, currentConversation?.displayName))
+                    shallowHistory.add(NotificationCompat.MessagingStyle.Message("$imageText ${System.currentTimeMillis()}", message.date.time, currentConversation?.displayName))
                     if (!subject.isAnybodyListeningForMessages() || application.currentChat == null || !application.currentChat.equals(address)) {
-                        view.showNewMessageNotification(imageText, currentConversation?.displayName,
+                        view.showNewMessageNotification("$imageText ${System.currentTimeMillis()}", currentConversation?.displayName,
                                 device.name, address, shallowHistory, preferences.isSoundEnabled())
                     } else {
                         message.seenHere = true
@@ -545,7 +546,7 @@ class ConnectionController(private val application: ChatApplication,
 
         if (!application.isConversationsOpened && !(application.currentChat != null && application.currentChat.equals(device.address))) {
             view.showConnectionRequestNotification(
-                    "${conversation.displayName} (${conversation.deviceName})", preferences.isSoundEnabled())
+                    "${conversation.displayName} (${conversation.deviceName})", conversation.deviceAddress, preferences.isSoundEnabled())
         }
     }
 

@@ -32,8 +32,6 @@ class BluetoothConnectorImpl(private val context: Context) : BluetoothConnector 
     private var bound = false
     private var isPreparing = false
 
-    private val settings = SettingsManagerImpl(context)
-
     private val connection = object : ServiceConnection {
 
         override fun onServiceConnected(className: ComponentName, binder: IBinder) {

@@ -1,6 +1,7 @@
 package com.glodanif.bluetoothchat.data.service
 
 import android.app.Service
+import android.app.TaskStackBuilder
 import android.bluetooth.BluetoothDevice
 import android.content.*
 import android.os.Binder
@@ -21,6 +22,8 @@ import com.glodanif.bluetoothchat.data.service.message.Message
 import com.glodanif.bluetoothchat.data.service.message.PayloadType
 import com.glodanif.bluetoothchat.data.service.message.TransferringFile
 import com.glodanif.bluetoothchat.di.ComponentsManager
+import com.glodanif.bluetoothchat.ui.activity.ChatActivity
+import com.glodanif.bluetoothchat.ui.activity.ConversationsActivity
 import com.glodanif.bluetoothchat.ui.view.NotificationView
 import java.io.File
 import javax.inject.Inject
@@ -41,8 +44,20 @@ class BluetoothConnectionService : Service(), ConnectionSubject {
         override fun onReceive(context: Context?, intent: Intent?) {
 
             if (intent != null) {
+
                 if (intent.getBooleanExtra(NotificationView.EXTRA_APPROVED, false)) {
+
                     controller.approveConnection()
+
+                    val address = intent.getStringExtra(NotificationView.EXTRA_ADDRESS)
+                    val chatIntent = Intent(context, ChatActivity::class.java).apply {
+                        putExtra(ChatActivity.EXTRA_ADDRESS, address)
+                    }
+                    TaskStackBuilder.create(context)
+                            .addNextIntentWithParentStack(Intent(context, ConversationsActivity::class.java))
+                            .addNextIntentWithParentStack(chatIntent)
+                            .startActivities()
+
                 } else {
                     controller.rejectConnection()
                 }
@@ -57,7 +72,7 @@ class BluetoothConnectionService : Service(), ConnectionSubject {
             if (intent != null) {
                 val remoteInput = RemoteInput.getResultsFromIntent(intent)
                 if (remoteInput != null) {
-                     val replyText = remoteInput.getCharSequence(NotificationView.EXTRA_TEXT_REPLY)
+                    val replyText = remoteInput.getCharSequence(NotificationView.EXTRA_TEXT_REPLY)
                     controller.replyFromNotification(replyText.toString())
                 }
             }

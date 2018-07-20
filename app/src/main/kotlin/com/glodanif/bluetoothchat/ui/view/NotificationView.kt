@@ -10,6 +10,7 @@ interface NotificationView {
 
         const val ACTION_CONNECTION = "action.connection"
         const val EXTRA_APPROVED = "extra.approved"
+        const val EXTRA_ADDRESS = "extra.address"
         const val ACTION_REPLY = "action.reply"
         const val EXTRA_TEXT_REPLY = "extra.text_reply"
 
@@ -29,7 +30,7 @@ interface NotificationView {
 
     fun getForegroundNotification(message: String): Notification
     fun showNewMessageNotification(message: String, displayName: String?, deviceName: String?, address: String, history: List<NotificationCompat.MessagingStyle.Message>, soundEnabled: Boolean)
-    fun showConnectionRequestNotification(deviceName: String, soundEnabled: Boolean)
+    fun showConnectionRequestNotification(deviceName: String, address: String, soundEnabled: Boolean)
     fun showFileTransferNotification(displayName: String?, deviceName: String, address: String, file: TransferringFile, transferredBytes: Long, silently: Boolean)
     fun updateFileTransferNotification(transferredBytes: Long, totalBytes: Long)
     fun dismissMessageNotification()
