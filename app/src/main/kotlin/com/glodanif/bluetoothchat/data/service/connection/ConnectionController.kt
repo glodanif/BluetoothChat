@@ -301,9 +301,11 @@ class ConnectionController(private val application: ChatApplication,
                         filePath = path
                     }
 
-                    shallowHistory.add(NotificationCompat.MessagingStyle.Message("$imageText ${System.currentTimeMillis()}", message.date.time, currentConversation?.displayName))
+                    shallowHistory.add(NotificationCompat.MessagingStyle.Message(imageText, message.date.time, currentConversation?.displayName))
                     if (!subject.isAnybodyListeningForMessages() || application.currentChat == null || !application.currentChat.equals(address)) {
-                        view.showNewMessageNotification("$imageText ${System.currentTimeMillis()}", currentConversation?.displayName,
+                        //FIXME: Fixed not appearing notification
+                        view.dismissMessageNotification()
+                        view.showNewMessageNotification(imageText, currentConversation?.displayName,
                                 device.name, address, shallowHistory, preferences.isSoundEnabled())
                     } else {
                         message.seenHere = true
