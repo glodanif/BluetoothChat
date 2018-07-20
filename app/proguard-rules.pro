@@ -29,3 +29,7 @@
 -dontwarn android.arch.**
 -dontwarn com.amulyakhare.**
 -dontwarn me.priyesh.**
+-dontwarn okio.**
+-dontwarn okhttp3.**
+-dontwarn javax.annotation.Nullable
+-dontwarn javax.annotation.ParametersAreNonnullByDefault
