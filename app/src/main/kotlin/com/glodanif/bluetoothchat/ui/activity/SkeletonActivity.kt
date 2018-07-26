@@ -1,6 +1,9 @@
 package com.glodanif.bluetoothchat.ui.activity
 
 import android.arch.lifecycle.Lifecycle
+import android.content.ActivityNotFoundException
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.support.annotation.LayoutRes
 import android.support.v7.app.AppCompatActivity
@@ -9,10 +12,10 @@ import android.support.v7.widget.Toolbar
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import android.widget.Toast
 import com.glodanif.bluetoothchat.R
 
-open class
-SkeletonActivity : AppCompatActivity() {
+open class SkeletonActivity : AppCompatActivity() {
 
     protected enum class ActivityType { CHILD_ACTIVITY, CUSTOM_TOOLBAR_ACTIVITY }
 
@@ -53,10 +56,21 @@ SkeletonActivity : AppCompatActivity() {
         }
     }
 
+    fun openLink(link: String) {
+        val intent = Intent(Intent.ACTION_VIEW).apply {
+            data = Uri.parse(link)
+        }
+        try {
+            startActivity(intent)
+        } catch (e: ActivityNotFoundException) {
+            Toast.makeText(this, R.string.general__no_browser, Toast.LENGTH_LONG).show()
+        }
+    }
+
     fun hideKeyboard() {
         val inputManager = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
-        currentFocus?.let {
-            inputManager.hideSoftInputFromWindow(it.windowToken, InputMethodManager.HIDE_NOT_ALWAYS)
+        currentFocus?.let { view ->
+            inputManager.hideSoftInputFromWindow(view.windowToken, InputMethodManager.HIDE_NOT_ALWAYS)
         }
     }
 }

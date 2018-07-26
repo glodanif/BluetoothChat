@@ -21,17 +21,11 @@ class AboutActivity : SkeletonActivity() {
         versionLabel.text = "v${BuildConfig.VERSION_NAME} / ${BuildConfig.VERSION_CODE}"
 
         findViewById<Button>(R.id.btn_github).setOnClickListener {
-            val intent = Intent(Intent.ACTION_VIEW).apply {
-                data = Uri.parse("https://github.com/glodanif/BluetoothChat")
-            }
-            startActivity(intent)
+            openLink("https://github.com/glodanif/BluetoothChat")
         }
 
         findViewById<Button>(R.id.btn_crowdin).setOnClickListener {
-            val intent = Intent(Intent.ACTION_VIEW).apply {
-                data = Uri.parse("https://crowdin.com/project/bluetoothchat")
-            }
-            startActivity(intent)
+            openLink("https://crowdin.com/project/bluetoothchat")
         }
     }
 
