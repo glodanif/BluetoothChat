@@ -11,8 +11,8 @@
   <string name="general__no">Ні</string>
   <string name="general__service_lost">Bluetooth Chat сервіс був зупинений, перезапустіть скрвіс для коректної роботи додатку</string>
   <string name="general__disconnect">Відключитись</string>
-  <string name="general__storage_permission">Bluetooth Chat provides you with an ability to share images. This feature requires <b>"STORAGE"</b> permission to work correctly</string>
-  <string name="general__no_browser">Unable to find browser application</string>
+  <string name="general__storage_permission">Bluetooth Chat надає вам можливість ділитися зображеннями. Ця функція потребує дозволу <b>"ЗБЕРІГАННЯ"</b> для корректної роботи</string>
+  <string name="general__no_browser">Не вдалося знайти додаток браузера</string>
   <string name="general__time_format">dd MMM, yyyy</string>
   <string name="general__time_unknown">невідомо</string>
   <string name="general__time_just_now">щойно</string>
