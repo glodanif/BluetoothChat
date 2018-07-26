@@ -11,7 +11,7 @@
   <string name="general__no">No</string>
   <string name="general__service_lost">El servicio Bluetooth Chat ha sido detenido, reinicia el servicio para poder usar la aplicación</string>
   <string name="general__disconnect">Desconectar</string>
-  <string name="general__storage_permission">Bluetooth Chat provides you with an ability to share images. This feature requires <b>"STORAGE"</b> permission to work correctly</string>
+  <string name="general__storage_permission">Bluetooth Chat te da la opción de compartir imágenes. Esta característica requiere permisos de <b>"Almacenamiento"</b> para funcionar correctamente</string>
   <string name="general__no_browser">Unable to find browser application</string>
   <string name="general__time_format">dd/MM/yyyy</string>
   <string name="general__time_unknown">desconocido</string>
@@ -125,7 +125,7 @@
   <string name="notification__channel_request">Solicitud de Conexión</string>
   <string name="notification__channel_message">Nuevo mensaje</string>
   <string name="notification__channel_file">Transferencia de Archivos</string>
-  <string name="notification__me">Me</string>
+  <string name="notification__me">Yo</string>
   <string name="notification__reply">Reply</string>
   <string name="notification__sent">Sent</string>
   <string name="contact_chooser__title">Seleccionar chat</string>
