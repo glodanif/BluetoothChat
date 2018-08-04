@@ -3,7 +3,7 @@ package com.glodanif.bluetoothchat.data.internal
 import android.bluetooth.BluetoothDevice
 import android.os.Handler
 import com.glodanif.bluetoothchat.data.entity.*
-import com.glodanif.bluetoothchat.data.model.SettingsManagerImpl
+import com.glodanif.bluetoothchat.data.model.ProfileManagerImpl
 import com.glodanif.bluetoothchat.data.service.BluetoothConnectionService
 import com.glodanif.bluetoothchat.data.service.message.Contract
 import com.glodanif.bluetoothchat.data.service.message.PayloadType
@@ -39,8 +39,8 @@ class AutoresponderProxy(private val service: BluetoothConnectionService?) : Com
 
         runWithDelay {
             service?.let {
-                val settings = SettingsManagerImpl(it)
-                val message = contract.createAcceptConnectionMessage(settings.getUserName(), settings.getUserColor())
+                val profileManager = ProfileManagerImpl(it)
+                val message = contract.createAcceptConnectionMessage(profileManager.getUserName(), profileManager.getUserColor())
                 it.sendMessage(message)
             }
         }

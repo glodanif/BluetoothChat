@@ -2,7 +2,7 @@ package com.glodanif.bluetoothchat.presenter
 
 import com.glodanif.bluetoothchat.data.model.BluetoothConnector
 import com.glodanif.bluetoothchat.data.model.ConversationsStorage
-import com.glodanif.bluetoothchat.data.model.SettingsManager
+import com.glodanif.bluetoothchat.data.model.ProfileManager
 import com.glodanif.bluetoothchat.ui.presenter.ConversationsPresenter
 import com.glodanif.bluetoothchat.ui.view.ConversationsView
 import com.glodanif.bluetoothchat.ui.viewmodel.converter.ConversationConverter
@@ -16,22 +16,22 @@ import kotlin.coroutines.experimental.EmptyCoroutineContext
 class ConversationsPresenterUnitTest {
 
     @RelaxedMockK
-    lateinit var settings: SettingsManager
+    private lateinit var profile: ProfileManager
     @RelaxedMockK
-    lateinit var storage: ConversationsStorage
+    private lateinit var storage: ConversationsStorage
     @RelaxedMockK
-    lateinit var connector: BluetoothConnector
+    private lateinit var connector: BluetoothConnector
     @RelaxedMockK
-    lateinit var view: ConversationsView
+    private lateinit var view: ConversationsView
     @RelaxedMockK
-    lateinit var converter: ConversationConverter
+    private lateinit var converter: ConversationConverter
 
-    lateinit var presenter: ConversationsPresenter
+    private lateinit var presenter: ConversationsPresenter
 
     @Before
     fun setup() {
         MockKAnnotations.init(this)
-        presenter = ConversationsPresenter(view, connector, storage, settings, converter, EmptyCoroutineContext, EmptyCoroutineContext)
+        presenter = ConversationsPresenter(view, connector, storage, profile, converter, EmptyCoroutineContext, EmptyCoroutineContext)
     }
 
     @Test

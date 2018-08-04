@@ -3,9 +3,9 @@ package com.glodanif.bluetoothchat.data.model
 import android.content.Context
 import android.graphics.Color
 
-class SettingsManagerImpl(context: Context) : SettingsManager {
+class ProfileManagerImpl(context: Context) : ProfileManager {
 
-    private val KEY_PREFERENCES = "key.settings"
+    private val KEY_PREFERENCES = "key.profileManager"
 
     private val KEY_USER_NAME = "key.user_name"
     private val KEY_USER_COLOR = "key.user_color"

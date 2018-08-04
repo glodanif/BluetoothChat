@@ -9,7 +9,7 @@ import android.arch.lifecycle.ProcessLifecycleOwner
 import android.os.StrictMode
 import com.crashlytics.android.Crashlytics
 import com.glodanif.bluetoothchat.data.model.BluetoothConnector
-import com.glodanif.bluetoothchat.data.model.SettingsManager
+import com.glodanif.bluetoothchat.data.model.ProfileManager
 import com.glodanif.bluetoothchat.di.ComponentsManager
 import com.glodanif.bluetoothchat.ui.activity.ChatActivity
 import com.glodanif.bluetoothchat.ui.activity.ConversationsActivity
@@ -27,7 +27,7 @@ class ChatApplication : Application(), LifecycleObserver {
     @Inject
     internal lateinit var connector: BluetoothConnector
     @Inject
-    internal lateinit var settings: SettingsManager
+    internal lateinit var profileManager: ProfileManager
 
     override fun onCreate() {
         super.onCreate()
@@ -91,7 +91,7 @@ class ChatApplication : Application(), LifecycleObserver {
 
     @OnLifecycleEvent(Lifecycle.Event.ON_START)
     internal fun prepareConnection() {
-        if (!settings.getUserName().isEmpty()) {
+        if (!profileManager.getUserName().isEmpty()) {
             connector.prepare()
         }
     }

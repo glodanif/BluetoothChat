@@ -1,7 +1,7 @@
 package com.glodanif.bluetoothchat.presenter
 
 import com.glodanif.bluetoothchat.data.model.BluetoothScanner
-import com.glodanif.bluetoothchat.data.model.SettingsManager
+import com.glodanif.bluetoothchat.data.model.ProfileManager
 import com.glodanif.bluetoothchat.ui.presenter.ProfilePresenter
 import com.glodanif.bluetoothchat.ui.view.ProfileView
 import io.mockk.MockKAnnotations
@@ -14,7 +14,7 @@ import org.junit.Test
 class ProfilePresenterUnitTest {
 
     @RelaxedMockK
-    private lateinit var model: SettingsManager
+    private lateinit var model: ProfileManager
     @RelaxedMockK
     private lateinit var scanner: BluetoothScanner
     @RelaxedMockK

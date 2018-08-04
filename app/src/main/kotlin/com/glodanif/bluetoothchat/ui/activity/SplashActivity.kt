@@ -7,7 +7,7 @@ import android.os.Handler
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.app.AppCompatDelegate
 import com.glodanif.bluetoothchat.R
-import com.glodanif.bluetoothchat.data.model.SettingsManagerImpl
+import com.glodanif.bluetoothchat.data.model.ProfileManagerImpl
 
 class SplashActivity : AppCompatActivity() {
 
@@ -18,8 +18,8 @@ class SplashActivity : AppCompatActivity() {
 
         Handler().postDelayed({
 
-            val settings = SettingsManagerImpl(this)
-            val nextScreen = if (settings.getUserName().isEmpty())
+            val profileManager = ProfileManagerImpl(this)
+            val nextScreen = if (profileManager.getUserName().isEmpty())
                 ProfileActivity::class.java else ConversationsActivity::class.java
             val newIntent = Intent(this, nextScreen)
 

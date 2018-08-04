@@ -36,7 +36,7 @@ class ApplicationModule(private val application: ChatApplication) {
 
     @Provides
     @Singleton
-    internal fun provideSettingsManager(): SettingsManager = SettingsManagerImpl(application)
+    internal fun provideProfileManager(): ProfileManager = ProfileManagerImpl(application)
 
     @Provides
     @Singleton

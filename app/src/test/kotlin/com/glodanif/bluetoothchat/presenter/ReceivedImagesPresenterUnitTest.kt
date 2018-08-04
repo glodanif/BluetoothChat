@@ -17,11 +17,11 @@ import kotlin.coroutines.experimental.EmptyCoroutineContext
 class ReceivedImagesPresenterUnitTest {
 
     @RelaxedMockK
-    lateinit var storage: MessagesStorage
+    private lateinit var storage: MessagesStorage
     @RelaxedMockK
-    lateinit var view: ReceivedImagesView
+    private lateinit var view: ReceivedImagesView
 
-    lateinit var presenter: ReceivedImagesPresenter
+    private lateinit var presenter: ReceivedImagesPresenter
 
     @Before
     fun setup() {

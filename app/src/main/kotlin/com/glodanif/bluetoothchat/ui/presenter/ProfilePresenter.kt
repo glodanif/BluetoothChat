@@ -5,10 +5,10 @@ import android.arch.lifecycle.LifecycleObserver
 import android.arch.lifecycle.OnLifecycleEvent
 import android.support.annotation.ColorInt
 import com.glodanif.bluetoothchat.data.model.BluetoothScanner
-import com.glodanif.bluetoothchat.data.model.SettingsManager
+import com.glodanif.bluetoothchat.data.model.ProfileManager
 import com.glodanif.bluetoothchat.ui.view.ProfileView
 
-class ProfilePresenter(private val view: ProfileView, private val settings: SettingsManager, private val scanner: BluetoothScanner): LifecycleObserver {
+class ProfilePresenter(private val view: ProfileView, private val settings: ProfileManager, private val scanner: BluetoothScanner): LifecycleObserver {
 
     @ColorInt
     private var currentColor = settings.getUserColor()

@@ -7,14 +7,13 @@ import android.bluetooth.BluetoothSocket
 import android.graphics.BitmapFactory
 import android.os.Environment
 import android.support.v4.app.NotificationCompat
-import android.util.Log
 import com.glodanif.bluetoothchat.ChatApplication
 import com.glodanif.bluetoothchat.R
 import com.glodanif.bluetoothchat.data.entity.ChatMessage
 import com.glodanif.bluetoothchat.data.entity.Conversation
 import com.glodanif.bluetoothchat.data.model.ConversationsStorage
 import com.glodanif.bluetoothchat.data.model.MessagesStorage
-import com.glodanif.bluetoothchat.data.model.SettingsManager
+import com.glodanif.bluetoothchat.data.model.ProfileManager
 import com.glodanif.bluetoothchat.data.model.UserPreferences
 import com.glodanif.bluetoothchat.data.service.message.*
 import com.glodanif.bluetoothchat.ui.view.NotificationView
@@ -35,7 +34,7 @@ class ConnectionController(private val application: ChatApplication,
                            private val conversationStorage: ConversationsStorage,
                            private val messagesStorage: MessagesStorage,
                            private val preferences: UserPreferences,
-                           private val settings: SettingsManager,
+                           private val profileManager: ProfileManager,
                            private val shortcutManager: ShortcutManager,
                            private val uiContext: CoroutineContext = UI,
                            private val bgContext: CoroutineContext = CommonPool) {
@@ -170,7 +169,7 @@ class ConnectionController(private val application: ChatApplication,
                 connectionState = ConnectionState.PENDING
 
                 if (type == ConnectionType.OUTCOMING) {
-                    contract.createConnectMessage(settings.getUserName(), settings.getUserColor()).let { message ->
+                    contract.createConnectMessage(profileManager.getUserName(), profileManager.getUserColor()).let { message ->
                         dataTransferThread?.write(message.getDecodedMessage())
                     }
                 }
@@ -415,13 +414,13 @@ class ConnectionController(private val application: ChatApplication,
     }
 
     fun approveConnection() {
-        contract.createAcceptConnectionMessage(settings.getUserName(), settings.getUserColor()).let { message ->
+        contract.createAcceptConnectionMessage(profileManager.getUserName(), profileManager.getUserColor()).let { message ->
             sendMessage(message)
         }
     }
 
     fun rejectConnection() {
-        contract.createRejectConnectionMessage(settings.getUserName(), settings.getUserColor()).let { message ->
+        contract.createRejectConnectionMessage(profileManager.getUserName(), profileManager.getUserColor()).let { message ->
             sendMessage(message)
         }
     }

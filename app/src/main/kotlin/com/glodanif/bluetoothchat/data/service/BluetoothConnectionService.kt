@@ -9,6 +9,7 @@ import android.os.Build
 import android.os.IBinder
 import android.support.v4.app.RemoteInput
 import android.support.v7.app.AppCompatActivity
+import com.glodanif.bluetoothchat.BuildConfig
 import com.glodanif.bluetoothchat.R
 import com.glodanif.bluetoothchat.data.entity.ChatMessage
 import com.glodanif.bluetoothchat.data.entity.Conversation
@@ -27,6 +28,10 @@ import com.glodanif.bluetoothchat.ui.activity.ConversationsActivity
 import com.glodanif.bluetoothchat.ui.view.NotificationView
 import java.io.File
 import javax.inject.Inject
+import android.app.PendingIntent
+import android.content.Intent
+
+
 
 class BluetoothConnectionService : Service(), ConnectionSubject {
 
@@ -53,10 +58,19 @@ class BluetoothConnectionService : Service(), ConnectionSubject {
                     val chatIntent = Intent(context, ChatActivity::class.java).apply {
                         putExtra(ChatActivity.EXTRA_ADDRESS, address)
                     }
-                    TaskStackBuilder.create(context)
-                            .addNextIntentWithParentStack(Intent(context, ConversationsActivity::class.java))
-                            .addNextIntentWithParentStack(chatIntent)
-                            .startActivities()
+                    val conversationsIntent = Intent(context, ConversationsActivity::class.java)
+
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        TaskStackBuilder.create(context)
+                                .addNextIntentWithParentStack(conversationsIntent)
+                                .addNextIntentWithParentStack(chatIntent)
+                                .startActivities()
+                    } else {
+                        val intents = arrayOf(conversationsIntent, chatIntent)
+                        val code = System.currentTimeMillis() / 1000
+                        PendingIntent.getActivities(context, code.toInt(), intents, PendingIntent.FLAG_ONE_SHOT)
+                                .send()
+                    }
 
                 } else {
                     controller.rejectConnection()

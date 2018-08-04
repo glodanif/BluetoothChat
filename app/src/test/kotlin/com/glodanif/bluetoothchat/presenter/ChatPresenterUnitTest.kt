@@ -13,21 +13,21 @@ class ChatPresenterUnitTest {
 
     private val address = "00:00:00:00:00:00"
     @RelaxedMockK
-    lateinit var view: ChatView
+    private lateinit var view: ChatView
     @RelaxedMockK
-    lateinit var conversationStorage: ConversationsStorage
+    private lateinit var conversationStorage: ConversationsStorage
     @RelaxedMockK
-    lateinit var messageStorage: MessagesStorage
+    private lateinit var messageStorage: MessagesStorage
     @RelaxedMockK
-    lateinit var scanner: BluetoothScanner
+    private lateinit var scanner: BluetoothScanner
     @RelaxedMockK
-    lateinit var connector: BluetoothConnector
+    private lateinit var connector: BluetoothConnector
     @RelaxedMockK
-    lateinit var converter: ChatMessageConverter
+    private lateinit var converter: ChatMessageConverter
     @RelaxedMockK
-    lateinit var preferences: UserPreferences
+    private lateinit var preferences: UserPreferences
 
-    lateinit var presenter: ChatPresenter
+    private lateinit var presenter: ChatPresenter
 
     @Before
     fun setup() {

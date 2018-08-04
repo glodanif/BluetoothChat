@@ -15,13 +15,13 @@ import kotlin.coroutines.experimental.EmptyCoroutineContext
 class ContactChooserPresenterUnitTest {
 
     @RelaxedMockK
-    lateinit var storage: ConversationsStorage
+    private lateinit var storage: ConversationsStorage
     @RelaxedMockK
-    lateinit var view: ContactChooserView
+    private lateinit var view: ContactChooserView
     @RelaxedMockK
-    lateinit var converter: ContactConverter
+    private lateinit var converter: ContactConverter
 
-    lateinit var presenter: ContactChooserPresenter
+    private lateinit var presenter: ContactChooserPresenter
 
     @Before
     fun setup() {

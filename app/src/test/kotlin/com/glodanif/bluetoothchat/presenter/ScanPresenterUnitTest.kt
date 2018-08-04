@@ -25,7 +25,7 @@ class ScanPresenterUnitTest {
     @RelaxedMockK
     private lateinit var preferences: UserPreferences
 
-    lateinit var presenter: ScanPresenter
+    private lateinit var presenter: ScanPresenter
 
     @Before
     fun setup() {

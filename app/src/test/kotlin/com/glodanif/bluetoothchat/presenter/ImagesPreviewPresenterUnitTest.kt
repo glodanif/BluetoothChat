@@ -17,13 +17,13 @@ import kotlin.coroutines.experimental.EmptyCoroutineContext
 class ImagesPreviewPresenterUnitTest {
 
     @RelaxedMockK
-    lateinit var storage: MessagesStorage
+    private lateinit var storage: MessagesStorage
     @RelaxedMockK
-    lateinit var view: ImagePreviewView
+    private lateinit var view: ImagePreviewView
     @RelaxedMockK
-    lateinit var file: File
+    private lateinit var file: File
 
-    lateinit var presenter: ImagePreviewPresenter
+    private lateinit var presenter: ImagePreviewPresenter
 
     @Before
     fun setup() {

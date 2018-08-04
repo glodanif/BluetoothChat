@@ -19,7 +19,7 @@ import kotlin.coroutines.experimental.CoroutineContext
 class ConversationsPresenter(private val view: ConversationsView,
                              private val connection: BluetoothConnector,
                              private val conversationStorage: ConversationsStorage,
-                             private val settings: SettingsManager,
+                             private val profileManager: ProfileManager,
                              private val converter: ConversationConverter,
                              private val uiContext: CoroutineContext = UI,
                              private val bgContext: CoroutineContext = CommonPool) : LifecycleObserver {
@@ -123,7 +123,7 @@ class ConversationsPresenter(private val view: ConversationsView,
 
     @OnLifecycleEvent(Lifecycle.Event.ON_START)
     fun loadUserProfile() {
-        view.showUserProfile(settings.getUserName(), settings.getUserColor())
+        view.showUserProfile(profileManager.getUserName(), profileManager.getUserColor())
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_START)
