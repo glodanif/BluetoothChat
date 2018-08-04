@@ -12,6 +12,7 @@
   <string name="general__service_lost">Bluetooth Chat сервис был остановлен, перезапустите сервис для корректной работы приложения</string>
   <string name="general__disconnect">Отключиться</string>
   <string name="general__storage_permission">Bluetooth Chat дает вам возможность делиться изображениями. Эта функция требует разришения <b>"ПАМЯТЬ"</b> для корректной работы</string>
+  <string name="general__no_browser">Не удается найти приложение браузера</string>
   <string name="general__time_format">dd MMM, yyyy</string>
   <string name="general__time_unknown">неизвестно</string>
   <string name="general__time_just_now">только что</string>
