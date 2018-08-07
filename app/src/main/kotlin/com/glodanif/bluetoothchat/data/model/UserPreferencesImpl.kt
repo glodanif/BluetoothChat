@@ -1,8 +1,9 @@
 package com.glodanif.bluetoothchat.data.model
 
 import android.content.Context
-import android.graphics.Color
 import android.preference.PreferenceManager
+import android.support.v4.content.ContextCompat
+import com.glodanif.bluetoothchat.R
 
 class UserPreferencesImpl(private val context: Context) : UserPreferences {
 
@@ -14,6 +15,9 @@ class UserPreferencesImpl(private val context: Context) : UserPreferences {
     private val keyNotificationSound = "notifications_sound"
     private val keyAppearanceChatBgColor = "notifications_chat_bg_color"
     private val keyDiscoveryClassification = "notifications_classification"
+
+    private val defaultChatBackgroundColor =
+            ContextCompat.getColor(context, R.color.background_chat_default)
 
     private val preferences
             by lazy { context.getSharedPreferences(keyPreferencesName, Context.MODE_PRIVATE) }
@@ -29,7 +33,7 @@ class UserPreferencesImpl(private val context: Context) : UserPreferences {
             preferences.getBoolean(keyDiscoveryClassification, true)
 
     override fun getChatBackgroundColor() =
-            preferences.getInt(keyAppearanceChatBgColor, Color.parseColor("#ADE9C5"))
+            preferences.getInt(keyAppearanceChatBgColor, defaultChatBackgroundColor)
 
     override fun saveChatBgColor(color: Int) {
         preferences.edit()

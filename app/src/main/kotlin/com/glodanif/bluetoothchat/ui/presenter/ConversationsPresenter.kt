@@ -19,6 +19,7 @@ import kotlin.coroutines.experimental.CoroutineContext
 class ConversationsPresenter(private val view: ConversationsView,
                              private val connection: BluetoothConnector,
                              private val conversationStorage: ConversationsStorage,
+                             private val messageStorage: MessagesStorage,
                              private val profileManager: ProfileManager,
                              private val converter: ConversationConverter,
                              private val uiContext: CoroutineContext = UI,
@@ -178,6 +179,7 @@ class ConversationsPresenter(private val view: ConversationsView,
         connection.sendDisconnectRequest()
         launch(bgContext) {
             conversationStorage.removeConversationByAddress(address)
+            messageStorage.removeMessagesByAddress(address)
         }
         view.removeFromShortcuts(address)
         loadConversations()

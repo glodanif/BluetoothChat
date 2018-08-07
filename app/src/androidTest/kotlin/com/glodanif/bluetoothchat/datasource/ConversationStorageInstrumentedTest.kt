@@ -4,20 +4,27 @@ import android.graphics.Color
 import android.support.test.InstrumentationRegistry
 import android.support.test.runner.AndroidJUnit4
 import com.glodanif.bluetoothchat.data.database.Database
+import com.glodanif.bluetoothchat.data.entity.ChatMessage
 import com.glodanif.bluetoothchat.data.entity.Conversation
+import com.glodanif.bluetoothchat.data.entity.ConversationWithMessages
+import com.glodanif.bluetoothchat.data.entity.SimpleChatMessage
 import com.glodanif.bluetoothchat.data.model.ConversationsStorage
 import com.glodanif.bluetoothchat.data.model.ConversationsStorageImpl
+import com.glodanif.bluetoothchat.data.model.MessagesStorage
+import com.glodanif.bluetoothchat.data.model.MessagesStorageImpl
 import kotlinx.coroutines.experimental.runBlocking
 import org.junit.After
 import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import java.util.*
 
 @RunWith(AndroidJUnit4::class)
 class ConversationStorageInstrumentedTest {
 
     private lateinit var storage: ConversationsStorage
+    private lateinit var messagesStorage: MessagesStorage
 
     private val address1 = "00:00:00:00:00:01"
     private val conversation1 = Conversation(address1, "deviceName1", "displayName1", Color.BLACK)
@@ -28,6 +35,7 @@ class ConversationStorageInstrumentedTest {
 
     private val address3 = "00:00:00:00:00:03"
     private val conversation3 = Conversation(address3, "deviceName3", "displayName3", Color.GRAY)
+    private val message1 = ChatMessage(address3, Date(1533585790), true, "text1")
 
     private val address4 = "00:00:00:00:00:04"
     private val conversation4 = Conversation(address4, "deviceName4", "displayName4", Color.TRANSPARENT)
@@ -35,10 +43,14 @@ class ConversationStorageInstrumentedTest {
     @Before
     fun prepare() = runBlocking {
         val context = InstrumentationRegistry.getTargetContext()
-        storage = ConversationsStorageImpl(Database.getInstance(context)).apply {
+        val db = Database.getInstance(context)
+        storage = ConversationsStorageImpl(db).apply {
             insertConversation(conversation1)
             insertConversation(conversation2)
             insertConversation(conversation3)
+        }
+        messagesStorage = MessagesStorageImpl(db).apply {
+            insertMessage(message1)
         }
     }
 
@@ -48,6 +60,7 @@ class ConversationStorageInstrumentedTest {
         storage.removeConversationByAddress(address2)
         storage.removeConversationByAddress(address3)
         storage.removeConversationByAddress(address4)
+        messagesStorage.removeMessagesByAddress(address3)
     }
 
     @Test
@@ -97,13 +110,26 @@ class ConversationStorageInstrumentedTest {
         val dbConversations = storage.getConversations()
         val conversation = dbConversations.lastOrNull { it.address == address3 }
         assertNotNull(conversation)
-        assertTrue(conversation3.deviceAddress == conversation?.address)
-        assertTrue(conversation3.displayName == conversation?.displayName)
-        assertTrue(conversation3.deviceName == conversation?.deviceName)
-        assertTrue(conversation3.color == conversation?.color)
+        assertTrue(equal(conversation3, conversation))
+    }
+
+    @Test
+    fun getConversationWithTheMessages() = runBlocking {
+        val conversations = storage.getConversations()
+        val conversation = conversations.lastOrNull { it.address == address3 }
+        val message = conversation?.messages?.lastOrNull { it.text == "text1" }
+        assertNotNull(message)
+        assertTrue(equal(message1, message))
     }
 
     private fun equal(c1: Conversation?, c2: Conversation?) = c1 != null && c2 != null &&
             c1.deviceAddress == c2.deviceAddress && c1.deviceName == c2.deviceName &&
             c1.displayName == c2.displayName && c1.color == c2.color
+
+    private fun equal(c1: Conversation?, c2: ConversationWithMessages?) = c1 != null && c2 != null &&
+            c1.deviceAddress == c2.address && c1.deviceName == c2.deviceName &&
+            c1.displayName == c2.displayName && c1.color == c2.color
+
+    private fun equal(m1: ChatMessage?, m2: SimpleChatMessage?) = m1 != null && m2 != null &&
+             m1.date == m2.date && m1.deviceAddress == m2.deviceAddress && m1.text == m2.text
 }

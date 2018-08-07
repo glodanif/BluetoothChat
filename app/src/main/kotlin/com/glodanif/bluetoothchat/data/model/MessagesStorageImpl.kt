@@ -8,7 +8,7 @@ import java.io.File
 
 class MessagesStorageImpl(db: ChatDatabase) : MessagesStorage {
 
-    private val dao: MessagesDao = db.messagesDao()
+    private val dao = db.messagesDao()
 
     override suspend fun insertMessage(message: ChatMessage) {
         dao.insert(message)
@@ -44,5 +44,9 @@ class MessagesStorageImpl(db: ChatDatabase) : MessagesStorage {
 
     override suspend fun removeFileInfo(messageId: Long) {
         dao.removeFileInfo(messageId)
+    }
+
+    override suspend fun removeMessagesByAddress(address: String) {
+        dao.deleteAllByDeviceAddress(address)
     }
 }

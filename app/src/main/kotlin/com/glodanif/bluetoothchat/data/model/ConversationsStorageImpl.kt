@@ -5,21 +5,19 @@ import com.glodanif.bluetoothchat.data.entity.Conversation
 
 class ConversationsStorageImpl(db: ChatDatabase) : ConversationsStorage {
 
-    private val conversationDao = db.conversationsDao()
-    private val messageDao = db.messagesDao()
+    private val dao = db.conversationsDao()
 
-    override suspend fun getContacts() = conversationDao.getContacts()
+    override suspend fun getContacts() = dao.getContacts()
 
-    override suspend fun getConversations() = conversationDao.getAllConversationsWithMessages()
+    override suspend fun getConversations() = dao.getAllConversationsWithMessages()
 
-    override suspend fun getConversationByAddress(address: String) = conversationDao.getConversationByAddress(address)
+    override suspend fun getConversationByAddress(address: String) = dao.getConversationByAddress(address)
 
     override suspend fun insertConversation(conversation: Conversation) {
-        conversationDao.insert(conversation)
+        dao.insert(conversation)
     }
 
     override suspend fun removeConversationByAddress(address: String) {
-        conversationDao.delete(address)
-        messageDao.deleteAllByDeviceAddress(address)
+        dao.delete(address)
     }
 }

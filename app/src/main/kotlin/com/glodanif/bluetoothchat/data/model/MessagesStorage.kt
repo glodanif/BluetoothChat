@@ -11,4 +11,5 @@ interface MessagesStorage {
     suspend fun updateMessage(message: ChatMessage)
     suspend fun updateMessages(messages: List<ChatMessage>)
     suspend fun removeFileInfo(messageId: Long)
+    suspend fun removeMessagesByAddress(address: String)
 }
