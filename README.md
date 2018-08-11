@@ -24,7 +24,7 @@ Third Party Libraries
 * [PhotoView](https://github.com/chrisbanes/PhotoView)
 * [Picasso](https://github.com/square/picasso)
 * [Chroma](https://github.com/ItsPriyesh/chroma)
-* [Dagger](https://github.com/google/dagger)
+* [Dagger 2](https://github.com/google/dagger)
 * [MockK](https://github.com/oleksiyp/mockk)
 
 Donations
