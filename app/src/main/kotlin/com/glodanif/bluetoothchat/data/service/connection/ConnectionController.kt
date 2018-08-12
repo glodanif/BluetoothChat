@@ -414,15 +414,13 @@ class ConnectionController(private val application: ChatApplication,
     }
 
     fun approveConnection() {
-        contract.createAcceptConnectionMessage(profileManager.getUserName(), profileManager.getUserColor()).let { message ->
-            sendMessage(message)
-        }
+        sendMessage(contract.createAcceptConnectionMessage(
+                profileManager.getUserName(), profileManager.getUserColor()))
     }
 
     fun rejectConnection() {
-        contract.createRejectConnectionMessage(profileManager.getUserName(), profileManager.getUserColor()).let { message ->
-            sendMessage(message)
-        }
+        sendMessage(contract.createRejectConnectionMessage(
+                profileManager.getUserName(), profileManager.getUserColor()))
     }
 
     fun getTransferringFile(): TransferringFile? {

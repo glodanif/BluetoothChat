@@ -165,7 +165,7 @@ class ScanActivity : SkeletonActivity(), ScanView {
     override fun showBluetoothIsNotAvailableMessage() = doIfStarted {
         AlertDialog.Builder(this)
                 .setMessage(R.string.scan__no_access_to_bluetooth)
-                .setPositiveButton(R.string.general__ok, { _, _ -> finish() })
+                .setPositiveButton(R.string.general__ok) { _, _ -> finish() }
                 .show()
     }
 
@@ -278,20 +278,20 @@ class ScanActivity : SkeletonActivity(), ScanView {
     private fun explainAskingLocationPermission() {
         AlertDialog.Builder(this)
                 .setMessage(R.string.scan__permission_explanation_location)
-                .setPositiveButton(R.string.general__ok, { _, _ ->
+                .setPositiveButton(R.string.general__ok) { _, _ ->
                     ActivityCompat.requestPermissions(this,
                             arrayOf(Manifest.permission.ACCESS_COARSE_LOCATION), REQUEST_LOCATION_PERMISSION)
-                })
+                }
                 .show()
     }
 
     private fun explainAskingStoragePermission() {
         AlertDialog.Builder(this)
                 .setMessage(R.string.scan__permission_explanation_storage)
-                .setPositiveButton(R.string.general__ok, { _, _ ->
+                .setPositiveButton(R.string.general__ok) { _, _ ->
                     ActivityCompat.requestPermissions(this,
                             arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), REQUEST_STORAGE_PERMISSION)
-                })
+                }
                 .show()
     }
 

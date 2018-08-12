@@ -1,15 +1,17 @@
 package com.glodanif.bluetoothchat.presenter
 
+import com.glodanif.bluetoothchat.data.entity.ConversationWithMessages
 import com.glodanif.bluetoothchat.data.model.BluetoothConnector
 import com.glodanif.bluetoothchat.data.model.ConversationsStorage
 import com.glodanif.bluetoothchat.data.model.MessagesStorage
 import com.glodanif.bluetoothchat.data.model.ProfileManager
 import com.glodanif.bluetoothchat.ui.presenter.ConversationsPresenter
 import com.glodanif.bluetoothchat.ui.view.ConversationsView
+import com.glodanif.bluetoothchat.ui.viewmodel.ConversationViewModel
 import com.glodanif.bluetoothchat.ui.viewmodel.converter.ConversationConverter
-import io.mockk.MockKAnnotations
+import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
-import io.mockk.verify
+import kotlinx.coroutines.experimental.runBlocking
 import org.junit.Before
 import org.junit.Test
 import kotlin.coroutines.experimental.EmptyCoroutineContext
@@ -34,7 +36,47 @@ class ConversationsPresenterUnitTest {
     @Before
     fun setup() {
         MockKAnnotations.init(this)
-        presenter = ConversationsPresenter(view, connector, conversationsStorage, messageStorage, profile, converter, EmptyCoroutineContext, EmptyCoroutineContext)
+        presenter = ConversationsPresenter(view, connector, conversationsStorage,
+                messageStorage, profile, converter, EmptyCoroutineContext, EmptyCoroutineContext)
+    }
+
+    @Test
+    fun loadConversations_empty() = runBlocking {
+        coEvery { conversationsStorage.getConversations() } returns ArrayList()
+        presenter.loadConversations()
+        verify { view.showNoConversations() }
+    }
+
+    @Test
+    fun loadConversations_notEmpty_notConnected() {
+        val list = listOf<ConversationWithMessages>(mockk())
+        val viewModels = arrayListOf<ConversationViewModel>(mockk())
+        coEvery { conversationsStorage.getConversations() } returns list
+        every { converter.transform(list) } returns viewModels
+        every { connector.isConnected() } returns false
+        presenter.loadConversations()
+        verify { view.showConversations(viewModels, null) }
+    }
+
+    @Test
+    fun loadConversations_notEmpty_connected() {
+        val address = "00:00:00:00"
+        val list = listOf<ConversationWithMessages>(mockk())
+        val viewModels = arrayListOf<ConversationViewModel>(mockk())
+        coEvery { conversationsStorage.getConversations() } returns list
+        every { converter.transform(list) } returns viewModels
+        every { connector.isConnected() } returns true
+        every { connector.getCurrentConversation()?.deviceAddress } returns address
+        presenter.loadConversations()
+        verify { view.showConversations(viewModels, address) }
+    }
+
+    @Test
+    fun startChat() {
+        val conversation = mockk<ConversationViewModel>()
+        presenter.startChat(conversation)
+        verify { view.hideActions() }
+        verify { view.redirectToChat(conversation) }
     }
 
     @Test

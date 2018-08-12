@@ -111,9 +111,9 @@ class ImagePreviewActivity : SkeletonActivity(), ImagePreviewView {
 
         AlertDialog.Builder(this)
                 .setMessage(getString(R.string.images__removal_confirmation))
-                .setPositiveButton(getString(R.string.general__yes), { _, _ ->
+                .setPositiveButton(getString(R.string.general__yes)) { _, _ ->
                     presenter.removeFile()
-                })
+                }
                 .setNegativeButton(getString(R.string.general__no), null)
                 .show()
     }

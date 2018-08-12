@@ -8,12 +8,12 @@ apply plugin: 'io.fabric'
 
 android {
 
-    compileSdkVersion 27
+    compileSdkVersion 28
 
     defaultConfig {
         applicationId "com.glodanif.bluetoothchat"
         minSdkVersion 19
-        targetSdkVersion 27
+        targetSdkVersion 28
         versionCode VERSION_CODE
         versionName VERSION_NAME
         vectorDrawables.useSupportLibrary = true
@@ -41,11 +41,11 @@ android {
 
         release {
 
-            if (project.hasProperty("bluetoothchat.properties") &&
-                    new File(project.property("bluetoothchat.properties")).exists()) {
+            def propertiesFile = file(project.property("bluetoothchat.properties"))
+            if (project.hasProperty("bluetoothchat.properties") && propertiesFile.exists()) {
 
                 Properties properties = new Properties()
-                properties.load(new FileInputStream(file(project.property("bluetoothchat.properties"))))
+                properties.load(new FileInputStream(propertiesFile))
 
                 storeFile file(properties['keystore'])
                 storePassword properties['keystore.password']
@@ -94,7 +94,7 @@ android {
 
 dependencies {
 
-    def final SUPPORT_VERSION = '27.1.1'
+    def final SUPPORT_VERSION = '28.0.0-rc01'
     def final ROOM_VERSION = '1.1.1'
     def final LIFECYCLE_VERSION = '1.1.1'
     def final DAGGER_VERSION = '2.4'

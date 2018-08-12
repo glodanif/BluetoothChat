@@ -265,7 +265,7 @@ class ChatActivity : SkeletonActivity(), ChatView {
     override fun showServiceDestroyed() = doIfStarted {
         AlertDialog.Builder(this)
                 .setMessage(getString(R.string.general__service_lost))
-                .setPositiveButton(getString(R.string.general__restart), { _, _ -> presenter.prepareConnection() })
+                .setPositiveButton(getString(R.string.general__restart)) { _, _ -> presenter.prepareConnection() }
                 .setCancelable(false)
                 .show()
     }
@@ -312,7 +312,7 @@ class ChatActivity : SkeletonActivity(), ChatView {
     override fun showLostConnection() = doIfStarted {
         lostConnectionDialog = AlertDialog.Builder(this)
                 .setMessage(getString(R.string.chat__connection_lost))
-                .setPositiveButton(getString(R.string.chat__reconnect), { _, _ -> presenter.reconnect() })
+                .setPositiveButton(getString(R.string.chat__reconnect)) { _, _ -> presenter.reconnect() }
                 .setNegativeButton(getString(R.string.general__cancel), null)
                 .show()
     }
@@ -325,7 +325,7 @@ class ChatActivity : SkeletonActivity(), ChatView {
     override fun showDisconnected() = doIfStarted {
         disconnectedDialog = AlertDialog.Builder(this)
                 .setMessage(getString(R.string.chat__partner_disconnected))
-                .setPositiveButton(getString(R.string.chat__reconnect), { _, _ -> presenter.reconnect() })
+                .setPositiveButton(getString(R.string.chat__reconnect)) { _, _ -> presenter.reconnect() }
                 .setNegativeButton(getString(R.string.general__cancel), null)
                 .show()
     }
@@ -338,7 +338,7 @@ class ChatActivity : SkeletonActivity(), ChatView {
     override fun showFailedConnection() = doIfStarted {
         AlertDialog.Builder(this)
                 .setMessage(getString(R.string.chat__unable_to_connect))
-                .setPositiveButton(getString(R.string.general__try_again), { _, _ -> presenter.connectToDevice() })
+                .setPositiveButton(getString(R.string.general__try_again)) { _, _ -> presenter.connectToDevice() }
                 .setNegativeButton(getString(R.string.general__cancel), null)
                 .show()
     }
@@ -350,7 +350,7 @@ class ChatActivity : SkeletonActivity(), ChatView {
     override fun showDeviceIsNotAvailable() = doIfStarted {
         AlertDialog.Builder(this)
                 .setMessage(getString(R.string.chat__device_is_not_available))
-                .setPositiveButton(getString(R.string.chat__rescan), { _, _ -> ScanActivity.start(this) })
+                .setPositiveButton(getString(R.string.chat__rescan)) { _, _ -> ScanActivity.start(this) }
                 .show()
     }
 

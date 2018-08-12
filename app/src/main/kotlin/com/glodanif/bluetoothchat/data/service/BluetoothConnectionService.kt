@@ -31,8 +31,6 @@ import javax.inject.Inject
 import android.app.PendingIntent
 import android.content.Intent
 
-
-
 class BluetoothConnectionService : Service(), ConnectionSubject {
 
     private val binder = ConnectionBinder()
@@ -84,10 +82,9 @@ class BluetoothConnectionService : Service(), ConnectionSubject {
         override fun onReceive(context: Context?, intent: Intent?) {
 
             if (intent != null) {
-                val remoteInput = RemoteInput.getResultsFromIntent(intent)
-                if (remoteInput != null) {
-                    val replyText = remoteInput.getCharSequence(NotificationView.EXTRA_TEXT_REPLY)
-                    controller.replyFromNotification(replyText.toString())
+                RemoteInput.getResultsFromIntent(intent)?.let {
+                    val replyText = it.getCharSequence(NotificationView.EXTRA_TEXT_REPLY)
+                    controller.replyFromNotification("$replyText")
                 }
             }
         }

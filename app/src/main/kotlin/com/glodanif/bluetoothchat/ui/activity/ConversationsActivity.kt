@@ -120,7 +120,7 @@ class ConversationsActivity : SkeletonActivity(), ConversationsView {
                     ActivityCompat.requestPermissions(this,
                             arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), REQUEST_STORAGE_PERMISSION)
                 }
-                .setNegativeButton(R.string.general__exit, { _, _ -> finish() })
+                .setNegativeButton(R.string.general__exit) { _, _ -> finish() }
                 .setCancelable(false)
                 .create()
 
@@ -143,7 +143,7 @@ class ConversationsActivity : SkeletonActivity(), ConversationsView {
 
         val builder = AlertDialog.Builder(this)
         builder.setTitle(getString(R.string.conversations__options))
-                .setItems(labels.toTypedArray(), { _, which ->
+                .setItems(labels.toTypedArray()) { _, which ->
                     when (which) {
                         0 -> {
                             confirmRemoval(conversation.address)
@@ -159,7 +159,7 @@ class ConversationsActivity : SkeletonActivity(), ConversationsView {
                             requestPinShortcut(conversation)
                         }
                     }
-                })
+                }
         builder.create().show()
     }
 
@@ -172,7 +172,7 @@ class ConversationsActivity : SkeletonActivity(), ConversationsView {
 
         AlertDialog.Builder(this)
                 .setMessage(getString(R.string.conversations__removal_confirmation))
-                .setPositiveButton(getString(R.string.general__yes), { _, _ -> presenter.removeConversation(address) })
+                .setPositiveButton(getString(R.string.general__yes)) { _, _ -> presenter.removeConversation(address) }
                 .setNegativeButton(getString(R.string.general__no), null)
                 .show()
     }
@@ -214,10 +214,10 @@ class ConversationsActivity : SkeletonActivity(), ConversationsView {
     override fun showServiceDestroyed() = doIfStarted {
         AlertDialog.Builder(this)
                 .setMessage(getString(R.string.general__service_lost))
-                .setPositiveButton(getString(R.string.general__restart), { _, _ ->
+                .setPositiveButton(getString(R.string.general__restart)) { _, _ ->
                     presenter.prepareConnection()
                     presenter.loadUserProfile()
-                })
+                }
                 .setCancelable(false)
                 .show()
     }
