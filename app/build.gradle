@@ -1,5 +1,5 @@
-def final VERSION_CODE = 31
-def final VERSION_NAME = '1.2.9'
+def final VERSION_CODE = 32
+def final VERSION_NAME = '1.2.10'
 
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
@@ -99,7 +99,7 @@ dependencies {
     def final LIFECYCLE_VERSION = '1.1.1'
     def final LEAK_CANARY_VERSION = '1.6.1'
     def final ESPRESSO_VERSION = '3.0.0'
-    def final COROUTINES_VERSION = '0.23.1'
+    def final COROUTINES_VERSION = '0.23.3'
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 

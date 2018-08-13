@@ -1,5 +1,6 @@
 package com.glodanif.bluetoothchat.data.service
 
+import android.app.PendingIntent
 import android.app.Service
 import android.app.TaskStackBuilder
 import android.bluetooth.BluetoothDevice
@@ -21,14 +22,12 @@ import com.glodanif.bluetoothchat.data.service.message.Contract
 import com.glodanif.bluetoothchat.data.service.message.Message
 import com.glodanif.bluetoothchat.data.service.message.PayloadType
 import com.glodanif.bluetoothchat.data.service.message.TransferringFile
+import com.glodanif.bluetoothchat.di.Params.CONNECTION_SUBJECT
 import com.glodanif.bluetoothchat.ui.activity.ChatActivity
 import com.glodanif.bluetoothchat.ui.activity.ConversationsActivity
 import com.glodanif.bluetoothchat.ui.view.NotificationView
-import java.io.File
-import android.app.PendingIntent
-import android.content.Intent
-import com.glodanif.bluetoothchat.di.Params
 import org.koin.android.ext.android.inject
+import java.io.File
 
 class BluetoothConnectionService : Service(), ConnectionSubject {
 
@@ -38,7 +37,7 @@ class BluetoothConnectionService : Service(), ConnectionSubject {
     private var messageListener: OnMessageListener? = null
     private var fileListener: OnFileListener? = null
 
-    private val controller: ConnectionController by inject { mapOf(Params.CONNECTION_SUBJECT to this) }
+    private val controller: ConnectionController by inject { mapOf(CONNECTION_SUBJECT to this) }
 
     private val connectionActionReceiver = object : BroadcastReceiver() {
 

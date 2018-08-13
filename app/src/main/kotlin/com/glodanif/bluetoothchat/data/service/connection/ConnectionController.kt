@@ -58,6 +58,7 @@ class ConnectionController(private val application: ChatApplication,
 
     private var justRepliedFromNotification = false
     private val imageText = application.getString(R.string.chat__image_message, "\uD83D\uDCCE")
+    private val me = Person.Builder().setName(application.getString(R.string.notification__me)).build()
     private val shallowHistory = LimitedQueue<NotificationCompat.MessagingStyle.Message>(4)
 
     var onNewForegroundMessage: ((String) -> Unit)? = null
@@ -237,7 +238,7 @@ class ConnectionController(private val application: ChatApplication,
                         message.fileExists = true
 
                         messagesStorage.insertMessage(message)
-                        shallowHistory.add(NotificationCompat.MessagingStyle.Message(imageText, message.date.time, Person.Builder().build()))
+                        shallowHistory.add(NotificationCompat.MessagingStyle.Message(imageText, message.date.time, me))
 
                         launch(uiContext) {
 
@@ -446,7 +447,7 @@ class ConnectionController(private val application: ChatApplication,
             launch(bgContext) {
 
                 messagesStorage.insertMessage(sentMessage)
-                shallowHistory.add(NotificationCompat.MessagingStyle.Message(sentMessage.text, sentMessage.date.time, Person.Builder().build()))
+                shallowHistory.add(NotificationCompat.MessagingStyle.Message(sentMessage.text, sentMessage.date.time, me))
 
                 if ((!subject.isAnybodyListeningForMessages() || application.currentChat == null || !application.currentChat.equals(device.address)) && justRepliedFromNotification) {
                     view.showNewMessageNotification(message.body, currentConversation?.displayName,

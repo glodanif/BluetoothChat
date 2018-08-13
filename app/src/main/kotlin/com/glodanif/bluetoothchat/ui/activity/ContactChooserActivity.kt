@@ -13,10 +13,14 @@ import com.glodanif.bluetoothchat.ui.adapter.ContactsAdapter
 import com.glodanif.bluetoothchat.ui.presenter.ContactChooserPresenter
 import com.glodanif.bluetoothchat.ui.view.ContactChooserView
 import com.glodanif.bluetoothchat.ui.viewmodel.ContactViewModel
+import com.glodanif.bluetoothchat.utils.argument
 import com.glodanif.bluetoothchat.utils.bind
 import org.koin.android.ext.android.inject
 
 class ContactChooserActivity : SkeletonActivity(), ContactChooserView {
+
+    private val message by argument<String?>(EXTRA_MESSAGE)
+    private val filePath by argument<String?>(EXTRA_FILE_PATH)
 
     private val presenter: ContactChooserPresenter by inject{ mapOf(CONTACT_CHOOSER_VIEW to this) }
 
@@ -32,9 +36,6 @@ class ContactChooserActivity : SkeletonActivity(), ContactChooserView {
 
         contactsList.layoutManager = LinearLayoutManager(this)
         contactsList.adapter = contactsAdapter
-
-        val message = intent.getStringExtra(EXTRA_MESSAGE)
-        val filePath = intent.getStringExtra(EXTRA_FILE_PATH)
 
         contactsAdapter.clickListener = {
             ChatActivity.start(this, it.address, message, filePath)

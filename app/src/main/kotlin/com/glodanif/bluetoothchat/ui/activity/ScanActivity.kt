@@ -31,6 +31,8 @@ import org.koin.android.ext.android.inject
 
 class ScanActivity : SkeletonActivity(), ScanView {
 
+    private val presenter: ScanPresenter by inject { mapOf(SCAN_VIEW to this) }
+
     private val container: View by bind(R.id.fl_container)
     private val turnOnHolder: View by bind(R.id.ll_turn_on)
     private val listHolder: View by bind(R.id.cl_list)
@@ -44,8 +46,6 @@ class ScanActivity : SkeletonActivity(), ScanView {
     private val pairedDevicesList: RecyclerView by bind(R.id.rv_paired_devices)
 
     private val devicesAdapter: DevicesAdapter = DevicesAdapter(this)
-
-    private val presenter: ScanPresenter by inject { mapOf(SCAN_VIEW to this) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

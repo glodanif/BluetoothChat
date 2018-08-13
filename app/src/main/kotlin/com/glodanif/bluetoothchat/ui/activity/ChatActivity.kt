@@ -34,10 +34,7 @@ import com.glodanif.bluetoothchat.ui.view.NotificationView
 import com.glodanif.bluetoothchat.ui.viewmodel.ChatMessageViewModel
 import com.glodanif.bluetoothchat.ui.widget.ActionView
 import com.glodanif.bluetoothchat.ui.widget.GoDownButton
-import com.glodanif.bluetoothchat.utils.bind
-import com.glodanif.bluetoothchat.utils.getNotificationManager
-import com.glodanif.bluetoothchat.utils.onEnd
-import com.glodanif.bluetoothchat.utils.toReadableFileSize
+import com.glodanif.bluetoothchat.utils.*
 import com.squareup.picasso.Picasso
 import com.squareup.picasso.Target
 import org.koin.android.ext.android.inject
@@ -49,7 +46,8 @@ import java.util.*
 
 class ChatActivity : SkeletonActivity(), ChatView {
 
-    private var deviceAddress: String? = null
+    private val deviceAddress by argument<String?>(EXTRA_ADDRESS)
+
     private val presenter: ChatPresenter by inject {
         mapOf(ADDRESS to (deviceAddress ?: ""), CHAT_VIEW to this)
     }
@@ -105,9 +103,6 @@ class ChatActivity : SkeletonActivity(), ChatView {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_chat, ActivityType.CHILD_ACTIVITY)
-
-        deviceAddress = intent.getStringExtra(EXTRA_ADDRESS)
-
         lifecycle.addObserver(presenter)
 
         title = if (deviceAddress.isNullOrEmpty()) getString(R.string.app_name) else deviceAddress

@@ -24,6 +24,7 @@ import com.glodanif.bluetoothchat.di.Params.MESSAGE_ID
 import com.glodanif.bluetoothchat.ui.presenter.ImagePreviewPresenter
 import com.glodanif.bluetoothchat.ui.view.ImagePreviewView
 import com.glodanif.bluetoothchat.ui.viewmodel.ChatMessageViewModel
+import com.glodanif.bluetoothchat.utils.argument
 import com.glodanif.bluetoothchat.utils.bind
 import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso
@@ -34,25 +35,20 @@ import java.lang.ref.WeakReference
 
 class ImagePreviewActivity : SkeletonActivity(), ImagePreviewView {
 
-    private val imageView: PhotoView by bind(R.id.pv_preview)
-
-    private var messageId: Long = -1
-    private lateinit var imagePath: String
+    private val messageId by argument(EXTRA_MESSAGE_ID, -1L)
+    private val imagePath by argument<String>(EXTRA_IMAGE_PATH)
+    private val own by argument(EXTRA_OWN, false)
 
     private val presenter: ImagePreviewPresenter by inject {
         mapOf(MESSAGE_ID to messageId, FILE to File(imagePath), IMAGE_PREVIEW_VIEW to this)
     }
 
-    private var own = false
+    private val imageView: PhotoView by bind(R.id.pv_preview)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_image_preview, ActivityType.CHILD_ACTIVITY)
         supportPostponeEnterTransition()
-
-        messageId = intent.getLongExtra(EXTRA_MESSAGE_ID, -1)
-        imagePath = intent.getStringExtra(EXTRA_IMAGE_PATH)
-        own = intent.getBooleanExtra(EXTRA_OWN, false)
 
         ViewCompat.setTransitionName(imageView, messageId.toString())
 

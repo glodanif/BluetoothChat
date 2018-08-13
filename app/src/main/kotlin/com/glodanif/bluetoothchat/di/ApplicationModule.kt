@@ -53,7 +53,8 @@ val applicationModule = applicationContext {
     }
 
     factory { params ->
-        ConnectionController(androidApplication() as ChatApplication, params[CONNECTION_SUBJECT], get(), get(), get(), get(), get(), get())
+        ConnectionController(androidApplication() as ChatApplication,
+                params[CONNECTION_SUBJECT], get(), get(), get(), get(), get(), get())
     }
 }
 
