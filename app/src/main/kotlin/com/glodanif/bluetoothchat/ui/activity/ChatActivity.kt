@@ -23,7 +23,8 @@ import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import android.widget.*
 import com.glodanif.bluetoothchat.R
-import com.glodanif.bluetoothchat.di.ComponentsManager
+import com.glodanif.bluetoothchat.di.Params.ADDRESS
+import com.glodanif.bluetoothchat.di.Params.CHAT_VIEW
 import com.glodanif.bluetoothchat.ui.adapter.ChatAdapter
 import com.glodanif.bluetoothchat.ui.presenter.ChatPresenter
 import com.glodanif.bluetoothchat.ui.util.ScrollAwareBehavior
@@ -39,17 +40,19 @@ import com.glodanif.bluetoothchat.utils.onEnd
 import com.glodanif.bluetoothchat.utils.toReadableFileSize
 import com.squareup.picasso.Picasso
 import com.squareup.picasso.Target
+import org.koin.android.ext.android.inject
 import pl.aprilapps.easyphotopicker.DefaultCallback
 import pl.aprilapps.easyphotopicker.EasyImage
 import java.io.File
 import java.lang.Exception
 import java.util.*
-import javax.inject.Inject
 
 class ChatActivity : SkeletonActivity(), ChatView {
 
-    @Inject
-    internal lateinit var presenter: ChatPresenter
+    private var deviceAddress: String? = null
+    private val presenter: ChatPresenter by inject {
+        mapOf(ADDRESS to (deviceAddress ?: ""), CHAT_VIEW to this)
+    }
 
     private val layoutManager = LinearLayoutManager(this)
 
@@ -71,8 +74,6 @@ class ChatActivity : SkeletonActivity(), ChatView {
 
     private lateinit var scrollBehavior: ScrollAwareBehavior
     private lateinit var chatAdapter: ChatAdapter
-
-    private var deviceAddress: String? = null
 
     private val showAnimation by lazy {
         AnimationUtils.loadAnimation(this, R.anim.anime_fade_slide_in)
@@ -107,7 +108,6 @@ class ChatActivity : SkeletonActivity(), ChatView {
 
         deviceAddress = intent.getStringExtra(EXTRA_ADDRESS)
 
-        ComponentsManager.injectChat(this, deviceAddress.toString())
         lifecycle.addObserver(presenter)
 
         title = if (deviceAddress.isNullOrEmpty()) getString(R.string.app_name) else deviceAddress
@@ -170,7 +170,7 @@ class ChatActivity : SkeletonActivity(), ChatView {
 
             addOnScrollListener(object : RecyclerView.OnScrollListener() {
 
-                override fun onScrollStateChanged(recyclerView: RecyclerView?, scrollState: Int) {
+                override fun onScrollStateChanged(recyclerView: RecyclerView, scrollState: Int) {
 
                     val picasso = Picasso.get()
                     if (scrollState == RecyclerView.SCROLL_STATE_IDLE || scrollState == RecyclerView.SCROLL_STATE_DRAGGING) {

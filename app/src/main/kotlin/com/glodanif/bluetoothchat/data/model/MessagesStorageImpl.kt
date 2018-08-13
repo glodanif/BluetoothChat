@@ -28,8 +28,8 @@ class MessagesStorageImpl(db: ChatDatabase) : MessagesStorage {
         return dao.getFileMessageById(uid)
     }
 
-    override suspend fun getFileMessagesByDevice(address: String?): List<MessageFile> {
-        return (if (address != null)
+    override suspend fun getFileMessagesByDevice(address: String): List<MessageFile> {
+        return (if (address.isNotEmpty())
             dao.getFileMessagesByDevice(address) else dao.getAllFilesMessages())
                 .filter { File(it.filePath).exists() }
     }

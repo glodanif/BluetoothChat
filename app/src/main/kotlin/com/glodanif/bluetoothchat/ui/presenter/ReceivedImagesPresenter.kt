@@ -1,18 +1,14 @@
 package com.glodanif.bluetoothchat.ui.presenter
 
-import android.arch.lifecycle.Lifecycle
-import android.arch.lifecycle.LifecycleObserver
-import android.arch.lifecycle.OnLifecycleEvent
 import com.glodanif.bluetoothchat.data.model.MessagesStorage
 import com.glodanif.bluetoothchat.ui.view.ReceivedImagesView
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.android.UI
-import kotlinx.coroutines.experimental.async
 import kotlinx.coroutines.experimental.launch
 import kotlinx.coroutines.experimental.withContext
 import kotlin.coroutines.experimental.CoroutineContext
 
-class ReceivedImagesPresenter(private val address: String?,
+class ReceivedImagesPresenter(private val address: String,
                               private val view: ReceivedImagesView,
                               private val model: MessagesStorage,
                               private val uiContext: CoroutineContext = UI,

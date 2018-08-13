@@ -7,6 +7,7 @@ import android.bluetooth.BluetoothSocket
 import android.graphics.BitmapFactory
 import android.os.Environment
 import android.support.v4.app.NotificationCompat
+import android.support.v4.app.Person
 import com.glodanif.bluetoothchat.ChatApplication
 import com.glodanif.bluetoothchat.R
 import com.glodanif.bluetoothchat.data.entity.ChatMessage
@@ -236,7 +237,7 @@ class ConnectionController(private val application: ChatApplication,
                         message.fileExists = true
 
                         messagesStorage.insertMessage(message)
-                        shallowHistory.add(NotificationCompat.MessagingStyle.Message(imageText, message.date.time, null))
+                        shallowHistory.add(NotificationCompat.MessagingStyle.Message(imageText, message.date.time, Person.Builder().build()))
 
                         launch(uiContext) {
 
@@ -445,7 +446,7 @@ class ConnectionController(private val application: ChatApplication,
             launch(bgContext) {
 
                 messagesStorage.insertMessage(sentMessage)
-                shallowHistory.add(NotificationCompat.MessagingStyle.Message(sentMessage.text, sentMessage.date.time, null))
+                shallowHistory.add(NotificationCompat.MessagingStyle.Message(sentMessage.text, sentMessage.date.time, Person.Builder().build()))
 
                 if ((!subject.isAnybodyListeningForMessages() || application.currentChat == null || !application.currentChat.equals(device.address)) && justRepliedFromNotification) {
                     view.showNewMessageNotification(message.body, currentConversation?.displayName,

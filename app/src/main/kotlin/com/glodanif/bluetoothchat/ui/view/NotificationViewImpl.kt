@@ -14,6 +14,7 @@ import com.glodanif.bluetoothchat.data.service.BluetoothConnectionService
 import com.glodanif.bluetoothchat.utils.toReadableFileSize
 import com.glodanif.bluetoothchat.utils.getNotificationManager
 import android.app.PendingIntent
+import android.support.v4.app.Person
 import android.support.v4.app.RemoteInput
 import android.support.v4.content.ContextCompat
 import android.util.Log
@@ -86,7 +87,8 @@ class NotificationViewImpl(private val context: Context) : NotificationView {
             notificationManager.createNotificationChannel(channel)
         }
 
-        val style = NotificationCompat.MessagingStyle(context.getString(R.string.notification__me))
+        val style = NotificationCompat.MessagingStyle(
+                Person.Builder().setName(context.getString(R.string.notification__me)).build())
         history.forEach { style.addMessage(it) }
 
         val builder = NotificationCompat.Builder(context, NotificationView.CHANNEL_MESSAGE)

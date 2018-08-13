@@ -9,7 +9,6 @@ import android.os.Build
 import android.os.IBinder
 import android.support.v4.app.RemoteInput
 import android.support.v7.app.AppCompatActivity
-import com.glodanif.bluetoothchat.BuildConfig
 import com.glodanif.bluetoothchat.R
 import com.glodanif.bluetoothchat.data.entity.ChatMessage
 import com.glodanif.bluetoothchat.data.entity.Conversation
@@ -22,14 +21,14 @@ import com.glodanif.bluetoothchat.data.service.message.Contract
 import com.glodanif.bluetoothchat.data.service.message.Message
 import com.glodanif.bluetoothchat.data.service.message.PayloadType
 import com.glodanif.bluetoothchat.data.service.message.TransferringFile
-import com.glodanif.bluetoothchat.di.ComponentsManager
 import com.glodanif.bluetoothchat.ui.activity.ChatActivity
 import com.glodanif.bluetoothchat.ui.activity.ConversationsActivity
 import com.glodanif.bluetoothchat.ui.view.NotificationView
 import java.io.File
-import javax.inject.Inject
 import android.app.PendingIntent
 import android.content.Intent
+import com.glodanif.bluetoothchat.di.Params
+import org.koin.android.ext.android.inject
 
 class BluetoothConnectionService : Service(), ConnectionSubject {
 
@@ -39,8 +38,7 @@ class BluetoothConnectionService : Service(), ConnectionSubject {
     private var messageListener: OnMessageListener? = null
     private var fileListener: OnFileListener? = null
 
-    @Inject
-    internal lateinit var controller: ConnectionController
+    private val controller: ConnectionController by inject { mapOf(Params.CONNECTION_SUBJECT to this) }
 
     private val connectionActionReceiver = object : BroadcastReceiver() {
 
@@ -104,7 +102,6 @@ class BluetoothConnectionService : Service(), ConnectionSubject {
     override fun onCreate() {
         super.onCreate()
 
-        ComponentsManager.injectService(this)
         controller.onNewForegroundMessage = { showNotification(it) }
 
         registerReceiver(connectionActionReceiver, IntentFilter(NotificationView.ACTION_CONNECTION))

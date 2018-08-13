@@ -21,13 +21,13 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import com.glodanif.bluetoothchat.R
-import com.glodanif.bluetoothchat.di.ComponentsManager
+import com.glodanif.bluetoothchat.di.Params.SCAN_VIEW
 import com.glodanif.bluetoothchat.ui.adapter.DevicesAdapter
 import com.glodanif.bluetoothchat.ui.presenter.ScanPresenter
 import com.glodanif.bluetoothchat.ui.view.ScanView
 import com.glodanif.bluetoothchat.ui.widget.ExpiringProgressBar
 import com.glodanif.bluetoothchat.utils.bind
-import javax.inject.Inject
+import org.koin.android.ext.android.inject
 
 class ScanActivity : SkeletonActivity(), ScanView {
 
@@ -45,13 +45,11 @@ class ScanActivity : SkeletonActivity(), ScanView {
 
     private val devicesAdapter: DevicesAdapter = DevicesAdapter(this)
 
-    @Inject
-    internal lateinit var presenter: ScanPresenter
+    private val presenter: ScanPresenter by inject { mapOf(SCAN_VIEW to this) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_scan, ActivityType.CHILD_ACTIVITY)
-        ComponentsManager.injectScan(this)
         lifecycle.addObserver(presenter)
 
         pairedDevicesList.layoutManager = LinearLayoutManager(this)

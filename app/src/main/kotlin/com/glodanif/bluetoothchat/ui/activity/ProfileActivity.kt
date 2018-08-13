@@ -11,21 +11,20 @@ import android.view.WindowManager
 import android.widget.*
 import com.amulyakhare.textdrawable.TextDrawable
 import com.glodanif.bluetoothchat.R
-import com.glodanif.bluetoothchat.di.ComponentsManager
-import com.glodanif.bluetoothchat.utils.getFirstLetter
+import com.glodanif.bluetoothchat.di.Params.PROFILE_VIEW
 import com.glodanif.bluetoothchat.ui.presenter.ProfilePresenter
 import com.glodanif.bluetoothchat.ui.util.SimpleTextWatcher
 import com.glodanif.bluetoothchat.ui.view.ProfileView
 import com.glodanif.bluetoothchat.utils.bind
+import com.glodanif.bluetoothchat.utils.getFirstLetter
 import me.priyesh.chroma.ChromaDialog
 import me.priyesh.chroma.ColorMode
 import me.priyesh.chroma.ColorSelectListener
-import javax.inject.Inject
+import org.koin.android.ext.android.inject
 
 class ProfileActivity : SkeletonActivity(), ProfileView {
 
-    @Inject
-    internal lateinit var presenter: ProfilePresenter
+    private val presenter: ProfilePresenter by inject { mapOf(PROFILE_VIEW to this) }
 
     private val nameField: EditText by bind(R.id.et_name)
     private val nameLabel: TextView by bind(R.id.tv_name)
@@ -38,7 +37,6 @@ class ProfileActivity : SkeletonActivity(), ProfileView {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_profile, ActivityType.CHILD_ACTIVITY)
-        ComponentsManager.injectProfile(this)
         lifecycle.addObserver(presenter)
 
         editMode = intent.getBooleanExtra(EXTRA_EDIT_MODE, false)
