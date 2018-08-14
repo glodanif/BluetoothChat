@@ -193,15 +193,15 @@ class ConversationsActivity : SkeletonActivity(), ConversationsView {
     }
 
     override fun showNoConversations() {
+        addButton.hide()
         conversationsList.visibility = View.GONE
-        addButton.visibility = View.GONE
         noConversations.visibility = View.VISIBLE
     }
 
     override fun showConversations(conversations: List<ConversationViewModel>, connected: String?) {
 
+        addButton.show()
         conversationsList.visibility = View.VISIBLE
-        addButton.visibility = View.VISIBLE
         noConversations.visibility = View.GONE
 
         conversationsAdapter.setData(ArrayList(conversations), connected)

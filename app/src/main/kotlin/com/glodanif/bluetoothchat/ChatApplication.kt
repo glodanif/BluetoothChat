@@ -17,6 +17,7 @@ import com.glodanif.bluetoothchat.ui.util.StartStopActivityLifecycleCallbacks
 import com.kobakei.ratethisapp.RateThisApp
 import com.squareup.leakcanary.LeakCanary
 import io.fabric.sdk.android.Fabric
+import org.koin.android.ext.android.get
 import org.koin.android.ext.android.inject
 import org.koin.android.ext.android.startKoin
 
@@ -26,7 +27,6 @@ class ChatApplication : Application(), LifecycleObserver {
     var currentChat: String? = null
 
     private val connector: BluetoothConnector by inject()
-    private val profileManager: ProfileManager by inject()
 
     override fun onCreate() {
         super.onCreate()
@@ -92,7 +92,7 @@ class ChatApplication : Application(), LifecycleObserver {
 
     @OnLifecycleEvent(Lifecycle.Event.ON_START)
     internal fun prepareConnection() {
-        if (!profileManager.getUserName().isEmpty()) {
+        if (!get<ProfileManager>().getUserName().isEmpty()) {
             connector.prepare()
         }
     }
