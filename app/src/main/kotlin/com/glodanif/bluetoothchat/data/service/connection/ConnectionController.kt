@@ -40,8 +40,8 @@ class ConnectionController(private val application: ChatApplication,
                            private val uiContext: CoroutineContext = UI,
                            private val bgContext: CoroutineContext = CommonPool) {
 
-    private val APP_NAME = "BluetoothChat"
-    private val APP_UUID = UUID.fromString("220da3b2-41f5-11e7-a919-92ebcb67fe33")
+    private val blAppName = application.getString(R.string.bl_app_name)
+    private val blAppUUID = UUID.fromString(application.getString(R.string.bl_app_uuid))
 
     private var acceptThread: AcceptJob? = null
     private var connectThread: ConnectJob? = null
@@ -604,7 +604,7 @@ class ConnectionController(private val application: ChatApplication,
         init {
             try {
                 serverSocket = BluetoothAdapter.getDefaultAdapter()
-                        ?.listenUsingRfcommWithServiceRecord(APP_NAME, APP_UUID)
+                        ?.listenUsingRfcommWithServiceRecord(blAppName, blAppUUID)
             } catch (e: IOException) {
                 e.printStackTrace()
             }
@@ -652,7 +652,7 @@ class ConnectionController(private val application: ChatApplication,
         override fun run() {
 
             try {
-                socket = bluetoothDevice.createRfcommSocketToServiceRecord(APP_UUID)
+                socket = bluetoothDevice.createRfcommSocketToServiceRecord(blAppUUID)
             } catch (e: IOException) {
                 e.printStackTrace()
             }

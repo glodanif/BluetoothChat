@@ -14,7 +14,8 @@ interface BluetoothScanner {
     fun isBluetoothEnabled(): Boolean
     fun isDiscoverable(): Boolean
     fun isDiscovering(): Boolean
-    fun listenForDevices()
+    fun listenDiscoverableStatus()
+    fun stopListeningDiscoverableStatus()
 
     interface ScanningListener {
         fun onDiscoveryStart(seconds: Int)

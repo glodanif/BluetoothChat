@@ -5,6 +5,9 @@
     <string name="app_name" translatable="false">Bluetooth Chat</string>
     <string name="main_title" translatable="false">Bluetooth Chat</string>
 
+    <string name="bl_app_name" translatable="false">BluetoothChat</string>
+    <string name="bl_app_uuid" translatable="false">220da3b2-41f5-11e7-a919-92ebcb67fe33</string>
+
     <string name="general__ok">OK</string>
     <string name="general__cancel">Cancel</string>
     <string name="general__exit">Exit</string>
@@ -161,10 +164,12 @@
     <string name="images__no_images">You haven\'t received any images yet</string>
 
     <string name="about__about">About</string>
-    <string name="about__description">Bluetooth Chat is an open source project.  You can review source code, submit issue or fork the repo on a GitHub page.</string>
+    <string name="about__description">Bluetooth Chat is an open source project.  You can review source code, submit issue or fork the repo on GitHub</string>
     <string name="about__go_to_github">Go to GitHub</string>
     <string name="about__localization">You can help to translate Bluetooth Chat in more languages on Crowdin</string>
     <string name="about__go_to_crowdin">Go to Crowdin</string>
+    <string name="about__app_name">Name: %s</string>
+    <string name="about__app_uuid">UUID: %s</string>
 
     <string name="rate_dialog__title">Rate this app</string>
     <string name="rate_dialog__message">If you enjoy using this app, would you mind taking a moment to rate it? It won\'t take more than a minute. Thank you for your support!</string>
