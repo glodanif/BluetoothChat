@@ -23,10 +23,10 @@ class ConversationsAdapter : RecyclerView.Adapter<ConversationsAdapter.Conversat
         val conversation = conversations[position]
 
         holder.name.text = conversation.fullName
-        holder.itemView?.setOnClickListener {
+        holder.itemView.setOnClickListener {
             clickListener?.invoke(conversation)
         }
-        holder.itemView?.setOnLongClickListener {
+        holder.itemView.setOnLongClickListener {
             val isCurrent = isConnected && position == 0
             longClickListener?.invoke(conversation, isCurrent)
             return@setOnLongClickListener true

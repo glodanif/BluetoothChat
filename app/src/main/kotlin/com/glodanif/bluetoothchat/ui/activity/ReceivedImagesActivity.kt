@@ -9,19 +9,18 @@ import android.view.View
 import android.widget.TextView
 import com.glodanif.bluetoothchat.R
 import com.glodanif.bluetoothchat.data.entity.MessageFile
-import com.glodanif.bluetoothchat.di.Params
-import com.glodanif.bluetoothchat.di.Params.ADDRESS
 import com.glodanif.bluetoothchat.ui.adapter.ImagesAdapter
 import com.glodanif.bluetoothchat.ui.presenter.ReceivedImagesPresenter
 import com.glodanif.bluetoothchat.ui.view.ReceivedImagesView
 import com.glodanif.bluetoothchat.utils.bind
 import org.koin.android.ext.android.inject
+import org.koin.core.parameter.parametersOf
 
 class ReceivedImagesActivity : SkeletonActivity(), ReceivedImagesView {
 
     private var address: String? = null
     private val presenter: ReceivedImagesPresenter by inject {
-        mapOf(ADDRESS to (address ?: ""), Params.RECEIVED_IMAGES_VIEW to this)
+        parametersOf(address ?: "", this)
     }
 
     private val imagesGrid: RecyclerView by bind(R.id.rv_images)

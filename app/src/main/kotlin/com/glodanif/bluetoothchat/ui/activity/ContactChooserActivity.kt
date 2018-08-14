@@ -8,7 +8,6 @@ import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.widget.TextView
 import com.glodanif.bluetoothchat.R
-import com.glodanif.bluetoothchat.di.Params.CONTACT_CHOOSER_VIEW
 import com.glodanif.bluetoothchat.ui.adapter.ContactsAdapter
 import com.glodanif.bluetoothchat.ui.presenter.ContactChooserPresenter
 import com.glodanif.bluetoothchat.ui.view.ContactChooserView
@@ -16,13 +15,14 @@ import com.glodanif.bluetoothchat.ui.viewmodel.ContactViewModel
 import com.glodanif.bluetoothchat.utils.argument
 import com.glodanif.bluetoothchat.utils.bind
 import org.koin.android.ext.android.inject
+import org.koin.core.parameter.parametersOf
 
 class ContactChooserActivity : SkeletonActivity(), ContactChooserView {
 
     private val message by argument<String?>(EXTRA_MESSAGE)
     private val filePath by argument<String?>(EXTRA_FILE_PATH)
 
-    private val presenter: ContactChooserPresenter by inject{ mapOf(CONTACT_CHOOSER_VIEW to this) }
+    private val presenter: ContactChooserPresenter by inject { parametersOf(this) }
 
     private val contactsList: RecyclerView by bind(R.id.rv_contacts)
     private val noContactsLabel: TextView by bind(R.id.tv_no_contacts)

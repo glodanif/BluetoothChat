@@ -21,17 +21,17 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import com.glodanif.bluetoothchat.R
-import com.glodanif.bluetoothchat.di.Params.SCAN_VIEW
 import com.glodanif.bluetoothchat.ui.adapter.DevicesAdapter
 import com.glodanif.bluetoothchat.ui.presenter.ScanPresenter
 import com.glodanif.bluetoothchat.ui.view.ScanView
 import com.glodanif.bluetoothchat.ui.widget.ExpiringProgressBar
 import com.glodanif.bluetoothchat.utils.bind
 import org.koin.android.ext.android.inject
+import org.koin.core.parameter.parametersOf
 
 class ScanActivity : SkeletonActivity(), ScanView {
 
-    private val presenter: ScanPresenter by inject { mapOf(SCAN_VIEW to this) }
+    private val presenter: ScanPresenter by inject { parametersOf(this) }
 
     private val container: View by bind(R.id.fl_container)
     private val turnOnHolder: View by bind(R.id.ll_turn_on)

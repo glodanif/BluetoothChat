@@ -9,7 +9,6 @@ import android.view.View
 import android.widget.RelativeLayout
 import android.widget.TextView
 import com.glodanif.bluetoothchat.R
-import com.glodanif.bluetoothchat.di.Params.SETTINGS_VIEW
 import com.glodanif.bluetoothchat.ui.presenter.SettingsPresenter
 import com.glodanif.bluetoothchat.ui.view.SettingsView
 import com.glodanif.bluetoothchat.ui.widget.SwitchPreference
@@ -18,10 +17,11 @@ import me.priyesh.chroma.ChromaDialog
 import me.priyesh.chroma.ColorMode
 import me.priyesh.chroma.ColorSelectListener
 import org.koin.android.ext.android.inject
+import org.koin.core.parameter.parametersOf
 
 class SettingsActivity : SkeletonActivity(), SettingsView {
 
-    private val presenter: SettingsPresenter by inject { mapOf(SETTINGS_VIEW to this) }
+    private val presenter: SettingsPresenter by inject { parametersOf(this) }
 
     private val colorPreview: View by bind(R.id.v_color)
     private val notificationsHeader: TextView by bind(R.id.tv_notifications_header)

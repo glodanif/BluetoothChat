@@ -22,7 +22,6 @@ import android.widget.Button
 import android.widget.ImageView
 import com.amulyakhare.textdrawable.TextDrawable
 import com.glodanif.bluetoothchat.R
-import com.glodanif.bluetoothchat.di.Params
 import com.glodanif.bluetoothchat.ui.adapter.ConversationsAdapter
 import com.glodanif.bluetoothchat.ui.presenter.ConversationsPresenter
 import com.glodanif.bluetoothchat.ui.view.ConversationsView
@@ -37,10 +36,11 @@ import com.glodanif.bluetoothchat.utils.getFirstLetter
 import com.glodanif.bluetoothchat.utils.getNotificationManager
 import com.kobakei.ratethisapp.RateThisApp
 import org.koin.android.ext.android.inject
+import org.koin.core.parameter.parametersOf
 
 class ConversationsActivity : SkeletonActivity(), ConversationsView {
 
-    private val presenter: ConversationsPresenter by inject{ mapOf(Params.CONVERSATIONS_VIEW to this) }
+    private val presenter: ConversationsPresenter by inject { parametersOf(this) }
     private val shortcutsManager: ShortcutManager by inject()
 
     private val conversationsList: RecyclerView by bind(R.id.rv_conversations)

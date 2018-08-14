@@ -302,7 +302,8 @@ class ConnectionController(private val application: ChatApplication,
                         filePath = path
                     }
 
-                    shallowHistory.add(NotificationCompat.MessagingStyle.Message(imageText, message.date.time, currentConversation?.displayName))
+                    val partner = Person.Builder().setName(currentConversation?.displayName ?: "?").build()
+                    shallowHistory.add(NotificationCompat.MessagingStyle.Message(imageText, message.date.time, partner))
                     if (!subject.isAnybodyListeningForMessages() || application.currentChat == null || !application.currentChat.equals(address)) {
                         //FIXME: Fixed not appearing notification
                         view.dismissMessageNotification()
@@ -512,8 +513,9 @@ class ConnectionController(private val application: ChatApplication,
         val receivedMessage = ChatMessage(device.address, Date(), false, text)
         receivedMessage.uid = uid
 
+        val partner = Person.Builder().setName(currentConversation?.displayName ?: "?").build()
         shallowHistory.add(NotificationCompat.MessagingStyle.Message(
-                receivedMessage.text, receivedMessage.date.time, currentConversation?.displayName))
+                receivedMessage.text, receivedMessage.date.time, partner))
         if (!subject.isAnybodyListeningForMessages() || application.currentChat == null || !application.currentChat.equals(device.address)) {
             view.showNewMessageNotification(text, currentConversation?.displayName,
                     device.name, device.address, shallowHistory, preferences.isSoundEnabled())

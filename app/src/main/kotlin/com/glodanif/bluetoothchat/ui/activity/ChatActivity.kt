@@ -23,8 +23,6 @@ import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import android.widget.*
 import com.glodanif.bluetoothchat.R
-import com.glodanif.bluetoothchat.di.Params.ADDRESS
-import com.glodanif.bluetoothchat.di.Params.CHAT_VIEW
 import com.glodanif.bluetoothchat.ui.adapter.ChatAdapter
 import com.glodanif.bluetoothchat.ui.presenter.ChatPresenter
 import com.glodanif.bluetoothchat.ui.util.ScrollAwareBehavior
@@ -38,6 +36,7 @@ import com.glodanif.bluetoothchat.utils.*
 import com.squareup.picasso.Picasso
 import com.squareup.picasso.Target
 import org.koin.android.ext.android.inject
+import org.koin.core.parameter.parametersOf
 import pl.aprilapps.easyphotopicker.DefaultCallback
 import pl.aprilapps.easyphotopicker.EasyImage
 import java.io.File
@@ -49,7 +48,7 @@ class ChatActivity : SkeletonActivity(), ChatView {
     private val deviceAddress by argument<String?>(EXTRA_ADDRESS)
 
     private val presenter: ChatPresenter by inject {
-        mapOf(ADDRESS to (deviceAddress ?: ""), CHAT_VIEW to this)
+        parametersOf(deviceAddress ?: "", this)
     }
 
     private val layoutManager = LinearLayoutManager(this)

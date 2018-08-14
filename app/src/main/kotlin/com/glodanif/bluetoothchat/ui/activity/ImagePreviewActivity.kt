@@ -18,9 +18,6 @@ import android.widget.ImageView
 import com.github.chrisbanes.photoview.PhotoView
 import com.glodanif.bluetoothchat.R
 import com.glodanif.bluetoothchat.data.entity.MessageFile
-import com.glodanif.bluetoothchat.di.Params.FILE
-import com.glodanif.bluetoothchat.di.Params.IMAGE_PREVIEW_VIEW
-import com.glodanif.bluetoothchat.di.Params.MESSAGE_ID
 import com.glodanif.bluetoothchat.ui.presenter.ImagePreviewPresenter
 import com.glodanif.bluetoothchat.ui.view.ImagePreviewView
 import com.glodanif.bluetoothchat.ui.viewmodel.ChatMessageViewModel
@@ -29,6 +26,7 @@ import com.glodanif.bluetoothchat.utils.bind
 import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso
 import org.koin.android.ext.android.inject
+import org.koin.core.parameter.parametersOf
 import java.io.File
 import java.lang.Exception
 import java.lang.ref.WeakReference
@@ -40,7 +38,7 @@ class ImagePreviewActivity : SkeletonActivity(), ImagePreviewView {
     private val own by argument(EXTRA_OWN, false)
 
     private val presenter: ImagePreviewPresenter by inject {
-        mapOf(MESSAGE_ID to messageId, FILE to File(imagePath), IMAGE_PREVIEW_VIEW to this)
+        parametersOf(messageId, File(imagePath), this)
     }
 
     private val imageView: PhotoView by bind(R.id.pv_preview)

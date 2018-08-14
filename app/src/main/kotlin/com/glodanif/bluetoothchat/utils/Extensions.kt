@@ -150,7 +150,9 @@ fun Uri.getFilePath(context: Context): String? {
                 "audio" -> MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
                 else -> null
             }
-            return getDataColumn(context, contentUri, "_id=?", arrayOf(split[1]))
+            if (contentUri != null) {
+                return getDataColumn(context, contentUri, "_id=?", arrayOf(split[1]))
+            }
         }
     } else if ("content".equals(this.scheme, ignoreCase = true)) {
         return getDataColumn(context, this, null, null)
@@ -160,7 +162,7 @@ fun Uri.getFilePath(context: Context): String? {
     return null
 }
 
-private fun getDataColumn(context: Context, uri: Uri?, selection: String?, selectionArgs: Array<String>?): String? {
+private fun getDataColumn(context: Context, uri: Uri, selection: String?, selectionArgs: Array<String>?): String? {
 
     var cursor: Cursor? = null
     val column = "_data"

@@ -9,30 +9,30 @@ import com.glodanif.bluetoothchat.ui.viewmodel.converter.ContactConverter
 import com.glodanif.bluetoothchat.ui.viewmodel.converter.ConversationConverter
 import com.glodanif.bluetoothchat.ui.widget.ShortcutManager
 import com.glodanif.bluetoothchat.ui.widget.ShortcutManagerImpl
-import org.koin.android.ext.koin.androidApplication
-import org.koin.dsl.module.applicationContext
+import org.koin.android.ext.koin.androidContext
+import org.koin.dsl.module.module
 
-val bluetoothConnectionModule = applicationContext {
-    bean { BluetoothConnectorImpl(androidApplication()) as BluetoothConnector }
-    factory { BluetoothScannerImpl(androidApplication()) as BluetoothScanner }
+val bluetoothConnectionModule = module {
+    single { BluetoothConnectorImpl(androidContext()) as BluetoothConnector }
+    factory { BluetoothScannerImpl(androidContext()) as BluetoothScanner }
 }
 
-val databaseModule = applicationContext {
-    bean { Database.getInstance(androidApplication()) }
-    bean { MessagesStorageImpl(get()) as MessagesStorage }
-    bean { ConversationsStorageImpl(get()) as ConversationsStorage }
+val databaseModule = module {
+    single { Database.getInstance(androidContext()) }
+    single { MessagesStorageImpl(get()) as MessagesStorage }
+    single { ConversationsStorageImpl(get()) as ConversationsStorage }
 }
 
-val localStorageModule = applicationContext {
-    bean { FileManagerImpl(androidApplication()) as FileManager }
-    bean { UserPreferencesImpl(androidApplication()) as UserPreferences }
-    bean { ProfileManagerImpl(androidApplication()) as ProfileManager }
+val localStorageModule = module {
+    single { FileManagerImpl(androidContext()) as FileManager }
+    single { UserPreferencesImpl(androidContext()) as UserPreferences }
+    single { ProfileManagerImpl(androidContext()) as ProfileManager }
 }
 
-val viewModule = applicationContext {
-    bean { NotificationViewImpl(androidApplication()) as NotificationView }
-    bean { ShortcutManagerImpl(androidApplication()) as ShortcutManager }
-    bean { ContactConverter() }
-    bean { ConversationConverter(androidApplication()) }
-    bean { ChatMessageConverter(androidApplication()) }
+val viewModule = module {
+    single { NotificationViewImpl(androidContext()) as NotificationView }
+    single { ShortcutManagerImpl(androidContext()) as ShortcutManager }
+    single { ContactConverter() }
+    single { ConversationConverter(androidContext()) }
+    single { ChatMessageConverter(androidContext()) }
 }

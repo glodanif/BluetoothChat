@@ -1,6 +1,5 @@
 package com.glodanif.bluetoothchat.ui.adapter
 
-import android.annotation.SuppressLint
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -21,7 +20,7 @@ class ContactsAdapter : RecyclerView.Adapter<ContactsAdapter.ContactViewHolder>(
 
         holder.name.text = contact.name
         holder.avatar.setImageDrawable(contact.avatar)
-        holder.itemView?.setOnClickListener { clickListener?.invoke(contact) }
+        holder.itemView.setOnClickListener { clickListener?.invoke(contact) }
     }
 
     override fun getItemCount(): Int {

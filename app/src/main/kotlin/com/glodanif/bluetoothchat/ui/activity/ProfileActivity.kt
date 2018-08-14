@@ -11,7 +11,6 @@ import android.view.WindowManager
 import android.widget.*
 import com.amulyakhare.textdrawable.TextDrawable
 import com.glodanif.bluetoothchat.R
-import com.glodanif.bluetoothchat.di.Params.PROFILE_VIEW
 import com.glodanif.bluetoothchat.ui.presenter.ProfilePresenter
 import com.glodanif.bluetoothchat.ui.util.SimpleTextWatcher
 import com.glodanif.bluetoothchat.ui.view.ProfileView
@@ -22,12 +21,13 @@ import me.priyesh.chroma.ChromaDialog
 import me.priyesh.chroma.ColorMode
 import me.priyesh.chroma.ColorSelectListener
 import org.koin.android.ext.android.inject
+import org.koin.core.parameter.parametersOf
 
 class ProfileActivity : SkeletonActivity(), ProfileView {
 
     private val editMode by argument(EXTRA_EDIT_MODE, false)
 
-    private val presenter: ProfilePresenter by inject { mapOf(PROFILE_VIEW to this) }
+    private val presenter: ProfilePresenter by inject { parametersOf(this) }
 
     private val nameField: EditText by bind(R.id.et_name)
     private val nameLabel: TextView by bind(R.id.tv_name)
