@@ -15,6 +15,7 @@ import android.provider.DocumentsContract
 import android.provider.MediaStore
 import android.support.annotation.IdRes
 import android.support.annotation.PluralsRes
+import android.support.v7.app.AppCompatActivity
 import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
@@ -230,4 +231,18 @@ inline fun <T : Any, V : Any> safeLet(p1: T?, p2: V?, block: (T, V) -> Unit) {
     if (p1 != null && p2 != null) {
         block(p1, p2)
     }
+}
+
+inline fun <reified T : Any?> AppCompatActivity.argument(key: String) = lazy {
+    intent.extras?.let {
+        return@lazy it[key] as T
+    }
+    return@lazy null
+}
+
+inline fun <reified T : Any> AppCompatActivity.argument(key: String, defaultValue: T) = lazy {
+    intent.extras?.let {
+        return@lazy it[key] as? T ?: defaultValue
+    }
+    return@lazy defaultValue
 }

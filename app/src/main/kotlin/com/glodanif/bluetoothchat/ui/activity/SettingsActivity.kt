@@ -9,7 +9,7 @@ import android.view.View
 import android.widget.RelativeLayout
 import android.widget.TextView
 import com.glodanif.bluetoothchat.R
-import com.glodanif.bluetoothchat.di.ComponentsManager
+import com.glodanif.bluetoothchat.di.Params.SETTINGS_VIEW
 import com.glodanif.bluetoothchat.ui.presenter.SettingsPresenter
 import com.glodanif.bluetoothchat.ui.view.SettingsView
 import com.glodanif.bluetoothchat.ui.widget.SwitchPreference
@@ -17,12 +17,11 @@ import com.glodanif.bluetoothchat.utils.bind
 import me.priyesh.chroma.ChromaDialog
 import me.priyesh.chroma.ColorMode
 import me.priyesh.chroma.ColorSelectListener
-import javax.inject.Inject
+import org.koin.android.ext.android.inject
 
 class SettingsActivity : SkeletonActivity(), SettingsView {
 
-    @Inject
-    internal lateinit var presenter: SettingsPresenter
+    private val presenter: SettingsPresenter by inject { mapOf(SETTINGS_VIEW to this) }
 
     private val colorPreview: View by bind(R.id.v_color)
     private val notificationsHeader: TextView by bind(R.id.tv_notifications_header)
@@ -32,7 +31,6 @@ class SettingsActivity : SkeletonActivity(), SettingsView {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings, ActivityType.CHILD_ACTIVITY)
-        ComponentsManager.injectSettings(this)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             notificationsHeader.visibility = View.GONE

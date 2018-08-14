@@ -9,19 +9,20 @@ import android.view.View
 import android.widget.TextView
 import com.glodanif.bluetoothchat.R
 import com.glodanif.bluetoothchat.data.entity.MessageFile
-import com.glodanif.bluetoothchat.di.ComponentsManager
+import com.glodanif.bluetoothchat.di.Params
+import com.glodanif.bluetoothchat.di.Params.ADDRESS
 import com.glodanif.bluetoothchat.ui.adapter.ImagesAdapter
 import com.glodanif.bluetoothchat.ui.presenter.ReceivedImagesPresenter
 import com.glodanif.bluetoothchat.ui.view.ReceivedImagesView
 import com.glodanif.bluetoothchat.utils.bind
-import javax.inject.Inject
+import org.koin.android.ext.android.inject
 
 class ReceivedImagesActivity : SkeletonActivity(), ReceivedImagesView {
 
-    @Inject
-    internal lateinit var presenter: ReceivedImagesPresenter
-
     private var address: String? = null
+    private val presenter: ReceivedImagesPresenter by inject {
+        mapOf(ADDRESS to (address ?: ""), Params.RECEIVED_IMAGES_VIEW to this)
+    }
 
     private val imagesGrid: RecyclerView by bind(R.id.rv_images)
     private val noImagesLabel: TextView by bind(R.id.tv_no_images)
@@ -33,8 +34,6 @@ class ReceivedImagesActivity : SkeletonActivity(), ReceivedImagesView {
         setContentView(R.layout.activity_received_images, ActivityType.CHILD_ACTIVITY)
 
         address = intent.getStringExtra(EXTRA_ADDRESS)
-
-        ComponentsManager.injectReceivedImages(this, address)
 
         imagesGrid.layoutManager = GridLayoutManager(this, calculateNoOfColumns())
         imagesGrid.adapter = imagesAdapter
@@ -68,7 +67,7 @@ class ReceivedImagesActivity : SkeletonActivity(), ReceivedImagesView {
 
         fun start(context: Context, address: String?) {
             val intent = Intent(context, ReceivedImagesActivity::class.java)
-                    .putExtra(EXTRA_ADDRESS, address)
+                    .putExtra(EXTRA_ADDRESS, address ?: "")
             context.startActivity(intent)
         }
     }

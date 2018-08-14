@@ -73,7 +73,7 @@ class ScrollAwareBehavior(val context: Context) : CoordinatorLayout.Behavior<GoD
         scrollRange = 0
     }
 
-    override fun onLayoutChild(parent: CoordinatorLayout?, child: GoDownButton?, layoutDirection: Int): Boolean {
+    override fun onLayoutChild(parent: CoordinatorLayout, child: GoDownButton, layoutDirection: Int): Boolean {
         childView = child
         return super.onLayoutChild(parent, child, layoutDirection)
     }
