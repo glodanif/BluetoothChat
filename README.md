@@ -2,7 +2,7 @@
 
 1-to-1 chatting app over Bluetooth
 
-This project is a test area for trying and mastering fancy programming stuff: Kotlin, MVP, Dagger 2, Coroutines, testing, Architecture Components, the newest Android features.
+This project is a test area for trying and mastering fancy programming stuff: Kotlin, MVP, DI, Coroutines, testing, Architecture Components, the newest Android features.
 
 <a href="https://play.google.com/store/apps/details?id=com.glodanif.bluetoothchat">
     <img alt="Get it on Google Play"
