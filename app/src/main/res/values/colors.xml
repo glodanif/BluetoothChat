@@ -13,5 +13,5 @@
     <color name="background_image">#eee</color>
     <color name="background_own_message">#22009688</color>
     <color name="background_avatar_default">#008756</color>
-    <color name="background_chat_default">#ADE9C5</color>
+    <color name="background_chat_default">#244447</color>
 </resources>

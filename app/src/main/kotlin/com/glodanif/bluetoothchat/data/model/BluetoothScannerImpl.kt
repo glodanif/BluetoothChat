@@ -21,6 +21,8 @@ class BluetoothScannerImpl(val context: Context) : BluetoothScanner {
 
     private val foundDevices = HashMap<String, BluetoothDevice>()
 
+    private var isListeningForDiscoverableStatus = false
+
     private val foundDeviceFilter: IntentFilter = IntentFilter(BluetoothDevice.ACTION_FOUND)
     private val foundDeviceReceiver = object : BroadcastReceiver() {
 
@@ -45,7 +47,9 @@ class BluetoothScannerImpl(val context: Context) : BluetoothScanner {
             if (scanMode == BluetoothAdapter.SCAN_MODE_CONNECTABLE_DISCOVERABLE) {
                 listener?.onDiscoverableStart()
             } else {
-                scanningFinishedTask.run()
+                listener?.onDiscoverableFinish()
+                isListeningForDiscoverableStatus = false
+                context.unregisterReceiver(this)
             }
         }
     }
@@ -109,8 +113,16 @@ class BluetoothScannerImpl(val context: Context) : BluetoothScanner {
         return isDiscovering
     }
 
-    override fun listenForDevices() {
+    override fun listenDiscoverableStatus() {
+        isListeningForDiscoverableStatus = true
         context.registerReceiver(discoverableStateReceiver, discoverableStateFilter)
+    }
+
+    override fun stopListeningDiscoverableStatus() {
+        if (isListeningForDiscoverableStatus) {
+            context.unregisterReceiver(discoverableStateReceiver)
+            isListeningForDiscoverableStatus = false
+        }
     }
 
     override fun setScanningListener(listener: ScanningListener) {

@@ -9,7 +9,6 @@ import com.glodanif.bluetoothchat.ui.view.ScanView
 import com.glodanif.bluetoothchat.utils.withPotentiallyInstalledApplication
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.android.UI
-import kotlinx.coroutines.experimental.async
 import kotlinx.coroutines.experimental.launch
 import kotlinx.coroutines.experimental.withContext
 import kotlin.coroutines.experimental.CoroutineContext
@@ -120,7 +119,7 @@ class ScanPresenter(private val view: ScanView,
         if (scanner.isBluetoothEnabled()) {
             onPairedDevicesReady()
             if (scanner.isDiscoverable()) {
-                scanner.listenForDevices()
+                scanner.listenDiscoverableStatus()
                 view.showDiscoverableProcess()
             } else {
                 view.showDiscoverableFinished()
@@ -148,7 +147,7 @@ class ScanPresenter(private val view: ScanView,
     }
 
     fun onMadeDiscoverable() {
-        scanner.listenForDevices()
+        scanner.listenDiscoverableStatus()
         view.showDiscoverableProcess()
     }
 
@@ -166,12 +165,23 @@ class ScanPresenter(private val view: ScanView,
         }
     }
 
+    @OnLifecycleEvent(Lifecycle.Event.ON_START)
+    fun listenDiscoverableStatus() {
+        if (scanner.isDiscoverable()) {
+            scanner.listenDiscoverableStatus()
+        }
+    }
+
     @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
     fun cancelScanning() {
         view.showScanningStopped()
         scanner.stopScanning()
         connection.removeOnConnectListener(connectionListener)
-        connection.disconnect()
+    }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
+    fun cancelDiscoveryStatusListening() {
+        scanner.stopListeningDiscoverableStatus()
     }
 
     fun shareApk() = launch(uiContext) {

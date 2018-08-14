@@ -22,7 +22,7 @@ import android.widget.Button
 import android.widget.ImageView
 import com.amulyakhare.textdrawable.TextDrawable
 import com.glodanif.bluetoothchat.R
-import com.glodanif.bluetoothchat.di.ComponentsManager
+import com.glodanif.bluetoothchat.di.Params
 import com.glodanif.bluetoothchat.ui.adapter.ConversationsAdapter
 import com.glodanif.bluetoothchat.ui.presenter.ConversationsPresenter
 import com.glodanif.bluetoothchat.ui.view.ConversationsView
@@ -36,14 +36,12 @@ import com.glodanif.bluetoothchat.utils.getFilePath
 import com.glodanif.bluetoothchat.utils.getFirstLetter
 import com.glodanif.bluetoothchat.utils.getNotificationManager
 import com.kobakei.ratethisapp.RateThisApp
-import javax.inject.Inject
+import org.koin.android.ext.android.inject
 
 class ConversationsActivity : SkeletonActivity(), ConversationsView {
 
-    @Inject
-    internal lateinit var presenter: ConversationsPresenter
-    @Inject
-    internal lateinit var shortcutsManager: ShortcutManager
+    private val presenter: ConversationsPresenter by inject{ mapOf(Params.CONVERSATIONS_VIEW to this) }
+    private val shortcutsManager: ShortcutManager by inject()
 
     private val conversationsList: RecyclerView by bind(R.id.rv_conversations)
     private val noConversations: View by bind(R.id.ll_empty_holder)
@@ -59,7 +57,6 @@ class ConversationsActivity : SkeletonActivity(), ConversationsView {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_conversations, ActivityType.CUSTOM_TOOLBAR_ACTIVITY)
-        ComponentsManager.injectConversations(this)
         lifecycle.addObserver(presenter)
 
         supportActionBar?.setDisplayShowTitleEnabled(false)

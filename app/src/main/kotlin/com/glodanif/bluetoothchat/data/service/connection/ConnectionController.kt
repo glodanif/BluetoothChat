@@ -7,6 +7,7 @@ import android.bluetooth.BluetoothSocket
 import android.graphics.BitmapFactory
 import android.os.Environment
 import android.support.v4.app.NotificationCompat
+import android.support.v4.app.Person
 import com.glodanif.bluetoothchat.ChatApplication
 import com.glodanif.bluetoothchat.R
 import com.glodanif.bluetoothchat.data.entity.ChatMessage
@@ -39,8 +40,8 @@ class ConnectionController(private val application: ChatApplication,
                            private val uiContext: CoroutineContext = UI,
                            private val bgContext: CoroutineContext = CommonPool) {
 
-    private val APP_NAME = "BluetoothChat"
-    private val APP_UUID = UUID.fromString("220da3b2-41f5-11e7-a919-92ebcb67fe33")
+    private val blAppName = application.getString(R.string.bl_app_name)
+    private val blAppUUID = UUID.fromString(application.getString(R.string.bl_app_uuid))
 
     private var acceptThread: AcceptJob? = null
     private var connectThread: ConnectJob? = null
@@ -57,6 +58,7 @@ class ConnectionController(private val application: ChatApplication,
 
     private var justRepliedFromNotification = false
     private val imageText = application.getString(R.string.chat__image_message, "\uD83D\uDCCE")
+    private val me = Person.Builder().setName(application.getString(R.string.notification__me)).build()
     private val shallowHistory = LimitedQueue<NotificationCompat.MessagingStyle.Message>(4)
 
     var onNewForegroundMessage: ((String) -> Unit)? = null
@@ -236,7 +238,7 @@ class ConnectionController(private val application: ChatApplication,
                         message.fileExists = true
 
                         messagesStorage.insertMessage(message)
-                        shallowHistory.add(NotificationCompat.MessagingStyle.Message(imageText, message.date.time, null))
+                        shallowHistory.add(NotificationCompat.MessagingStyle.Message(imageText, message.date.time, me))
 
                         launch(uiContext) {
 
@@ -445,7 +447,7 @@ class ConnectionController(private val application: ChatApplication,
             launch(bgContext) {
 
                 messagesStorage.insertMessage(sentMessage)
-                shallowHistory.add(NotificationCompat.MessagingStyle.Message(sentMessage.text, sentMessage.date.time, null))
+                shallowHistory.add(NotificationCompat.MessagingStyle.Message(sentMessage.text, sentMessage.date.time, me))
 
                 if ((!subject.isAnybodyListeningForMessages() || application.currentChat == null || !application.currentChat.equals(device.address)) && justRepliedFromNotification) {
                     view.showNewMessageNotification(message.body, currentConversation?.displayName,
@@ -602,7 +604,7 @@ class ConnectionController(private val application: ChatApplication,
         init {
             try {
                 serverSocket = BluetoothAdapter.getDefaultAdapter()
-                        ?.listenUsingRfcommWithServiceRecord(APP_NAME, APP_UUID)
+                        ?.listenUsingRfcommWithServiceRecord(blAppName, blAppUUID)
             } catch (e: IOException) {
                 e.printStackTrace()
             }
@@ -650,7 +652,7 @@ class ConnectionController(private val application: ChatApplication,
         override fun run() {
 
             try {
-                socket = bluetoothDevice.createRfcommSocketToServiceRecord(APP_UUID)
+                socket = bluetoothDevice.createRfcommSocketToServiceRecord(blAppUUID)
             } catch (e: IOException) {
                 e.printStackTrace()
             }

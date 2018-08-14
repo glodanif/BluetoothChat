@@ -10,24 +10,23 @@ import android.os.StrictMode
 import com.crashlytics.android.Crashlytics
 import com.glodanif.bluetoothchat.data.model.BluetoothConnector
 import com.glodanif.bluetoothchat.data.model.ProfileManager
-import com.glodanif.bluetoothchat.di.ComponentsManager
+import com.glodanif.bluetoothchat.di.*
 import com.glodanif.bluetoothchat.ui.activity.ChatActivity
 import com.glodanif.bluetoothchat.ui.activity.ConversationsActivity
 import com.glodanif.bluetoothchat.ui.util.StartStopActivityLifecycleCallbacks
 import com.kobakei.ratethisapp.RateThisApp
 import com.squareup.leakcanary.LeakCanary
 import io.fabric.sdk.android.Fabric
-import javax.inject.Inject
+import org.koin.android.ext.android.inject
+import org.koin.android.ext.android.startKoin
 
 class ChatApplication : Application(), LifecycleObserver {
 
     var isConversationsOpened = false
     var currentChat: String? = null
 
-    @Inject
-    internal lateinit var connector: BluetoothConnector
-    @Inject
-    internal lateinit var profileManager: ProfileManager
+    private val connector: BluetoothConnector by inject()
+    private val profileManager: ProfileManager by inject()
 
     override fun onCreate() {
         super.onCreate()
@@ -41,7 +40,9 @@ class ChatApplication : Application(), LifecycleObserver {
             Fabric.with(this, Crashlytics())
         }
 
-        ComponentsManager.initialize(this)
+        startKoin(this, listOf(applicationModule,
+                bluetoothConnectionModule, databaseModule, localStorageModule, viewModule))
+
         ProcessLifecycleOwner.get().lifecycle.addObserver(this)
 
         registerActivityLifecycleCallbacks(object : StartStopActivityLifecycleCallbacks() {

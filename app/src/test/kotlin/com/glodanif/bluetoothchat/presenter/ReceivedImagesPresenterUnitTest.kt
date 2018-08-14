@@ -1,6 +1,5 @@
 package com.glodanif.bluetoothchat.presenter
 
-import com.glodanif.bluetoothchat.data.entity.ChatMessage
 import com.glodanif.bluetoothchat.data.entity.MessageFile
 import com.glodanif.bluetoothchat.data.model.MessagesStorage
 import com.glodanif.bluetoothchat.ui.presenter.ReceivedImagesPresenter
@@ -26,13 +25,13 @@ class ReceivedImagesPresenterUnitTest {
     @Before
     fun setup() {
         MockKAnnotations.init(this)
-        presenter = ReceivedImagesPresenter(null, view, storage,
+        presenter = ReceivedImagesPresenter("", view, storage,
                 EmptyCoroutineContext, EmptyCoroutineContext)
     }
 
     @Test
     fun loading_empty() {
-        coEvery { storage.getFileMessagesByDevice(null) } returns ArrayList()
+        coEvery { storage.getFileMessagesByDevice("") } returns ArrayList()
         presenter.loadImages()
         verify { view.showNoImages() }
     }
@@ -40,7 +39,7 @@ class ReceivedImagesPresenterUnitTest {
     @Test
     fun loading_notEmpty() {
         val list = arrayListOf<MessageFile>(mockk())
-        coEvery { storage.getFileMessagesByDevice(null) } returns list
+        coEvery { storage.getFileMessagesByDevice("") } returns list
         presenter.loadImages()
         verify { view.displayImages(list) }
     }

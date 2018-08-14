@@ -18,36 +18,37 @@ import android.widget.ImageView
 import com.github.chrisbanes.photoview.PhotoView
 import com.glodanif.bluetoothchat.R
 import com.glodanif.bluetoothchat.data.entity.MessageFile
-import com.glodanif.bluetoothchat.di.ComponentsManager
+import com.glodanif.bluetoothchat.di.Params.FILE
+import com.glodanif.bluetoothchat.di.Params.IMAGE_PREVIEW_VIEW
+import com.glodanif.bluetoothchat.di.Params.MESSAGE_ID
 import com.glodanif.bluetoothchat.ui.presenter.ImagePreviewPresenter
 import com.glodanif.bluetoothchat.ui.view.ImagePreviewView
 import com.glodanif.bluetoothchat.ui.viewmodel.ChatMessageViewModel
+import com.glodanif.bluetoothchat.utils.argument
 import com.glodanif.bluetoothchat.utils.bind
 import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso
+import org.koin.android.ext.android.inject
 import java.io.File
 import java.lang.Exception
 import java.lang.ref.WeakReference
-import javax.inject.Inject
 
 class ImagePreviewActivity : SkeletonActivity(), ImagePreviewView {
 
+    private val messageId by argument(EXTRA_MESSAGE_ID, -1L)
+    private val imagePath by argument<String>(EXTRA_IMAGE_PATH)
+    private val own by argument(EXTRA_OWN, false)
+
+    private val presenter: ImagePreviewPresenter by inject {
+        mapOf(MESSAGE_ID to messageId, FILE to File(imagePath), IMAGE_PREVIEW_VIEW to this)
+    }
+
     private val imageView: PhotoView by bind(R.id.pv_preview)
-
-    @Inject
-    internal lateinit var presenter: ImagePreviewPresenter
-
-    private var own = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_image_preview, ActivityType.CHILD_ACTIVITY)
         supportPostponeEnterTransition()
-
-        val messageId = intent.getLongExtra(EXTRA_MESSAGE_ID, -1)
-        val imagePath = intent.getStringExtra(EXTRA_IMAGE_PATH)
-        own = intent.getBooleanExtra(EXTRA_OWN, false)
-        ComponentsManager.injectImagePreview(this, messageId, File(imagePath))
 
         ViewCompat.setTransitionName(imageView, messageId.toString())
 
@@ -159,7 +160,8 @@ class ImagePreviewActivity : SkeletonActivity(), ImagePreviewView {
         }
 
         fun start(activity: Activity, transitionView: ImageView, message: ChatMessageViewModel) {
-            start(activity, transitionView, message.uid, message.imagePath ?: "unknown", message.own)
+            start(activity, transitionView, message.uid, message.imagePath
+                    ?: "unknown", message.own)
         }
 
         fun start(activity: Activity, transitionView: ImageView, messageId: Long, imagePath: String, ownMessage: Boolean) {
