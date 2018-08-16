@@ -2,6 +2,6 @@
 <resources>
 
     <declare-styleable name="SwitchPreference">
-        <attr name="text" format="string|reference" />
+        <attr name="preferenceText" format="string|reference" />
     </declare-styleable>
 </resources>

@@ -29,7 +29,7 @@ class SwitchPreference : FrameLayout {
     private fun init(attrs: AttributeSet?, defStyleAttr: Int = 0) {
 
         context.obtainStyledAttributes(attrs, R.styleable.SwitchPreference, defStyleAttr, 0).let {
-            text = it.getString(R.styleable.SwitchPreference_text) ?: ""
+            text = it.getString(R.styleable.SwitchPreference_preferenceText) ?: ""
             it.recycle()
         }
 

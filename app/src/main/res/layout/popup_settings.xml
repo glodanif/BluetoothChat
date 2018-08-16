@@ -35,6 +35,7 @@
                     android:layout_width="56dp"
                     android:layout_height="56dp"
                     android:contentDescription="@string/conversations__cd__users_avatar"
+                    android:layout_marginTop="4dp"
                     tools:src="@tools:sample/avatars" />
 
                 <TextView

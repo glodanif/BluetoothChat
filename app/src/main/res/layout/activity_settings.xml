@@ -63,7 +63,7 @@
         android:id="@+id/sp_sound"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:text="@string/settings__sound" />
+        app:preferenceText="@string/settings__sound" />
 
     <TextView
         android:layout_width="match_parent"
@@ -80,5 +80,5 @@
         android:id="@+id/sp_class_filter"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:text="@string/settings__classification" />
+        app:preferenceText="@string/settings__classification" />
 </LinearLayout>
