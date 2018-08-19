@@ -35,7 +35,6 @@ class ImagesPreviewPresenterUnitTest {
     @Test
     fun file_removing() {
         presenter.removeFile()
-        coVerify { storage.removeFileInfo(0) }
         verify { view.close() }
     }
 

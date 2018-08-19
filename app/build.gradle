@@ -41,11 +41,12 @@ android {
 
         release {
 
-            def propertiesFile = file(project.property("bluetoothchat.properties"))
-            if (project.hasProperty("bluetoothchat.properties") && propertiesFile.exists()) {
+            if (project.hasProperty("bluetoothchat.properties") &&
+                    file(project.property("bluetoothchat.properties")).exists()) {
 
                 Properties properties = new Properties()
-                properties.load(new FileInputStream(propertiesFile))
+                properties.load(
+                        new FileInputStream(file(project.property("bluetoothchat.properties"))))
 
                 storeFile file(properties['keystore'])
                 storePassword properties['keystore.password']
@@ -135,6 +136,7 @@ dependencies {
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$COROUTINES_VERSION"
 
     debugImplementation "com.squareup.leakcanary:leakcanary-android:$LEAK_CANARY_VERSION"
+    autoresponderImplementation "com.squareup.leakcanary:leakcanary-android-no-op:$LEAK_CANARY_VERSION"
     releaseImplementation "com.squareup.leakcanary:leakcanary-android-no-op:$LEAK_CANARY_VERSION"
     testImplementation "com.squareup.leakcanary:leakcanary-android-no-op:$LEAK_CANARY_VERSION"
 
