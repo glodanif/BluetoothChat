@@ -21,13 +21,13 @@ class ImagePreviewPresenter(private val messageId: Long,
         view.displayImage("file://${image.absolutePath}")
     }
 
-    fun removeFile() = launch(bgContext) {
+    fun removeFile() = launch(uiContext) {
 
-        image.delete()
-        storage.removeFileInfo(messageId)
-
-        launch(uiContext) {
-            view.close()
+        launch(bgContext) {
+            image.delete()
+            storage.removeFileInfo(messageId)
         }
+
+        view.close()
     }
 }
