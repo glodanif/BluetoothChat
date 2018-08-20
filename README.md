@@ -1,4 +1,4 @@
-# Bluetooth Chat [![Build Status](https://app.bitrise.io/app/8c3be5a38906633b/status.svg?token=WTzN55dUtHMTqd_iJHcBHQ&branch=dev)](https://app.bitrise.io/app/8c3be5a38906633b)
+# Bluetooth Chat
 
 1-to-1 chatting app over Bluetooth
 
