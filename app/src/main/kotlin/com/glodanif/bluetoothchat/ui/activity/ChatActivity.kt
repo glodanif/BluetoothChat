@@ -395,7 +395,7 @@ class ChatActivity : SkeletonActivity(), ChatView {
     }
 
     override fun openImagePicker() {
-        EasyImage.openChooserWithGallery(this, "chooserTitle", 0)
+        EasyImage.openChooserWithGallery(this, getString(R.string.chat__choose_image), 0)
     }
 
     override fun showImageTransferLayout(fileAddress: String?, fileSize: Long, transferType: ChatView.FileTransferType) {
