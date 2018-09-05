@@ -77,6 +77,7 @@
   <string name="chat__presharing">No estás conectado a este dispositivo, por favor conéctate e intenta de nuevo.</string>
   <string name="chat__presharing_share">Compartir</string>
   <string name="chat__unable_to_pick_image">No se pudo elegir esta imagen, por favor, intenta de nuevo</string>
+  <string name="chat__choose_image">Choose Image</string>
   <string name="conversations__no_conversations">No tienes conversaciones aún\nEscanea para encontrar a tus contactos</string>
   <string name="conversations__scan">Escanear</string>
   <string name="conversations__options">Opciones de conversación</string>
