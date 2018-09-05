@@ -16,15 +16,15 @@ class TransferEventStrategy : DataTransferThread.EventsStrategy {
                 val messageBody = "6#" + message.substringAfter("6#")
 
                 val info = fileStartRegex.replace(messageBody, "")
-                val uid = messageBody.substring(2).substringBefore("#").toLong()
+                val uid = messageBody.substring(2).substringBefore("#")
 
-                if (info.isEmpty()) {
+                if (info.isEmpty() || !uid.isNumber()) {
                     null
                 } else {
                     val size = info.substringAfter("#").substringBefore("#")
                     if (size.isNumber()) {
                         DataTransferThread.FileInfo(
-                                uid,
+                                uid.toLong(),
                                 info.substringBefore("#"),
                                 size.toLong()
                         )

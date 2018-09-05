@@ -1,5 +1,6 @@
 package com.glodanif.bluetoothchat.ui.util
 
+import android.content.ActivityNotFoundException
 import android.text.Spannable
 import android.text.method.ArrowKeyMovementMethod
 import android.text.style.ClickableSpan
@@ -24,8 +25,12 @@ object ClickableMovementMethod : ArrowKeyMovementMethod() {
             val off = layout.getOffsetForHorizontal(line, x)
             val link = buffer?.getSpans(off, off, ClickableSpan::class.java)
             if (link != null && link.isNotEmpty()) {
-                link[0].onClick(widget)
-                return true
+                try {
+                    link[0].onClick(widget)
+                    return true
+                } catch (e: ActivityNotFoundException) {
+                    e.printStackTrace()
+                }
             }
         }
         return super.onTouchEvent(widget, buffer, event)

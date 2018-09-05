@@ -51,8 +51,6 @@ class ChatActivity : SkeletonActivity(), ChatView {
         parametersOf(deviceAddress ?: "", this)
     }
 
-    private val layoutManager = LinearLayoutManager(this)
-
     private val chatContainer: ConstraintLayout by bind(R.id.cl_chat_container)
     private val actions: ActionView by bind(R.id.av_actions)
     private val chatList: RecyclerView by bind(R.id.rv_chat)
@@ -68,6 +66,10 @@ class ChatActivity : SkeletonActivity(), ChatView {
     private val presharingContainer: CardView  by bind(R.id.cv_presharing_image_holder)
     private val presharingImage: ImageView by bind(R.id.iv_presharing_image)
     private val goDownButton: GoDownButton by bind(R.id.gdb_go_down)
+
+    private val chatLayoutManager = LinearLayoutManager(this).apply {
+        reverseLayout = true
+    }
 
     private lateinit var scrollBehavior: ScrollAwareBehavior
     private lateinit var chatAdapter: ChatAdapter
@@ -136,7 +138,7 @@ class ChatActivity : SkeletonActivity(), ChatView {
         }
 
         goDownButton.setOnClickListener {
-            layoutManager.scrollToPosition(0)
+            chatLayoutManager.scrollToPosition(0)
             scrollBehavior.hideChild()
             goDownButton.setUnreadMessageNumber(0)
         }
@@ -157,9 +159,7 @@ class ChatActivity : SkeletonActivity(), ChatView {
 
         chatList.apply {
 
-            val manager = this@ChatActivity.layoutManager
-            manager.reverseLayout = true
-            layoutManager = manager
+            layoutManager = chatLayoutManager
             adapter = chatAdapter
 
             addOnScrollListener(object : RecyclerView.OnScrollListener() {
@@ -277,7 +277,7 @@ class ChatActivity : SkeletonActivity(), ChatView {
         chatAdapter.messages.addFirst(message)
         chatAdapter.notifyItemInserted(0)
         if (!scrollBehavior.isChildShown()) {
-            layoutManager.scrollToPosition(0)
+            chatLayoutManager.scrollToPosition(0)
         } else {
             goDownButton.setUnreadMessageNumber(goDownButton.getUnreadMessageNumber() + 1)
         }
@@ -286,7 +286,7 @@ class ChatActivity : SkeletonActivity(), ChatView {
     override fun showSentMessage(message: ChatMessageViewModel) {
         chatAdapter.messages.addFirst(message)
         chatAdapter.notifyItemInserted(0)
-        layoutManager.scrollToPosition(0)
+        chatLayoutManager.scrollToPosition(0)
     }
 
     override fun showRejectedConnection() = doIfStarted {
