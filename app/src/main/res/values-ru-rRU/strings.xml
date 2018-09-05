@@ -83,7 +83,7 @@
   <string name="chat__presharing">Сейчас вы не подключены к этому устройству, соединитесь и попробуйте еще раз.</string>
   <string name="chat__presharing_share">Отправить</string>
   <string name="chat__unable_to_pick_image">Не удалось получить это изображение, пожалуйста, попробуйте снова</string>
-  <string name="chat__choose_image">Choose Image</string>
+  <string name="chat__choose_image">Выберете изображение</string>
   <string name="conversations__no_conversations">У вас пока что нет ни одного разговора\nНачните сканирование чтобы найти вашего партнера</string>
   <string name="conversations__scan">Сканировать</string>
   <string name="conversations__options">Опции разговора</string>
