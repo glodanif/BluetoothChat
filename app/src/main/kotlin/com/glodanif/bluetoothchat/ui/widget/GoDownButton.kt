@@ -1,5 +1,6 @@
 package com.glodanif.bluetoothchat.ui.widget
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.support.design.widget.FloatingActionButton
 import android.support.v4.view.ViewCompat
@@ -24,6 +25,7 @@ class GoDownButton : FrameLayout {
 
     init {
 
+        @SuppressLint("InflateParams")
         val root = context.getLayoutInflater().inflate(R.layout.view_go_down_button, null)
 
         goDownButton = root.findViewById(R.id.fab_go_down)

@@ -4,6 +4,7 @@ import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.provider.Settings
 import android.support.annotation.ColorInt
 import android.support.v4.content.ContextCompat
 import android.view.View
@@ -25,7 +26,7 @@ import org.koin.core.parameter.parametersOf
 
 class ProfileActivity : SkeletonActivity(), ProfileView {
 
-    private val editMode by argument(EXTRA_EDIT_MODE, false)
+    private val editMode: Boolean by argument(EXTRA_EDIT_MODE, false)
 
     private val presenter: ProfilePresenter by inject { parametersOf(this) }
 
@@ -33,7 +34,6 @@ class ProfileActivity : SkeletonActivity(), ProfileView {
     private val nameLabel: TextView by bind(R.id.tv_name)
     private val deviceNameLabel: TextView by bind(R.id.tv_device_name)
     private val avatar: ImageView by bind(R.id.iv_avatar)
-
     private val colorPicker: View by bind(R.id.v_color)
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -59,7 +59,7 @@ class ProfileActivity : SkeletonActivity(), ProfileView {
 
         deviceNameLabel.setOnClickListener {
             val bluetoothSettings = Intent().apply {
-                action = android.provider.Settings.ACTION_BLUETOOTH_SETTINGS
+                action = Settings.ACTION_BLUETOOTH_SETTINGS
             }
             try {
                 startActivity(bluetoothSettings)

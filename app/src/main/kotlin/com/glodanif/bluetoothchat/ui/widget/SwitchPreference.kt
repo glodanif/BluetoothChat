@@ -1,5 +1,6 @@
 package com.glodanif.bluetoothchat.ui.widget
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.util.AttributeSet
 import android.widget.FrameLayout
@@ -33,6 +34,7 @@ class SwitchPreference : FrameLayout {
             it.recycle()
         }
 
+        @SuppressLint("InflateParams")
         val view = context.getLayoutInflater().inflate(R.layout.item_switch_setting, null)
         textLabel = view.findViewById(R.id.tv_text)
         switch = view.findViewById(R.id.s_switch)

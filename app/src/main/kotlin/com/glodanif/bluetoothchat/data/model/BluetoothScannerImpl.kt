@@ -97,21 +97,14 @@ class BluetoothScannerImpl(val context: Context) : BluetoothScanner {
         return if (!pairedDevice.isEmpty()) pairedDevice.first() else foundDevices[address]
     }
 
-    override fun isBluetoothAvailable(): Boolean {
-        return adapter != null
-    }
+    override fun isBluetoothAvailable() = adapter != null
 
-    override fun isBluetoothEnabled(): Boolean {
-        return adapter?.isEnabled ?: false
-    }
+    override fun isBluetoothEnabled() = adapter?.isEnabled ?: false
 
-    override fun isDiscoverable(): Boolean {
-        return adapter?.scanMode == BluetoothAdapter.SCAN_MODE_CONNECTABLE_DISCOVERABLE
-    }
+    override fun isDiscoverable() =
+            adapter?.scanMode == BluetoothAdapter.SCAN_MODE_CONNECTABLE_DISCOVERABLE
 
-    override fun isDiscovering(): Boolean {
-        return isDiscovering
-    }
+    override fun isDiscovering() = isDiscovering
 
     override fun listenDiscoverableStatus() {
         isListeningForDiscoverableStatus = true

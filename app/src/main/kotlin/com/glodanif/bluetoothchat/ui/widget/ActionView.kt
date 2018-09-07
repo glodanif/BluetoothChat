@@ -14,8 +14,7 @@ import com.glodanif.bluetoothchat.R
 class ActionView : FrameLayout {
 
     @SuppressLint("InflateParams")
-    private var container: View =
-            LayoutInflater.from(context).inflate(R.layout.view_action, null)
+    private var container = LayoutInflater.from(context).inflate(R.layout.view_action, null)
 
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)

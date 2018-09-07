@@ -19,8 +19,8 @@ import org.koin.core.parameter.parametersOf
 
 class ContactChooserActivity : SkeletonActivity(), ContactChooserView {
 
-    private val message by argument<String?>(EXTRA_MESSAGE)
-    private val filePath by argument<String?>(EXTRA_FILE_PATH)
+    private val message: String? by argument(EXTRA_MESSAGE)
+    private val filePath: String? by argument(EXTRA_FILE_PATH)
 
     private val presenter: ContactChooserPresenter by inject { parametersOf(this) }
 

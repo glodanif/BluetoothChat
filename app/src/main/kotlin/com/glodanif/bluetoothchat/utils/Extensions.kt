@@ -68,12 +68,11 @@ fun <T> MutableSet<T>.safeRemove(item: T) = this.iterator().let {
     }
 }
 
-fun BluetoothClass.withPotentiallyInstalledApplication(): Boolean {
-    return this.majorDeviceClass == BluetoothClass.Device.Major.PHONE ||
-            this.majorDeviceClass == BluetoothClass.Device.Major.COMPUTER ||
-            this.majorDeviceClass == BluetoothClass.Device.Major.UNCATEGORIZED ||
-            this.majorDeviceClass == BluetoothClass.Device.Major.MISC
-}
+fun BluetoothClass.withPotentiallyInstalledApplication() =
+        this.majorDeviceClass == BluetoothClass.Device.Major.PHONE ||
+                this.majorDeviceClass == BluetoothClass.Device.Major.COMPUTER ||
+                this.majorDeviceClass == BluetoothClass.Device.Major.UNCATEGORIZED ||
+                this.majorDeviceClass == BluetoothClass.Device.Major.MISC
 
 fun Date.getRelativeTime(context: Context): String {
 
@@ -182,21 +181,13 @@ private fun getDataColumn(context: Context, uri: Uri, selection: String?, select
     return null
 }
 
-private fun isExternalStorageDocument(uri: Uri): Boolean {
-    return "com.android.externalstorage.documents" == uri.authority
-}
+private fun isExternalStorageDocument(uri: Uri) = "com.android.externalstorage.documents" == uri.authority
 
-private fun isDownloadsDocument(uri: Uri): Boolean {
-    return "com.android.providers.downloads.documents" == uri.authority
-}
+private fun isDownloadsDocument(uri: Uri) = "com.android.providers.downloads.documents" == uri.authority
 
-private fun isMediaDocument(uri: Uri): Boolean {
-    return "com.android.providers.media.documents" == uri.authority
-}
+private fun isMediaDocument(uri: Uri) = "com.android.providers.media.documents" == uri.authority
 
-fun String.getFirstLetter(): String {
-    return if (this.isEmpty()) "?" else this[0].toString().toUpperCase()
-}
+fun String.getFirstLetter() = if (this.isEmpty()) "?" else this[0].toString().toUpperCase()
 
 fun TextDrawable.getBitmap(): Bitmap {
 
@@ -217,7 +208,7 @@ fun Long.toReadableFileSize(): String {
             this / Math.pow(1024.0, digitGroups.toDouble())) + " " + units[digitGroups]
 }
 
-fun String.isNumber(): Boolean =
+fun String.isNumber() =
         try {
             this.toLong()
             true
@@ -225,15 +216,14 @@ fun String.isNumber(): Boolean =
             false
         }
 
-fun <T : View> Activity.bind(@IdRes idRes: Int): Lazy<T> {
-    return lazy(LazyThreadSafetyMode.NONE) { findViewById<T>(idRes) }
-}
-
 inline fun <T : Any, V : Any> safeLet(p1: T?, p2: V?, block: (T, V) -> Unit) {
     if (p1 != null && p2 != null) {
         block(p1, p2)
     }
 }
+
+fun <T : View> Activity.bind(@IdRes idRes: Int) =
+        lazy(LazyThreadSafetyMode.NONE) { findViewById<T>(idRes) }
 
 inline fun <reified T : Any?> AppCompatActivity.argument(key: String) = lazy {
     intent.extras?.let {

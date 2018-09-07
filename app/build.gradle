@@ -11,16 +11,16 @@ android {
     compileSdkVersion 28
 
     defaultConfig {
-        applicationId "com.glodanif.bluetoothchat"
+        applicationId 'com.glodanif.bluetoothchat'
         minSdkVersion 19
         targetSdkVersion 28
         versionCode VERSION_CODE
         versionName VERSION_NAME
         vectorDrawables.useSupportLibrary = true
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner 'android.support.test.runner.AndroidJUnitRunner'
         kapt {
             arguments {
-                arg("room.schemaLocation", "$projectDir/schemas".toString())
+                arg('room.schemaLocation', "$projectDir/schemas".toString())
             }
         }
     }
@@ -41,12 +41,12 @@ android {
 
         release {
 
-            if (project.hasProperty("bluetoothchat.properties") &&
-                    file(project.property("bluetoothchat.properties")).exists()) {
+            if (project.hasProperty('bluetoothchat.properties') &&
+                    file(project.property('bluetoothchat.properties')).exists()) {
 
                 Properties properties = new Properties()
                 properties.load(
-                        new FileInputStream(file(project.property("bluetoothchat.properties"))))
+                        new FileInputStream(file(project.property('bluetoothchat.properties'))))
 
                 storeFile file(properties['keystore'])
                 storePassword properties['keystore.password']
@@ -66,7 +66,7 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             applicationIdSuffix '.dev'
             versionNameSuffix '-DEV'
-            buildConfigField "boolean", "AUTORESPONDER", "false"
+            buildConfigField 'boolean', 'AUTORESPONDER', 'false'
         }
 
         autoresponder {
@@ -75,7 +75,7 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             applicationIdSuffix '.ar'
             versionNameSuffix '-AR'
-            buildConfigField "boolean", "AUTORESPONDER", "true"
+            buildConfigField 'boolean', 'AUTORESPONDER', 'true'
         }
 
         release {
@@ -84,7 +84,7 @@ android {
             debuggable false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.release
-            buildConfigField "boolean", "AUTORESPONDER", "false"
+            buildConfigField 'boolean', 'AUTORESPONDER', 'false'
         }
     }
 

@@ -33,9 +33,9 @@ import java.lang.ref.WeakReference
 
 class ImagePreviewActivity : SkeletonActivity(), ImagePreviewView {
 
-    private val messageId by argument(EXTRA_MESSAGE_ID, -1L)
-    private val imagePath by argument<String>(EXTRA_IMAGE_PATH)
-    private val own by argument(EXTRA_OWN, false)
+    private val messageId: Long by argument(EXTRA_MESSAGE_ID, -1L)
+    private val imagePath: String? by argument(EXTRA_IMAGE_PATH)
+    private val own: Boolean by argument(EXTRA_OWN, false)
 
     private val presenter: ImagePreviewPresenter by inject {
         parametersOf(messageId, File(imagePath), this)
@@ -120,11 +120,11 @@ class ImagePreviewActivity : SkeletonActivity(), ImagePreviewView {
     override fun onDestroy() {
         super.onDestroy()
 
-        //Fixes https://issuetracker.google.com/issues/37042900
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
             return
         }
 
+        //Fixes https://issuetracker.google.com/issues/37042900
         val transitionManagerClass = TransitionManager::class.java
         try {
             val runningTransitionsField = transitionManagerClass.getDeclaredField("sRunningTransitions")

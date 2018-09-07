@@ -34,9 +34,9 @@ class ShortcutManagerImpl(private val context: Context) : ShortcutManager {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
 
-            shortcutManager?.let {
+            shortcutManager?.let { manager ->
 
-                val isSearchAdded = it.dynamicShortcuts
+                val isSearchAdded = manager.dynamicShortcuts
                         .filter { it.id == ID_SEARCH }.any()
 
                 if (isSearchAdded) {

@@ -36,11 +36,10 @@ open class SkeletonActivity : AppCompatActivity() {
         toolbar = findViewById(R.id.tb_toolbar)
         setSupportActionBar(toolbar)
 
-        val rootView = findViewById<ViewGroup>(R.id.fl_content_container)
-
         if (type == ActivityType.CHILD_ACTIVITY) {
             supportActionBar?.setDisplayHomeAsUpEnabled(true)
             supportActionBar?.setDisplayShowHomeEnabled(true)
+            val rootView = findViewById<ViewGroup>(R.id.fl_content_container)
             LayoutInflater.from(this).inflate(layoutId, rootView, true)
         }
     }
@@ -50,13 +49,13 @@ open class SkeletonActivity : AppCompatActivity() {
         return true
     }
 
-    inline fun doIfStarted(action: () -> Unit) {
+    protected inline fun doIfStarted(action: () -> Unit) {
         if (lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)) {
             action.invoke()
         }
     }
 
-    fun openLink(link: String) {
+    protected fun openLink(link: String) {
         val intent = Intent(Intent.ACTION_VIEW).apply {
             data = Uri.parse(link)
         }
@@ -67,7 +66,7 @@ open class SkeletonActivity : AppCompatActivity() {
         }
     }
 
-    fun hideKeyboard() {
+    protected fun hideKeyboard() {
         val inputManager = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
         currentFocus?.let { view ->
             inputManager.hideSoftInputFromWindow(view.windowToken, InputMethodManager.HIDE_NOT_ALWAYS)

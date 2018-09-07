@@ -45,7 +45,7 @@ import java.util.*
 
 class ChatActivity : SkeletonActivity(), ChatView {
 
-    private val deviceAddress by argument<String?>(EXTRA_ADDRESS)
+    private val deviceAddress: String? by argument(EXTRA_ADDRESS)
 
     private val presenter: ChatPresenter by inject {
         parametersOf(deviceAddress ?: "", this)

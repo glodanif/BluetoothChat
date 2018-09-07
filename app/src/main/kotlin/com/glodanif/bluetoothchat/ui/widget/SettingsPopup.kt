@@ -61,25 +61,25 @@ class SettingsPopup(context: Context) : PopupWindow() {
         avatar = rootView.findViewById(R.id.iv_avatar)
         userNameLabel = rootView.findViewById(R.id.tv_username)
 
-        rootView.findViewById<View>(R.id.ll_user_profile_container).setOnClickListener({
+        rootView.findViewById<View>(R.id.ll_user_profile_container).setOnClickListener {
             dismiss()
             clickListener?.invoke(Option.PROFILE)
-        })
+        }
 
-        rootView.findViewById<View>(R.id.ll_images_button).setOnClickListener({
+        rootView.findViewById<View>(R.id.ll_images_button).setOnClickListener {
             dismiss()
             clickListener?.invoke(Option.IMAGES)
-        })
+        }
 
-        rootView.findViewById<View>(R.id.ll_settings_button).setOnClickListener({
+        rootView.findViewById<View>(R.id.ll_settings_button).setOnClickListener {
             dismiss()
             clickListener?.invoke(Option.SETTINGS)
-        })
+        }
 
-        rootView.findViewById<View>(R.id.ll_about_button).setOnClickListener({
+        rootView.findViewById<View>(R.id.ll_about_button).setOnClickListener {
             dismiss()
             clickListener?.invoke(Option.ABOUT)
-        })
+        }
 
         contentView = rootView
     }
@@ -108,16 +108,18 @@ class SettingsPopup(context: Context) : PopupWindow() {
 
         showAtLocation(anchor, Gravity.NO_GRAVITY, xPosition, yPosition)
 
-        container.post({
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
 
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && container.isAttachedToWindow) {
-                val animator = ViewAnimationUtils.createCircularReveal(container,
-                        container.width, 0, 0f, container.measuredWidth.toFloat())
-                container.visibility = View.VISIBLE
-                animator.duration = APPEARING_ANIMATION_DURATION
-                animator.start()
+            container.post {
+                if (container.isAttachedToWindow) {
+                    val animator = ViewAnimationUtils.createCircularReveal(container,
+                            container.width, 0, 0f, container.measuredWidth.toFloat())
+                    container.visibility = View.VISIBLE
+                    animator.duration = APPEARING_ANIMATION_DURATION
+                    animator.start()
+                }
             }
-        })
+        }
     }
 
     override fun dismiss() {
