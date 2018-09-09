@@ -12,7 +12,7 @@
   <string name="general__service_lost">El servicio Bluetooth Chat ha sido detenido, reinicia el servicio para poder usar la aplicación</string>
   <string name="general__disconnect">Desconectar</string>
   <string name="general__storage_permission">Bluetooth Chat te da la opción de compartir imágenes. Esta característica requiere permisos de <b>"Almacenamiento"</b> para funcionar correctamente</string>
-  <string name="general__no_browser">സാദാരണ ബ്രൌസർ</string>
+  <string name="general__no_browser">Unable to find browser application</string>
   <string name="general__time_format">dd/MM/yyyy</string>
   <string name="general__time_unknown">desconocido</string>
   <string name="general__time_just_now">reciente</string>
