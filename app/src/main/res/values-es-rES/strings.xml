@@ -15,7 +15,7 @@
   <string name="general__no_browser">No se ha encontrado ningún navegador</string>
   <string name="general__time_format">dd/MM/yyyy</string>
   <string name="general__time_unknown">desconocido</string>
-  <string name="general__time_just_now">reciente</string>
+  <string name="general__time_just_now">justo ahora</string>
   <string name="general__time_a_minute_ago">hace un minuto</string>
   <string name="general__time_an_hour_ago">hace una hora</string>
   <string name="general__time_yesterday">ayer</string>
@@ -28,7 +28,7 @@
     <item quantity="other">hace %d horas</item>
   </plurals>
   <plurals name="general__time_days_ago">
-    <item quantity="one">%d día atrás</item>
+    <item quantity="one">Hace %d día</item>
     <item quantity="other">hace %d días</item>
   </plurals>
   <string name="profile__profile">Perfil</string>
@@ -53,8 +53,8 @@
   <string name="chat__connection_request"><![CDATA[<b>%1$s (%2$s)</b> quiere conectarse contigo]]></string>
   <string name="chat__not_connected_to_this_device">No estás conectado a este dispositivo</string>
   <string name="chat__message_cannot_be_empty">El mensaje no puede estar vacío</string>
-  <string name="chat__partner_disconnected">Tu contacto se desconectó de tu dispositivo. ¿Quieres volver a conectar?</string>
-  <string name="chat__connection_lost">La conexión con este dispositivo se perdió. ¿Quieres volver a conectar?</string>
+  <string name="chat__partner_disconnected">Tu contacto se desconectó de tu dispositivo. ¿Quieres volver a conectarte?</string>
+  <string name="chat__connection_lost">La conexión con este dispositivo se perdió. ¿Quieres volver a conectarte?</string>
   <string name="chat__bluetooth_is_disabled">Bluetooth está desactivado</string>
   <string name="chat__enable">Activado</string>
   <string name="chat__unable_to_connect">No se pudo conectar a este dispositivo, ¿quieres intentar de nuevo?</string>
@@ -94,7 +94,7 @@
   <string name="scan__start_scanning">Busca dispositivos para encontrar contactos o haz que tu dispositivo sea visible y él o ella te podrá encontrar</string>
   <string name="scan__scanning">Escaneando</string>
   <string name="scan__turn_on">Encender</string>
-  <string name="scan__turn_bluetooth_on">Encender Bluetooth para encontrar tu contacto</string>
+  <string name="scan__turn_bluetooth_on">Enciende Bluetooth para encontrar a tu contacto</string>
   <string name="scan__share_apk">¿No tienes una conexión a Internet? Envia el archivo .apk de la aplicación a tu contacto a través de Bluetooth</string>
   <string name="scan__unable_to_share_apk">No se puede iniciar el compartir de Bluetooth</string>
   <string name="scan__no_access_to_bluetooth">No se pudo obtener acceso a Bluetooth en tu dispositivo</string>
