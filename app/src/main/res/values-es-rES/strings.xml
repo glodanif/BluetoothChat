@@ -20,7 +20,7 @@
   <string name="general__time_an_hour_ago">hace una hora</string>
   <string name="general__time_yesterday">ayer</string>
   <plurals name="general__time_minutes_ago">
-    <item quantity="one">%d minuto atrás</item>
+    <item quantity="one">%d hace un minuto</item>
     <item quantity="other">hace %d minutos</item>
   </plurals>
   <plurals name="general__time_hours_ago">
@@ -127,7 +127,7 @@
   <string name="notification__channel_message">Nuevo mensaje</string>
   <string name="notification__channel_file">Transferencia de Archivos</string>
   <string name="notification__me">Yo</string>
-  <string name="notification__reply">Responder</string>
+  <string name="notification__reply">Respuesta</string>
   <string name="notification__sent">Enviado</string>
   <string name="contact_chooser__title">Seleccionar chat</string>
   <string name="contact_chooser__no_contacts">Tu lista de contactos está vacía</string>
