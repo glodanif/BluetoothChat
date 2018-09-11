@@ -12,7 +12,7 @@
   <string name="general__service_lost">El servicio Bluetooth Chat ha sido detenido, reinicia el servicio para poder usar la aplicación</string>
   <string name="general__disconnect">Desconectar</string>
   <string name="general__storage_permission">Bluetooth Chat te da la opción de compartir imágenes. Esta característica requiere permisos de <b>"Almacenamiento"</b> para funcionar correctamente</string>
-  <string name="general__no_browser">Unable to find browser application</string>
+  <string name="general__no_browser">No se ha encontrado ningún navegador</string>
   <string name="general__time_format">dd/MM/yyyy</string>
   <string name="general__time_unknown">desconocido</string>
   <string name="general__time_just_now">reciente</string>
@@ -40,7 +40,7 @@
   <string name="profile__device">Dispositivo</string>
   <string name="profile__no_name">Sin nombre</string>
   <string name="profile__save">Guardar</string>
-  <string name="profile__no_bluetooth_settings_activity">Unable to open Bluetooth Settings, if you want to rename your device please do it manually</string>
+  <string name="profile__no_bluetooth_settings_activity">No se puede abrir la Configuración Bluetooth, si quieres renombrar tu dispositivo por favor hazlo manualmente</string>
   <string name="chat__not_connected">Desconectado</string>
   <string name="chat__connected">Conectado</string>
   <string name="chat__pending">Pendiente</string>
@@ -77,7 +77,7 @@
   <string name="chat__presharing">No estás conectado a este dispositivo, por favor conéctate e intenta de nuevo.</string>
   <string name="chat__presharing_share">Compartir</string>
   <string name="chat__unable_to_pick_image">No se pudo elegir esta imagen, por favor, intenta de nuevo</string>
-  <string name="chat__choose_image">Choose Image</string>
+  <string name="chat__choose_image">Elegí una imágen</string>
   <string name="conversations__no_conversations">No tienes conversaciones aún\nEscanea para encontrar a tus contactos</string>
   <string name="conversations__scan">Escanear</string>
   <string name="conversations__options">Opciones de conversación</string>
