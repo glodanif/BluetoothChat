@@ -101,7 +101,7 @@ class ConversationsActivity : SkeletonActivity(), ConversationsView {
             var textToShare: String? = null
             var fileToShare: String? = null
 
-            if ("text/plain" == intent.type) {
+            if (intent.type == "text/plain") {
                 textToShare = intent.getStringExtra(Intent.EXTRA_TEXT).trim()
             } else if (intent.type.startsWith("image/")) {
                 val imageUri = intent.getParcelableExtra(Intent.EXTRA_STREAM) as Uri?
