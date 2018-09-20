@@ -35,6 +35,7 @@ import com.glodanif.bluetoothchat.ui.widget.GoDownButton
 import com.glodanif.bluetoothchat.utils.*
 import com.squareup.picasso.Picasso
 import com.squareup.picasso.Target
+import com.timehop.stickyheadersrecyclerview.StickyRecyclerHeadersDecoration
 import org.koin.android.ext.android.inject
 import org.koin.core.parameter.parametersOf
 import pl.aprilapps.easyphotopicker.DefaultCallback
@@ -159,9 +160,10 @@ class ChatActivity : SkeletonActivity(), ChatView {
 
         chatList.apply {
 
-            layoutManager = chatLayoutManager
             adapter = chatAdapter
+            layoutManager = chatLayoutManager
 
+            addItemDecoration(StickyRecyclerHeadersDecoration(chatAdapter))
             addOnScrollListener(object : RecyclerView.OnScrollListener() {
 
                 override fun onScrollStateChanged(recyclerView: RecyclerView, scrollState: Int) {

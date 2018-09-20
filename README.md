@@ -18,14 +18,15 @@ You can help to localize Bluetooth Chat to your language using [Crowdin](https:/
 
 Third Party Libraries
 --------
+* [sticky-headers-recyclerview](https://github.com/timehop/sticky-headers-recyclerview)
 * [Android-RateThisApp](https://github.com/kobakei/Android-RateThisApp)
 * [TextDrawable](https://github.com/amulyakhare/TextDrawable)
 * [EasyImage](https://github.com/jkwiecien/EasyImage)
 * [PhotoView](https://github.com/chrisbanes/PhotoView)
 * [Picasso](https://github.com/square/picasso)
 * [Chroma](https://github.com/ItsPriyesh/chroma)
-* [Koin](https://github.com/InsertKoinIO/koin)
 * [MockK](https://github.com/oleksiyp/mockk)
+* [Koin](https://github.com/InsertKoinIO/koin)
 
 Donations
 --------
@@ -35,7 +36,7 @@ BTC: 17Uqe6E1kswkmdkQCjTz5owQruHJwxPPsp
 
 License
 --------
-    Copyright 2017 - 2018 Vasyl Glodan
+    Copyright 2017 Vasyl Glodan
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.

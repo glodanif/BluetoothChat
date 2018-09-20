@@ -17,9 +17,10 @@ import com.glodanif.bluetoothchat.data.service.message.PayloadType
 import com.glodanif.bluetoothchat.ui.util.ClickableMovementMethod
 import com.glodanif.bluetoothchat.ui.viewmodel.ChatMessageViewModel
 import com.squareup.picasso.Picasso
+import com.timehop.stickyheadersrecyclerview.StickyRecyclerHeadersAdapter
 import java.util.*
 
-class ChatAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class ChatAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(), StickyRecyclerHeadersAdapter<RecyclerView.ViewHolder> {
 
     private val OWN_TEXT_MESSAGE = 0
     private val OWN_IMAGE_MESSAGE = 1
@@ -67,7 +68,7 @@ class ChatAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                         .into(holder.image)
             }
 
-            holder.date.text = message.date
+            holder.date.text = message.time
 
         } else if (holder is TextMessageViewHolder) {
 
@@ -77,7 +78,7 @@ class ChatAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
             holder.text.movementMethod = ClickableMovementMethod
             holder.text.setText(spannableMessage, TextView.BufferType.SPANNABLE)
-            holder.date.text = message.date
+            holder.date.text = message.time
         }
     }
 
@@ -115,6 +116,23 @@ class ChatAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             OWN_IMAGE_MESSAGE, FOREIGN_IMAGE_MESSAGE -> ImageMessageViewHolder(view)
             else -> TextMessageViewHolder(view)
         }
+    }
+
+    override fun getHeaderId(position: Int): Long {
+        return messages[position].dayOfYear.hashCode().toLong()
+    }
+
+    override fun onCreateHeaderViewHolder(parent: ViewGroup): RecyclerView.ViewHolder {
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_date_divider, parent, false)
+        return DateDividerViewHolder(view)
+    }
+
+    override fun onBindHeaderViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        (holder as DateDividerViewHolder).date.text = messages[position].dayOfYear
+    }
+
+    class DateDividerViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val date: TextView = itemView.findViewById(R.id.tv_date)
     }
 
     class TextMessageViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
