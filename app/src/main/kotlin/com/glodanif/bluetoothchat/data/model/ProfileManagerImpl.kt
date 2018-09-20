@@ -28,4 +28,9 @@ class ProfileManagerImpl(context: Context) : ProfileManager {
     override fun getUserName(): String = preferences.getString(KEY_USER_NAME, "") ?: ""
 
     override fun getUserColor() = preferences.getInt(KEY_USER_COLOR, defaultAvatarBackgroundColor)
+
+    override fun isInitialized(): Boolean {
+        val userName = preferences.getString(KEY_USER_NAME, "")
+        return !userName.isNullOrEmpty()
+    }
 }

@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:tint="@color/colorAccent"
         app:backgroundTint="@android:color/white"
-        app:fabSize="normal"
+        app:fabSize="mini"
         app:srcCompat="@drawable/ic_arrow_downward"
         app:useCompatPadding="true" />
 

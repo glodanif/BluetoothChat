@@ -8,4 +8,5 @@ interface ProfileManager {
     fun getUserName(): String
     @ColorInt
     fun getUserColor(): Int
+    fun isInitialized(): Boolean
 }

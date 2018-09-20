@@ -8,7 +8,6 @@ import com.glodanif.bluetoothchat.ui.view.ContactChooserView
 import com.glodanif.bluetoothchat.ui.viewmodel.converter.ContactConverter
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.android.UI
-import kotlinx.coroutines.experimental.async
 import kotlinx.coroutines.experimental.launch
 import kotlinx.coroutines.experimental.withContext
 import kotlin.coroutines.experimental.CoroutineContext

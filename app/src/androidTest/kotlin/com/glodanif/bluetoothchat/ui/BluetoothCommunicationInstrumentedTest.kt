@@ -1,4 +1,4 @@
-package com.glodanif.bluetoothchat.ui;
+package com.glodanif.bluetoothchat.ui
 
 import android.Manifest.permission.WRITE_EXTERNAL_STORAGE
 import android.app.Activity

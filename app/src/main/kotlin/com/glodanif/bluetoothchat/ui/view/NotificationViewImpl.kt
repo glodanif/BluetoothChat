@@ -6,18 +6,16 @@ import android.content.Intent
 import android.graphics.Color
 import android.os.Build
 import android.support.v4.app.NotificationCompat
-import com.glodanif.bluetoothchat.R
-import com.glodanif.bluetoothchat.data.service.message.TransferringFile
-import com.glodanif.bluetoothchat.ui.activity.ChatActivity
-import com.glodanif.bluetoothchat.ui.activity.ConversationsActivity
-import com.glodanif.bluetoothchat.data.service.BluetoothConnectionService
-import com.glodanif.bluetoothchat.utils.toReadableFileSize
-import com.glodanif.bluetoothchat.utils.getNotificationManager
-import android.app.PendingIntent
 import android.support.v4.app.Person
 import android.support.v4.app.RemoteInput
 import android.support.v4.content.ContextCompat
-import android.util.Log
+import com.glodanif.bluetoothchat.R
+import com.glodanif.bluetoothchat.data.service.BluetoothConnectionService
+import com.glodanif.bluetoothchat.data.service.message.TransferringFile
+import com.glodanif.bluetoothchat.ui.activity.ChatActivity
+import com.glodanif.bluetoothchat.ui.activity.ConversationsActivity
+import com.glodanif.bluetoothchat.utils.getNotificationManager
+import com.glodanif.bluetoothchat.utils.toReadableFileSize
 import java.util.*
 
 class NotificationViewImpl(private val context: Context) : NotificationView {

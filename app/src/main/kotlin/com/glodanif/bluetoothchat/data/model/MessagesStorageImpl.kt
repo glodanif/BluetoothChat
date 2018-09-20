@@ -1,7 +1,6 @@
 package com.glodanif.bluetoothchat.data.model
 
 import com.glodanif.bluetoothchat.data.database.ChatDatabase
-import com.glodanif.bluetoothchat.data.database.MessagesDao
 import com.glodanif.bluetoothchat.data.entity.ChatMessage
 import com.glodanif.bluetoothchat.data.entity.MessageFile
 import java.io.File

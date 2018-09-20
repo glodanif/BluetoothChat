@@ -8,8 +8,8 @@ import com.glodanif.bluetoothchat.data.model.FileManager
 import com.glodanif.bluetoothchat.data.model.FileManagerImpl
 import kotlinx.coroutines.experimental.runBlocking
 import org.junit.After
-import org.junit.Assert
-import org.junit.Assert.*
+import org.junit.Assert.assertNotNull
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
