@@ -1,6 +1,5 @@
 package com.glodanif.bluetoothchat.ui.view
 
-import com.glodanif.bluetoothchat.data.entity.ChatMessage
 import com.glodanif.bluetoothchat.data.entity.MessageFile
 
 interface ReceivedImagesView {

@@ -8,8 +8,8 @@ import android.content.*
 import android.os.Binder
 import android.os.Build
 import android.os.IBinder
-import android.support.v4.app.RemoteInput
-import android.support.v7.app.AppCompatActivity
+import androidx.core.app.RemoteInput
+import androidx.appcompat.app.AppCompatActivity
 import com.glodanif.bluetoothchat.ChatApplication
 import com.glodanif.bluetoothchat.R
 import com.glodanif.bluetoothchat.data.entity.ChatMessage

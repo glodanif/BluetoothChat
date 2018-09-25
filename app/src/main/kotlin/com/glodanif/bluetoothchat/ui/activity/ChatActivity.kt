@@ -11,11 +11,11 @@ import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.os.Handler
-import android.support.constraint.ConstraintLayout
-import android.support.design.widget.CoordinatorLayout
-import android.support.v7.widget.CardView
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.cardview.widget.CardView
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -35,6 +35,7 @@ import com.glodanif.bluetoothchat.ui.widget.GoDownButton
 import com.glodanif.bluetoothchat.utils.*
 import com.squareup.picasso.Picasso
 import com.squareup.picasso.Target
+import com.timehop.stickyheadersrecyclerview.StickyRecyclerHeadersDecoration
 import org.koin.android.ext.android.inject
 import org.koin.core.parameter.parametersOf
 import pl.aprilapps.easyphotopicker.DefaultCallback
@@ -159,9 +160,10 @@ class ChatActivity : SkeletonActivity(), ChatView {
 
         chatList.apply {
 
-            layoutManager = chatLayoutManager
             adapter = chatAdapter
+            layoutManager = chatLayoutManager
 
+            addItemDecoration(StickyRecyclerHeadersDecoration(chatAdapter))
             addOnScrollListener(object : RecyclerView.OnScrollListener() {
 
                 override fun onScrollStateChanged(recyclerView: RecyclerView, scrollState: Int) {

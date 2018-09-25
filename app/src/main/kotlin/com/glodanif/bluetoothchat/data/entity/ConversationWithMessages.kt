@@ -1,6 +1,6 @@
 package com.glodanif.bluetoothchat.data.entity
 
-import android.arch.persistence.room.Relation
+import androidx.room.Relation
 import kotlin.collections.ArrayList
 
 data class ConversationWithMessages(

@@ -13,9 +13,9 @@ import android.net.Uri
 import android.os.Environment
 import android.provider.DocumentsContract
 import android.provider.MediaStore
-import android.support.annotation.IdRes
-import android.support.annotation.PluralsRes
-import android.support.v7.app.AppCompatActivity
+import androidx.annotation.IdRes
+import androidx.annotation.PluralsRes
+import androidx.appcompat.app.AppCompatActivity
 import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View

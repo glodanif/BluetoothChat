@@ -3,13 +3,16 @@ package com.glodanif.bluetoothchat.ui.viewmodel.converter
 import android.content.Context
 import com.glodanif.bluetoothchat.R
 import com.glodanif.bluetoothchat.data.entity.ChatMessage
-import com.glodanif.bluetoothchat.utils.getRelativeTime
 import com.glodanif.bluetoothchat.ui.viewmodel.ChatMessageViewModel
 import com.glodanif.bluetoothchat.utils.Size
 import com.glodanif.bluetoothchat.utils.getDisplayMetrics
+import java.text.SimpleDateFormat
+import java.util.*
 
-class ChatMessageConverter(private val context: Context) {
+class ChatMessageConverter(context: Context) {
 
+    private val dayOfYearFormat = SimpleDateFormat("MMMM dd", Locale.ENGLISH)
+    private val timeFormat = SimpleDateFormat("HH:mm", Locale.ENGLISH)
     private val displayMetrics = context.getDisplayMetrics()
 
     fun transform(message: ChatMessage): ChatMessageViewModel {
@@ -36,7 +39,8 @@ class ChatMessageConverter(private val context: Context) {
 
         return ChatMessageViewModel(
                 message.uid,
-                message.date.getRelativeTime(context),
+                dayOfYearFormat.format(message.date),
+                timeFormat.format(message.date),
                 message.text,
                 message.own,
                 message.messageType,

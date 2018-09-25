@@ -1,6 +1,6 @@
 package com.glodanif.bluetoothchat.data.service.message
 
-import android.support.annotation.ColorInt
+import androidx.annotation.ColorInt
 import java.io.File
 
 class Contract {

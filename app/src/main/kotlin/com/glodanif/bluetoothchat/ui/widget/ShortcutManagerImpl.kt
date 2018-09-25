@@ -6,8 +6,8 @@ import android.content.pm.ShortcutInfo
 import android.graphics.drawable.Icon
 import android.net.Uri
 import android.os.Build
-import android.support.annotation.ColorInt
-import android.support.annotation.RequiresApi
+import androidx.annotation.ColorInt
+import androidx.annotation.RequiresApi
 import com.amulyakhare.textdrawable.TextDrawable
 import com.glodanif.bluetoothchat.R
 import com.glodanif.bluetoothchat.ui.activity.ChatActivity

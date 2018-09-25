@@ -1,6 +1,6 @@
 package com.glodanif.bluetoothchat.data.database
 
-import android.arch.persistence.room.*
+import androidx.room.*
 import com.glodanif.bluetoothchat.data.entity.Conversation
 import com.glodanif.bluetoothchat.data.entity.ConversationWithMessages
 

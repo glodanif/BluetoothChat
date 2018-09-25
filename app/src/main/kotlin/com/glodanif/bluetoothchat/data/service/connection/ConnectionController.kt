@@ -6,8 +6,8 @@ import android.bluetooth.BluetoothServerSocket
 import android.bluetooth.BluetoothSocket
 import android.graphics.BitmapFactory
 import android.os.Environment
-import android.support.v4.app.NotificationCompat
-import android.support.v4.app.Person
+import androidx.core.app.NotificationCompat
+import androidx.core.app.Person
 import com.glodanif.bluetoothchat.ChatApplication
 import com.glodanif.bluetoothchat.R
 import com.glodanif.bluetoothchat.data.entity.ChatMessage

@@ -1,12 +1,13 @@
 package com.glodanif.bluetoothchat.ui.viewmodel
 
-import android.support.annotation.StringRes
+import androidx.annotation.StringRes
 import com.glodanif.bluetoothchat.data.service.message.PayloadType
 import com.glodanif.bluetoothchat.utils.Size
 
 data class ChatMessageViewModel(
         val uid: Long,
-        val date: String,
+        val dayOfYear: String,
+        val time: String,
         val text: String?,
         val own: Boolean,
         val type: PayloadType?,
