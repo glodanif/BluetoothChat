@@ -1,8 +1,8 @@
 package com.glodanif.bluetoothchat.datasource
 
 import android.os.Environment
-import android.support.test.InstrumentationRegistry
-import android.support.test.runner.AndroidJUnit4
+import androidx.test.InstrumentationRegistry
+import androidx.test.runner.AndroidJUnit4
 import com.glodanif.bluetoothchat.R
 import com.glodanif.bluetoothchat.data.database.Database
 import com.glodanif.bluetoothchat.data.entity.ChatMessage
@@ -17,7 +17,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import java.io.File
 import java.util.*
-import android.support.test.rule.GrantPermissionRule
+import androidx.test.rule.GrantPermissionRule
 import org.junit.Rule
 
 @RunWith(AndroidJUnit4::class)

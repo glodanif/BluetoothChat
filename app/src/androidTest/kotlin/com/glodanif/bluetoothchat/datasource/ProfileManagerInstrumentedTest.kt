@@ -1,8 +1,8 @@
 package com.glodanif.bluetoothchat.datasource
 
 import android.graphics.Color
-import android.support.test.InstrumentationRegistry
-import android.support.test.runner.AndroidJUnit4
+import androidx.test.InstrumentationRegistry
+import androidx.test.runner.AndroidJUnit4
 import com.glodanif.bluetoothchat.data.model.ProfileManager
 import com.glodanif.bluetoothchat.data.model.ProfileManagerImpl
 import org.junit.After

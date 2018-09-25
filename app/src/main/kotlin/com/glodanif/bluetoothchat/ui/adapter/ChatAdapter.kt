@@ -1,9 +1,6 @@
 package com.glodanif.bluetoothchat.ui.adapter
 
 import android.graphics.Bitmap
-import android.support.v4.text.util.LinkifyCompat
-import android.support.v4.view.ViewCompat
-import android.support.v7.widget.RecyclerView
 import android.text.SpannableString
 import android.text.util.Linkify
 import android.view.LayoutInflater
@@ -12,6 +9,9 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.text.util.LinkifyCompat
+import androidx.core.view.ViewCompat
+import androidx.recyclerview.widget.RecyclerView
 import com.glodanif.bluetoothchat.R
 import com.glodanif.bluetoothchat.data.service.message.PayloadType
 import com.glodanif.bluetoothchat.ui.util.ClickableMovementMethod

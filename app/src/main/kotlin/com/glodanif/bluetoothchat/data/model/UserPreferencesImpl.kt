@@ -2,7 +2,7 @@ package com.glodanif.bluetoothchat.data.model
 
 import android.content.Context
 import android.preference.PreferenceManager
-import android.support.v4.content.ContextCompat
+import androidx.core.content.ContextCompat
 import com.glodanif.bluetoothchat.R
 
 class UserPreferencesImpl(private val context: Context) : UserPreferences {

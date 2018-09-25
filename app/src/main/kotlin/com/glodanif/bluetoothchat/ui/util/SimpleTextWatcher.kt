@@ -1,6 +1,6 @@
 package com.glodanif.bluetoothchat.ui.util
 
-import android.support.annotation.CallSuper
+import androidx.annotation.CallSuper
 import android.text.Editable
 import android.text.TextWatcher
 

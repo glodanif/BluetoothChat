@@ -1,14 +1,14 @@
 package com.glodanif.bluetoothchat.ui.activity
 
-import android.arch.lifecycle.Lifecycle
+import androidx.lifecycle.Lifecycle
 import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.support.annotation.LayoutRes
-import android.support.v7.app.AppCompatActivity
-import android.support.v7.app.AppCompatDelegate
-import android.support.v7.widget.Toolbar
+import androidx.annotation.LayoutRes
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
+import androidx.appcompat.widget.Toolbar
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager

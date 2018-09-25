@@ -1,8 +1,8 @@
 package com.glodanif.bluetoothchat.data.entity
 
-import android.arch.persistence.room.Entity
-import android.arch.persistence.room.Ignore
-import android.arch.persistence.room.PrimaryKey
+import androidx.room.Entity
+import androidx.room.Ignore
+import androidx.room.PrimaryKey
 import com.glodanif.bluetoothchat.data.service.message.PayloadType
 import java.util.*
 

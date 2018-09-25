@@ -12,7 +12,7 @@ import android.view.View
 import com.glodanif.bluetoothchat.R
 import android.os.Bundle
 import android.os.Parcelable
-import android.support.v4.content.ContextCompat
+import androidx.core.content.ContextCompat
 
 class ExpiringProgressBar : View {
 

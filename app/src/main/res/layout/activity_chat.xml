@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/cl_chat_container"
@@ -148,7 +148,7 @@
         </LinearLayout>
     </FrameLayout>
 
-    <android.support.design.widget.CoordinatorLayout
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginTop="0dp"
@@ -159,7 +159,7 @@
         app:layout_constraintTop_toBottomOf="@+id/av_actions"
         app:layout_constraintVertical_bias="1.0">
 
-        <android.support.v7.widget.RecyclerView
+        <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_chat"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -175,9 +175,9 @@
             app:layout_anchor="@id/rv_chat"
             app:layout_anchorGravity="bottom|end" />
 
-    </android.support.design.widget.CoordinatorLayout>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
-    <android.support.v7.widget.CardView
+    <androidx.cardview.widget.CardView
         android:id="@+id/cv_presharing_image_holder"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -195,7 +195,7 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
-        <android.support.constraint.ConstraintLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/relativeLayout"
             android:layout_width="match_parent"
             android:layout_height="124dp">
@@ -251,6 +251,6 @@
                 app:layout_constraintHorizontal_bias="1.0"
                 app:layout_constraintStart_toEndOf="@+id/iv_presharing_image" />
 
-        </android.support.constraint.ConstraintLayout>
-    </android.support.v7.widget.CardView>
-</android.support.constraint.ConstraintLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.cardview.widget.CardView>
+</androidx.constraintlayout.widget.ConstraintLayout>

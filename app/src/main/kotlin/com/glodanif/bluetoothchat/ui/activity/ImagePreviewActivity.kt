@@ -6,10 +6,10 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.os.Build
 import android.os.Bundle
-import android.support.transition.Transition
-import android.support.transition.TransitionManager
-import android.support.v4.app.ActivityOptionsCompat
-import android.support.v4.view.ViewCompat
+import androidx.transition.Transition
+import androidx.transition.TransitionManager
+import androidx.core.app.ActivityOptionsCompat
+import androidx.core.view.ViewCompat
 import android.util.ArrayMap
 import android.view.Menu
 import android.view.MenuItem

@@ -1,8 +1,8 @@
 package com.glodanif.bluetoothchat.ui.presenter
 
-import android.arch.lifecycle.Lifecycle
-import android.arch.lifecycle.LifecycleObserver
-import android.arch.lifecycle.OnLifecycleEvent
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleObserver
+import androidx.lifecycle.OnLifecycleEvent
 import com.glodanif.bluetoothchat.data.model.ConversationsStorage
 import com.glodanif.bluetoothchat.ui.view.ContactChooserView
 import com.glodanif.bluetoothchat.ui.viewmodel.converter.ContactConverter

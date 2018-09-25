@@ -1,6 +1,6 @@
 package com.glodanif.bluetoothchat.data.model
 
-import android.support.annotation.ColorInt
+import androidx.annotation.ColorInt
 
 interface ProfileManager {
     fun saveUserName(name: String)

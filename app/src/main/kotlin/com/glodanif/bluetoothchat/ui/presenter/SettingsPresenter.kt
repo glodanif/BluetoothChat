@@ -1,6 +1,6 @@
 package com.glodanif.bluetoothchat.ui.presenter
 
-import android.support.annotation.ColorInt
+import androidx.annotation.ColorInt
 import com.glodanif.bluetoothchat.data.model.UserPreferences
 import com.glodanif.bluetoothchat.ui.view.SettingsView
 

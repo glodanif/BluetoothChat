@@ -1,6 +1,6 @@
 package com.glodanif.bluetoothchat.ui.viewmodel
 
-import android.support.annotation.StringRes
+import androidx.annotation.StringRes
 import com.glodanif.bluetoothchat.data.service.message.PayloadType
 import com.glodanif.bluetoothchat.utils.Size
 
