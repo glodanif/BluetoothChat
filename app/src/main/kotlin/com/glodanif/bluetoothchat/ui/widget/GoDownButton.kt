@@ -14,7 +14,7 @@ import com.glodanif.bluetoothchat.utils.toPx
 
 class GoDownButton : FrameLayout {
 
-    private var goDownButton: com.google.android.material.floatingactionbutton.FloatingActionButton
+    private var goDownButton: FloatingActionButton
     private var newMessagesCount: TextView
 
     private var onClickListener: (() -> Unit)? = null
