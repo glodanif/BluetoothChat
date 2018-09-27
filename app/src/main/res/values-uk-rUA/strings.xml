@@ -84,6 +84,8 @@
   <string name="chat__presharing_share">Відправити</string>
   <string name="chat__unable_to_pick_image">Не вдалося отримати це зображення, будь ласка, спробуйте ще раз</string>
   <string name="chat__choose_image">Виберіть зображення</string>
+  <string name="chat__date_format_day_of_year">MMMM dd</string>
+  <string name="chat__date_format_time">HH:mm</string>
   <string name="conversations__no_conversations">У вас поки що немає жодної розмови\nПочніть сканування щоб знайти вашого пратнера</string>
   <string name="conversations__scan">Сканувати</string>
   <string name="conversations__options">Опції розмови</string>
