@@ -78,6 +78,8 @@
   <string name="chat__presharing_share">Compartir</string>
   <string name="chat__unable_to_pick_image">No se pudo elegir esta imagen, por favor, intenta de nuevo</string>
   <string name="chat__choose_image">Elegí una imágen</string>
+  <string name="chat__date_format_day_of_year">dd de MMMM</string>
+  <string name="chat__date_format_time">HH:mm</string>
   <string name="conversations__no_conversations">No tienes conversaciones aún\nEscanea para encontrar a tus contactos</string>
   <string name="conversations__scan">Escanear</string>
   <string name="conversations__options">Opciones de conversación</string>
