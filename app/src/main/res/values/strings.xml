@@ -91,6 +91,8 @@
     <string name="chat__presharing_share">Share</string>
     <string name="chat__unable_to_pick_image">Unable to pick this image, please try again</string>
     <string name="chat__choose_image">Choose Image</string>
+    <string name="chat__date_format_day_of_year">MMMM dd</string>
+    <string name="chat__date_format_time">HH:mm</string>
 
     <string name="conversations__no_conversations">You don\'t have any conversations yet\nScan for devices to find your partner</string>
     <string name="conversations__scan">Scan</string>

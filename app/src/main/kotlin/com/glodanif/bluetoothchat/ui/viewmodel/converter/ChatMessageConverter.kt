@@ -11,8 +11,8 @@ import java.util.*
 
 class ChatMessageConverter(context: Context) {
 
-    private val dayOfYearFormat = SimpleDateFormat("MMMM dd", Locale.ENGLISH)
-    private val timeFormat = SimpleDateFormat("HH:mm", Locale.ENGLISH)
+    private val dayOfYearFormat = SimpleDateFormat(context.getString(R.string.chat__date_format_day_of_year), Locale.getDefault())
+    private val timeFormat = SimpleDateFormat(context.getString(R.string.chat__date_format_time), Locale.getDefault())
     private val displayMetrics = context.getDisplayMetrics()
 
     fun transform(message: ChatMessage): ChatMessageViewModel {

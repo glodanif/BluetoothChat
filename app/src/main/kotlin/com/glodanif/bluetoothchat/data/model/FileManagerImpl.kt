@@ -23,28 +23,27 @@ class FileManagerImpl(private val context: Context) : FileManager {
         val directory = context.externalCacheDir
                 ?: File(Environment.getExternalStorageDirectory(), context.getString(R.string.app_name))
 
-        if (application != null) {
+        if (application == null) {
+            return null
+        }
 
-            val file = File(application.applicationInfo.publicSourceDir)
+        val file = File(application.applicationInfo.publicSourceDir)
 
-            try {
-                val newFile = copyAndZip(file, directory, "BluetoothChat")
+        try {
+            val newFile = copyAndZip(file, directory, "BluetoothChat")
 
-                return if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
+            return if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
+                try {
                     FileProvider.getUriForFile(context,
                             context.applicationContext.packageName + ".provider", newFile)
-                } else {
-                    Uri.fromFile(newFile)
+                } catch (e: IllegalArgumentException) {
+                    return null
                 }
-
-            } catch (e: IOException) {
-                if (Fabric.isInitialized()) {
-                    val ex = IOException("${e.message} (file: $file)")
-                    Crashlytics.getInstance().core.logException(ex)
-                }
-                return null
+            } else {
+                Uri.fromFile(newFile)
             }
-        } else {
+
+        } catch (e: IOException) {
             return null
         }
     }
@@ -61,7 +60,6 @@ class FileManagerImpl(private val context: Context) : FileManager {
         zipFile.deleteOnExit()
 
         FileInputStream(file).use { fileInputStream ->
-
             FileOutputStream(copiedFile).use { fileOutputStream ->
 
                 fileOutputStream.channel
@@ -70,13 +68,9 @@ class FileManagerImpl(private val context: Context) : FileManager {
         }
 
         FileInputStream(copiedFile).use { fileInputStream ->
-
             BufferedInputStream(fileInputStream, bufferSize).use { bufferedInputStream ->
-
                 FileOutputStream(zipFile).use { fileOutputStream ->
-
                     BufferedOutputStream(fileOutputStream).use { bufferedOutputStream ->
-
                         ZipOutputStream(bufferedOutputStream).use { zipOutputStream ->
 
                             val data = ByteArray(bufferSize)
@@ -93,7 +87,6 @@ class FileManagerImpl(private val context: Context) : FileManager {
                 }
             }
         }
-
         return zipFile
     }
 }
