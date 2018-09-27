@@ -54,7 +54,7 @@
   <string name="chat__disconnect">Отключиться</string>
   <string name="chat__connection_rejected">Ваш запрос на соединение был отклонен</string>
   <string name="chat__waiting_for_device">Вы ждете пока это устройство одобрит соединение</string>
-  <string name="chat__connect">Подключится</string>
+  <string name="chat__connect">Подключиться</string>
   <string name="chat__not_connected_to_send">Вы не подключены к этому устройству</string>
   <string name="chat__connection_request"><![CDATA[<b>%1$s (%2$s)</b> хочет подключиться к вам]]></string>
   <string name="chat__not_connected_to_this_device">Сейчас вы не подключены к этому устройству</string>
