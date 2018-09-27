@@ -32,7 +32,7 @@ val localStorageModule = module {
 val viewModule = module {
     single { NotificationViewImpl(androidContext()) as NotificationView }
     single { ShortcutManagerImpl(androidContext()) as ShortcutManager }
-    single { ContactConverter() }
-    single { ConversationConverter(androidContext()) }
-    single { ChatMessageConverter(androidContext()) }
+    factory { ContactConverter() }
+    factory { ConversationConverter(androidContext()) }
+    factory { ChatMessageConverter(androidContext()) }
 }
