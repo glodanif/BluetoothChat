@@ -25,10 +25,8 @@ android {
         }
     }
 
-    sourceSets {
-        main.java.srcDirs += 'src/main/kotlin'
-        test.java.srcDirs += 'src/test/kotlin'
-        androidTest.java.srcDirs += 'src/androidTest/kotlin'
+    sourceSets.each {
+        it.java.srcDirs += "src/$it.name/kotlin"
     }
 
     kotlin {
@@ -92,11 +90,11 @@ android {
 dependencies {
 
     def final SUPPORT_VERSION = '1.0.0'
-    def final ROOM_VERSION = '2.0.0-rc01'
+    def final ROOM_VERSION = '2.0.0'
     def final LIFECYCLE_VERSION = '2.0.0'
     def final LEAK_CANARY_VERSION = '1.6.1'
     def final ESPRESSO_VERSION = '3.1.0-alpha4'
-    def final COROUTINES_VERSION = '0.26.1'
+    def final COROUTINES_VERSION = '0.30.0'
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
@@ -121,7 +119,7 @@ dependencies {
     implementation 'io.github.kobakei:ratethisapp:1.2.0'
     implementation 'me.priyesh:chroma:1.0.2'
 
-    implementation 'org.koin:koin-android:1.0.0'
+    implementation 'org.koin:koin-android:1.0.1'
 
     implementation('com.crashlytics.sdk.android:crashlytics:2.9.5@aar') {
         transitive = true
@@ -138,7 +136,7 @@ dependencies {
 
     testImplementation "org.jetbrains.kotlin:kotlin-stdlib:$KOTLIN_VERSION"
     testImplementation "org.jetbrains.kotlin:kotlin-test-junit:$KOTLIN_VERSION"
-    testImplementation 'io.mockk:mockk:1.8.7'
+    testImplementation 'io.mockk:mockk:1.8.8'
     testImplementation 'junit:junit:4.12'
 
     androidTestImplementation "androidx.annotation:annotation:$SUPPORT_VERSION"

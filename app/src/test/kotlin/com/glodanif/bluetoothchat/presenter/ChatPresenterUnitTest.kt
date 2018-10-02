@@ -5,8 +5,11 @@ import com.glodanif.bluetoothchat.ui.presenter.ChatPresenter
 import com.glodanif.bluetoothchat.ui.view.ChatView
 import com.glodanif.bluetoothchat.ui.viewmodel.converter.ChatMessageConverter
 import io.mockk.MockKAnnotations
+import io.mockk.coEvery
 import io.mockk.impl.annotations.RelaxedMockK
+import io.mockk.verify
 import org.junit.Before
+import org.junit.Test
 import kotlin.coroutines.experimental.EmptyCoroutineContext
 
 class ChatPresenterUnitTest {
@@ -36,20 +39,10 @@ class ChatPresenterUnitTest {
                 scanner, connector, preferences, converter, EmptyCoroutineContext, EmptyCoroutineContext)
     }
 
-    /*@Test
-    fun loading_empty() {
-        coEvery { storage.getConversations() } returns ArrayList()
-        presenter.loadContacts()
-        verify { view.showNoContacts() }
-    }
-
     @Test
-    fun loading_notEmpty() {
-        val list = arrayListOf<Conversation>(mockk())
-        val viewModels = arrayListOf<ContactViewModel>(mockk())
-        coEvery { storage.getConversations() } returns list
-        every { converter.transform(list) } returns viewModels
-        presenter.loadContacts()
-        verify { view.showContacts(viewModels) }
-    }*/
+    fun disconnect() {
+        presenter.disconnect()
+        verify { view.showStatusNotConnected() }
+        verify { view.showNotConnectedToAnyDevice() }
+    }
 }
