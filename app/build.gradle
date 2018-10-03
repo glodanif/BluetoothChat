@@ -136,7 +136,7 @@ dependencies {
 
     testImplementation "org.jetbrains.kotlin:kotlin-stdlib:$KOTLIN_VERSION"
     testImplementation "org.jetbrains.kotlin:kotlin-test-junit:$KOTLIN_VERSION"
-    testImplementation 'io.mockk:mockk:1.8.8'
+    testImplementation 'io.mockk:mockk:1.8.9'
     testImplementation 'junit:junit:4.12'
 
     androidTestImplementation "androidx.annotation:annotation:$SUPPORT_VERSION"

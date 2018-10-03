@@ -102,6 +102,9 @@ class AutoresponderProxy(private val service: BluetoothConnectionService?) : Com
     override fun onMessageSent(message: ChatMessage) {
     }
 
+    override fun onMessageSendingFailed() {
+    }
+
     override fun onMessageDelivered(id: Long) {
     }
 

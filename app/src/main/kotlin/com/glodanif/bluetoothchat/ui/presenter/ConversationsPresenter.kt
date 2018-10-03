@@ -10,10 +10,9 @@ import com.glodanif.bluetoothchat.data.model.*
 import com.glodanif.bluetoothchat.ui.view.ConversationsView
 import com.glodanif.bluetoothchat.ui.viewmodel.ConversationViewModel
 import com.glodanif.bluetoothchat.ui.viewmodel.converter.ConversationConverter
-import kotlinx.coroutines.experimental.CommonPool
+import kotlinx.coroutines.experimental.*
+import kotlinx.coroutines.experimental.android.Main
 import kotlinx.coroutines.experimental.android.UI
-import kotlinx.coroutines.experimental.launch
-import kotlinx.coroutines.experimental.withContext
 import kotlin.coroutines.experimental.CoroutineContext
 
 class ConversationsPresenter(private val view: ConversationsView,
@@ -22,8 +21,8 @@ class ConversationsPresenter(private val view: ConversationsView,
                              private val messageStorage: MessagesStorage,
                              private val profileManager: ProfileManager,
                              private val converter: ConversationConverter,
-                             private val uiContext: CoroutineContext = UI,
-                             private val bgContext: CoroutineContext = CommonPool) : LifecycleObserver {
+                             private val uiContext: CoroutineContext = Dispatchers.Main,
+                             private val bgContext: CoroutineContext = Dispatchers.Default) : LifecycleObserver {
 
     private val prepareListener = object : OnPrepareListener {
 
@@ -109,7 +108,7 @@ class ConversationsPresenter(private val view: ConversationsView,
         }
     }
 
-    fun loadConversations() = launch(uiContext) {
+    fun loadConversations() = GlobalScope.launch(uiContext) {
 
         val conversations = withContext(bgContext) { conversationStorage.getConversations() }
 
@@ -177,7 +176,7 @@ class ConversationsPresenter(private val view: ConversationsView,
 
     fun removeConversation(address: String) {
         connection.sendDisconnectRequest()
-        launch(bgContext) {
+        GlobalScope.launch(bgContext) {
             conversationStorage.removeConversationByAddress(address)
             messageStorage.removeMessagesByAddress(address)
         }

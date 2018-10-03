@@ -3,8 +3,7 @@ package com.glodanif.bluetoothchat.data.service.connection
 import android.bluetooth.BluetoothSocket
 import com.glodanif.bluetoothchat.data.service.message.TransferringFile
 import com.glodanif.bluetoothchat.utils.safeLet
-import kotlinx.coroutines.experimental.CommonPool
-import kotlinx.coroutines.experimental.launch
+import kotlinx.coroutines.experimental.*
 import java.io.*
 
 abstract class DataTransferThread(private val socket: BluetoothSocket,
@@ -123,7 +122,8 @@ abstract class DataTransferThread(private val socket: BluetoothSocket,
             outputStream?.write(message.toByteArray(Charsets.UTF_8))
             outputStream?.flush()
             transferListener.onMessageSent(message)
-        } catch (e: IOException) {
+        } catch (e: Exception) {
+            transferListener.onMessageSendingFailed()
             e.printStackTrace()
         }
     }
@@ -147,7 +147,7 @@ abstract class DataTransferThread(private val socket: BluetoothSocket,
         val transferringFile = TransferringFile(fileName, fileSize, TransferringFile.TransferType.SENDING)
         fileListener.onFileSendingStarted(transferringFile)
 
-        launch(CommonPool) {
+        GlobalScope.launch(Dispatchers.Default) {
 
             val fileStream = FileInputStream(file)
             BufferedInputStream(fileStream).use {
@@ -344,6 +344,7 @@ abstract class DataTransferThread(private val socket: BluetoothSocket,
 
         fun onMessageReceived(message: String)
         fun onMessageSent(message: String)
+        fun onMessageSendingFailed()
 
         fun onConnectionPrepared(type: ConnectionType)
 

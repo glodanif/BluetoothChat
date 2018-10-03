@@ -12,11 +12,9 @@ import com.glodanif.bluetoothchat.data.model.*
 import com.glodanif.bluetoothchat.data.service.message.Contract
 import com.glodanif.bluetoothchat.ui.view.ChatView
 import com.glodanif.bluetoothchat.ui.viewmodel.converter.ChatMessageConverter
-import kotlinx.coroutines.experimental.CommonPool
+import kotlinx.coroutines.experimental.*
+import kotlinx.coroutines.experimental.android.Main
 import kotlinx.coroutines.experimental.android.UI
-import kotlinx.coroutines.experimental.async
-import kotlinx.coroutines.experimental.launch
-import kotlinx.coroutines.experimental.withContext
 import java.io.File
 import kotlin.coroutines.experimental.CoroutineContext
 
@@ -28,8 +26,8 @@ class ChatPresenter(private val deviceAddress: String,
                     private val connectionModel: BluetoothConnector,
                     private val preferences: UserPreferences,
                     private val converter: ChatMessageConverter,
-                    private val uiContext: CoroutineContext = UI,
-                    private val bgContext: CoroutineContext = CommonPool) : LifecycleObserver {
+                    private val uiContext: CoroutineContext = Dispatchers.Main,
+                    private val bgContext: CoroutineContext = Dispatchers.Default) : LifecycleObserver {
 
     private val maxFileSize = 5_242_880
 
@@ -96,7 +94,7 @@ class ChatPresenter(private val deviceAddress: String,
             view.showStatusConnected()
             view.hideActions()
 
-            launch(uiContext) {
+            GlobalScope.launch(uiContext) {
                 val conversation = withContext(bgContext) { conversationsStorage.getConversationByAddress(deviceAddress) }
                 if (conversation != null) {
                     view.showPartnerName(conversation.displayName, conversation.deviceName)
@@ -152,16 +150,17 @@ class ChatPresenter(private val deviceAddress: String,
             view.showSentMessage(converter.transform(message))
         }
 
-        override fun onMessageDelivered(id: Long) {
+        override fun onMessageSendingFailed() {
+            view.showSendingMessageFailure()
+        }
 
+        override fun onMessageDelivered(id: Long) {
         }
 
         override fun onMessageNotDelivered(id: Long) {
-
         }
 
         override fun onMessageSeen(id: Long) {
-
         }
     }
 
@@ -245,7 +244,7 @@ class ChatPresenter(private val deviceAddress: String,
             }
         }
 
-        launch(uiContext) {
+        GlobalScope.launch(uiContext) {
             val messagesDef = async(bgContext) { messagesStorage.getMessagesByDevice(deviceAddress) }
             val conversationDef = async(bgContext) { conversationsStorage.getConversationByAddress(deviceAddress) }
             displayInfo(messagesDef.await(), conversationDef.await())
@@ -286,7 +285,7 @@ class ChatPresenter(private val deviceAddress: String,
             view.showPartnerName(partner.displayName, partner.deviceName)
         }
 
-        launch(bgContext) {
+        GlobalScope.launch(bgContext) {
             messagesStorage.updateMessages(messages)
         }
     }

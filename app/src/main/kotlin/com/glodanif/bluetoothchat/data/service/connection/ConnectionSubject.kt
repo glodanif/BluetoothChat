@@ -29,6 +29,7 @@ interface ConnectionSubject {
 
     fun handleMessageReceived(message: ChatMessage)
     fun handleMessageSent(message: ChatMessage)
+    fun handleMessageSendingFailed()
     fun handleMessageSeen(uid: Long)
     fun handleMessageDelivered(uid: Long)
     fun handleMessageNotDelivered(uid: Long)

@@ -163,6 +163,13 @@ class BluetoothConnectorImpl(private val context: Context) : BluetoothConnector 
             }
         }
 
+        override fun onMessageSendingFailed() {
+            proxy?.onMessageSendingFailed()
+            synchronized(monitor) {
+                messageListeners.forEach { it.onMessageSendingFailed() }
+            }
+        }
+
         override fun onMessageDelivered(id: Long) {
             proxy?.onMessageDelivered(id)
             synchronized(monitor) {

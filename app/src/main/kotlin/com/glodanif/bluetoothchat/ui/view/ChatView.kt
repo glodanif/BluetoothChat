@@ -8,6 +8,7 @@ interface ChatView {
     fun showMessagesHistory(messages: List<ChatMessageViewModel>)
     fun showReceivedMessage(message: ChatMessageViewModel)
     fun showSentMessage(message: ChatMessageViewModel)
+    fun showSendingMessageFailure()
     fun showServiceDestroyed()
     fun showRejectedConnection()
     fun showConnectionRequest(displayName: String, deviceName: String)

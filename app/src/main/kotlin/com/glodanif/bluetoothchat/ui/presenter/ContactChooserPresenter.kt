@@ -6,20 +6,19 @@ import androidx.lifecycle.OnLifecycleEvent
 import com.glodanif.bluetoothchat.data.model.ConversationsStorage
 import com.glodanif.bluetoothchat.ui.view.ContactChooserView
 import com.glodanif.bluetoothchat.ui.viewmodel.converter.ContactConverter
-import kotlinx.coroutines.experimental.CommonPool
+import kotlinx.coroutines.experimental.*
+import kotlinx.coroutines.experimental.android.Main
 import kotlinx.coroutines.experimental.android.UI
-import kotlinx.coroutines.experimental.launch
-import kotlinx.coroutines.experimental.withContext
 import kotlin.coroutines.experimental.CoroutineContext
 
 class ContactChooserPresenter(private val view: ContactChooserView,
                               private val model: ConversationsStorage,
                               private val converter: ContactConverter,
-                              private val uiContext: CoroutineContext = UI,
-                              private val bgContext: CoroutineContext = CommonPool): LifecycleObserver {
+                              private val uiContext: CoroutineContext = Dispatchers.Main,
+                              private val bgContext: CoroutineContext = Dispatchers.Default): LifecycleObserver {
 
     @OnLifecycleEvent(Lifecycle.Event.ON_START)
-    fun loadContacts() = launch(uiContext) {
+    fun loadContacts() = GlobalScope.launch(uiContext) {
 
         val contacts = withContext(bgContext) { model.getContacts() }
 

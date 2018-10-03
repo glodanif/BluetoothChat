@@ -59,6 +59,7 @@
     <string name="chat__pending">Pending</string>
     <string name="chat__reconnect">Reconnect</string>
     <string name="chat__disconnect">Disconnect</string>
+    <string name="chat__sending_failed">Unable to send this message, please try again</string>
     <string name="chat__connection_rejected">Your connection request was rejected</string>
     <string name="chat__waiting_for_device">You are waiting for this device to approve a connection</string>
     <string name="chat__connect">Connect</string>

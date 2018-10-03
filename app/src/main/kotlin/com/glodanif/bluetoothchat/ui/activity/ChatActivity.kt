@@ -291,6 +291,10 @@ class ChatActivity : SkeletonActivity(), ChatView {
         chatLayoutManager.scrollToPosition(0)
     }
 
+    override fun showSendingMessageFailure() {
+        Toast.makeText(this, R.string.chat__sending_failed, Toast.LENGTH_LONG).show()
+    }
+
     override fun showRejectedConnection() = doIfStarted {
         AlertDialog.Builder(this)
                 .setMessage(getString(R.string.chat__connection_rejected))
@@ -491,7 +495,7 @@ class ChatActivity : SkeletonActivity(), ChatView {
                 }
 
                 override fun onCanceled(source: EasyImage.ImageSource?, type: Int) {
-                    if (source == EasyImage.ImageSource.CAMERA) {
+                    if (source == EasyImage.ImageSource.CAMERA_IMAGE) {
                         EasyImage.lastlyTakenButCanceledPhoto(this@ChatActivity)?.delete()
                     }
                 }

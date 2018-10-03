@@ -264,6 +264,10 @@ class BluetoothConnectionService : Service(), ConnectionSubject {
         messageListener?.onMessageSent(message)
     }
 
+    override fun handleMessageSendingFailed() {
+        messageListener?.onMessageSendingFailed()
+    }
+
     override fun handleMessageDelivered(uid: Long) {
         messageListener?.onMessageDelivered(uid)
     }
