@@ -52,6 +52,7 @@
   <string name="chat__pending">Ожидание</string>
   <string name="chat__reconnect">Переподключиться</string>
   <string name="chat__disconnect">Отключиться</string>
+  <string name="chat__sending_failed">Unable to send this message, please try again</string>
   <string name="chat__connection_rejected">Ваш запрос на соединение был отклонен</string>
   <string name="chat__waiting_for_device">Вы ждете пока это устройство одобрит соединение</string>
   <string name="chat__connect">Подключиться</string>
