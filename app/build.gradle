@@ -94,7 +94,7 @@ dependencies {
     def final LIFECYCLE_VERSION = '2.0.0'
     def final LEAK_CANARY_VERSION = '1.6.1'
     def final ESPRESSO_VERSION = '3.1.0-alpha4'
-    def final COROUTINES_VERSION = '0.30.0'
+    def final COROUTINES_VERSION = '0.30.1'
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
@@ -145,10 +145,9 @@ dependencies {
 }
 
 task assembleReleaseAndOpen {
+    dependsOn 'assembleRelease'
     doLast {
         Runtime.getRuntime().exec("explorer.exe /select," +
                 "${buildDir.getAbsolutePath()}\\outputs\\apk\\release\\app-release.apk")
     }
 }
-
-assembleReleaseAndOpen.dependsOn 'assembleRelease'
