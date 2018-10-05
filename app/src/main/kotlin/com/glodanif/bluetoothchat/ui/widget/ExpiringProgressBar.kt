@@ -16,8 +16,8 @@ import androidx.core.content.ContextCompat
 
 class ExpiringProgressBar : View {
 
-    private val INSTANCE_STATE = "saved_instance"
-    private val INSTANCE_PROGRESS = "progress"
+    private val INSTANCE_STATE = "saved_instance.epb"
+    private val EXTRA_PROGRESS = "extra.progress"
 
     private var max = 100
     private var progress = 0
@@ -131,7 +131,7 @@ class ExpiringProgressBar : View {
     override fun onSaveInstanceState(): Parcelable {
         val bundle = Bundle()
         bundle.putParcelable(INSTANCE_STATE, super.onSaveInstanceState())
-        bundle.putInt(INSTANCE_PROGRESS, progress)
+        bundle.putInt(EXTRA_PROGRESS, progress)
         return bundle
     }
 
@@ -142,7 +142,7 @@ class ExpiringProgressBar : View {
             return
         }
 
-        progress = state.getInt(INSTANCE_PROGRESS)
+        progress = state.getInt(EXTRA_PROGRESS)
         super.onRestoreInstanceState(state.getParcelable(INSTANCE_STATE))
     }
 }

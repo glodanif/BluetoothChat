@@ -16,6 +16,7 @@ import com.glodanif.bluetoothchat.R
 import com.glodanif.bluetoothchat.data.service.message.PayloadType
 import com.glodanif.bluetoothchat.ui.util.ClickableMovementMethod
 import com.glodanif.bluetoothchat.ui.viewmodel.ChatMessageViewModel
+import com.glodanif.bluetoothchat.ui.widget.MessageStatusDotView
 import com.squareup.picasso.Picasso
 import com.timehop.stickyheadersrecyclerview.StickyRecyclerHeadersAdapter
 import java.util.*
@@ -34,8 +35,20 @@ class ChatAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(), StickyRecyc
     var imageClickListener: ((view: ImageView, message: ChatMessageViewModel) -> Unit)? = null
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        require(holder is MessageHeaderViewHolder) { "This holder doesn't represent a message with header" }
 
         val message = messages[position]
+
+        val headerHolder = holder as MessageHeaderViewHolder
+        headerHolder.date.text = message.time
+        headerHolder.seenMarker.let {
+            it.visibility = if (message.own) View.VISIBLE else View.GONE
+            it.active = message.seen
+        }
+        headerHolder.deliveredMarker.let {
+            it.visibility = if (message.own) View.VISIBLE else View.GONE
+            it.active = message.delivered
+        }
 
         if (holder is ImageMessageViewHolder) {
 
@@ -68,8 +81,6 @@ class ChatAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(), StickyRecyc
                         .into(holder.image)
             }
 
-            holder.date.text = message.time
-
         } else if (holder is TextMessageViewHolder) {
 
             val spannableMessage = SpannableString(message.text)
@@ -78,7 +89,6 @@ class ChatAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(), StickyRecyc
 
             holder.text.movementMethod = ClickableMovementMethod
             holder.text.setText(spannableMessage, TextView.BufferType.SPANNABLE)
-            holder.date.text = message.time
         }
     }
 
@@ -131,17 +141,25 @@ class ChatAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(), StickyRecyc
         (holder as DateDividerViewHolder).date.text = messages[position].dayOfYear
     }
 
+    fun setMessageAsDelivered(id: Long) {
+        messages.filter { it.uid == id }.lastOrNull()?.delivered = true
+    }
+
     class DateDividerViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val date: TextView = itemView.findViewById(R.id.tv_date)
     }
 
-    class TextMessageViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    open class MessageHeaderViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val date: TextView = itemView.findViewById(R.id.tv_date)
+        val seenMarker: MessageStatusDotView = itemView.findViewById(R.id.msdv_seen)
+        val deliveredMarker: MessageStatusDotView = itemView.findViewById(R.id.msdv_delivered)
+    }
+
+    class TextMessageViewHolder(itemView: View) : MessageHeaderViewHolder(itemView) {
         val text: TextView = itemView.findViewById(R.id.tv_text)
     }
 
-    class ImageMessageViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val date: TextView = itemView.findViewById(R.id.tv_date)
+    class ImageMessageViewHolder(itemView: View) : MessageHeaderViewHolder(itemView) {
         val image: ImageView = itemView.findViewById(R.id.iv_image)
         val missingLabel: TextView = itemView.findViewById(R.id.tv_missing_file)
     }

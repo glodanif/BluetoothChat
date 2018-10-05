@@ -6,6 +6,8 @@
     <dimen name="epb_min_size">50dp</dimen>
     <dimen name="epb_text_size">22sp</dimen>
 
+    <dimen name="msdv_min_size">4dp</dimen>
+
     <dimen name="popup_settings_width">220dp</dimen>
 
     <dimen name="thumbnail_width">128dp</dimen>

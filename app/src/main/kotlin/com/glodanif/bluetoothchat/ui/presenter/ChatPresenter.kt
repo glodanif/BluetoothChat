@@ -155,6 +155,7 @@ class ChatPresenter(private val deviceAddress: String,
         }
 
         override fun onMessageDelivered(id: Long) {
+            view.notifyMessageDelivered(id)
         }
 
         override fun onMessageNotDelivered(id: Long) {

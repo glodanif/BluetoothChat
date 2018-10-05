@@ -26,13 +26,7 @@
             android:orientation="vertical"
             android:padding="8dp">
 
-            <TextView
-                android:id="@+id/tv_date"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:fontFamily="sans-serif-light"
-                android:textSize="10sp"
-                tools:text="12:07" />
+            <include layout="@layout/include_message_header" />
 
             <TextView
                 android:id="@+id/tv_text"

@@ -40,4 +40,10 @@ interface MessagesDao {
 
     @Query("UPDATE message SET fileInfo = null, filePath = null WHERE uid = :messageId")
     fun removeFileInfo(messageId: Long)
+
+    @Query("UPDATE message SET delivered = 1 WHERE uid = :messageId")
+    fun setMessageAsDelivered(messageId: Long)
+
+    @Query("UPDATE message SET seenThere = 1 WHERE uid = :messageId")
+    fun setMessageAsSeenThere(messageId: Long)
 }

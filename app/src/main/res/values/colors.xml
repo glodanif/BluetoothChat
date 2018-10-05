@@ -14,4 +14,7 @@
     <color name="background_own_message">#22009688</color>
     <color name="background_avatar_default">#008756</color>
     <color name="background_chat_default">#244447</color>
+
+    <color name="message_status_active">#009933</color>
+    <color name="message_status_passive">#B3B3B3</color>
 </resources>

@@ -43,6 +43,8 @@ class ChatMessageConverter(context: Context) {
                 timeFormat.format(message.date),
                 message.text,
                 message.own,
+                message.seenThere,
+                message.delivered,
                 message.messageType,
                 isImageAvailable,
                 problemString,

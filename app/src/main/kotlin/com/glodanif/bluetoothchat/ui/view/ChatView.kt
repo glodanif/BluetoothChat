@@ -9,6 +9,7 @@ interface ChatView {
     fun showReceivedMessage(message: ChatMessageViewModel)
     fun showSentMessage(message: ChatMessageViewModel)
     fun showSendingMessageFailure()
+    fun notifyMessageDelivered(id: Long)
     fun showServiceDestroyed()
     fun showRejectedConnection()
     fun showConnectionRequest(displayName: String, deviceName: String)

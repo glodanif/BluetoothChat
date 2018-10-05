@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/tv_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="sans-serif-light"
+        android:textSize="10sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="12:07" />
+
+    <com.glodanif.bluetoothchat.ui.widget.MessageStatusDotView
+        android:id="@+id/msdv_delivered"
+        android:layout_width="6dp"
+        android:layout_height="6dp"
+        android:layout_marginEnd="4dp"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_date"
+        app:layout_constraintEnd_toStartOf="@+id/msdv_seen"
+        app:layout_constraintTop_toTopOf="@+id/tv_date" />
+
+    <com.glodanif.bluetoothchat.ui.widget.MessageStatusDotView
+        android:id="@+id/msdv_seen"
+        android:layout_width="6dp"
+        android:layout_height="6dp"
+        app:layout_constraintBottom_toBottomOf="@+id/msdv_delivered"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/msdv_delivered" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

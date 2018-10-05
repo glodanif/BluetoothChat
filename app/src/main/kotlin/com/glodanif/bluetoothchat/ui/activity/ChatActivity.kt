@@ -295,6 +295,10 @@ class ChatActivity : SkeletonActivity(), ChatView {
         Toast.makeText(this, R.string.chat__sending_failed, Toast.LENGTH_LONG).show()
     }
 
+    override fun notifyMessageDelivered(id: Long) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
     override fun showRejectedConnection() = doIfStarted {
         AlertDialog.Builder(this)
                 .setMessage(getString(R.string.chat__connection_rejected))
