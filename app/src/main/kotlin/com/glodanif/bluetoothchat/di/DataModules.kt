@@ -29,10 +29,12 @@ val localStorageModule = module {
     single { ProfileManagerImpl(androidContext()) as ProfileManager }
 }
 
+const val localeScope = "locale_scope"
+
 val viewModule = module {
     single { NotificationViewImpl(androidContext()) as NotificationView }
     single { ShortcutManagerImpl(androidContext()) as ShortcutManager }
-    factory { ContactConverter() }
-    factory { ConversationConverter(androidContext()) }
-    factory { ChatMessageConverter(androidContext()) }
+    scope(localeScope) { ContactConverter() }
+    scope(localeScope) { ConversationConverter(androidContext()) }
+    scope(localeScope) { ChatMessageConverter(androidContext()) }
 }
