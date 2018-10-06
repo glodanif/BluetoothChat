@@ -3,12 +3,11 @@ package com.glodanif.bluetoothchat
 import android.app.Activity
 import android.app.Application
 import android.content.res.Configuration
+import android.os.StrictMode
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.OnLifecycleEvent
 import androidx.lifecycle.ProcessLifecycleOwner
-import android.os.StrictMode
-import android.util.Log
 import com.crashlytics.android.Crashlytics
 import com.glodanif.bluetoothchat.data.model.BluetoothConnector
 import com.glodanif.bluetoothchat.data.model.ProfileManager
@@ -55,22 +54,17 @@ class ChatApplication : Application(), LifecycleObserver {
         registerActivityLifecycleCallbacks(object : StartStopActivityLifecycleCallbacks() {
 
             override fun onActivityStarted(activity: Activity?) {
-
-                isConversationsOpened = activity is ConversationsActivity
-
-                if (activity is ChatActivity) {
-                    currentChat = activity.intent.getStringExtra(ChatActivity.EXTRA_ADDRESS)
+                when (activity) {
+                    is ConversationsActivity -> isConversationsOpened = true
+                    is ChatActivity -> currentChat =
+                            activity.intent.getStringExtra(ChatActivity.EXTRA_ADDRESS)
                 }
             }
 
             override fun onActivityStopped(activity: Activity?) {
-
-                if (activity is ConversationsActivity) {
-                    isConversationsOpened = false
-                }
-
-                if (activity is ChatActivity) {
-                    currentChat = null
+                when (activity) {
+                    is ConversationsActivity -> isConversationsOpened = false
+                    is ChatActivity -> currentChat = null
                 }
             }
         })

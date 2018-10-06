@@ -35,6 +35,7 @@ class MessageStatusDotView : View {
 
     var active = false
         set(value) {
+            field = value
             invalidate()
         }
 

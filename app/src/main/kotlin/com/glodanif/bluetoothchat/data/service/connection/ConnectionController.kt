@@ -336,6 +336,10 @@ class ConnectionController(private val application: ChatApplication,
                             subject.handleMessageReceived(message)
 
                             view.dismissFileTransferNotification()
+
+                            val deliveryReport = contract.createSuccessfulDeliveryMessage(uid)
+                            sendMessage(deliveryReport)
+
                             currentConversation?.let {
                                 shortcutManager.addConversationShortcut(address, it.displayName, it.color)
                             }
@@ -449,7 +453,9 @@ class ConnectionController(private val application: ChatApplication,
 
         val device = socket.remoteDevice
         val message = Message(messageBody)
-        val sentMessage = ChatMessage(socket.remoteDevice.address, Date(), true, message.body)
+        val sentMessage = ChatMessage(socket.remoteDevice.address, Date(), true, message.body).apply {
+            uid = message.uid
+        }
 
         if (message.type == Contract.MessageType.MESSAGE) {
 
@@ -485,7 +491,13 @@ class ConnectionController(private val application: ChatApplication,
         } else if (message.type == Contract.MessageType.DELIVERY) {
 
             if (message.flag) {
+
                 subject.handleMessageDelivered(message.uid)
+
+                GlobalScope.launch(bgContext) {
+                    messagesStorage.setMessageAsDelivered(message.uid)
+                }
+
             } else {
                 subject.handleMessageNotDelivered(message.uid)
             }
@@ -524,8 +536,9 @@ class ConnectionController(private val application: ChatApplication,
 
         val device: BluetoothDevice = socket.remoteDevice
 
-        val receivedMessage = ChatMessage(device.address, Date(), false, text)
-        receivedMessage.uid = uid
+        val receivedMessage = ChatMessage(device.address, Date(), false, text).apply {
+            this.uid = uid
+        }
 
         val partner = Person.Builder().setName(currentConversation?.displayName ?: "?").build()
         shallowHistory.add(NotificationCompat.MessagingStyle.Message(
@@ -539,7 +552,12 @@ class ConnectionController(private val application: ChatApplication,
 
         GlobalScope.launch(bgContext) {
             messagesStorage.insertMessage(receivedMessage)
-            launch(uiContext) { subject.handleMessageReceived(receivedMessage) }
+            launch(uiContext) {
+                subject.handleMessageReceived(receivedMessage)
+
+                val deliveryReport = contract.createSuccessfulDeliveryMessage(uid)
+                sendMessage(deliveryReport)
+            }
             currentConversation?.let {
                 shortcutManager.addConversationShortcut(device.address, it.displayName, it.color)
             }

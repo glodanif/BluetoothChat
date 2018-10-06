@@ -24,7 +24,7 @@ class Contract {
     }
 
     fun createDisconnectMessage(): Message {
-        return Message(0, "", false, MessageType.CONNECTION_REQUEST)
+        return Message(0, false, MessageType.CONNECTION_REQUEST)
     }
 
     fun createAcceptConnectionMessage(name: String, @ColorInt color: Int): Message {
@@ -35,13 +35,17 @@ class Contract {
         return Message(0, "$name#$color#$MESSAGE_CONTRACT_VERSION", false, MessageType.CONNECTION_RESPONSE)
     }
 
+    fun createSuccessfulDeliveryMessage(id: Long): Message {
+        return Message(id, true, MessageType.DELIVERY)
+    }
+
     fun createFileStartMessage(file: File, type: PayloadType): Message {
         val uid = if (partnerVersion >= 2) generateUniqueId() else 0L
         return Message(uid, "${file.name.replace("#", "")}#${file.length()}#${type.value}", false, MessageType.FILE_START)
     }
 
     fun createFileEndMessage(): Message {
-        return Message(0, "", false, MessageType.FILE_START)
+        return Message(0, false, MessageType.FILE_START)
     }
 
     fun isFeatureAvailable(feature: Feature) = when (feature) {

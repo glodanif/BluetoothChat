@@ -142,7 +142,7 @@ class ChatAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(), StickyRecyc
     }
 
     fun setMessageAsDelivered(id: Long) {
-        messages.filter { it.uid == id }.lastOrNull()?.delivered = true
+        //messages.filter { it.uid == id }.lastOrNull()?.delivered = true
     }
 
     class DateDividerViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {

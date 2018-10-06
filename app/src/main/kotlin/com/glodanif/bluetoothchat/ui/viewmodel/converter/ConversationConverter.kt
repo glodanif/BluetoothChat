@@ -5,15 +5,17 @@ import com.glodanif.bluetoothchat.R
 import com.glodanif.bluetoothchat.data.entity.Conversation
 import com.glodanif.bluetoothchat.data.entity.ConversationWithMessages
 import com.glodanif.bluetoothchat.data.service.message.PayloadType
-import com.glodanif.bluetoothchat.utils.getRelativeTime
 import com.glodanif.bluetoothchat.ui.viewmodel.ConversationViewModel
+import com.glodanif.bluetoothchat.utils.getRelativeTime
 import java.util.*
 
 class ConversationConverter(private val context: Context) {
 
     fun transform(conversation: ConversationWithMessages): ConversationViewModel {
 
-        val lastMessage = conversation.messages.sortedByDescending { it.date }.firstOrNull()
+        val lastMessage = conversation.messages.asSequence()
+                .sortedByDescending { it.date }
+                .firstOrNull()
         val notSeen = conversation.messages.filterNot { it.seenHere }.size
 
         val lastMessageText = when {

@@ -296,7 +296,7 @@ class ChatActivity : SkeletonActivity(), ChatView {
     }
 
     override fun notifyMessageDelivered(id: Long) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        Toast.makeText(this, "Delivered: $id", Toast.LENGTH_LONG).show()
     }
 
     override fun showRejectedConnection() = doIfStarted {
