@@ -2,11 +2,13 @@ package com.glodanif.bluetoothchat
 
 import android.app.Activity
 import android.app.Application
+import android.content.res.Configuration
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.OnLifecycleEvent
 import androidx.lifecycle.ProcessLifecycleOwner
 import android.os.StrictMode
+import android.util.Log
 import com.crashlytics.android.Crashlytics
 import com.glodanif.bluetoothchat.data.model.BluetoothConnector
 import com.glodanif.bluetoothchat.data.model.ProfileManager
@@ -18,8 +20,10 @@ import com.kobakei.ratethisapp.RateThisApp
 import com.squareup.leakcanary.LeakCanary
 import io.fabric.sdk.android.Fabric
 import org.koin.android.ext.android.get
+import org.koin.android.ext.android.getKoin
 import org.koin.android.ext.android.inject
 import org.koin.android.ext.android.startKoin
+import org.koin.core.scope.Scope
 
 class ChatApplication : Application(), LifecycleObserver {
 
@@ -27,6 +31,8 @@ class ChatApplication : Application(), LifecycleObserver {
     var currentChat: String? = null
 
     private val connector: BluetoothConnector by inject()
+
+    private lateinit var localeSession: Scope
 
     override fun onCreate() {
         super.onCreate()
@@ -42,6 +48,7 @@ class ChatApplication : Application(), LifecycleObserver {
 
         startKoin(this, listOf(applicationModule,
                 bluetoothConnectionModule, databaseModule, localStorageModule, viewModule))
+        localeSession = getKoin().createScope(localeScope)
 
         ProcessLifecycleOwner.get().lifecycle.addObserver(this)
 
@@ -88,6 +95,12 @@ class ChatApplication : Application(), LifecycleObserver {
                     .penaltyLog()
                     .build())
         }
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration?) {
+        super.onConfigurationChanged(newConfig)
+        localeSession.close()
+        localeSession = getKoin().createScope(localeScope)
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_START)
