@@ -234,8 +234,7 @@ class ConnectionController(private val application: ChatApplication,
 
                 currentSocket?.let { socket ->
 
-                    val message = ChatMessage(socket.remoteDevice.address, Date(), true, "").apply {
-                        this.uid = uid
+                    val message = ChatMessage(uid, socket.remoteDevice.address, Date(), true, "").apply {
                         seenHere = true
                         messageType = PayloadType.IMAGE
                         filePath = path
@@ -306,8 +305,7 @@ class ConnectionController(private val application: ChatApplication,
                 currentSocket?.remoteDevice?.let { device ->
 
                     val address = device.address
-                    val message = ChatMessage(address, Date(), false, "").apply {
-                        this.uid = uid
+                    val message = ChatMessage(uid, address, Date(), false, "").apply {
                         messageType = PayloadType.IMAGE
                         filePath = path
                     }
@@ -453,9 +451,7 @@ class ConnectionController(private val application: ChatApplication,
 
         val device = socket.remoteDevice
         val message = Message(messageBody)
-        val sentMessage = ChatMessage(socket.remoteDevice.address, Date(), true, message.body).apply {
-            uid = message.uid
-        }
+        val sentMessage = ChatMessage(message.uid, socket.remoteDevice.address, Date(), true, message.body)
 
         if (message.type == Contract.MessageType.MESSAGE) {
 
@@ -492,11 +488,11 @@ class ConnectionController(private val application: ChatApplication,
 
             if (message.flag) {
 
-                subject.handleMessageDelivered(message.uid)
-
                 GlobalScope.launch(bgContext) {
                     messagesStorage.setMessageAsDelivered(message.uid)
                 }
+
+                subject.handleMessageDelivered(message.uid)
 
             } else {
                 subject.handleMessageNotDelivered(message.uid)
@@ -536,9 +532,7 @@ class ConnectionController(private val application: ChatApplication,
 
         val device: BluetoothDevice = socket.remoteDevice
 
-        val receivedMessage = ChatMessage(device.address, Date(), false, text).apply {
-            this.uid = uid
-        }
+        val receivedMessage = ChatMessage(uid, device.address, Date(), false, text)
 
         val partner = Person.Builder().setName(currentConversation?.displayName ?: "?").build()
         shallowHistory.add(NotificationCompat.MessagingStyle.Message(

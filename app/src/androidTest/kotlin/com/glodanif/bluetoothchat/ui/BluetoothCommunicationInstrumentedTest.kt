@@ -1,5 +1,6 @@
 package com.glodanif.bluetoothchat.ui
 
+import android.Manifest
 import android.Manifest.permission.WRITE_EXTERNAL_STORAGE
 import android.app.Activity
 import android.content.Intent
@@ -9,9 +10,8 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.RootMatchers.withDecorView
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.filters.LargeTest
-import androidx.test.rule.ActivityTestRule
-import androidx.test.rule.GrantPermissionRule
 import androidx.test.runner.AndroidJUnit4
+import androidx.test.runner.permission.PermissionRequester
 import com.glodanif.bluetoothchat.R
 import com.glodanif.bluetoothchat.data.internal.AutoresponderProxy
 import com.glodanif.bluetoothchat.ui.UITestUtils.Companion.atPosition
@@ -30,13 +30,9 @@ class BluetoothCommunicationInstrumentedTest {
 
     private val autoResponderAddress = "AC:22:0B:A1:89:A8"
 
-    @Rule
-    @JvmField
-    val activityRule = ActivityTestRule(ChatActivity::class.java, true, false)
-
-    @Rule
-    @JvmField
-    val grantPermissionRule: GrantPermissionRule? = GrantPermissionRule.grant(WRITE_EXTERNAL_STORAGE)
+    private var permissionRequester = PermissionRequester().apply {
+        addPermissions(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+    }
 
     private val textMessageDelay = 2500.toLong()
     private val fileMessageDelay = 12500.toLong()
@@ -44,9 +40,7 @@ class BluetoothCommunicationInstrumentedTest {
 
     @Before
     fun setup() {
-        activityRule.launchActivity(Intent()
-                .putExtra(ChatActivity.EXTRA_ADDRESS, autoResponderAddress))
-        context = activityRule.activity
+        permissionRequester.requestPermissions()
     }
 
     @Test

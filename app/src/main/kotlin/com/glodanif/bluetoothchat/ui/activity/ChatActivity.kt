@@ -296,7 +296,7 @@ class ChatActivity : SkeletonActivity(), ChatView {
     }
 
     override fun notifyMessageDelivered(id: Long) {
-        Toast.makeText(this, "Delivered: $id", Toast.LENGTH_LONG).show()
+        chatAdapter.setMessageAsDelivered(id)
     }
 
     override fun showRejectedConnection() = doIfStarted {
