@@ -1,24 +1,23 @@
 package com.glodanif.bluetoothchat.ui.presenter
 
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleObserver
-import androidx.lifecycle.OnLifecycleEvent
 import android.bluetooth.BluetoothDevice
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.OnLifecycleEvent
 import com.glodanif.bluetoothchat.data.model.*
 import com.glodanif.bluetoothchat.ui.view.ScanView
 import com.glodanif.bluetoothchat.utils.withPotentiallyInstalledApplication
-import kotlinx.coroutines.experimental.*
-import kotlinx.coroutines.experimental.android.Main
-import kotlinx.coroutines.experimental.android.UI
-import kotlin.coroutines.experimental.CoroutineContext
+import kotlinx.coroutines.experimental.CoroutineDispatcher
+import kotlinx.coroutines.experimental.Dispatchers
+import kotlinx.coroutines.experimental.launch
+import kotlinx.coroutines.experimental.withContext
 
 class ScanPresenter(private val view: ScanView,
                     private val scanner: BluetoothScanner,
                     private val connection: BluetoothConnector,
                     private val fileManager: FileManager,
                     private val preferences: UserPreferences,
-                    private val uiContext: CoroutineContext = Dispatchers.Main,
-                    private val bgContext: CoroutineContext = Dispatchers.Default): LifecycleObserver {
+                    private val uiContext: CoroutineDispatcher = Dispatchers.Main,
+                    private val bgContext: CoroutineDispatcher = Dispatchers.IO): BasePresenter(uiContext) {
 
     companion object {
         const val SCAN_DURATION_SECONDS = 30
@@ -183,7 +182,7 @@ class ScanPresenter(private val view: ScanView,
         scanner.stopListeningDiscoverableStatus()
     }
 
-    fun shareApk() = GlobalScope.launch(uiContext) {
+    fun shareApk() = this.launch {
         val uri = withContext(bgContext) { fileManager.extractApkFile() }
         if (uri != null) {
             view.shareApk(uri)

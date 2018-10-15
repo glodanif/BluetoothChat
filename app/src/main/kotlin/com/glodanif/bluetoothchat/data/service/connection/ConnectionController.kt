@@ -24,10 +24,7 @@ import com.glodanif.bluetoothchat.ui.view.NotificationView
 import com.glodanif.bluetoothchat.ui.widget.ShortcutManager
 import com.glodanif.bluetoothchat.utils.LimitedQueue
 import com.glodanif.bluetoothchat.utils.Size
-import kotlinx.coroutines.experimental.Dispatchers
-import kotlinx.coroutines.experimental.GlobalScope
-import kotlinx.coroutines.experimental.android.Main
-import kotlinx.coroutines.experimental.launch
+import kotlinx.coroutines.experimental.*
 import java.io.File
 import java.io.IOException
 import java.util.*
@@ -41,8 +38,8 @@ class ConnectionController(private val application: ChatApplication,
                            private val preferences: UserPreferences,
                            private val profileManager: ProfileManager,
                            private val shortcutManager: ShortcutManager,
-                           private val uiContext: CoroutineContext = Dispatchers.Main,
-                           private val bgContext: CoroutineContext = Dispatchers.Default) {
+                           private val uiContext: CoroutineDispatcher = Dispatchers.Main,
+                           private val bgContext: CoroutineDispatcher = Dispatchers.IO) : CoroutineScope {
 
     private val blAppName = application.getString(R.string.bl_app_name)
     private val blAppUUID = UUID.fromString(application.getString(R.string.bl_app_uuid))
@@ -66,6 +63,10 @@ class ConnectionController(private val application: ChatApplication,
     private val shallowHistory = LimitedQueue<NotificationCompat.MessagingStyle.Message>(4)
 
     var onNewForegroundMessage: ((String) -> Unit)? = null
+
+    private val job = Job()
+    override val coroutineContext: CoroutineContext
+        get() = job + uiContext
 
     fun createForegroundNotification(message: String) = view.getForegroundNotification(message)
 
@@ -108,7 +109,7 @@ class ConnectionController(private val application: ChatApplication,
         connectThread = ConnectJob(device)
         connectThread?.start()
 
-        GlobalScope.launch(uiContext) { subject.handleConnectingInProgress() }
+        launch { subject.handleConnectingInProgress() }
     }
 
     private fun cancelConnections() {
@@ -132,7 +133,7 @@ class ConnectionController(private val application: ChatApplication,
         currentSocket = null
         currentConversation = null
         contract.reset()
-        launch(uiContext) { subject.handleConnectionFailed() }
+        launch { subject.handleConnectionFailed() }
         connectionState = ConnectionState.NOT_CONNECTED
         prepareForAccept()
     }
@@ -142,6 +143,7 @@ class ConnectionController(private val application: ChatApplication,
         cancelConnections()
         cancelAccept()
         connectionState = ConnectionState.NOT_CONNECTED
+        job.cancel()
     }
 
     @Synchronized
@@ -157,19 +159,19 @@ class ConnectionController(private val application: ChatApplication,
         val transferEventsListener = object : DataTransferThread.TransferEventsListener {
 
             override fun onMessageReceived(message: String) {
-                GlobalScope.launch(uiContext) {
+                launch {
                     this@ConnectionController.onMessageReceived(message)
                 }
             }
 
             override fun onMessageSent(message: String) {
-                GlobalScope.launch(uiContext) {
+                launch {
                     this@ConnectionController.onMessageSent(message)
                 }
             }
 
             override fun onMessageSendingFailed() {
-                GlobalScope.launch(uiContext) {
+                launch {
                     this@ConnectionController.onMessageSendingFailed()
                 }
             }
@@ -216,7 +218,7 @@ class ConnectionController(private val application: ChatApplication,
 
             override fun onFileSendingProgress(file: TransferringFile, sentBytes: Long) {
 
-                GlobalScope.launch(uiContext) {
+                launch {
 
                     subject.handleFileSendingProgress(sentBytes, file.size)
 
@@ -241,7 +243,7 @@ class ConnectionController(private val application: ChatApplication,
                         filePath = path
                     }
 
-                    GlobalScope.launch(bgContext) {
+                    launch(bgContext) {
 
                         val size = getImageSize(path)
                         message.fileInfo = "${size.width}x${size.height}"
@@ -250,7 +252,7 @@ class ConnectionController(private val application: ChatApplication,
                         messagesStorage.insertMessage(message)
                         shallowHistory.add(NotificationCompat.MessagingStyle.Message(imageText, message.date.time, me))
 
-                        GlobalScope.launch(uiContext) {
+                        launch(uiContext) {
 
                             subject.handleFileSendingFinished()
                             subject.handleMessageSent(message)
@@ -266,7 +268,7 @@ class ConnectionController(private val application: ChatApplication,
 
             override fun onFileSendingFailed() {
 
-                GlobalScope.launch(uiContext) {
+                launch {
                     subject.handleFileSendingFailed()
                     view.dismissFileTransferNotification()
                 }
@@ -274,7 +276,7 @@ class ConnectionController(private val application: ChatApplication,
 
             override fun onFileReceivingStarted(file: TransferringFile) {
 
-                GlobalScope.launch(uiContext) {
+                launch {
 
                     subject.handleFileReceivingStarted(file.size)
 
@@ -291,7 +293,7 @@ class ConnectionController(private val application: ChatApplication,
 
             override fun onFileReceivingProgress(file: TransferringFile, receivedBytes: Long) {
 
-                GlobalScope.launch(uiContext) {
+                launch {
 
                     subject.handleFileReceivingProgress(receivedBytes, file.size)
 
@@ -312,10 +314,11 @@ class ConnectionController(private val application: ChatApplication,
                         filePath = path
                     }
 
-                    val partner = Person.Builder().setName(currentConversation?.displayName ?: "?").build()
+                    val partner = Person.Builder().setName(currentConversation?.displayName
+                            ?: "?").build()
                     shallowHistory.add(NotificationCompat.MessagingStyle.Message(imageText, message.date.time, partner))
                     if (!subject.isAnybodyListeningForMessages() || application.currentChat == null || !application.currentChat.equals(address)) {
-                        //FIXME: Fixed not appearing notification
+                        //FIXME: Fixes not appearing notification
                         view.dismissMessageNotification()
                         view.showNewMessageNotification(imageText, currentConversation?.displayName,
                                 device.name, address, shallowHistory, preferences.isSoundEnabled())
@@ -323,7 +326,7 @@ class ConnectionController(private val application: ChatApplication,
                         message.seenHere = true
                     }
 
-                    GlobalScope.launch(bgContext) {
+                    launch(bgContext) {
 
                         val size = getImageSize(path)
                         message.fileInfo = "${size.width}x${size.height}"
@@ -331,7 +334,7 @@ class ConnectionController(private val application: ChatApplication,
 
                         messagesStorage.insertMessage(message)
 
-                        GlobalScope.launch(uiContext) {
+                        launch(uiContext) {
                             subject.handleFileReceivingFinished()
                             subject.handleMessageReceived(message)
 
@@ -345,14 +348,14 @@ class ConnectionController(private val application: ChatApplication,
             }
 
             override fun onFileReceivingFailed() {
-                GlobalScope.launch(uiContext) {
+                launch {
                     subject.handleFileReceivingFailed()
                     view.dismissFileTransferNotification()
                 }
             }
 
             override fun onFileTransferCanceled(byPartner: Boolean) {
-                GlobalScope.launch(uiContext) {
+                launch {
                     subject.handleFileTransferCanceled(byPartner)
                     view.dismissFileTransferNotification()
                 }
@@ -371,7 +374,7 @@ class ConnectionController(private val application: ChatApplication,
         dataTransferThread?.prepare()
         dataTransferThread?.start()
 
-        GlobalScope.launch(uiContext) { subject.handleConnected(socket.remoteDevice) }
+        launch { subject.handleConnected(socket.remoteDevice) }
     }
 
     fun getCurrentConversation() = currentConversation
@@ -455,7 +458,7 @@ class ConnectionController(private val application: ChatApplication,
 
             sentMessage.seenHere = true
 
-            GlobalScope.launch(bgContext) {
+            launch(bgContext) {
 
                 messagesStorage.insertMessage(sentMessage)
                 shallowHistory.add(NotificationCompat.MessagingStyle.Message(sentMessage.text, sentMessage.date.time, me))
@@ -466,7 +469,7 @@ class ConnectionController(private val application: ChatApplication,
                     justRepliedFromNotification = false
                 }
 
-                GlobalScope.launch(uiContext) { subject.handleMessageSent(sentMessage) }
+                launch(uiContext) { subject.handleMessageSent(sentMessage) }
                 currentConversation?.let {
                     shortcutManager.addConversationShortcut(sentMessage.deviceAddress, it.displayName, it.color)
                 }
@@ -537,7 +540,7 @@ class ConnectionController(private val application: ChatApplication,
             receivedMessage.seenHere = true
         }
 
-        GlobalScope.launch(bgContext) {
+        launch(bgContext) {
             messagesStorage.insertMessage(receivedMessage)
             launch(uiContext) { subject.handleMessageReceived(receivedMessage) }
             currentConversation?.let {
@@ -554,7 +557,7 @@ class ConnectionController(private val application: ChatApplication,
         val conversation = Conversation(device.address, device.name
                 ?: "?", parts[0], parts[1].toInt())
 
-        GlobalScope.launch(bgContext) { conversationStorage.insertConversation(conversation) }
+        launch(bgContext) { conversationStorage.insertConversation(conversation) }
 
         currentConversation = conversation
         contract setupWith if (parts.size >= 3) parts[2].trim().toInt() else 0
@@ -575,7 +578,7 @@ class ConnectionController(private val application: ChatApplication,
         val conversation = Conversation(device.address, device.name
                 ?: "?", parts[0], parts[1].toInt())
 
-        GlobalScope.launch(bgContext) { conversationStorage.insertConversation(conversation) }
+        launch(bgContext) { conversationStorage.insertConversation(conversation) }
 
         currentConversation = conversation
         contract setupWith if (parts.size >= 3) parts[2].trim().toInt() else 0
@@ -591,7 +594,7 @@ class ConnectionController(private val application: ChatApplication,
         currentConversation = null
         contract.reset()
         if (isConnectedOrPending()) {
-            GlobalScope.launch(uiContext) {
+            launch {
                 if (isPending() && connectionType == ConnectionType.INCOMING) {
                     connectionState = ConnectionState.NOT_CONNECTED
                     subject.handleConnectionWithdrawn()
@@ -613,7 +616,7 @@ class ConnectionController(private val application: ChatApplication,
         return Size(options.outWidth, options.outHeight)
     }
 
-    private inner class AcceptJob: Thread() {
+    private inner class AcceptJob : Thread() {
 
         private var serverSocket: BluetoothServerSocket? = null
 
@@ -661,7 +664,7 @@ class ConnectionController(private val application: ChatApplication,
         }
     }
 
-    private inner class ConnectJob(private val bluetoothDevice: BluetoothDevice): Thread() {
+    private inner class ConnectJob(private val bluetoothDevice: BluetoothDevice) : Thread() {
 
         private var socket: BluetoothSocket? = null
 
@@ -705,3 +708,4 @@ class ConnectionController(private val application: ChatApplication,
         }
     }
 }
+

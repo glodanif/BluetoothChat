@@ -1,19 +1,18 @@
 package com.glodanif.bluetoothchat.ui.presenter
 
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleObserver
-import androidx.lifecycle.OnLifecycleEvent
 import android.bluetooth.BluetoothDevice
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.OnLifecycleEvent
 import com.glodanif.bluetoothchat.data.entity.ChatMessage
 import com.glodanif.bluetoothchat.data.entity.Conversation
 import com.glodanif.bluetoothchat.data.model.*
 import com.glodanif.bluetoothchat.ui.view.ConversationsView
 import com.glodanif.bluetoothchat.ui.viewmodel.ConversationViewModel
 import com.glodanif.bluetoothchat.ui.viewmodel.converter.ConversationConverter
-import kotlinx.coroutines.experimental.*
-import kotlinx.coroutines.experimental.android.Main
-import kotlinx.coroutines.experimental.android.UI
-import kotlin.coroutines.experimental.CoroutineContext
+import kotlinx.coroutines.experimental.CoroutineDispatcher
+import kotlinx.coroutines.experimental.Dispatchers
+import kotlinx.coroutines.experimental.launch
+import kotlinx.coroutines.experimental.withContext
 
 class ConversationsPresenter(private val view: ConversationsView,
                              private val connection: BluetoothConnector,
@@ -21,8 +20,8 @@ class ConversationsPresenter(private val view: ConversationsView,
                              private val messageStorage: MessagesStorage,
                              private val profileManager: ProfileManager,
                              private val converter: ConversationConverter,
-                             private val uiContext: CoroutineContext = Dispatchers.Main,
-                             private val bgContext: CoroutineContext = Dispatchers.Default) : LifecycleObserver {
+                             private val uiContext: CoroutineDispatcher = Dispatchers.Main,
+                             private val bgContext: CoroutineDispatcher = Dispatchers.IO) : BasePresenter(uiContext) {
 
     private val prepareListener = object : OnPrepareListener {
 
@@ -108,7 +107,7 @@ class ConversationsPresenter(private val view: ConversationsView,
         }
     }
 
-    fun loadConversations() = GlobalScope.launch(uiContext) {
+    fun loadConversations() = launch {
 
         val conversations = withContext(bgContext) { conversationStorage.getConversations() }
 
@@ -122,8 +121,12 @@ class ConversationsPresenter(private val view: ConversationsView,
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_START)
-    fun loadUserProfile() {
-        view.showUserProfile(profileManager.getUserName(), profileManager.getUserColor())
+    fun loadUserProfile() = launch {
+
+        val name = withContext(bgContext) { profileManager.getUserName() }
+        val color = withContext(bgContext) { profileManager.getUserColor() }
+
+        view.showUserProfile(name, color)
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_START)
@@ -176,7 +179,7 @@ class ConversationsPresenter(private val view: ConversationsView,
 
     fun removeConversation(address: String) {
         connection.sendDisconnectRequest()
-        GlobalScope.launch(bgContext) {
+        launch(bgContext) {
             conversationStorage.removeConversationByAddress(address)
             messageStorage.removeMessagesByAddress(address)
         }

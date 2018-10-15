@@ -19,7 +19,7 @@ import java.util.*
 
 class ShortcutManagerImpl(private val context: Context) : ShortcutManager {
 
-    private val ID_SEARCH = "id.search"
+    private val idSearch = "id.search"
 
     private var shortcutManager: android.content.pm.ShortcutManager? = null
 
@@ -36,15 +36,16 @@ class ShortcutManagerImpl(private val context: Context) : ShortcutManager {
 
             shortcutManager?.let { manager ->
 
-                val isSearchAdded = manager.dynamicShortcuts
-                        .filter { it.id == ID_SEARCH }.any()
+                val isSearchAdded = manager.dynamicShortcuts.asSequence()
+                        .filter { it.id == idSearch }
+                        .any()
 
                 if (isSearchAdded) {
                     return
                 }
             }
 
-            val shortcut = ShortcutInfo.Builder(context, ID_SEARCH)
+            val shortcut = ShortcutInfo.Builder(context, idSearch)
                     .setShortLabel(context.getString(R.string.scan__scan))
                     .setLongLabel(context.getString(R.string.scan__scan))
                     .setIcon(Icon.createWithResource(context, R.drawable.ic_search_black_24dp))
@@ -112,15 +113,16 @@ class ShortcutManagerImpl(private val context: Context) : ShortcutManager {
     }
 
     @RequiresApi(Build.VERSION_CODES.N_MR1)
-    private fun removeLatestIfNeeded(newShortcutId: String) {
+    private fun removeLatestIfNeeded(newShortcutId: String) = shortcutManager?.let { manager ->
 
-        shortcutManager?.removeDynamicShortcuts(Arrays.asList(newShortcutId))
+        manager.removeDynamicShortcuts(Arrays.asList(newShortcutId))
 
-        val conversations = shortcutManager?.dynamicShortcuts
-                ?.filter { it.id != ID_SEARCH }
-                ?.sortedByDescending { it.lastChangedTimestamp }
+        val conversations = manager.dynamicShortcuts.asSequence()
+                .filter { it.id != idSearch }
+                .sortedByDescending { it.lastChangedTimestamp }
+                .toList()
 
-        if (conversations != null && conversations.size == 2) {
+        if (conversations.size == 2) {
             shortcutManager?.removeDynamicShortcuts(Arrays.asList(conversations[1].id))
         }
     }

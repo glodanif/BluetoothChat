@@ -11,10 +11,10 @@ import com.glodanif.bluetoothchat.ui.viewmodel.ConversationViewModel
 import com.glodanif.bluetoothchat.ui.viewmodel.converter.ConversationConverter
 import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
+import kotlinx.coroutines.experimental.Dispatchers
 import kotlinx.coroutines.experimental.runBlocking
 import org.junit.Before
 import org.junit.Test
-import kotlin.coroutines.experimental.EmptyCoroutineContext
 
 class ConversationsPresenterUnitTest {
 
@@ -37,7 +37,7 @@ class ConversationsPresenterUnitTest {
     fun setup() {
         MockKAnnotations.init(this)
         presenter = ConversationsPresenter(view, connector, conversationsStorage,
-                messageStorage, profile, converter, EmptyCoroutineContext, EmptyCoroutineContext)
+                messageStorage, profile, converter, Dispatchers.Unconfined, Dispatchers.Unconfined)
     }
 
     @Test

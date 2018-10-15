@@ -6,10 +6,8 @@ import android.net.Uri
 import android.os.Build
 import android.os.Environment
 import androidx.core.content.FileProvider
-import com.crashlytics.android.Crashlytics
 import com.glodanif.bluetoothchat.BuildConfig
 import com.glodanif.bluetoothchat.R
-import io.fabric.sdk.android.Fabric
 import java.io.*
 import java.util.zip.ZipEntry
 import java.util.zip.ZipOutputStream

@@ -2,18 +2,18 @@ package com.glodanif.bluetoothchat.ui.presenter
 
 import com.glodanif.bluetoothchat.data.model.MessagesStorage
 import com.glodanif.bluetoothchat.ui.view.ReceivedImagesView
-import kotlinx.coroutines.experimental.*
-import kotlinx.coroutines.experimental.android.Main
-import kotlinx.coroutines.experimental.android.UI
-import kotlin.coroutines.experimental.CoroutineContext
+import kotlinx.coroutines.experimental.CoroutineDispatcher
+import kotlinx.coroutines.experimental.Dispatchers
+import kotlinx.coroutines.experimental.launch
+import kotlinx.coroutines.experimental.withContext
 
 class ReceivedImagesPresenter(private val address: String,
                               private val view: ReceivedImagesView,
                               private val model: MessagesStorage,
-                              private val uiContext: CoroutineContext = Dispatchers.Main,
-                              private val bgContext: CoroutineContext = Dispatchers.Default) {
+                              private val uiContext: CoroutineDispatcher = Dispatchers.Main,
+                              private val bgContext: CoroutineDispatcher = Dispatchers.IO) : BasePresenter(uiContext) {
 
-    fun loadImages() = GlobalScope.launch(uiContext) {
+    fun loadImages() = launch {
         val messages = withContext(bgContext) { model.getFileMessagesByDevice(address) }
         if (messages.isNotEmpty()) {
             view.displayImages(messages)

@@ -1,8 +1,10 @@
 package com.glodanif.bluetoothchat.datasource
 
+import android.Manifest
 import android.os.Environment
 import androidx.test.InstrumentationRegistry
 import androidx.test.runner.AndroidJUnit4
+import androidx.test.runner.permission.PermissionRequester
 import com.glodanif.bluetoothchat.R
 import com.glodanif.bluetoothchat.data.database.Database
 import com.glodanif.bluetoothchat.data.entity.ChatMessage
@@ -17,8 +19,6 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import java.io.File
 import java.util.*
-import androidx.test.rule.GrantPermissionRule
-import org.junit.Rule
 
 @RunWith(AndroidJUnit4::class)
 class MessageStorageInstrumentedTest {
@@ -28,50 +28,50 @@ class MessageStorageInstrumentedTest {
     private val address1 = "00:00:00:00:00:01"
     private val date = Date(1533585790)
     private val updatedDate = Date(1533585808)
-    private val message1 = ChatMessage(address1, date, true,"text1").apply { uid = 1 }
-    private val message2 = ChatMessage(address1, date, false,"text2").apply { uid = 2 }
-    private val editedMessage2 = ChatMessage(address1, updatedDate, false,"text2_2").apply { uid = 2 }
+    private val message1 = ChatMessage(address1, date, true, "text1").apply { uid = 1 }
+    private val message2 = ChatMessage(address1, date, false, "text2").apply { uid = 2 }
+    private val editedMessage2 = ChatMessage(address1, updatedDate, false, "text2_2").apply { uid = 2 }
 
     private val address2 = "00:00:00:00:00:02"
-    private val message3 = ChatMessage(address2, date, false,"text1").apply {
+    private val message3 = ChatMessage(address2, date, false, "text1").apply {
         uid = 3
         messageType = PayloadType.IMAGE
         fileInfo = "300x300"
     }
-    private val message4 = ChatMessage(address2, date, false,"text2").apply {
+    private val message4 = ChatMessage(address2, date, false, "text2").apply {
         uid = 4
         messageType = PayloadType.IMAGE
         filePath = "randomPath1.jpg"
         fileInfo = "300x300"
     }
-    private val message5 = ChatMessage(address2, date, false,"text3").apply {
+    private val message5 = ChatMessage(address2, date, false, "text3").apply {
         uid = 5
         messageType = PayloadType.IMAGE
         filePath = "randomPath2.jpg"
         fileInfo = "300x300"
     }
-    private val message6 = ChatMessage(address2, date, true,"text4").apply {
+    private val message6 = ChatMessage(address2, date, true, "text4").apply {
         uid = 6
         messageType = PayloadType.IMAGE
         fileInfo = "300x300"
     }
-    private val message7 = ChatMessage(address2, date, false,"text5").apply { uid = 7 }
-    private val editedMessage7 = ChatMessage(address2, updatedDate, false,"text5_2").apply { uid = 7 }
+    private val message7 = ChatMessage(address2, date, false, "text5").apply { uid = 7 }
+    private val editedMessage7 = ChatMessage(address2, updatedDate, false, "text5_2").apply { uid = 7 }
 
     private val address3 = "00:00:00:00:00:03"
-    private val message8 = ChatMessage(address3, date, true,"text1").apply { uid = 8 }
+    private val message8 = ChatMessage(address3, date, true, "text1").apply { uid = 8 }
 
     private lateinit var file1: File
     private lateinit var file2: File
 
-    @Rule
-    @JvmField
-    var permissionRule: GrantPermissionRule =
-            GrantPermissionRule.grant(android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
+    private val permissionRequester = PermissionRequester().apply {
+        addPermissions(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+    }
 
     @Before
     fun prepare() = runBlocking {
 
+        permissionRequester.requestPermissions()
         val context = InstrumentationRegistry.getTargetContext()
 
         val directory = context.externalCacheDir

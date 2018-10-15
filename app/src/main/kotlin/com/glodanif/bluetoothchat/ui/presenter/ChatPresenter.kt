@@ -1,22 +1,18 @@
 package com.glodanif.bluetoothchat.ui.presenter
 
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleObserver
-import androidx.lifecycle.OnLifecycleEvent
 import android.bluetooth.BluetoothDevice
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.OnLifecycleEvent
 import com.glodanif.bluetoothchat.data.entity.ChatMessage
 import com.glodanif.bluetoothchat.data.entity.Conversation
-import com.glodanif.bluetoothchat.data.service.message.PayloadType
-import com.glodanif.bluetoothchat.data.service.message.TransferringFile
 import com.glodanif.bluetoothchat.data.model.*
 import com.glodanif.bluetoothchat.data.service.message.Contract
+import com.glodanif.bluetoothchat.data.service.message.PayloadType
+import com.glodanif.bluetoothchat.data.service.message.TransferringFile
 import com.glodanif.bluetoothchat.ui.view.ChatView
 import com.glodanif.bluetoothchat.ui.viewmodel.converter.ChatMessageConverter
 import kotlinx.coroutines.experimental.*
-import kotlinx.coroutines.experimental.android.Main
-import kotlinx.coroutines.experimental.android.UI
 import java.io.File
-import kotlin.coroutines.experimental.CoroutineContext
 
 class ChatPresenter(private val deviceAddress: String,
                     private val view: ChatView,
@@ -26,8 +22,8 @@ class ChatPresenter(private val deviceAddress: String,
                     private val connectionModel: BluetoothConnector,
                     private val preferences: UserPreferences,
                     private val converter: ChatMessageConverter,
-                    private val uiContext: CoroutineContext = Dispatchers.Main,
-                    private val bgContext: CoroutineContext = Dispatchers.Default) : LifecycleObserver {
+                    private val uiContext: CoroutineDispatcher = Dispatchers.Main,
+                    private val bgContext: CoroutineDispatcher = Dispatchers.IO) : BasePresenter(uiContext) {
 
     private val maxFileSize = 5_242_880
 
@@ -94,7 +90,7 @@ class ChatPresenter(private val deviceAddress: String,
             view.showStatusConnected()
             view.hideActions()
 
-            GlobalScope.launch(uiContext) {
+            launch {
                 val conversation = withContext(bgContext) { conversationsStorage.getConversationByAddress(deviceAddress) }
                 if (conversation != null) {
                     view.showPartnerName(conversation.displayName, conversation.deviceName)
@@ -217,8 +213,9 @@ class ChatPresenter(private val deviceAddress: String,
         }
     }
 
-    fun onViewCreated() {
-        view.setBackgroundColor(preferences.getChatBackgroundColor())
+    fun onViewCreated() = launch {
+        val color = withContext(bgContext) { preferences.getChatBackgroundColor() }
+        view.setBackgroundColor(color)
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_START)
@@ -244,7 +241,7 @@ class ChatPresenter(private val deviceAddress: String,
             }
         }
 
-        GlobalScope.launch(uiContext) {
+        launch {
             val messagesDef = async(bgContext) { messagesStorage.getMessagesByDevice(deviceAddress) }
             val conversationDef = async(bgContext) { conversationsStorage.getConversationByAddress(deviceAddress) }
             displayInfo(messagesDef.await(), conversationDef.await())
@@ -285,7 +282,7 @@ class ChatPresenter(private val deviceAddress: String,
             view.showPartnerName(partner.displayName, partner.deviceName)
         }
 
-        GlobalScope.launch(bgContext) {
+        launch(bgContext) {
             messagesStorage.updateMessages(messages)
         }
     }

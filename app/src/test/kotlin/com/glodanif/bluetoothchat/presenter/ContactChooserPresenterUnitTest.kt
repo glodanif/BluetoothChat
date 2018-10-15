@@ -8,9 +8,9 @@ import com.glodanif.bluetoothchat.ui.viewmodel.ContactViewModel
 import com.glodanif.bluetoothchat.ui.viewmodel.converter.ContactConverter
 import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
+import kotlinx.coroutines.experimental.Dispatchers
 import org.junit.Before
 import org.junit.Test
-import kotlin.coroutines.experimental.EmptyCoroutineContext
 
 class ContactChooserPresenterUnitTest {
 
@@ -26,7 +26,7 @@ class ContactChooserPresenterUnitTest {
     @Before
     fun setup() {
         MockKAnnotations.init(this)
-        presenter = ContactChooserPresenter(view, storage, converter, EmptyCoroutineContext, EmptyCoroutineContext)
+        presenter = ContactChooserPresenter(view, storage, converter, Dispatchers.Unconfined, Dispatchers.Unconfined)
     }
 
     @Test

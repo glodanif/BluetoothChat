@@ -8,9 +8,9 @@ import com.glodanif.bluetoothchat.ui.presenter.ScanPresenter
 import com.glodanif.bluetoothchat.ui.view.ScanView
 import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
+import kotlinx.coroutines.experimental.Dispatchers
 import org.junit.Before
 import org.junit.Test
-import kotlin.coroutines.experimental.EmptyCoroutineContext
 
 class ScanPresenterUnitTest {
 
@@ -31,7 +31,7 @@ class ScanPresenterUnitTest {
     fun setup() {
         MockKAnnotations.init(this)
         presenter = ScanPresenter(view, scanner, connector,
-                fileModel, preferences, EmptyCoroutineContext, EmptyCoroutineContext)
+                fileModel, preferences, Dispatchers.Unconfined, Dispatchers.Unconfined)
     }
 
     @Test
