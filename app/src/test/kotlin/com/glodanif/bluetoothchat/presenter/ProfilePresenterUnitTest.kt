@@ -8,6 +8,7 @@ import io.mockk.MockKAnnotations
 import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.verify
+import kotlinx.coroutines.experimental.Dispatchers
 import org.junit.Before
 import org.junit.Test
 
@@ -25,7 +26,8 @@ class ProfilePresenterUnitTest {
     @Before
     fun setup() {
         MockKAnnotations.init(this)
-        presenter = ProfilePresenter(view, model, scanner)
+        presenter = ProfilePresenter(view, model, scanner,
+                Dispatchers.Unconfined, Dispatchers.Unconfined)
     }
 
     @Test

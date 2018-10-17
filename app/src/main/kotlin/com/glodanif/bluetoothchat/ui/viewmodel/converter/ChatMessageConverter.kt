@@ -1,7 +1,6 @@
 package com.glodanif.bluetoothchat.ui.viewmodel.converter
 
 import android.content.Context
-import android.util.Log
 import com.glodanif.bluetoothchat.R
 import com.glodanif.bluetoothchat.data.entity.ChatMessage
 import com.glodanif.bluetoothchat.ui.viewmodel.ChatMessageViewModel

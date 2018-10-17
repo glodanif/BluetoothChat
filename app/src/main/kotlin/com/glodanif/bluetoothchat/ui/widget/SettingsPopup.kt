@@ -30,7 +30,7 @@ class SettingsPopup(context: Context) : PopupWindow() {
         ABOUT;
     }
 
-    private val APPEARING_ANIMATION_DURATION: Long = 200
+    private val appearingAnimationDuration = 200L
 
     @ColorInt
     private var color = Color.GRAY
@@ -115,7 +115,7 @@ class SettingsPopup(context: Context) : PopupWindow() {
                     val animator = ViewAnimationUtils.createCircularReveal(container,
                             container.width, 0, 0f, container.measuredWidth.toFloat())
                     container.visibility = View.VISIBLE
-                    animator.duration = APPEARING_ANIMATION_DURATION
+                    animator.duration = appearingAnimationDuration
                     animator.start()
                 }
             }
@@ -138,7 +138,7 @@ class SettingsPopup(context: Context) : PopupWindow() {
                     actualDismiss()
                 }
             })
-            animator.duration = APPEARING_ANIMATION_DURATION
+            animator.duration = appearingAnimationDuration
             animator.start()
         } else {
             actualDismiss()

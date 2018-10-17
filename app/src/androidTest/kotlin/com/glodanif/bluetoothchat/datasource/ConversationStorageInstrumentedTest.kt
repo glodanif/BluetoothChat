@@ -35,7 +35,7 @@ class ConversationStorageInstrumentedTest {
 
     private val address3 = "00:00:00:00:00:03"
     private val conversation3 = Conversation(address3, "deviceName3", "displayName3", Color.GRAY)
-    private val message1 = ChatMessage(address3, Date(1533585790), true, "text1")
+    private val message1 = ChatMessage(0, address3, Date(1533585790), true, "text1")
 
     private val address4 = "00:00:00:00:00:04"
     private val conversation4 = Conversation(address4, "deviceName4", "displayName4", Color.TRANSPARENT)

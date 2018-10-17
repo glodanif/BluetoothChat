@@ -8,10 +8,10 @@ import io.mockk.MockKAnnotations
 import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.verify
+import kotlinx.coroutines.experimental.Dispatchers
 import org.junit.Before
 import org.junit.Test
 import java.io.File
-import kotlin.coroutines.experimental.EmptyCoroutineContext
 
 class ImagesPreviewPresenterUnitTest {
 
@@ -28,7 +28,7 @@ class ImagesPreviewPresenterUnitTest {
     fun setup() {
         MockKAnnotations.init(this)
         presenter = ImagePreviewPresenter(0, file, view, storage,
-                EmptyCoroutineContext, EmptyCoroutineContext)
+                Dispatchers.Unconfined, Dispatchers.Unconfined)
     }
 
     @Test

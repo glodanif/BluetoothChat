@@ -13,7 +13,10 @@ class ConversationConverter(private val context: Context) {
 
     fun transform(conversation: ConversationWithMessages): ConversationViewModel {
 
-        val lastMessage = conversation.messages.sortedByDescending { it.date }.firstOrNull()
+        val lastMessage = conversation.messages.asSequence()
+                .sortedByDescending { it.date }
+                .firstOrNull()
+
         val notSeen = conversation.messages.filterNot { it.seenHere }.size
 
         val lastMessageText = when {

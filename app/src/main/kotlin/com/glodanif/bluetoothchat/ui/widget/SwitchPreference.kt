@@ -29,10 +29,9 @@ class SwitchPreference : FrameLayout {
 
     private fun init(attrs: AttributeSet?, defStyleAttr: Int = 0) {
 
-        context.obtainStyledAttributes(attrs, R.styleable.SwitchPreference, defStyleAttr, 0).let {
-            text = it.getString(R.styleable.SwitchPreference_preferenceText) ?: ""
-            it.recycle()
-        }
+        val typedArray = context.obtainStyledAttributes(attrs, R.styleable.SwitchPreference, defStyleAttr, 0)
+        text = typedArray.getString(R.styleable.SwitchPreference_preferenceText) ?: ""
+        typedArray.recycle()
 
         @SuppressLint("InflateParams")
         val view = context.getLayoutInflater().inflate(R.layout.item_switch_setting, null)

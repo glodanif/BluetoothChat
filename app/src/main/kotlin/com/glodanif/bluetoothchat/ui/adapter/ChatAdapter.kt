@@ -22,10 +22,12 @@ import java.util.*
 
 class ChatAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(), StickyRecyclerHeadersAdapter<RecyclerView.ViewHolder> {
 
-    private val OWN_TEXT_MESSAGE = 0
-    private val OWN_IMAGE_MESSAGE = 1
-    private val FOREIGN_TEXT_MESSAGE = 2
-    private val FOREIGN_IMAGE_MESSAGE = 3
+    companion object {
+        private const val OWN_TEXT_MESSAGE = 0
+        private const val OWN_IMAGE_MESSAGE = 1
+        private const val FOREIGN_TEXT_MESSAGE = 2
+        private const val FOREIGN_IMAGE_MESSAGE = 3
+    }
 
     val picassoTag = Object()
 

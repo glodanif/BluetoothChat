@@ -8,14 +8,14 @@ import java.util.*
 
 @Entity(tableName = "message")
 data class ChatMessage(
+        @PrimaryKey(autoGenerate = true)
+        var uid: Long = 0,
         var deviceAddress: String,
         var date: Date,
         var own: Boolean,
         var text: String
 ) {
 
-    @PrimaryKey(autoGenerate = true)
-    var uid: Long = 0
     var seenHere: Boolean = false
     var seenThere: Boolean = false
     var delivered: Boolean = false

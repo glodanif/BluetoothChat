@@ -65,7 +65,9 @@ class DevicesAdapter(private val context: Context) : RecyclerView.Adapter<Recycl
     }
 
     fun addNewFoundDevice(device: BluetoothDevice) {
-        val exists = availableList.filter { it.address == device.address }.any()
+        val exists = availableList.asSequence()
+                .filter { it.address == device.address }
+                .any()
         if (!exists) {
             availableList.addFirst(device)
         }

@@ -9,9 +9,9 @@ import io.mockk.coEvery
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.mockk
 import io.mockk.verify
+import kotlinx.coroutines.experimental.Dispatchers
 import org.junit.Before
 import org.junit.Test
-import kotlin.coroutines.experimental.EmptyCoroutineContext
 
 class ReceivedImagesPresenterUnitTest {
 
@@ -26,7 +26,7 @@ class ReceivedImagesPresenterUnitTest {
     fun setup() {
         MockKAnnotations.init(this)
         presenter = ReceivedImagesPresenter("", view, storage,
-                EmptyCoroutineContext, EmptyCoroutineContext)
+                Dispatchers.Unconfined, Dispatchers.Unconfined)
     }
 
     @Test
