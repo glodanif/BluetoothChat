@@ -58,8 +58,12 @@ class ConnectionController(private val application: ChatApplication,
     private var contract = Contract()
 
     private var justRepliedFromNotification = false
-    private val imageText = application.getString(R.string.chat__image_message, "\uD83D\uDCCE")
-    private val me = Person.Builder().setName(application.getString(R.string.notification__me)).build()
+    private val imageText: String by lazy {
+        application.getString(R.string.chat__image_message, "\uD83D\uDCCE")
+    }
+    private val me: Person by lazy {
+        Person.Builder().setName(application.getString(R.string.notification__me)).build()
+    }
     private val shallowHistory = LimitedQueue<NotificationCompat.MessagingStyle.Message>(4)
 
     var onNewForegroundMessage: ((String) -> Unit)? = null
@@ -236,8 +240,7 @@ class ConnectionController(private val application: ChatApplication,
 
                 currentSocket?.let { socket ->
 
-                    val message = ChatMessage(socket.remoteDevice.address, Date(), true, "").apply {
-                        this.uid = uid
+                    val message = ChatMessage(uid, socket.remoteDevice.address, Date(), true, "").apply {
                         seenHere = true
                         messageType = PayloadType.IMAGE
                         filePath = path
@@ -308,8 +311,7 @@ class ConnectionController(private val application: ChatApplication,
                 currentSocket?.remoteDevice?.let { device ->
 
                     val address = device.address
-                    val message = ChatMessage(address, Date(), false, "").apply {
-                        this.uid = uid
+                    val message = ChatMessage(uid, address, Date(), false, "").apply {
                         messageType = PayloadType.IMAGE
                         filePath = path
                     }
@@ -452,7 +454,7 @@ class ConnectionController(private val application: ChatApplication,
 
         val device = socket.remoteDevice
         val message = Message(messageBody)
-        val sentMessage = ChatMessage(socket.remoteDevice.address, Date(), true, message.body)
+        val sentMessage = ChatMessage(message.uid, socket.remoteDevice.address, Date(), true, message.body)
 
         if (message.type == Contract.MessageType.MESSAGE) {
 
@@ -527,8 +529,7 @@ class ConnectionController(private val application: ChatApplication,
 
         val device: BluetoothDevice = socket.remoteDevice
 
-        val receivedMessage = ChatMessage(device.address, Date(), false, text)
-        receivedMessage.uid = uid
+        val receivedMessage = ChatMessage(uid, device.address, Date(), false, text)
 
         val partner = Person.Builder().setName(currentConversation?.displayName ?: "?").build()
         shallowHistory.add(NotificationCompat.MessagingStyle.Message(

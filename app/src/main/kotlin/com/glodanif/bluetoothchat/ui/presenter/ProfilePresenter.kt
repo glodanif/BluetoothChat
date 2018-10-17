@@ -16,7 +16,7 @@ class ProfilePresenter(private val view: ProfileView,
 
     @ColorInt
     private var currentColor = 0
-    private lateinit var currentName: String
+    private var currentName: String = ""
 
     fun saveUser() {
 
