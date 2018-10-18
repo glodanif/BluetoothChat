@@ -45,7 +45,7 @@
 
     <string name="profile__profile">Profile</string>
     <string name="profile__your_name">Your name</string>
-    <string name="profile__validation_error">Your name cannot be empty or longer than 25 characters, also, \'#\' symbol is not allowed</string>
+    <string name="profile__validation_error">Your name cannot be empty or longer than 25 characters, also, \'%s\' symbol is not allowed</string>
     <string name="profile__edit">Edit</string>
     <string name="profile__name">Name</string>
     <string name="profile__color">Color</string>

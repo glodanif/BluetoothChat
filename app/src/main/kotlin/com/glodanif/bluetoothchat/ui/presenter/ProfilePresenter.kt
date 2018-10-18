@@ -5,6 +5,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.OnLifecycleEvent
 import com.glodanif.bluetoothchat.data.model.BluetoothScanner
 import com.glodanif.bluetoothchat.data.model.ProfileManager
+import com.glodanif.bluetoothchat.data.service.message.Contract
 import com.glodanif.bluetoothchat.ui.view.ProfileView
 import kotlinx.coroutines.experimental.*
 
@@ -20,7 +21,7 @@ class ProfilePresenter(private val view: ProfileView,
 
     fun saveUser() {
 
-        if (!currentName.isEmpty() && currentName.length <= 25 && !currentName.contains("#")) {
+        if (!currentName.isEmpty() && currentName.length <= 25 && !currentName.contains(Contract.DIVIDER)) {
 
             launch {
                 settings.saveUserName(currentName.trim())
@@ -30,7 +31,7 @@ class ProfilePresenter(private val view: ProfileView,
                 }
             }
         } else {
-            view.showNotValidNameError()
+            view.showNotValidNameError(Contract.DIVIDER)
         }
     }
 

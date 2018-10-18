@@ -1,11 +1,13 @@
 package com.glodanif.bluetoothchat.data.service.connection
 
+import com.glodanif.bluetoothchat.data.service.message.Contract
 import com.glodanif.bluetoothchat.utils.isNumber
 
 class TransferEventStrategy : DataTransferThread.EventsStrategy {
 
-    private val generalMessageRegex = Regex("\\d+#\\d+#\\d+#*")
-    private val fileStartRegex = Regex("6#\\d+#0#*")
+    private val divider = Contract.DIVIDER
+    private val generalMessageRegex = Regex("\\d+$divider\\d+$divider\\d+$divider*")
+    private val fileStartRegex = Regex("6$divider\\d+${divider}0$divider*")
 
     override fun isMessage(message: String?) = message != null && generalMessageRegex.containsMatchIn(message)
 
@@ -13,19 +15,19 @@ class TransferEventStrategy : DataTransferThread.EventsStrategy {
 
             if (message != null && fileStartRegex.containsMatchIn(message)) {
 
-                val messageBody = "6#" + message.substringAfter("6#")
+                val messageBody = "6$divider" + message.substringAfter("6$divider")
 
                 val info = fileStartRegex.replace(messageBody, "")
-                val uid = messageBody.substring(2).substringBefore("#")
+                val uid = messageBody.substring(2).substringBefore(divider)
 
                 if (info.isEmpty() || !uid.isNumber()) {
                     null
                 } else {
-                    val size = info.substringAfter("#").substringBefore("#")
+                    val size = info.substringAfter(divider).substringBefore(divider)
                     if (size.isNumber()) {
                         DataTransferThread.FileInfo(
                                 uid.toLong(),
-                                info.substringBefore("#"),
+                                info.substringBefore(divider),
                                 size.toLong()
                         )
                     } else {
@@ -38,17 +40,17 @@ class TransferEventStrategy : DataTransferThread.EventsStrategy {
 
     override fun isFileCanceled(message: String?) =
 
-            if (message != null && (message.contains("8#0#0#") || message.contains("8#0#1#"))) {
+            if (message != null && (message.contains("8${divider}0${divider}0$divider") || message.contains("8${divider}0${divider}1$divider"))) {
                 val byPartner = message
-                        .substringAfter("8#0#")
-                        .replace("8#0#", "")
-                        .substringBefore("#")
+                        .substringAfter("8${divider}0$divider")
+                        .replace("8${divider}0$divider", "")
+                        .substringBefore(divider)
                 DataTransferThread.CancelInfo(byPartner == "1")
             } else {
                 null
             }
 
-    override fun isFileFinish(message: String?) = message != null && message.contains("7#0#0#")
+    override fun isFileFinish(message: String?) = message != null && message.contains("7${divider}0${divider}0$divider")
 
-    override fun getCancellationMessage(byPartner: Boolean) = "8#0#${if (byPartner) "1" else "0"}#"
+    override fun getCancellationMessage(byPartner: Boolean) = "8${divider}0$divider${if (byPartner) "1" else "0"}$divider"
 }

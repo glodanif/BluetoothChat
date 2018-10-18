@@ -18,13 +18,10 @@ class FileManagerImpl(private val context: Context) : FileManager {
 
         val application = context.packageManager
                 .getPackageInfo(BuildConfig.APPLICATION_ID, PackageManager.GET_SHARED_LIBRARY_FILES)
+        ?: return null
+
         val directory = context.externalCacheDir
                 ?: File(Environment.getExternalStorageDirectory(), context.getString(R.string.app_name))
-
-        if (application == null) {
-            return null
-        }
-
         val file = File(application.applicationInfo.publicSourceDir)
 
         try {

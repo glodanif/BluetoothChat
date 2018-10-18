@@ -121,8 +121,8 @@ class ProfileActivity : SkeletonActivity(), ProfileView {
         nameField.setText(name)
     }
 
-    override fun showNotValidNameError() {
-        nameField.error = getString(R.string.profile__validation_error)
+    override fun showNotValidNameError(divider: String) {
+        nameField.error = getString(R.string.profile__validation_error, divider)
     }
 
     private val textWatcher = object : SimpleTextWatcher() {

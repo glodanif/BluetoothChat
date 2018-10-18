@@ -2,6 +2,7 @@ package com.glodanif.bluetoothchat.presenter
 
 import com.glodanif.bluetoothchat.data.model.BluetoothScanner
 import com.glodanif.bluetoothchat.data.model.ProfileManager
+import com.glodanif.bluetoothchat.data.service.message.Contract
 import com.glodanif.bluetoothchat.ui.presenter.ProfilePresenter
 import com.glodanif.bluetoothchat.ui.view.ProfileView
 import io.mockk.MockKAnnotations
@@ -34,21 +35,21 @@ class ProfilePresenterUnitTest {
     fun validation_emptyUserName() {
         presenter.onNameChanged("")
         presenter.saveUser()
-        verify { view.showNotValidNameError() }
+        verify { view.showNotValidNameError(Contract.DIVIDER) }
     }
 
     @Test
     fun validation_forbiddenCharacters() {
-        presenter.onNameChanged("Text#")
+        presenter.onNameChanged("Text${Contract.DIVIDER}")
         presenter.saveUser()
-        verify { view.showNotValidNameError() }
+        verify { view.showNotValidNameError(Contract.DIVIDER) }
     }
 
     @Test
     fun validation_longUserName() {
         presenter.onNameChanged("Text longer that 25 character")
         presenter.saveUser()
-        verify { view.showNotValidNameError() }
+        verify { view.showNotValidNameError(Contract.DIVIDER) }
     }
 
     @Test

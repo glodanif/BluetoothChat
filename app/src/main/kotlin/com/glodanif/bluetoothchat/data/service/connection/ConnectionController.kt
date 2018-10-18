@@ -554,7 +554,7 @@ class ConnectionController(private val application: ChatApplication,
 
         val device: BluetoothDevice = socket.remoteDevice
 
-        val parts = message.body.split("#")
+        val parts = message.body.split(Contract.DIVIDER)
         val conversation = Conversation(device.address, device.name
                 ?: "?", parts[0], parts[1].toInt())
 
@@ -575,7 +575,7 @@ class ConnectionController(private val application: ChatApplication,
 
         val device: BluetoothDevice = socket.remoteDevice
 
-        val parts = message.body.split("#")
+        val parts = message.body.split(Contract.DIVIDER)
         val conversation = Conversation(device.address, device.name
                 ?: "?", parts[0], parts[1].toInt())
 

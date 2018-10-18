@@ -23,7 +23,7 @@ class BluetoothScannerImpl(val context: Context) : BluetoothScanner {
 
     private var isListeningForDiscoverableStatus = false
 
-    private val foundDeviceFilter: IntentFilter = IntentFilter(BluetoothDevice.ACTION_FOUND)
+    private val foundDeviceFilter = IntentFilter(BluetoothDevice.ACTION_FOUND)
     private val foundDeviceReceiver = object : BroadcastReceiver() {
 
         override fun onReceive(context: Context, intent: Intent) {
@@ -37,7 +37,7 @@ class BluetoothScannerImpl(val context: Context) : BluetoothScanner {
         }
     }
 
-    private val discoverableStateFilter: IntentFilter = IntentFilter(BluetoothAdapter.ACTION_SCAN_MODE_CHANGED)
+    private val discoverableStateFilter = IntentFilter(BluetoothAdapter.ACTION_SCAN_MODE_CHANGED)
     private val discoverableStateReceiver = object : BroadcastReceiver() {
 
         override fun onReceive(context: Context, intent: Intent) {

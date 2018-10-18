@@ -39,6 +39,12 @@ class Message() {
         this.flag = flag
     }
 
+    constructor(body: String, flag: Boolean, type: Contract.MessageType) : this() {
+        this.body = body
+        this.type = type
+        this.flag = flag
+    }
+
     constructor(uid: Long, body: String, type: Contract.MessageType) : this() {
         this.uid = uid
         this.body = body
