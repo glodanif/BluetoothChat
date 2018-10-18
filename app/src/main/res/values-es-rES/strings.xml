@@ -33,7 +33,7 @@
   </plurals>
   <string name="profile__profile">Perfil</string>
   <string name="profile__your_name">Tu nombre</string>
-  <string name="profile__validation_error">Tu nombre no puede estar vacío ni tener más de 25 caracteres, tampoco se permite el símbolo \"#\"</string>
+  <string name="profile__validation_error">Tu nombre no puede estar vacío ni tener más de 25 caracteres, tampoco se permite el símbolo \'%s\'</string>
   <string name="profile__edit">Editar</string>
   <string name="profile__name">Nombre</string>
   <string name="profile__color">Color</string>
@@ -46,7 +46,7 @@
   <string name="chat__pending">Pendiente</string>
   <string name="chat__reconnect">Reconectar</string>
   <string name="chat__disconnect">Desconectar</string>
-  <string name="chat__sending_failed">Unable to send this message, please try again</string>
+  <string name="chat__sending_failed">No se puede enviar este mensaje, por favor intente de nuevo</string>
   <string name="chat__connection_rejected">Tu petición de conexión fue rechazada</string>
   <string name="chat__waiting_for_device">Espera a que este dispositivo apruebe la conexión</string>
   <string name="chat__connect">Conectar</string>
