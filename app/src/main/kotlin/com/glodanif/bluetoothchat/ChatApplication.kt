@@ -54,22 +54,17 @@ class ChatApplication : Application(), LifecycleObserver {
         registerActivityLifecycleCallbacks(object : StartStopActivityLifecycleCallbacks() {
 
             override fun onActivityStarted(activity: Activity?) {
-
-                isConversationsOpened = activity is ConversationsActivity
-
-                if (activity is ChatActivity) {
-                    currentChat = activity.intent.getStringExtra(ChatActivity.EXTRA_ADDRESS)
+                when (activity) {
+                    is ConversationsActivity -> isConversationsOpened = true
+                    is ChatActivity -> currentChat =
+                            activity.intent.getStringExtra(ChatActivity.EXTRA_ADDRESS)
                 }
             }
 
             override fun onActivityStopped(activity: Activity?) {
-
-                if (activity is ConversationsActivity) {
-                    isConversationsOpened = false
-                }
-
-                if (activity is ChatActivity) {
-                    currentChat = null
+                when (activity) {
+                    is ConversationsActivity -> isConversationsOpened = false
+                    is ChatActivity -> currentChat = null
                 }
             }
         })

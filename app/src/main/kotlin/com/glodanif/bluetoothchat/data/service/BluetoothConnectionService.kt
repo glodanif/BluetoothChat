@@ -90,15 +90,10 @@ class BluetoothConnectionService : Service(), ConnectionSubject {
         }
     }
 
-    override fun onBind(intent: Intent?): IBinder? {
-        return binder
-    }
+    override fun onBind(intent: Intent?): IBinder? = binder
 
     inner class ConnectionBinder : Binder() {
-
-        fun getService(): BluetoothConnectionService {
-            return this@BluetoothConnectionService
-        }
+        fun getService() = this@BluetoothConnectionService
     }
 
     override fun onCreate() {
@@ -107,7 +102,9 @@ class BluetoothConnectionService : Service(), ConnectionSubject {
         controller.onNewForegroundMessage = { showNotification(it) }
 
         registerReceiver(connectionActionReceiver, IntentFilter(NotificationView.ACTION_CONNECTION))
-        registerReceiver(replyActionReceiver, IntentFilter(NotificationView.ACTION_REPLY))
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            registerReceiver(replyActionReceiver, IntentFilter(NotificationView.ACTION_REPLY))
+        }
 
         isRunning = true
     }
@@ -298,7 +295,9 @@ class BluetoothConnectionService : Service(), ConnectionSubject {
         super.onDestroy()
 
         unregisterReceiver(connectionActionReceiver)
-        unregisterReceiver(replyActionReceiver)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            unregisterReceiver(replyActionReceiver)
+        }
 
         isRunning = false
         controller.stop()

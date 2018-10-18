@@ -105,9 +105,7 @@ class ExpiringProgressBar : View {
         isCanceled = true
     }
 
-    private fun getProgressAngle(): Float {
-        return progress / max.toFloat() * 360f
-    }
+    private fun getProgressAngle(): Float = progress / max.toFloat() * 360f
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         setMeasuredDimension(measure(widthMeasureSpec), measure(heightMeasureSpec))

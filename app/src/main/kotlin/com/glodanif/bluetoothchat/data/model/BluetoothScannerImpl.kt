@@ -69,7 +69,7 @@ class BluetoothScannerImpl(val context: Context) : BluetoothScanner {
         }
     }
 
-    override fun getMyDeviceName(): String? = adapter?.name
+    override fun getMyDeviceName() = adapter?.name ?: "?"
 
     override fun scanForDevices(seconds: Int) {
 

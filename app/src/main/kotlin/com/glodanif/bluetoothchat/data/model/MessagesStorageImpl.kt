@@ -48,4 +48,12 @@ class MessagesStorageImpl(db: ChatDatabase) : MessagesStorage {
     override suspend fun removeMessagesByAddress(address: String) {
         dao.deleteAllByDeviceAddress(address)
     }
+
+    override suspend fun setMessageAsDelivered(messageId: Long) {
+        dao.setMessageAsDelivered(messageId)
+    }
+
+    override suspend fun setMessageAsSeenThere(messageId: Long) {
+        dao.setMessageAsSeenThere(messageId)
+    }
 }
