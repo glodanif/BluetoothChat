@@ -39,7 +39,7 @@
   </plurals>
   <string name="profile__profile">Профиль</string>
   <string name="profile__your_name">Ваше имя</string>
-  <string name="profile__validation_error">Ваше имя не может быть пустым или длиннее 25 символов, также символ \'#\' запрещен</string>
+  <string name="profile__validation_error">Your name cannot be empty or longer than 25 characters, also, \'%s\' symbol is not allowed</string>
   <string name="profile__edit">Изменить</string>
   <string name="profile__name">Имя</string>
   <string name="profile__color">Цвет</string>
