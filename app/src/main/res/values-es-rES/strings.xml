@@ -33,7 +33,7 @@
   </plurals>
   <string name="profile__profile">Perfil</string>
   <string name="profile__your_name">Tu nombre</string>
-  <string name="profile__validation_error">Tu nombre no puede estar vacío ni tener más de 25 caracteres, tampoco se permite el símbolo \"#\"</string>
+  <string name="profile__validation_error">Your name cannot be empty or longer than 25 characters, also, \'%s\' symbol is not allowed</string>
   <string name="profile__edit">Editar</string>
   <string name="profile__name">Nombre</string>
   <string name="profile__color">Color</string>
