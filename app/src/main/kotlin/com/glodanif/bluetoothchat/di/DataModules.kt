@@ -4,6 +4,7 @@ import com.glodanif.bluetoothchat.data.database.Database
 import com.glodanif.bluetoothchat.data.model.*
 import com.glodanif.bluetoothchat.domain.interactor.GetMyDeviceNameInteractor
 import com.glodanif.bluetoothchat.domain.interactor.GetProfileInteractor
+import com.glodanif.bluetoothchat.domain.interactor.IsProfileInitializedInteractor
 import com.glodanif.bluetoothchat.domain.interactor.SaveProfileInteractor
 import com.glodanif.bluetoothchat.ui.view.NotificationView
 import com.glodanif.bluetoothchat.ui.view.NotificationViewImpl
@@ -36,6 +37,7 @@ val localStorageModule = module {
 val domainModule = module {
     factory { GetProfileInteractor(get()) }
     factory { SaveProfileInteractor(get()) }
+    factory { IsProfileInitializedInteractor(get()) }
     factory { GetMyDeviceNameInteractor(get()) }
 }
 

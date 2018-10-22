@@ -122,11 +122,8 @@ class ConversationsPresenter(private val view: ConversationsView,
 
     @OnLifecycleEvent(Lifecycle.Event.ON_START)
     fun loadUserProfile() = launch {
-
-        val name = withContext(bgContext) { profileRepository.getProfile().name }
-        val color = withContext(bgContext) { profileRepository.getProfile().color }
-
-        view.showUserProfile(name, color)
+        val profile = withContext(bgContext) { profileRepository.getProfile() }
+        view.showUserProfile(profile.name, profile.color)
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_START)

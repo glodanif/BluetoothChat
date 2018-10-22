@@ -12,14 +12,7 @@ import com.glodanif.bluetoothchat.utils.getFirstLetter
 
 class ProfileConverter(private val context: Context) {
 
-    fun transform(profile: Profile): ProfileViewModel {
-
-        val label = if (profile.name.isEmpty()) context.getString(R.string.profile__your_name) else profile.name
-        val labelColor = ContextCompat.getColor(context, if (profile.name.isEmpty()) R.color.text_light else R.color.text_dark)
-        val avatarDrawable = TextDrawable.builder().buildRound(profile.name.getFirstLetter(), profile.color)
-
-        return ProfileViewModel(label, labelColor, avatarDrawable, profile.color)
-    }
+    fun transform(profile: Profile) = transform(profile.name, profile.color)
 
     fun transform(name: String, @ColorInt color: Int): ProfileViewModel {
 

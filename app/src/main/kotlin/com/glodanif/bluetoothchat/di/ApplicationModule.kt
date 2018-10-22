@@ -7,6 +7,10 @@ import org.koin.dsl.module.module
 val applicationModule = module {
 
     factory { params ->
+        SplashPresenter(params[0], get())
+    }
+
+    factory { params ->
         ChatPresenter(params[0], params[1], get(), get(), get(), get(), get(), get())
     }
 
@@ -23,7 +27,7 @@ val applicationModule = module {
     }
 
     factory { params ->
-        ProfilePresenter(params[0], params[1], params[1], get(), get(), get(), get(), get())
+        ProfilePresenter(params[0], params[1], params[1], get(), get(), get(), get())
     }
 
     factory { params ->

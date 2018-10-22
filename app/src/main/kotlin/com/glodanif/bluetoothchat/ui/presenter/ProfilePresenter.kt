@@ -6,6 +6,7 @@ import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.OnLifecycleEvent
 import com.glodanif.bluetoothchat.data.model.BluetoothScanner
 import com.glodanif.bluetoothchat.data.service.message.Contract
+import com.glodanif.bluetoothchat.domain.InvalidProfileNameException
 import com.glodanif.bluetoothchat.domain.interactor.NoInput
 import com.glodanif.bluetoothchat.domain.entity.Profile
 import com.glodanif.bluetoothchat.domain.interactor.GetMyDeviceNameInteractor
@@ -55,24 +56,21 @@ class ProfilePresenter(private val setupMode: Boolean,
 
     fun saveUser() {
 
-        if (!currentName.isEmpty() && currentName.length <= 25 && !currentName.contains(Contract.DIVIDER)) {
-
-            val profile = Profile(currentName, currentColor)
-            saveProfileInteractor.execute(profile, onResult = {
-                afterSave()
-            })
-        } else {
-            view.showNotValidNameError(Contract.DIVIDER)
-        }
-    }
-
-    private fun afterSave() {
-
-        if (setupMode) {
-            router.redirectToConversations()
-        } else {
-            router.close()
-        }
+        val profile = Profile(currentName, currentColor)
+        saveProfileInteractor.execute(profile,
+                onResult = {
+                    if (setupMode) {
+                        router.redirectToConversations()
+                    } else {
+                        router.close()
+                    }
+                },
+                onError = { error ->
+                    if (error is InvalidProfileNameException) {
+                        view.showNotValidNameError(error.forbiddenSymbol)
+                    }
+                }
+        )
     }
 
     fun prepareColorPicker() {
