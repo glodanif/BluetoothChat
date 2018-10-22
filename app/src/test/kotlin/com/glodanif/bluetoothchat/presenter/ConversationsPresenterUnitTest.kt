@@ -4,7 +4,7 @@ import com.glodanif.bluetoothchat.data.entity.ConversationWithMessages
 import com.glodanif.bluetoothchat.data.model.BluetoothConnector
 import com.glodanif.bluetoothchat.data.model.ConversationsStorage
 import com.glodanif.bluetoothchat.data.model.MessagesStorage
-import com.glodanif.bluetoothchat.data.model.ProfileManager
+import com.glodanif.bluetoothchat.data.model.ProfileRepository
 import com.glodanif.bluetoothchat.ui.presenter.ConversationsPresenter
 import com.glodanif.bluetoothchat.ui.view.ConversationsView
 import com.glodanif.bluetoothchat.ui.viewmodel.ConversationViewModel
@@ -19,7 +19,7 @@ import org.junit.Test
 class ConversationsPresenterUnitTest {
 
     @RelaxedMockK
-    private lateinit var profile: ProfileManager
+    private lateinit var profile: ProfileRepository
     @RelaxedMockK
     private lateinit var conversationsStorage: ConversationsStorage
     @RelaxedMockK

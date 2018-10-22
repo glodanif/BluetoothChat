@@ -5,30 +5,29 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.provider.Settings
-import androidx.annotation.ColorInt
-import androidx.core.content.ContextCompat
 import android.view.View
 import android.view.WindowManager
 import android.widget.*
-import com.amulyakhare.textdrawable.TextDrawable
+import androidx.annotation.ColorInt
 import com.glodanif.bluetoothchat.R
 import com.glodanif.bluetoothchat.ui.presenter.ProfilePresenter
+import com.glodanif.bluetoothchat.ui.router.ProfileRouter
 import com.glodanif.bluetoothchat.ui.util.SimpleTextWatcher
 import com.glodanif.bluetoothchat.ui.view.ProfileView
+import com.glodanif.bluetoothchat.ui.viewmodel.ProfileViewModel
 import com.glodanif.bluetoothchat.utils.argument
 import com.glodanif.bluetoothchat.utils.bind
-import com.glodanif.bluetoothchat.utils.getFirstLetter
 import me.priyesh.chroma.ChromaDialog
 import me.priyesh.chroma.ColorMode
 import me.priyesh.chroma.ColorSelectListener
 import org.koin.android.ext.android.inject
 import org.koin.core.parameter.parametersOf
 
-class ProfileActivity : SkeletonActivity(), ProfileView {
+class ProfileActivity : SkeletonActivity(), ProfileView, ProfileRouter {
 
-    private val editMode: Boolean by argument(EXTRA_EDIT_MODE, false)
+    private val setupMode: Boolean by argument(EXTRA_SETUP_MODE, false)
 
-    private val presenter: ProfilePresenter by inject { parametersOf(this) }
+    private val presenter: ProfilePresenter by inject { parametersOf(setupMode, this) }
 
     private val nameField: EditText by bind(R.id.et_name)
     private val nameLabel: TextView by bind(R.id.tv_name)
@@ -41,10 +40,10 @@ class ProfileActivity : SkeletonActivity(), ProfileView {
         setContentView(R.layout.activity_profile, ActivityType.CHILD_ACTIVITY)
         lifecycle.addObserver(presenter)
 
-        supportActionBar?.setDisplayHomeAsUpEnabled(editMode)
-        supportActionBar?.setDisplayShowHomeEnabled(editMode)
+        supportActionBar?.setDisplayHomeAsUpEnabled(!setupMode)
+        supportActionBar?.setDisplayShowHomeEnabled(!setupMode)
 
-        if (editMode) {
+        if (!setupMode) {
             title = getString(R.string.profile__profile)
             window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN)
         }
@@ -58,14 +57,7 @@ class ProfileActivity : SkeletonActivity(), ProfileView {
         }
 
         deviceNameLabel.setOnClickListener {
-            val bluetoothSettings = Intent().apply {
-                action = Settings.ACTION_BLUETOOTH_SETTINGS
-            }
-            try {
-                startActivity(bluetoothSettings)
-            } catch (e: ActivityNotFoundException) {
-                Toast.makeText(this@ProfileActivity, getString(R.string.profile__no_bluetooth_settings_activity), Toast.LENGTH_LONG).show()
-            }
+            presenter.openBluetoothSettings()
         }
     }
 
@@ -80,17 +72,30 @@ class ProfileActivity : SkeletonActivity(), ProfileView {
         hideKeyboard()
     }
 
+    override fun openBluetoothSettings() {
+        val bluetoothSettings = Intent().apply {
+            action = Settings.ACTION_BLUETOOTH_SETTINGS
+        }
+        try {
+            startActivity(bluetoothSettings)
+        } catch (e: ActivityNotFoundException) {
+            presenter.onBluetoothSettingsNotAvailable()
+        }
+    }
+
+    override fun showBluetoothSettingsActivityNotFound() {
+        Toast.makeText(this@ProfileActivity, getString(R.string.profile__no_bluetooth_settings_activity), Toast.LENGTH_LONG).show()
+    }
+
     override fun showDeviceName(name: String?) {
         deviceNameLabel.text = name ?: getString(R.string.profile__no_name)
     }
 
-    override fun showUserData(name: String, color: Int) {
-        nameLabel.text = if (name.isEmpty()) getString(R.string.profile__your_name) else name
-        nameLabel.setTextColor(ContextCompat.getColor(this,
-                if (name.isEmpty()) R.color.text_light else R.color.text_dark))
-        val drawable = TextDrawable.builder().buildRound(name.getFirstLetter(), color)
-        avatar.setImageDrawable(drawable)
-        colorPicker.setBackgroundColor(color)
+    override fun showUserData(profile: ProfileViewModel) {
+        nameLabel.text = profile.nameLabelText
+        nameLabel.setTextColor(profile.nameLabelColor)
+        avatar.setImageDrawable(profile.avatar)
+        colorPicker.setBackgroundColor(profile.color)
     }
 
     override fun showColorPicker(@ColorInt color: Int) {
@@ -105,15 +110,16 @@ class ProfileActivity : SkeletonActivity(), ProfileView {
 
     override fun redirectToConversations() {
 
-        if (!editMode) {
-
-            val intent = Intent(this, ConversationsActivity::class.java)
-            if (getIntent().action == Intent.ACTION_SEND) {
-                intent.action = Intent.ACTION_SEND
-                intent.putExtra(Intent.EXTRA_TEXT, getIntent().getStringExtra(Intent.EXTRA_TEXT))
-            }
-            startActivity(intent)
+        val intent = Intent(this, ConversationsActivity::class.java)
+        if (getIntent().action == Intent.ACTION_SEND) {
+            intent.action = Intent.ACTION_SEND
+            intent.putExtra(Intent.EXTRA_TEXT, getIntent().getStringExtra(Intent.EXTRA_TEXT))
         }
+        startActivity(intent)
+        finish()
+    }
+
+    override fun close() {
         finish()
     }
 
@@ -140,11 +146,11 @@ class ProfileActivity : SkeletonActivity(), ProfileView {
 
     companion object {
 
-        private const val EXTRA_EDIT_MODE = "extra.edit_mode"
+        const val EXTRA_SETUP_MODE = "extra.setup_mode"
 
-        fun start(context: Context, editMode: Boolean) {
+        fun start(context: Context, setupMode: Boolean) {
             val intent = Intent(context, ProfileActivity::class.java)
-                    .putExtra(EXTRA_EDIT_MODE, editMode)
+                    .putExtra(EXTRA_SETUP_MODE, setupMode)
             context.startActivity(intent)
         }
     }

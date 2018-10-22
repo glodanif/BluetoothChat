@@ -1,7 +1,7 @@
 package com.glodanif.bluetoothchat.presenter
 
 import com.glodanif.bluetoothchat.data.model.BluetoothScanner
-import com.glodanif.bluetoothchat.data.model.ProfileManager
+import com.glodanif.bluetoothchat.data.model.ProfileRepository
 import com.glodanif.bluetoothchat.data.service.message.Contract
 import com.glodanif.bluetoothchat.ui.presenter.ProfilePresenter
 import com.glodanif.bluetoothchat.ui.view.ProfileView
@@ -9,14 +9,13 @@ import io.mockk.MockKAnnotations
 import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.verify
-import kotlinx.coroutines.experimental.Dispatchers
 import org.junit.Before
 import org.junit.Test
 
 class ProfilePresenterUnitTest {
 
     @RelaxedMockK
-    private lateinit var model: ProfileManager
+    private lateinit var model: ProfileRepository
     @RelaxedMockK
     private lateinit var scanner: BluetoothScanner
     @RelaxedMockK
@@ -27,8 +26,7 @@ class ProfilePresenterUnitTest {
     @Before
     fun setup() {
         MockKAnnotations.init(this)
-        presenter = ProfilePresenter(view, model, scanner,
-                Dispatchers.Unconfined, Dispatchers.Unconfined)
+        presenter = ProfilePresenter(view, model, scanner)
     }
 
     @Test

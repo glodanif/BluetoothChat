@@ -10,7 +10,7 @@ import androidx.lifecycle.OnLifecycleEvent
 import androidx.lifecycle.ProcessLifecycleOwner
 import com.crashlytics.android.Crashlytics
 import com.glodanif.bluetoothchat.data.model.BluetoothConnector
-import com.glodanif.bluetoothchat.data.model.ProfileManager
+import com.glodanif.bluetoothchat.data.model.ProfileRepository
 import com.glodanif.bluetoothchat.di.*
 import com.glodanif.bluetoothchat.ui.activity.ChatActivity
 import com.glodanif.bluetoothchat.ui.activity.ConversationsActivity
@@ -46,7 +46,7 @@ class ChatApplication : Application(), LifecycleObserver {
         }
 
         startKoin(this, listOf(applicationModule,
-                bluetoothConnectionModule, databaseModule, localStorageModule, viewModule))
+                bluetoothConnectionModule, databaseModule, localStorageModule, domainModule, viewModule))
         localeSession = getKoin().createScope(localeScope)
 
         ProcessLifecycleOwner.get().lifecycle.addObserver(this)
@@ -99,7 +99,7 @@ class ChatApplication : Application(), LifecycleObserver {
 
     @OnLifecycleEvent(Lifecycle.Event.ON_START)
     internal fun prepareConnection() {
-        if (!get<ProfileManager>().getUserName().isEmpty()) {
+        if (get<ProfileRepository>().isInitialized()) {
             connector.prepare()
         }
     }

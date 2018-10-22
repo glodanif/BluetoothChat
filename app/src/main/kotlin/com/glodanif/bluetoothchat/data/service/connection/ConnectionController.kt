@@ -14,7 +14,7 @@ import com.glodanif.bluetoothchat.data.entity.ChatMessage
 import com.glodanif.bluetoothchat.data.entity.Conversation
 import com.glodanif.bluetoothchat.data.model.ConversationsStorage
 import com.glodanif.bluetoothchat.data.model.MessagesStorage
-import com.glodanif.bluetoothchat.data.model.ProfileManager
+import com.glodanif.bluetoothchat.data.model.ProfileRepository
 import com.glodanif.bluetoothchat.data.model.UserPreferences
 import com.glodanif.bluetoothchat.data.service.message.Contract
 import com.glodanif.bluetoothchat.data.service.message.Message
@@ -36,7 +36,7 @@ class ConnectionController(private val application: ChatApplication,
                            private val conversationStorage: ConversationsStorage,
                            private val messagesStorage: MessagesStorage,
                            private val preferences: UserPreferences,
-                           private val profileManager: ProfileManager,
+                           private val profileRepository: ProfileRepository,
                            private val shortcutManager: ShortcutManager,
                            private val uiContext: CoroutineDispatcher = Dispatchers.Main,
                            private val bgContext: CoroutineDispatcher = Dispatchers.IO) : CoroutineScope {
@@ -187,7 +187,8 @@ class ConnectionController(private val application: ChatApplication,
                 connectionState = ConnectionState.PENDING
 
                 if (type == ConnectionType.OUTCOMING) {
-                    contract.createConnectMessage(profileManager.getUserName(), profileManager.getUserColor()).let { message ->
+                    val profile = profileRepository.getProfile()
+                    contract.createConnectMessage(profile.name, profile.color).let { message ->
                         dataTransferThread?.write(message.getDecodedMessage())
                     }
                 }
@@ -432,13 +433,13 @@ class ConnectionController(private val application: ChatApplication,
     }
 
     fun approveConnection() {
-        sendMessage(contract.createAcceptConnectionMessage(
-                profileManager.getUserName(), profileManager.getUserColor()))
+        val profile = profileRepository.getProfile()
+        sendMessage(contract.createAcceptConnectionMessage(profile.name, profile.color))
     }
 
     fun rejectConnection() {
-        sendMessage(contract.createRejectConnectionMessage(
-                profileManager.getUserName(), profileManager.getUserColor()))
+        val profile = profileRepository.getProfile()
+        sendMessage(contract.createRejectConnectionMessage(profile.name, profile.color))
     }
 
     fun getTransferringFile(): TransferringFile? {

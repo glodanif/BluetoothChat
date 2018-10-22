@@ -7,7 +7,7 @@ import android.os.Handler
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import com.glodanif.bluetoothchat.R
-import com.glodanif.bluetoothchat.data.model.ProfileManager
+import com.glodanif.bluetoothchat.data.model.ProfileRepository
 import org.koin.android.ext.android.get
 
 class SplashActivity : AppCompatActivity() {
@@ -19,10 +19,12 @@ class SplashActivity : AppCompatActivity() {
 
         Handler().postDelayed({
 
-            val profileManager = get<ProfileManager>()
+            val profileManager = get<ProfileRepository>()
             val nextScreen = if (!profileManager.isInitialized())
                 ProfileActivity::class.java else ConversationsActivity::class.java
-            val newIntent = Intent(this, nextScreen)
+            val newIntent = Intent(this, nextScreen).apply {
+                putExtra(ProfileActivity.EXTRA_SETUP_MODE, true)
+            }
 
             if (intent.action == Intent.ACTION_SEND) {
                 newIntent.action = Intent.ACTION_SEND

@@ -2,8 +2,11 @@ package com.glodanif.bluetoothchat.di
 
 import com.glodanif.bluetoothchat.data.database.Database
 import com.glodanif.bluetoothchat.data.model.*
+import com.glodanif.bluetoothchat.domain.interactor.GetProfileInteractor
+import com.glodanif.bluetoothchat.domain.interactor.SaveProfileInteractor
 import com.glodanif.bluetoothchat.ui.view.NotificationView
 import com.glodanif.bluetoothchat.ui.view.NotificationViewImpl
+import com.glodanif.bluetoothchat.ui.viewmodel.ProfileConverter
 import com.glodanif.bluetoothchat.ui.viewmodel.converter.ChatMessageConverter
 import com.glodanif.bluetoothchat.ui.viewmodel.converter.ContactConverter
 import com.glodanif.bluetoothchat.ui.viewmodel.converter.ConversationConverter
@@ -26,7 +29,12 @@ val databaseModule = module {
 val localStorageModule = module {
     single { FileManagerImpl(androidContext()) as FileManager }
     single { UserPreferencesImpl(androidContext()) as UserPreferences }
-    single { ProfileManagerImpl(androidContext()) as ProfileManager }
+    single { ProfileRepositoryImpl(androidContext()) as ProfileRepository }
+}
+
+val domainModule = module {
+    factory { GetProfileInteractor(get()) }
+    factory { SaveProfileInteractor(get()) }
 }
 
 const val localeScope = "locale_scope"
@@ -37,4 +45,5 @@ val viewModule = module {
     scope(localeScope) { ContactConverter() }
     scope(localeScope) { ConversationConverter(androidContext()) }
     scope(localeScope) { ChatMessageConverter(androidContext()) }
+    scope(localeScope) { ProfileConverter(androidContext()) }
 }

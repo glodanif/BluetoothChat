@@ -3,8 +3,8 @@ package com.glodanif.bluetoothchat.datasource
 import android.graphics.Color
 import androidx.test.InstrumentationRegistry
 import androidx.test.runner.AndroidJUnit4
-import com.glodanif.bluetoothchat.data.model.ProfileManager
-import com.glodanif.bluetoothchat.data.model.ProfileManagerImpl
+import com.glodanif.bluetoothchat.data.model.ProfileRepository
+import com.glodanif.bluetoothchat.data.model.ProfileRepositoryImpl
 import org.junit.After
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
@@ -13,14 +13,14 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
-class ProfileManagerInstrumentedTest {
+class ProfileRepositoryInstrumentedTest {
 
-    private lateinit var storage: ProfileManager
+    private lateinit var storage: ProfileRepository
 
     @Before
     fun prepare() {
         val context = InstrumentationRegistry.getTargetContext()
-        storage = ProfileManagerImpl(context).apply {
+        storage = ProfileRepositoryImpl(context).apply {
             saveUserName("A")
             saveUserColor(Color.RED)
         }

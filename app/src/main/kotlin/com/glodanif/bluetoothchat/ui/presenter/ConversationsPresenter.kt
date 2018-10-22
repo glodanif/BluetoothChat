@@ -18,7 +18,7 @@ class ConversationsPresenter(private val view: ConversationsView,
                              private val connection: BluetoothConnector,
                              private val conversationStorage: ConversationsStorage,
                              private val messageStorage: MessagesStorage,
-                             private val profileManager: ProfileManager,
+                             private val profileRepository: ProfileRepository,
                              private val converter: ConversationConverter,
                              private val uiContext: CoroutineDispatcher = Dispatchers.Main,
                              private val bgContext: CoroutineDispatcher = Dispatchers.IO) : BasePresenter(uiContext) {
@@ -123,8 +123,8 @@ class ConversationsPresenter(private val view: ConversationsView,
     @OnLifecycleEvent(Lifecycle.Event.ON_START)
     fun loadUserProfile() = launch {
 
-        val name = withContext(bgContext) { profileManager.getUserName() }
-        val color = withContext(bgContext) { profileManager.getUserColor() }
+        val name = withContext(bgContext) { profileRepository.getProfile().name }
+        val color = withContext(bgContext) { profileRepository.getProfile().color }
 
         view.showUserProfile(name, color)
     }

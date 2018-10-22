@@ -68,7 +68,7 @@ class ConversationsActivity : SkeletonActivity(), ConversationsView {
             setOnOptionClickListener {
                 when (it) {
                     SettingsPopup.Option.PROFILE ->
-                        ProfileActivity.start(this@ConversationsActivity, editMode = true)
+                        ProfileActivity.start(this@ConversationsActivity, setupMode = false)
                     SettingsPopup.Option.IMAGES ->
                         ReceivedImagesActivity.start(this@ConversationsActivity, address = null)
                     SettingsPopup.Option.SETTINGS ->
