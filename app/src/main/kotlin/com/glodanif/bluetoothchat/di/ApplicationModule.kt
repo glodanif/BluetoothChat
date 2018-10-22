@@ -15,7 +15,7 @@ val applicationModule = module {
     }
 
     factory { params ->
-        ContactChooserPresenter(params[0], get(), get())
+        ContactChooserPresenter(params[0], params[0], get(), get())
     }
 
     factory { params ->

@@ -5,9 +5,7 @@ import androidx.annotation.ColorInt
 import androidx.core.content.ContextCompat
 import com.amulyakhare.textdrawable.TextDrawable
 import com.glodanif.bluetoothchat.R
-import com.glodanif.bluetoothchat.data.entity.Conversation
-import com.glodanif.bluetoothchat.domain.entity.Profile
-import com.glodanif.bluetoothchat.ui.viewmodel.ContactViewModel
+import com.glodanif.bluetoothchat.data.entity.Profile
 import com.glodanif.bluetoothchat.utils.getFirstLetter
 
 class ProfileConverter(private val context: Context) {

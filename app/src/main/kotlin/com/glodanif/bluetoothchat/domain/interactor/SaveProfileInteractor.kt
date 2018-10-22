@@ -3,7 +3,7 @@ package com.glodanif.bluetoothchat.domain.interactor
 import com.glodanif.bluetoothchat.data.model.ProfileRepository
 import com.glodanif.bluetoothchat.data.service.message.Contract
 import com.glodanif.bluetoothchat.domain.InvalidProfileNameException
-import com.glodanif.bluetoothchat.domain.entity.Profile
+import com.glodanif.bluetoothchat.data.entity.Profile
 
 class SaveProfileInteractor(private val profileRepository: ProfileRepository) : BaseInteractor<Profile, Unit>() {
 

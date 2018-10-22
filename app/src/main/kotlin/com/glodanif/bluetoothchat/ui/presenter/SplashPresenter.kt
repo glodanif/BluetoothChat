@@ -4,15 +4,15 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.OnLifecycleEvent
 import com.glodanif.bluetoothchat.domain.interactor.IsProfileInitializedInteractor
-import com.glodanif.bluetoothchat.domain.interactor.NoInput
 import com.glodanif.bluetoothchat.ui.router.SplashRouter
 
 class SplashPresenter(private val router: SplashRouter,
-                      private val isProfileInitializedInteractor: IsProfileInitializedInteractor) : LifecycleObserver {
+                      private val isProfileInitializedInteractor: IsProfileInitializedInteractor
+) : LifecycleObserver {
 
     fun onSplashShown() {
 
-        isProfileInitializedInteractor.execute(NoInput,
+        isProfileInitializedInteractor.execute(Unit,
                 onResult = { isInitialized ->
                     if (isInitialized) {
                         router.redirectToConversations()

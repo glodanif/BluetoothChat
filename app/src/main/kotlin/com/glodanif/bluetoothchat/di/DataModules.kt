@@ -2,10 +2,7 @@ package com.glodanif.bluetoothchat.di
 
 import com.glodanif.bluetoothchat.data.database.Database
 import com.glodanif.bluetoothchat.data.model.*
-import com.glodanif.bluetoothchat.domain.interactor.GetMyDeviceNameInteractor
-import com.glodanif.bluetoothchat.domain.interactor.GetProfileInteractor
-import com.glodanif.bluetoothchat.domain.interactor.IsProfileInitializedInteractor
-import com.glodanif.bluetoothchat.domain.interactor.SaveProfileInteractor
+import com.glodanif.bluetoothchat.domain.interactor.*
 import com.glodanif.bluetoothchat.ui.view.NotificationView
 import com.glodanif.bluetoothchat.ui.view.NotificationViewImpl
 import com.glodanif.bluetoothchat.ui.viewmodel.ProfileConverter
@@ -39,6 +36,7 @@ val domainModule = module {
     factory { SaveProfileInteractor(get()) }
     factory { IsProfileInitializedInteractor(get()) }
     factory { GetMyDeviceNameInteractor(get()) }
+    factory { GetContactsInteractor(get()) }
 }
 
 const val localeScope = "locale_scope"

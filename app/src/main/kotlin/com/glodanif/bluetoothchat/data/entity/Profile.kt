@@ -1,4 +1,4 @@
-package com.glodanif.bluetoothchat.domain.entity
+package com.glodanif.bluetoothchat.data.entity
 
 import androidx.annotation.ColorInt
 

@@ -10,6 +10,7 @@ import android.widget.TextView
 import com.glodanif.bluetoothchat.R
 import com.glodanif.bluetoothchat.ui.adapter.ContactsAdapter
 import com.glodanif.bluetoothchat.ui.presenter.ContactChooserPresenter
+import com.glodanif.bluetoothchat.ui.router.ContactChooserRouter
 import com.glodanif.bluetoothchat.ui.view.ContactChooserView
 import com.glodanif.bluetoothchat.ui.viewmodel.ContactViewModel
 import com.glodanif.bluetoothchat.utils.argument
@@ -17,7 +18,7 @@ import com.glodanif.bluetoothchat.utils.bind
 import org.koin.android.ext.android.inject
 import org.koin.core.parameter.parametersOf
 
-class ContactChooserActivity : SkeletonActivity(), ContactChooserView {
+class ContactChooserActivity : SkeletonActivity(), ContactChooserView, ContactChooserRouter {
 
     private val message: String? by argument(EXTRA_MESSAGE)
     private val filePath: String? by argument(EXTRA_FILE_PATH)
@@ -38,8 +39,7 @@ class ContactChooserActivity : SkeletonActivity(), ContactChooserView {
         contactsList.adapter = contactsAdapter
 
         contactsAdapter.clickListener = {
-            ChatActivity.start(this, it.address, message, filePath)
-            finish()
+            presenter.onChoseContact(it.address)
         }
     }
 
@@ -51,6 +51,11 @@ class ContactChooserActivity : SkeletonActivity(), ContactChooserView {
     override fun showNoContacts() {
         noContactsLabel.visibility = View.VISIBLE
         contactsList.visibility = View.GONE
+    }
+
+    override fun redirectToChat(address: String) {
+        ChatActivity.start(this, address, message, filePath)
+        finish()
     }
 
     companion object {

@@ -3,7 +3,7 @@ package com.glodanif.bluetoothchat.data.model
 import android.content.Context
 import androidx.core.content.ContextCompat
 import com.glodanif.bluetoothchat.R
-import com.glodanif.bluetoothchat.domain.entity.Profile
+import com.glodanif.bluetoothchat.data.entity.Profile
 
 class ProfileRepositoryImpl(context: Context) : ProfileRepository {
 

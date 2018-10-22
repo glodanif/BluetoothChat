@@ -4,20 +4,14 @@ import androidx.annotation.ColorInt
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.OnLifecycleEvent
-import com.glodanif.bluetoothchat.data.model.BluetoothScanner
-import com.glodanif.bluetoothchat.data.service.message.Contract
 import com.glodanif.bluetoothchat.domain.InvalidProfileNameException
-import com.glodanif.bluetoothchat.domain.interactor.NoInput
-import com.glodanif.bluetoothchat.domain.entity.Profile
+import com.glodanif.bluetoothchat.data.entity.Profile
 import com.glodanif.bluetoothchat.domain.interactor.GetMyDeviceNameInteractor
 import com.glodanif.bluetoothchat.domain.interactor.GetProfileInteractor
 import com.glodanif.bluetoothchat.domain.interactor.SaveProfileInteractor
 import com.glodanif.bluetoothchat.ui.router.ProfileRouter
 import com.glodanif.bluetoothchat.ui.view.ProfileView
 import com.glodanif.bluetoothchat.ui.viewmodel.ProfileConverter
-import kotlinx.coroutines.experimental.CoroutineDispatcher
-import kotlinx.coroutines.experimental.Dispatchers
-import kotlinx.coroutines.experimental.launch
 
 class ProfilePresenter(private val setupMode: Boolean,
                        private val view: ProfileView,
@@ -25,7 +19,8 @@ class ProfilePresenter(private val setupMode: Boolean,
                        private val converter: ProfileConverter,
                        private val getProfileInteractor: GetProfileInteractor,
                        private val saveProfileInteractor: SaveProfileInteractor,
-                       private val getMyDeviceNameInteractor: GetMyDeviceNameInteractor) : LifecycleObserver {
+                       private val getMyDeviceNameInteractor: GetMyDeviceNameInteractor
+) : LifecycleObserver {
 
     private var currentName = ""
     private var currentColor = 0
@@ -33,7 +28,7 @@ class ProfilePresenter(private val setupMode: Boolean,
     @OnLifecycleEvent(Lifecycle.Event.ON_START)
     fun start() {
 
-        getProfileInteractor.execute(NoInput,
+        getProfileInteractor.execute(Unit,
                 onResult = { profile ->
                     currentName = profile.name
                     currentColor = profile.color
@@ -42,7 +37,7 @@ class ProfilePresenter(private val setupMode: Boolean,
                 }
         )
 
-        getMyDeviceNameInteractor.execute(NoInput,
+        getMyDeviceNameInteractor.execute(Unit,
                 onResult = { view.showDeviceName(it) }
         )
     }

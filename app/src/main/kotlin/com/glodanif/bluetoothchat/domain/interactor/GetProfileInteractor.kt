@@ -1,9 +1,9 @@
 package com.glodanif.bluetoothchat.domain.interactor
 
 import com.glodanif.bluetoothchat.data.model.ProfileRepository
-import com.glodanif.bluetoothchat.domain.entity.Profile
+import com.glodanif.bluetoothchat.data.entity.Profile
 
-class GetProfileInteractor(private val profileRepository: ProfileRepository): BaseInteractor<NoInput, Profile>() {
+class GetProfileInteractor(private val profileRepository: ProfileRepository): BaseInteractor<Unit, Profile>() {
 
-    override suspend fun execute(input: NoInput) = profileRepository.getProfile()
+    override suspend fun execute(input: Unit) = profileRepository.getProfile()
 }

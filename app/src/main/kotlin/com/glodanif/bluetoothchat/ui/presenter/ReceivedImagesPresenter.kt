@@ -1,24 +1,40 @@
 package com.glodanif.bluetoothchat.ui.presenter
 
-import com.glodanif.bluetoothchat.data.model.MessagesStorage
+import android.widget.ImageView
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleObserver
+import androidx.lifecycle.OnLifecycleEvent
+import com.glodanif.bluetoothchat.data.entity.MessageFile
+import com.glodanif.bluetoothchat.domain.interactor.GetReceivedImagesInteractor
+import com.glodanif.bluetoothchat.ui.router.ReceivedImagesRouter
 import com.glodanif.bluetoothchat.ui.view.ReceivedImagesView
-import kotlinx.coroutines.experimental.CoroutineDispatcher
-import kotlinx.coroutines.experimental.Dispatchers
-import kotlinx.coroutines.experimental.launch
-import kotlinx.coroutines.experimental.withContext
 
 class ReceivedImagesPresenter(private val address: String,
                               private val view: ReceivedImagesView,
-                              private val model: MessagesStorage,
-                              private val uiContext: CoroutineDispatcher = Dispatchers.Main,
-                              private val bgContext: CoroutineDispatcher = Dispatchers.IO) : BasePresenter(uiContext) {
+                              private val router: ReceivedImagesRouter,
+                              private val getReceivedImagesInteractor: GetReceivedImagesInteractor
+) : LifecycleObserver {
 
-    fun loadImages() = launch {
-        val messages = withContext(bgContext) { model.getFileMessagesByDevice(address) }
-        if (messages.isNotEmpty()) {
-            view.displayImages(messages)
-        } else {
-            view.showNoImages()
-        }
+    @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
+    fun loadImages() {
+
+        getReceivedImagesInteractor.execute(address,
+                onResult = { messages ->
+                    if (messages.isNotEmpty()) {
+                        view.displayImages(messages)
+                    } else {
+                        view.showNoImages()
+                    }
+                }
+        )
+    }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
+    fun stop() {
+        getReceivedImagesInteractor.cancel()
+    }
+
+    fun onImageClick(view: ImageView, message: MessageFile) {
+        router.openImage(view, message)
     }
 }
