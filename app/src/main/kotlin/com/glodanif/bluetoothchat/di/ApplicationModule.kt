@@ -23,7 +23,7 @@ val applicationModule = module {
     }
 
     factory { params ->
-        ProfilePresenter(params[0], params[1], params[1], get(), get(), get(), get())
+        ProfilePresenter(params[0], params[1], params[1], get(), get(), get(), get(), get())
     }
 
     factory { params ->

@@ -8,6 +8,7 @@ import com.glodanif.bluetoothchat.data.model.BluetoothScanner
 import com.glodanif.bluetoothchat.data.service.message.Contract
 import com.glodanif.bluetoothchat.domain.interactor.NoInput
 import com.glodanif.bluetoothchat.domain.entity.Profile
+import com.glodanif.bluetoothchat.domain.interactor.GetMyDeviceNameInteractor
 import com.glodanif.bluetoothchat.domain.interactor.GetProfileInteractor
 import com.glodanif.bluetoothchat.domain.interactor.SaveProfileInteractor
 import com.glodanif.bluetoothchat.ui.router.ProfileRouter
@@ -23,7 +24,7 @@ class ProfilePresenter(private val setupMode: Boolean,
                        private val converter: ProfileConverter,
                        private val getProfileInteractor: GetProfileInteractor,
                        private val saveProfileInteractor: SaveProfileInteractor,
-                       private val scanner: BluetoothScanner) : LifecycleObserver {
+                       private val getMyDeviceNameInteractor: GetMyDeviceNameInteractor) : LifecycleObserver {
 
     private var currentName = ""
     private var currentColor = 0
@@ -32,21 +33,24 @@ class ProfilePresenter(private val setupMode: Boolean,
     fun start() {
 
         getProfileInteractor.execute(NoInput,
-                onResult = {
-                    currentName = it.name
-                    currentColor = it.color
+                onResult = { profile ->
+                    currentName = profile.name
+                    currentColor = profile.color
                     view.prefillUsername(currentName)
-                    view.showUserData(converter.transform(it))
+                    view.showUserData(converter.transform(profile))
                 }
         )
 
-        view.showDeviceName(scanner.getMyDeviceName())
+        getMyDeviceNameInteractor.execute(NoInput,
+                onResult = { view.showDeviceName(it) }
+        )
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
     fun stop() {
         getProfileInteractor.cancel()
         saveProfileInteractor.cancel()
+        getMyDeviceNameInteractor.cancel()
     }
 
     fun saveUser() {
@@ -77,14 +81,12 @@ class ProfilePresenter(private val setupMode: Boolean,
 
     fun onColorPicked(@ColorInt color: Int) {
         currentColor = color
-        val profile = Profile(currentName, currentColor)
-        view.showUserData(converter.transform(profile))
+        view.showUserData(converter.transform(currentName, currentColor))
     }
 
     fun onNameChanged(name: String) {
         currentName = name.replace("\\s{2,}".toRegex(), " ").trim()
-        val profile = Profile(currentName, currentColor)
-        view.showUserData(converter.transform(profile))
+        view.showUserData(converter.transform(currentName, currentColor))
     }
 
     fun openBluetoothSettings() {
