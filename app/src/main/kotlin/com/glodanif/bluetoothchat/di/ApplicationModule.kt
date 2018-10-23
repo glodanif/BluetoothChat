@@ -11,7 +11,7 @@ val applicationModule = module {
     }
 
     factory { params ->
-        ChatPresenter(params[0], params[1], get(), get(), get(), get(), get(), get())
+        ChatPresenter(params[0], params[1], get(), get(), get(), get(), get(), get(), get())
     }
 
     factory { params ->
@@ -19,7 +19,7 @@ val applicationModule = module {
     }
 
     factory { params ->
-        ConversationsPresenter(params[0], get(), get(), get(), get(), get())
+        ConversationsPresenter(params[0], get(), get(), get(), get(), get(), get())
     }
 
     factory { params ->
@@ -31,7 +31,7 @@ val applicationModule = module {
     }
 
     factory { params ->
-        ReceivedImagesPresenter(params[0], params[1], get())
+        ReceivedImagesPresenter(params[0], params[1], params[1], get())
     }
 
     factory { params ->
@@ -39,7 +39,7 @@ val applicationModule = module {
     }
 
     factory { params ->
-        SettingsPresenter(params[0], get())
+        SettingsPresenter(params[0], get(), get(), get())
     }
 
     factory { params ->

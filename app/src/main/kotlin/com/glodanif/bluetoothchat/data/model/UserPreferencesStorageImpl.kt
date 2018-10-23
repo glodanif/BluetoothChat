@@ -4,8 +4,9 @@ import android.content.Context
 import android.preference.PreferenceManager
 import androidx.core.content.ContextCompat
 import com.glodanif.bluetoothchat.R
+import com.glodanif.bluetoothchat.data.entity.UserPreferences
 
-class UserPreferencesImpl(private val context: Context) : UserPreferences {
+class UserPreferencesStorageImpl(private val context: Context) : UserPreferencesStorage {
 
     private val version = 1
 
@@ -19,43 +20,31 @@ class UserPreferencesImpl(private val context: Context) : UserPreferences {
     private val defaultChatBackgroundColor =
             ContextCompat.getColor(context, R.color.background_chat_default)
 
-    private val preferences
+    private val sharedPreferences
             by lazy { context.getSharedPreferences(keyPreferencesName, Context.MODE_PRIVATE) }
 
     init {
         migrate()
     }
 
-    override fun isSoundEnabled() =
-            preferences.getBoolean(keyNotificationSound, false)
-
-    override fun isClassificationEnabled() =
-            preferences.getBoolean(keyDiscoveryClassification, true)
-
-    override fun getChatBackgroundColor() =
-            preferences.getInt(keyAppearanceChatBgColor, defaultChatBackgroundColor)
-
-    override fun saveChatBgColor(color: Int) {
-        preferences.edit()
-                .putInt(keyAppearanceChatBgColor, color)
-                .apply()
+    override fun getPreferences(): UserPreferences {
+        val color = sharedPreferences.getInt(keyAppearanceChatBgColor, defaultChatBackgroundColor)
+        val sound = sharedPreferences.getBoolean(keyNotificationSound, false)
+        val classification = sharedPreferences.getBoolean(keyDiscoveryClassification, true)
+        return UserPreferences(color, sound, classification)
     }
 
-    override fun saveNewSoundPreference(enabled: Boolean) {
-        preferences.edit()
-                .putBoolean(keyNotificationSound, enabled)
-                .apply()
-    }
-
-    override fun saveNewClassificationPreference(enabled: Boolean) {
-        preferences.edit()
-                .putBoolean(keyDiscoveryClassification, enabled)
+    override fun savePreferences(preferences: UserPreferences) {
+        sharedPreferences.edit()
+                .putInt(keyAppearanceChatBgColor, preferences.color)
+                .putBoolean(keyNotificationSound, preferences.sound)
+                .putBoolean(keyDiscoveryClassification, preferences.classification)
                 .apply()
     }
 
     private fun migrate() {
 
-        val lastVersion = preferences.getInt(keyVersion, 0)
+        val lastVersion = sharedPreferences.getInt(keyVersion, 0)
 
         if (lastVersion == version) {
             return
@@ -65,7 +54,7 @@ class UserPreferencesImpl(private val context: Context) : UserPreferences {
 
             val oldPreferences = PreferenceManager.getDefaultSharedPreferences(context)
 
-            preferences.edit()
+            sharedPreferences.edit()
                     .putBoolean(keyNotificationSound, oldPreferences.getBoolean("notifications_sound", false))
                     .apply()
 
@@ -75,6 +64,6 @@ class UserPreferencesImpl(private val context: Context) : UserPreferences {
                     .apply()
         }
 
-        preferences.edit().putInt(keyVersion, version).apply()
+        sharedPreferences.edit().putInt(keyVersion, version).apply()
     }
 }

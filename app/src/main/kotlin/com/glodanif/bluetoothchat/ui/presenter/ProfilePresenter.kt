@@ -11,7 +11,7 @@ import com.glodanif.bluetoothchat.domain.interactor.GetProfileInteractor
 import com.glodanif.bluetoothchat.domain.interactor.SaveProfileInteractor
 import com.glodanif.bluetoothchat.ui.router.ProfileRouter
 import com.glodanif.bluetoothchat.ui.view.ProfileView
-import com.glodanif.bluetoothchat.ui.viewmodel.ProfileConverter
+import com.glodanif.bluetoothchat.ui.viewmodel.converter.ProfileConverter
 
 class ProfilePresenter(private val setupMode: Boolean,
                        private val view: ProfileView,

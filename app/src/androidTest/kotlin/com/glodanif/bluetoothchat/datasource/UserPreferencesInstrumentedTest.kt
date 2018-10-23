@@ -4,7 +4,7 @@ import android.graphics.Color
 import androidx.test.InstrumentationRegistry
 import androidx.test.runner.AndroidJUnit4
 import com.glodanif.bluetoothchat.data.model.UserPreferences
-import com.glodanif.bluetoothchat.data.model.UserPreferencesImpl
+import com.glodanif.bluetoothchat.data.model.UserPreferencesStorageImpl
 import org.junit.After
 import org.junit.Assert.assertTrue
 import org.junit.Before
@@ -19,7 +19,7 @@ class UserPreferencesInstrumentedTest {
     @Before
     fun prepare() {
         val context = InstrumentationRegistry.getTargetContext()
-        storage = UserPreferencesImpl(context).apply {
+        storage = UserPreferencesStorageImpl(context).apply {
             saveNewSoundPreference(false)
             saveNewClassificationPreference(true)
             saveChatBgColor(Color.RED)

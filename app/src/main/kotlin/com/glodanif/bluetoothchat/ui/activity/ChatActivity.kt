@@ -11,20 +11,21 @@ import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.os.Handler
-import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.coordinatorlayout.widget.CoordinatorLayout
-import androidx.cardview.widget.CardView
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import android.widget.*
+import androidx.cardview.widget.CardView
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.glodanif.bluetoothchat.R
 import com.glodanif.bluetoothchat.ui.adapter.ChatAdapter
 import com.glodanif.bluetoothchat.ui.presenter.ChatPresenter
+import com.glodanif.bluetoothchat.ui.router.ChatRouter
 import com.glodanif.bluetoothchat.ui.util.ScrollAwareBehavior
 import com.glodanif.bluetoothchat.ui.util.SimpleTextWatcher
 import com.glodanif.bluetoothchat.ui.view.ChatView
@@ -41,10 +42,9 @@ import org.koin.core.parameter.parametersOf
 import pl.aprilapps.easyphotopicker.DefaultCallback
 import pl.aprilapps.easyphotopicker.EasyImage
 import java.io.File
-import java.lang.Exception
 import java.util.*
 
-class ChatActivity : SkeletonActivity(), ChatView {
+class ChatActivity : SkeletonActivity(), ChatView, ChatRouter {
 
     private val deviceAddress: String? by argument(EXTRA_ADDRESS)
 
@@ -154,7 +154,7 @@ class ChatActivity : SkeletonActivity(), ChatView {
 
         chatAdapter = ChatAdapter().apply {
             imageClickListener = { view, message ->
-                ImagePreviewActivity.start(this@ChatActivity, view, message)
+                presenter.onImageClick(view, message)
             }
         }
 
@@ -178,8 +178,6 @@ class ChatActivity : SkeletonActivity(), ChatView {
             })
         }
 
-        presenter.onViewCreated()
-
         if (Intent.ACTION_SEND == intent.action) {
 
             val textToShare = intent.getStringExtra(EXTRA_MESSAGE)
@@ -196,6 +194,10 @@ class ChatActivity : SkeletonActivity(), ChatView {
 
             intent.action = Intent.ACTION_VIEW
         }
+    }
+
+    override fun openImage(view: ImageView, message: ChatMessageViewModel) {
+        ImagePreviewActivity.start(this, view, message)
     }
 
     override fun setBackgroundColor(color: Int) {

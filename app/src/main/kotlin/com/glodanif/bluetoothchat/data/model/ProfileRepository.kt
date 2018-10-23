@@ -5,5 +5,4 @@ import com.glodanif.bluetoothchat.data.entity.Profile
 interface ProfileRepository {
     fun saveProfile(profile: Profile)
     fun getProfile(): Profile
-    fun isInitialized(): Boolean
 }

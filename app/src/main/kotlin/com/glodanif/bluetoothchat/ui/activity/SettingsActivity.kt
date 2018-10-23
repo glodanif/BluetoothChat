@@ -11,6 +11,7 @@ import android.widget.TextView
 import com.glodanif.bluetoothchat.R
 import com.glodanif.bluetoothchat.ui.presenter.SettingsPresenter
 import com.glodanif.bluetoothchat.ui.view.SettingsView
+import com.glodanif.bluetoothchat.ui.viewmodel.UserPreferencesViewModel
 import com.glodanif.bluetoothchat.ui.widget.SwitchPreference
 import com.glodanif.bluetoothchat.utils.bind
 import me.priyesh.chroma.ChromaDialog
@@ -31,6 +32,7 @@ class SettingsActivity : SkeletonActivity(), SettingsView {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings, ActivityType.CHILD_ACTIVITY)
+        lifecycle.addObserver(presenter)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             notificationsHeader.visibility = View.GONE
@@ -44,20 +46,12 @@ class SettingsActivity : SkeletonActivity(), SettingsView {
         findViewById<RelativeLayout>(R.id.rl_chat_bg_color_button).setOnClickListener {
             presenter.prepareColorPicker()
         }
-
-        presenter.loadPreferences()
     }
 
-    override fun displayNotificationSetting(sound: Boolean) {
-        soundPreference.setChecked(sound)
-    }
-
-    override fun displayAppearanceSettings(@ColorInt color: Int) {
-        colorPreview.setBackgroundColor(color)
-    }
-
-    override fun displayDiscoverySetting(classification: Boolean) {
-        classificationPreference.setChecked(classification)
+    override fun displaySetting(preferences: UserPreferencesViewModel) {
+        colorPreview.setBackgroundColor(preferences.color)
+        soundPreference.setChecked(preferences.sound)
+        classificationPreference.setChecked(preferences.classification)
     }
 
     override fun displayColorPicker(@ColorInt color: Int) {

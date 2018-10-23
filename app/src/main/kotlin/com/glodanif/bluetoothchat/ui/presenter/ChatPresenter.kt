@@ -1,7 +1,9 @@
 package com.glodanif.bluetoothchat.ui.presenter
 
 import android.bluetooth.BluetoothDevice
+import android.widget.ImageView
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.OnLifecycleEvent
 import com.glodanif.bluetoothchat.data.entity.ChatMessage
 import com.glodanif.bluetoothchat.data.entity.Conversation
@@ -9,21 +11,26 @@ import com.glodanif.bluetoothchat.data.model.*
 import com.glodanif.bluetoothchat.data.service.message.Contract
 import com.glodanif.bluetoothchat.data.service.message.PayloadType
 import com.glodanif.bluetoothchat.data.service.message.TransferringFile
+import com.glodanif.bluetoothchat.domain.interactor.*
+import com.glodanif.bluetoothchat.ui.router.ChatRouter
 import com.glodanif.bluetoothchat.ui.view.ChatView
+import com.glodanif.bluetoothchat.ui.viewmodel.ChatMessageViewModel
 import com.glodanif.bluetoothchat.ui.viewmodel.converter.ChatMessageConverter
-import kotlinx.coroutines.experimental.*
 import java.io.File
 
 class ChatPresenter(private val deviceAddress: String,
                     private val view: ChatView,
-                    private val conversationsStorage: ConversationsStorage,
-                    private val messagesStorage: MessagesStorage,
+                    private val router: ChatRouter,
                     private val scanModel: BluetoothScanner,
                     private val connectionModel: BluetoothConnector,
-                    private val preferences: UserPreferences,
-                    private val converter: ChatMessageConverter,
-                    private val uiContext: CoroutineDispatcher = Dispatchers.Main,
-                    private val bgContext: CoroutineDispatcher = Dispatchers.IO) : BasePresenter(uiContext) {
+                    private val getProfileInteractor: GetProfileInteractor,
+                    private val markMessagesAsSeenMessagesInteractor: MarkMessagesAsSeenMessagesInteractor,
+                    private val getConversationByAddressInteractor: GetConversationByAddressInteractor,
+                    private val getMessagesByAddressInteractor: GetMessagesByAddressInteractor,
+                    private val subscribeForConnectionEventsInteractor: SubscribeForConnectionEventsInteractor,
+
+                    private val converter: ChatMessageConverter
+) : LifecycleObserver {
 
     private val maxFileSize = 5_242_880
 
@@ -34,8 +41,9 @@ class ChatPresenter(private val deviceAddress: String,
 
         override fun onPrepared() {
 
+            subscribeForConnectionEvents()
+
             with(connectionModel) {
-                addOnConnectListener(connectionListener)
                 addOnMessageListener(messageListener)
                 addOnFileListener(fileListener)
             }
@@ -71,69 +79,55 @@ class ChatPresenter(private val deviceAddress: String,
         }
     }
 
-    private val connectionListener = object : OnConnectionListener {
+    private fun subscribeForConnectionEvents() {
 
-        override fun onConnected(device: BluetoothDevice) {
+        subscribeForConnectionEventsInteractor.subscribe(
 
-        }
+                onConnectionWithdrawn = {
+                    updateState()
+                },
 
-        override fun onConnectionWithdrawn() {
-            updateState()
-        }
+                onConnectionDestroyed = {
+                    view.showServiceDestroyed()
+                },
 
-        override fun onConnectionDestroyed() {
-            view.showServiceDestroyed()
-        }
+                onConnectionAccepted = {
+                    view.showStatusConnected()
+                    view.hideActions()
+                    loadPartnerInfo()
+                },
 
-        override fun onConnectionAccepted() {
+                onConnectionRejected = {
+                    view.showRejectedConnection()
+                    updateState()
+                },
 
-            view.showStatusConnected()
-            view.hideActions()
+                onConnectedIn = { conversation ->
+                    val currentConversation: Conversation? = connectionModel.getCurrentConversation()
+                    if (currentConversation?.deviceAddress == deviceAddress) {
+                        view.showStatusPending()
+                        view.hideDisconnected()
+                        view.hideLostConnection()
+                        view.showConnectionRequest(conversation.displayName, conversation.deviceName)
+                        view.showPartnerName(conversation.displayName, conversation.deviceName)
+                    }
+                },
 
-            launch {
-                val conversation = withContext(bgContext) { conversationsStorage.getConversationByAddress(deviceAddress) }
-                if (conversation != null) {
-                    view.showPartnerName(conversation.displayName, conversation.deviceName)
+                onConnectionLost = {
+                    view.showLostConnection()
+                    updateState()
+                },
+
+                onConnectionFailed = {
+                    view.showFailedConnection()
+                    updateState()
+                },
+
+                onDisconnected = {
+                    view.showDisconnected()
+                    updateState()
                 }
-            }
-        }
-
-        override fun onConnectionRejected() {
-            view.showRejectedConnection()
-            updateState()
-        }
-
-        override fun onConnectedIn(conversation: Conversation) {
-            val currentConversation: Conversation? = connectionModel.getCurrentConversation()
-            if (currentConversation?.deviceAddress == deviceAddress) {
-                view.showStatusPending()
-                view.hideDisconnected()
-                view.hideLostConnection()
-                view.showConnectionRequest(conversation.displayName, conversation.deviceName)
-                view.showPartnerName(conversation.displayName, conversation.deviceName)
-            }
-        }
-
-        override fun onConnectedOut(conversation: Conversation) {
-        }
-
-        override fun onConnecting() {
-        }
-
-        override fun onConnectionLost() {
-            view.showLostConnection()
-            updateState()
-        }
-
-        override fun onConnectionFailed() {
-            view.showFailedConnection()
-            updateState()
-        }
-
-        override fun onDisconnected() {
-            view.showDisconnected()
-            updateState()
-        }
+        )
     }
 
     private val messageListener = object : OnMessageListener {
@@ -213,9 +207,14 @@ class ChatPresenter(private val deviceAddress: String,
         }
     }
 
-    fun onViewCreated() = launch {
-        val color = withContext(bgContext) { preferences.getChatBackgroundColor() }
-        view.setBackgroundColor(color)
+    @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
+    fun created() {
+
+        getProfileInteractor.execute(Unit,
+                onResult = { profile ->
+                    view.setBackgroundColor(profile.color)
+                }
+        )
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_START)
@@ -228,8 +227,8 @@ class ChatPresenter(private val deviceAddress: String,
             connectionModel.addOnPrepareListener(prepareListener)
 
             if (connectionModel.isConnectionPrepared()) {
+                subscribeForConnectionEvents()
                 with(connectionModel) {
-                    addOnConnectListener(connectionListener)
                     addOnMessageListener(messageListener)
                     addOnFileListener(fileListener)
                 }
@@ -241,21 +240,30 @@ class ChatPresenter(private val deviceAddress: String,
             }
         }
 
-        launch {
-            val messagesDef = async(bgContext) { messagesStorage.getMessagesByDevice(deviceAddress) }
-            val conversationDef = async(bgContext) { conversationsStorage.getConversationByAddress(deviceAddress) }
-            displayInfo(messagesDef.await(), conversationDef.await())
-        }
+        loadPartnerInfo()
+        getMessagesByAddressInteractor.execute(deviceAddress,
+                onResult = { messages ->
+                    displayMessages(messages)
+                })
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
     fun releaseConnection() {
+        subscribeForConnectionEventsInteractor.unsubscribe()
         with(connectionModel) {
             removeOnPrepareListener(prepareListener)
-            removeOnConnectListener(connectionListener)
             removeOnMessageListener(messageListener)
             removeOnFileListener(fileListener)
         }
+
+        getProfileInteractor.cancel()
+        markMessagesAsSeenMessagesInteractor.cancel()
+        getConversationByAddressInteractor.cancel()
+        getMessagesByAddressInteractor.cancel()
+    }
+
+    fun onImageClick(view: ImageView, message: ChatMessageViewModel) {
+        router.openImage(view, message)
     }
 
     private fun sendFileIfPrepared() = fileToSend?.let { file ->
@@ -274,17 +282,23 @@ class ChatPresenter(private val deviceAddress: String,
         }
     }
 
-    private fun displayInfo(messages: List<ChatMessage>, partner: Conversation?) {
+    private fun loadPartnerInfo() {
 
-        messages.forEach { it.seenHere = true }
-        view.showMessagesHistory(converter.transform(messages))
-        if (partner != null) {
-            view.showPartnerName(partner.displayName, partner.deviceName)
-        }
+        getConversationByAddressInteractor.execute(deviceAddress,
+                onResult = { conversation ->
+                    if (conversation != null) {
+                        view.showPartnerName(conversation.displayName, conversation.deviceName)
+                    }
+                }
+        )
+    }
 
-        launch(bgContext) {
-            messagesStorage.updateMessages(messages)
-        }
+    private fun displayMessages(messages: List<ChatMessage>) {
+
+        markMessagesAsSeenMessagesInteractor.execute(messages,
+                onResult = { updatedMessages ->
+                    view.showMessagesHistory(converter.transform(updatedMessages))
+                })
     }
 
     fun resetConnection() {

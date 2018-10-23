@@ -1,10 +1,9 @@
 package com.glodanif.bluetoothchat.ui.view
 
 import androidx.annotation.ColorInt
+import com.glodanif.bluetoothchat.ui.viewmodel.UserPreferencesViewModel
 
 interface SettingsView {
-    fun displayNotificationSetting(sound: Boolean)
-    fun displayDiscoverySetting(classification: Boolean)
-    fun displayAppearanceSettings(@ColorInt color: Int)
+    fun displaySetting(preferences: UserPreferencesViewModel)
     fun displayColorPicker(@ColorInt color: Int)
 }

@@ -2,10 +2,15 @@ package com.glodanif.bluetoothchat.ui.presenter
 
 import android.bluetooth.BluetoothDevice
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.OnLifecycleEvent
 import com.glodanif.bluetoothchat.data.entity.ChatMessage
 import com.glodanif.bluetoothchat.data.entity.Conversation
 import com.glodanif.bluetoothchat.data.model.*
+import com.glodanif.bluetoothchat.domain.interactor.GetConversationsInteractor
+import com.glodanif.bluetoothchat.domain.interactor.GetProfileInteractor
+import com.glodanif.bluetoothchat.domain.interactor.RemoveConversationInteractor
+import com.glodanif.bluetoothchat.ui.router.ConversationsRouter
 import com.glodanif.bluetoothchat.ui.view.ConversationsView
 import com.glodanif.bluetoothchat.ui.viewmodel.ConversationViewModel
 import com.glodanif.bluetoothchat.ui.viewmodel.converter.ConversationConverter
@@ -15,13 +20,15 @@ import kotlinx.coroutines.experimental.launch
 import kotlinx.coroutines.experimental.withContext
 
 class ConversationsPresenter(private val view: ConversationsView,
+                             private val router: ConversationsRouter,
+                             private val getProfileInteractor: GetProfileInteractor,
+                             private val getConversationsInteractor: GetConversationsInteractor,
+                             private val removeConversationInteractor: RemoveConversationInteractor,
+
                              private val connection: BluetoothConnector,
-                             private val conversationStorage: ConversationsStorage,
-                             private val messageStorage: MessagesStorage,
-                             private val profileRepository: ProfileRepository,
-                             private val converter: ConversationConverter,
-                             private val uiContext: CoroutineDispatcher = Dispatchers.Main,
-                             private val bgContext: CoroutineDispatcher = Dispatchers.IO) : BasePresenter(uiContext) {
+
+                             private val converter: ConversationConverter
+) : LifecycleObserver {
 
     private val prepareListener = object : OnPrepareListener {
 
@@ -73,7 +80,7 @@ class ConversationsPresenter(private val view: ConversationsView,
         }
 
         override fun onConnectedOut(conversation: Conversation) {
-            view.redirectToChat(converter.transform(conversation))
+            router.redirectToChat(converter.transform(conversation))
         }
 
         override fun onConnecting() {
@@ -107,23 +114,28 @@ class ConversationsPresenter(private val view: ConversationsView,
         }
     }
 
-    fun loadConversations() = launch {
+    fun loadConversations() {
 
-        val conversations = withContext(bgContext) { conversationStorage.getConversations() }
-
-        if (conversations.isEmpty()) {
-            view.showNoConversations()
-        } else {
-            val connectedDevice = if (connection.isConnected())
-                connection.getCurrentConversation()?.deviceAddress else null
-            view.showConversations(converter.transform(conversations), connectedDevice)
-        }
+        getConversationsInteractor.execute(Unit,
+                onResult = { conversations ->
+                    if (conversations.isEmpty()) {
+                        view.showNoConversations()
+                    } else {
+                        val connectedDevice = if (connection.isConnected())
+                            connection.getCurrentConversation()?.deviceAddress else null
+                        view.showConversations(converter.transform(conversations), connectedDevice)
+                    }
+                })
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_START)
-    fun loadUserProfile() = launch {
-        val profile = withContext(bgContext) { profileRepository.getProfile() }
-        view.showUserProfile(profile.name, profile.color)
+    fun loadUserProfile() {
+
+        getProfileInteractor.execute(Unit,
+                onResult = { profile ->
+                    view.showUserProfile(profile.name, profile.color)
+                }
+        )
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_START)
@@ -163,10 +175,17 @@ class ConversationsPresenter(private val view: ConversationsView,
         }
     }
 
+    @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
+    fun stop() {
+        getProfileInteractor.cancel()
+        getConversationsInteractor.cancel()
+        removeConversationInteractor.cancel()
+    }
+
     fun startChat(conversation: ConversationViewModel) {
         connection.acceptConnection()
         view.hideActions()
-        view.redirectToChat(conversation)
+        router.redirectToChat(conversation)
     }
 
     fun rejectConnection() {
@@ -176,10 +195,7 @@ class ConversationsPresenter(private val view: ConversationsView,
 
     fun removeConversation(address: String) {
         connection.sendDisconnectRequest()
-        launch(bgContext) {
-            conversationStorage.removeConversationByAddress(address)
-            messageStorage.removeMessagesByAddress(address)
-        }
+        removeConversationInteractor.execute(address)
         view.removeFromShortcuts(address)
         loadConversations()
     }
@@ -187,5 +203,21 @@ class ConversationsPresenter(private val view: ConversationsView,
     fun disconnect() {
         connection.sendDisconnectRequest()
         loadConversations()
+    }
+
+    fun onProfileClick() {
+        router.redirectToProfile()
+    }
+
+    fun onReceivedImagesClick() {
+        router.redirectToReceivedImages()
+    }
+
+    fun onSettingsClick() {
+        router.redirectToSettings()
+    }
+
+    fun onAboutClick() {
+        router.redirectToAbout()
     }
 }

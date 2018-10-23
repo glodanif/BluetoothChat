@@ -15,7 +15,7 @@ import com.glodanif.bluetoothchat.data.entity.Conversation
 import com.glodanif.bluetoothchat.data.model.ConversationsStorage
 import com.glodanif.bluetoothchat.data.model.MessagesStorage
 import com.glodanif.bluetoothchat.data.model.ProfileRepository
-import com.glodanif.bluetoothchat.data.model.UserPreferences
+import com.glodanif.bluetoothchat.data.model.UserPreferencesStorage
 import com.glodanif.bluetoothchat.data.service.message.Contract
 import com.glodanif.bluetoothchat.data.service.message.Message
 import com.glodanif.bluetoothchat.data.service.message.PayloadType
@@ -35,7 +35,7 @@ class ConnectionController(private val application: ChatApplication,
                            private val view: NotificationView,
                            private val conversationStorage: ConversationsStorage,
                            private val messagesStorage: MessagesStorage,
-                           private val preferences: UserPreferences,
+                           private val preferences: UserPreferencesStorage,
                            private val profileRepository: ProfileRepository,
                            private val shortcutManager: ShortcutManager,
                            private val uiContext: CoroutineDispatcher = Dispatchers.Main,

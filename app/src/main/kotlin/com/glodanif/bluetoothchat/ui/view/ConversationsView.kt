@@ -4,7 +4,6 @@ import androidx.annotation.ColorInt
 import com.glodanif.bluetoothchat.ui.viewmodel.ConversationViewModel
 
 interface ConversationsView {
-    fun redirectToChat(conversation: ConversationViewModel)
     fun notifyAboutConnectedDevice(conversation: ConversationViewModel)
     fun showServiceDestroyed()
     fun showNoConversations()

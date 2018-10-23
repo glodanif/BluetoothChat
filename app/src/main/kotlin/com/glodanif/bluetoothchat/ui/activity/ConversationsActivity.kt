@@ -24,6 +24,7 @@ import com.amulyakhare.textdrawable.TextDrawable
 import com.glodanif.bluetoothchat.R
 import com.glodanif.bluetoothchat.ui.adapter.ConversationsAdapter
 import com.glodanif.bluetoothchat.ui.presenter.ConversationsPresenter
+import com.glodanif.bluetoothchat.ui.router.ConversationsRouter
 import com.glodanif.bluetoothchat.ui.view.ConversationsView
 import com.glodanif.bluetoothchat.ui.view.NotificationView
 import com.glodanif.bluetoothchat.ui.viewmodel.ConversationViewModel
@@ -38,7 +39,7 @@ import com.kobakei.ratethisapp.RateThisApp
 import org.koin.android.ext.android.inject
 import org.koin.core.parameter.parametersOf
 
-class ConversationsActivity : SkeletonActivity(), ConversationsView {
+class ConversationsActivity : SkeletonActivity(), ConversationsView, ConversationsRouter {
 
     private val presenter: ConversationsPresenter by inject { parametersOf(this) }
     private val shortcutsManager: ShortcutManager by inject()
@@ -67,14 +68,10 @@ class ConversationsActivity : SkeletonActivity(), ConversationsView {
         settingsPopup = SettingsPopup(this).apply {
             setOnOptionClickListener {
                 when (it) {
-                    SettingsPopup.Option.PROFILE ->
-                        ProfileActivity.start(this@ConversationsActivity, setupMode = false)
-                    SettingsPopup.Option.IMAGES ->
-                        ReceivedImagesActivity.start(this@ConversationsActivity, address = null)
-                    SettingsPopup.Option.SETTINGS ->
-                        SettingsActivity.start(this@ConversationsActivity)
-                    SettingsPopup.Option.ABOUT ->
-                        AboutActivity.start(this@ConversationsActivity)
+                    SettingsPopup.Option.PROFILE -> presenter.onProfileClick()
+                    SettingsPopup.Option.IMAGES -> presenter.onReceivedImagesClick()
+                    SettingsPopup.Option.SETTINGS -> presenter.onSettingsClick()
+                    SettingsPopup.Option.ABOUT -> presenter.onAboutClick()
                 }
             }
         }
@@ -174,6 +171,26 @@ class ConversationsActivity : SkeletonActivity(), ConversationsView {
                 .show()
     }
 
+    override fun redirectToChat(conversation: ConversationViewModel) {
+        ChatActivity.start(this, conversation.address)
+    }
+
+    override fun redirectToProfile() {
+        ProfileActivity.start(this, false)
+    }
+
+    override fun redirectToReceivedImages() {
+        ReceivedImagesActivity.start(this, null)
+    }
+
+    override fun redirectToSettings() {
+        SettingsActivity.start(this)
+    }
+
+    override fun redirectToAbout() {
+        AboutActivity.start(this)
+    }
+
     override fun onStart() {
         super.onStart()
 
@@ -238,10 +255,6 @@ class ConversationsActivity : SkeletonActivity(), ConversationsView {
                 .setPositiveButton(getString(R.string.general__ok), null)
                 .setCancelable(false)
                 .show()
-    }
-
-    override fun redirectToChat(conversation: ConversationViewModel) {
-        ChatActivity.start(this, conversation.address)
     }
 
     override fun showUserProfile(name: String, color: Int) {

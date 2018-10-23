@@ -2,8 +2,11 @@ package com.glodanif.bluetoothchat.ui.presenter
 
 import android.bluetooth.BluetoothDevice
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.OnLifecycleEvent
 import com.glodanif.bluetoothchat.data.model.*
+import com.glodanif.bluetoothchat.domain.interactor.ExtractApkInteractor
+import com.glodanif.bluetoothchat.domain.interactor.GetUserPreferencesInteractor
 import com.glodanif.bluetoothchat.ui.view.ScanView
 import com.glodanif.bluetoothchat.utils.withPotentiallyInstalledApplication
 import kotlinx.coroutines.experimental.CoroutineDispatcher
@@ -14,14 +17,15 @@ import kotlinx.coroutines.experimental.withContext
 class ScanPresenter(private val view: ScanView,
                     private val scanner: BluetoothScanner,
                     private val connection: BluetoothConnector,
-                    private val fileManager: FileManager,
-                    private val preferences: UserPreferences,
-                    private val uiContext: CoroutineDispatcher = Dispatchers.Main,
-                    private val bgContext: CoroutineDispatcher = Dispatchers.IO): BasePresenter(uiContext) {
+                    private val getUserPreferencesInteractor: GetUserPreferencesInteractor,
+                    private val extractApkInteractor: ExtractApkInteractor
+) : LifecycleObserver {
 
     companion object {
         const val SCAN_DURATION_SECONDS = 30
     }
+
+    private var isClassificationEnabled = true
 
     init {
 
@@ -44,11 +48,25 @@ class ScanPresenter(private val view: ScanView,
             }
 
             override fun onDeviceFind(device: BluetoothDevice) {
-                if (!preferences.isClassificationEnabled() || device.bluetoothClass.withPotentiallyInstalledApplication()) {
+                if (!isClassificationEnabled || device.bluetoothClass.withPotentiallyInstalledApplication()) {
                     view.addFoundDevice(device)
                 }
             }
         })
+    }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_START)
+    fun start() {
+        getUserPreferencesInteractor.execute(Unit,
+                onResult = { profile ->
+                    isClassificationEnabled = profile.classification
+                })
+    }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
+    fun stop() {
+        getUserPreferencesInteractor.cancel()
+        extractApkInteractor.cancel()
     }
 
     fun onDevicePicked(address: String) {
@@ -135,7 +153,7 @@ class ScanPresenter(private val view: ScanView,
 
     fun onPairedDevicesReady() {
         val devices = scanner.getBondedDevices().filter {
-            !preferences.isClassificationEnabled() || it.bluetoothClass.withPotentiallyInstalledApplication()
+            !isClassificationEnabled || it.bluetoothClass.withPotentiallyInstalledApplication()
         }
         view.showPairedDevices(devices)
     }
@@ -182,12 +200,15 @@ class ScanPresenter(private val view: ScanView,
         scanner.stopListeningDiscoverableStatus()
     }
 
-    fun shareApk() = this.launch {
-        val uri = withContext(bgContext) { fileManager.extractApkFile() }
-        if (uri != null) {
-            view.shareApk(uri)
-        } else {
-            view.showExtractionApkFailureMessage()
-        }
+    fun shareApk() {
+
+        extractApkInteractor.execute(Unit,
+                onResult = { uri ->
+                    view.shareApk(uri)
+                },
+                onError = {
+                    view.showExtractionApkFailureMessage()
+                }
+        )
     }
 }

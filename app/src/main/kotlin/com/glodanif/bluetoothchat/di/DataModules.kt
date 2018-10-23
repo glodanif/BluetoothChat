@@ -5,10 +5,7 @@ import com.glodanif.bluetoothchat.data.model.*
 import com.glodanif.bluetoothchat.domain.interactor.*
 import com.glodanif.bluetoothchat.ui.view.NotificationView
 import com.glodanif.bluetoothchat.ui.view.NotificationViewImpl
-import com.glodanif.bluetoothchat.ui.viewmodel.ProfileConverter
-import com.glodanif.bluetoothchat.ui.viewmodel.converter.ChatMessageConverter
-import com.glodanif.bluetoothchat.ui.viewmodel.converter.ContactConverter
-import com.glodanif.bluetoothchat.ui.viewmodel.converter.ConversationConverter
+import com.glodanif.bluetoothchat.ui.viewmodel.converter.*
 import com.glodanif.bluetoothchat.ui.widget.ShortcutManager
 import com.glodanif.bluetoothchat.ui.widget.ShortcutManagerImpl
 import org.koin.android.ext.koin.androidContext
@@ -27,7 +24,7 @@ val databaseModule = module {
 
 val localStorageModule = module {
     single { FileManagerImpl(androidContext()) as FileManager }
-    single { UserPreferencesImpl(androidContext()) as UserPreferences }
+    single { UserPreferencesStorageImpl(androidContext()) as UserPreferencesStorage }
     single { ProfileRepositoryImpl(androidContext()) as ProfileRepository }
 }
 
@@ -37,6 +34,14 @@ val domainModule = module {
     factory { IsProfileInitializedInteractor(get()) }
     factory { GetMyDeviceNameInteractor(get()) }
     factory { GetContactsInteractor(get()) }
+    factory { GetConversationsInteractor(get()) }
+    factory { GetReceivedImagesInteractor(get()) }
+    factory { GetUserPreferencesInteractor(get()) }
+    factory { SaveUserPreferencesInteractor(get()) }
+    factory { RemoveConversationInteractor(get(), get()) }
+    factory { MarkMessagesAsSeenMessagesInteractor(get()) }
+    factory { ExtractApkInteractor(get()) }
+    factory { SubscribeForConnectionEventsInteractor(get()) }
 }
 
 const val localeScope = "locale_scope"
@@ -48,4 +53,5 @@ val viewModule = module {
     scope(localeScope) { ConversationConverter(androidContext()) }
     scope(localeScope) { ChatMessageConverter(androidContext()) }
     scope(localeScope) { ProfileConverter(androidContext()) }
+    scope(localeScope) { PreferencesConverter() }
 }

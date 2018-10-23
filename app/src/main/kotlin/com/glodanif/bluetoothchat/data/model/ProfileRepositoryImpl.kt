@@ -18,7 +18,6 @@ class ProfileRepositoryImpl(context: Context) : ProfileRepository {
     private val preferences
             by lazy { context.getSharedPreferences(keyPreferences, Context.MODE_PRIVATE) }
 
-
     override fun getProfile() = Profile(
             preferences.getString(keyUserName, "") ?: "",
             preferences.getInt(keyUserColor, defaultAvatarBackgroundColor)
@@ -29,10 +28,5 @@ class ProfileRepositoryImpl(context: Context) : ProfileRepository {
                 .putString(keyUserName, profile.name)
                 .putInt(keyUserColor, profile.color)
                 .apply()
-    }
-
-    override fun isInitialized(): Boolean {
-        val userName = preferences.getString(keyUserName, "")
-        return !userName.isNullOrEmpty()
     }
 }
