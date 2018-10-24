@@ -232,8 +232,9 @@ class ChatActivity : SkeletonActivity(), ChatView, ChatRouter {
         messageField.text = null
     }
 
-    override fun showNotConnectedToThisDevice(currentDevice: String) {
-        actions.setActionsAndShow(getString(R.string.chat__connected_to_another, currentDevice),
+    override fun showNotConnectedToThisDevice(displayName: String, deviceName: String) {
+        val fullName = "$displayName ($deviceName)"
+        actions.setActionsAndShow(getString(R.string.chat__connected_to_another, fullName),
                 ActionView.Action(getString(R.string.chat__connect)) { presenter.connectToDevice() },
                 null
         )

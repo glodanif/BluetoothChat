@@ -2,7 +2,7 @@ package com.glodanif.bluetoothchat.domain.interactor
 
 import com.glodanif.bluetoothchat.data.model.ProfileRepository
 import com.glodanif.bluetoothchat.data.service.message.Contract
-import com.glodanif.bluetoothchat.domain.InvalidProfileNameException
+import com.glodanif.bluetoothchat.domain.exception.InvalidStringException
 import com.glodanif.bluetoothchat.data.entity.Profile
 
 class SaveProfileInteractor(private val profileRepository: ProfileRepository) : BaseInteractor<Profile, Unit>() {
@@ -13,7 +13,7 @@ class SaveProfileInteractor(private val profileRepository: ProfileRepository) : 
         if (!name.isEmpty() && name.length <= 25 && !name.contains(Contract.DIVIDER)) {
             profileRepository.saveProfile(input)
         } else {
-            throw InvalidProfileNameException(Contract.DIVIDER)
+            throw InvalidStringException(Contract.DIVIDER)
         }
     }
 }

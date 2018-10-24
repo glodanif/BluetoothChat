@@ -2,7 +2,7 @@ package com.glodanif.bluetoothchat.domain.interactor
 
 import android.net.Uri
 import com.glodanif.bluetoothchat.data.model.FileManager
-import com.glodanif.bluetoothchat.domain.ExtractionApkException
+import com.glodanif.bluetoothchat.domain.exception.FileException
 
 class ExtractApkInteractor(private val fileManager: FileManager) : BaseInteractor<Unit, Uri>() {
 
@@ -12,7 +12,7 @@ class ExtractApkInteractor(private val fileManager: FileManager) : BaseInteracto
         if (uri != null) {
             return uri
         } else {
-            throw ExtractionApkException()
+            throw FileException("Unable to extract .apk file")
         }
     }
 }

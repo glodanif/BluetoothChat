@@ -11,6 +11,12 @@ import com.glodanif.bluetoothchat.data.model.*
 import com.glodanif.bluetoothchat.data.service.message.Contract
 import com.glodanif.bluetoothchat.data.service.message.PayloadType
 import com.glodanif.bluetoothchat.data.service.message.TransferringFile
+import com.glodanif.bluetoothchat.domain.ConversationStatus
+import com.glodanif.bluetoothchat.domain.FileTransferringStatus
+import com.glodanif.bluetoothchat.domain.exception.BluetoothDisabledException
+import com.glodanif.bluetoothchat.domain.exception.ConnectionException
+import com.glodanif.bluetoothchat.domain.exception.InvalidStringException
+import com.glodanif.bluetoothchat.domain.exception.PreparationException
 import com.glodanif.bluetoothchat.domain.interactor.*
 import com.glodanif.bluetoothchat.ui.router.ChatRouter
 import com.glodanif.bluetoothchat.ui.view.ChatView
@@ -21,113 +27,81 @@ import java.io.File
 class ChatPresenter(private val deviceAddress: String,
                     private val view: ChatView,
                     private val router: ChatRouter,
-                    private val scanModel: BluetoothScanner,
                     private val connectionModel: BluetoothConnector,
                     private val getProfileInteractor: GetProfileInteractor,
                     private val markMessagesAsSeenMessagesInteractor: MarkMessagesAsSeenMessagesInteractor,
                     private val getConversationByAddressInteractor: GetConversationByAddressInteractor,
                     private val getMessagesByAddressInteractor: GetMessagesByAddressInteractor,
-                    private val subscribeForConnectionEventsInteractor: SubscribeForConnectionEventsInteractor,
-
+                    private val prepareBluetoothConnectionInteractor: PrepareBluetoothConnectionInteractor,
+                    private val isConnectedToThisDeviceInteractor: IsConnectedToThisDeviceInteractor,
+                    private val getDeviceNameByAddressInteractor: GetDeviceNameByAddressInteractor,
+                    private val sendTextMessageInteractor: SendTextMessageInteractor,
+                    private val disconnectInteractor: DisconnectInteractor,
+                    private val getConversationStatusInteractor: GetConversationStatusInteractor,
+                    private val getFileTransferStatusInteractor: GetFileTransferStatusInteractor,
                     private val converter: ChatMessageConverter
 ) : LifecycleObserver {
 
-    private val maxFileSize = 5_242_880
+    private val connectionListener = object : OnConnectionListener {
 
-    private var fileToSend: File? = null
-    private var filePresharing: File? = null
+        override fun onConnected(device: BluetoothDevice) {
 
-    private val prepareListener = object : OnPrepareListener {
+        }
 
-        override fun onPrepared() {
-
-            subscribeForConnectionEvents()
-
-            with(connectionModel) {
-                addOnMessageListener(messageListener)
-                addOnFileListener(fileListener)
-            }
+        override fun onConnectionWithdrawn() {
             updateState()
-            dismissNotification()
-
-            if (!connectionModel.isConnected()) {
-                fileToSend?.let {
-                    filePresharing = fileToSend
-                    view.showPresharingImage(it.absolutePath)
-                }
-            } else {
-
-                if (filePresharing != null) {
-                    return
-                }
-
-                fileToSend?.let { file ->
-
-                    if (file.length() > maxFileSize) {
-                        view.showImageTooBig(maxFileSize.toLong())
-                    } else {
-                        connectionModel.sendFile(file, PayloadType.IMAGE)
-                    }
-                    fileToSend = null
-                    filePresharing = null
-                }
-            }
         }
 
-        override fun onError() {
-            releaseConnection()
+        override fun onConnectionDestroyed() {
+            view.showServiceDestroyed()
         }
-    }
 
-    private fun subscribeForConnectionEvents() {
+        override fun onConnectionAccepted() {
+            view.showStatusConnected()
+            view.hideActions()
+            loadPartnerInfo()
+        }
 
-        subscribeForConnectionEventsInteractor.subscribe(
+        override fun onConnectionRejected() {
+            view.showRejectedConnection()
+            updateState()
+        }
 
-                onConnectionWithdrawn = {
-                    updateState()
-                },
+        override fun onConnectedIn(conversation: Conversation) {
 
-                onConnectionDestroyed = {
-                    view.showServiceDestroyed()
-                },
-
-                onConnectionAccepted = {
-                    view.showStatusConnected()
-                    view.hideActions()
-                    loadPartnerInfo()
-                },
-
-                onConnectionRejected = {
-                    view.showRejectedConnection()
-                    updateState()
-                },
-
-                onConnectedIn = { conversation ->
-                    val currentConversation: Conversation? = connectionModel.getCurrentConversation()
-                    if (currentConversation?.deviceAddress == deviceAddress) {
-                        view.showStatusPending()
-                        view.hideDisconnected()
-                        view.hideLostConnection()
-                        view.showConnectionRequest(conversation.displayName, conversation.deviceName)
-                        view.showPartnerName(conversation.displayName, conversation.deviceName)
+            isConnectedToThisDeviceInteractor.execute(deviceAddress,
+                    onResult = { isSameDevice ->
+                        if (isSameDevice) {
+                            view.showStatusPending()
+                            view.hideDisconnected()
+                            view.hideLostConnection()
+                            view.showConnectionRequest(conversation.displayName, conversation.deviceName)
+                            view.showPartnerName(conversation.displayName, conversation.deviceName)
+                        }
                     }
-                },
+            )
+        }
 
-                onConnectionLost = {
-                    view.showLostConnection()
-                    updateState()
-                },
+        override fun onConnectedOut(conversation: Conversation) {
+        }
 
-                onConnectionFailed = {
-                    view.showFailedConnection()
-                    updateState()
-                },
+        override fun onConnecting() {
+        }
 
-                onDisconnected = {
-                    view.showDisconnected()
-                    updateState()
-                }
-        )
+        override fun onConnectionLost() {
+            view.showLostConnection()
+            updateState()
+        }
+
+        override fun onConnectionFailed() {
+            view.showFailedConnection()
+            updateState()
+        }
+
+        override fun onDisconnected() {
+            view.showDisconnected()
+            updateState()
+        }
     }
 
     private val messageListener = object : OnMessageListener {
@@ -220,66 +194,44 @@ class ChatPresenter(private val deviceAddress: String,
     @OnLifecycleEvent(Lifecycle.Event.ON_START)
     fun prepareConnection() {
 
-        if (!scanModel.isBluetoothEnabled()) {
-            view.showBluetoothDisabled()
-        } else {
-
-            connectionModel.addOnPrepareListener(prepareListener)
-
-            if (connectionModel.isConnectionPrepared()) {
-                subscribeForConnectionEvents()
-                with(connectionModel) {
-                    addOnMessageListener(messageListener)
-                    addOnFileListener(fileListener)
+        prepareBluetoothConnectionInteractor.prepare(connectionListener, messageListener, fileListener,
+                onPrepared = {
+                    updateState()
+                    dismissNotification()
+                },
+                onError = { error ->
+                    when (error) {
+                        is BluetoothDisabledException -> view.showBluetoothDisabled()
+                        is PreparationException -> prepareBluetoothConnectionInteractor.release()
+                    }
                 }
-                updateState()
-                dismissNotification()
-                sendFileIfPrepared()
-            } else {
-                connectionModel.prepare()
-            }
-        }
+        )
 
-        loadPartnerInfo()
         getMessagesByAddressInteractor.execute(deviceAddress,
                 onResult = { messages ->
                     displayMessages(messages)
-                })
+                }
+        )
+
+        loadPartnerInfo()
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
     fun releaseConnection() {
-        subscribeForConnectionEventsInteractor.unsubscribe()
-        with(connectionModel) {
-            removeOnPrepareListener(prepareListener)
-            removeOnMessageListener(messageListener)
-            removeOnFileListener(fileListener)
-        }
-
         getProfileInteractor.cancel()
         markMessagesAsSeenMessagesInteractor.cancel()
         getConversationByAddressInteractor.cancel()
         getMessagesByAddressInteractor.cancel()
+        isConnectedToThisDeviceInteractor.cancel()
+        getDeviceNameByAddressInteractor.cancel()
+        sendTextMessageInteractor.cancel()
+        disconnectInteractor.cancel()
+        getConversationStatusInteractor.cancel()
+        getFileTransferStatusInteractor.cancel()
     }
 
     fun onImageClick(view: ImageView, message: ChatMessageViewModel) {
         router.openImage(view, message)
-    }
-
-    private fun sendFileIfPrepared() = fileToSend?.let { file ->
-
-        if (connectionModel.isConnected()) {
-            if (file.length() > maxFileSize) {
-                view.showImageTooBig(maxFileSize.toLong())
-            } else {
-                connectionModel.sendFile(file, PayloadType.IMAGE)
-            }
-            fileToSend = null
-            filePresharing = null
-        } else {
-            filePresharing = fileToSend
-            view.showPresharingImage(file.absolutePath)
-        }
     }
 
     private fun loadPartnerInfo() {
@@ -302,9 +254,13 @@ class ChatPresenter(private val deviceAddress: String,
     }
 
     fun resetConnection() {
-        connectionModel.disconnect()
-        view.showStatusNotConnected()
-        view.showNotConnectedToAnyDevice()
+
+        disconnectInteractor.execute(Unit,
+                onResult = {
+                    view.showStatusNotConnected()
+                    view.showNotConnectedToAnyDevice()
+                }
+        )
     }
 
     fun disconnect() {
@@ -315,32 +271,32 @@ class ChatPresenter(private val deviceAddress: String,
 
     fun connectToDevice() {
 
-        scanModel.getDeviceByAddress(deviceAddress).let { device ->
-
-            if (device != null) {
-                view.showStatusPending()
-                view.showWainingForOpponent()
-                connectionModel.connect(device)
-            } else {
-                view.showStatusNotConnected()
-                view.showDeviceIsNotAvailable()
-            }
-        }
+        getDeviceNameByAddressInteractor.execute(deviceAddress,
+                onResult = { device ->
+                    view.showStatusPending()
+                    view.showWainingForOpponent()
+                    connectionModel.connect(device)
+                },
+                onError = {
+                    view.showStatusNotConnected()
+                    view.showDeviceIsNotAvailable()
+                }
+        )
     }
 
     fun sendMessage(message: String) {
 
-        if (!connectionModel.isConnected()) {
-            view.showNotConnectedToSend()
-            return
-        }
-
-        if (message.isEmpty()) {
-            view.showNotValidMessage()
-        } else {
-            connectionModel.sendMessage(message)
-            view.afterMessageSent()
-        }
+        sendTextMessageInteractor.execute(message,
+                onResult = {
+                    view.afterMessageSent()
+                },
+                onError = { error ->
+                    when (error) {
+                        is InvalidStringException -> view.showNotValidMessage()
+                        is ConnectionException -> view.showNotConnectedToSend()
+                    }
+                }
+        )
     }
 
     fun performFilePicking() {
@@ -354,44 +310,14 @@ class ChatPresenter(private val deviceAddress: String,
 
     fun sendFile(file: File) {
 
-        if (!file.exists()) {
-            view.showImageNotExist()
-        } else if (!connectionModel.isConnectionPrepared()) {
-            fileToSend = file
-            connectionModel.addOnPrepareListener(prepareListener)
-            connectionModel.prepare()
-        } else if (!connectionModel.isConnected()) {
-            view.showPresharingImage(file.absolutePath)
-            filePresharing = file
-        } else {
-            fileToSend = file
-            if (connectionModel.isConnectedOrPending()) {
-                sendFileIfPrepared()
-            }
-        }
     }
 
     fun cancelPresharing() {
-        fileToSend = null
-        filePresharing = null
+
     }
 
     fun proceedPresharing() {
 
-        filePresharing?.let {
-
-            if (!connectionModel.isConnected()) {
-                view.showPresharingImage(it.absolutePath)
-            } else if (!connectionModel.isFeatureAvailable(Contract.Feature.IMAGE_SHARING)) {
-                view.showReceiverUnableToReceiveImages()
-            } else if (it.length() > maxFileSize) {
-                view.showImageTooBig(maxFileSize.toLong())
-            } else {
-                connectionModel.sendFile(it, PayloadType.IMAGE)
-                fileToSend = null
-                filePresharing = null
-            }
-        }
     }
 
     fun cancelFileTransfer() {
@@ -437,38 +363,45 @@ class ChatPresenter(private val deviceAddress: String,
 
     private fun updateState() {
 
-        connectionModel.getTransferringFile().let { file ->
-
-            if (file != null) {
-                val type = if (file.transferType == TransferringFile.TransferType.RECEIVING)
-                    ChatView.FileTransferType.RECEIVING else ChatView.FileTransferType.SENDING
-                view.showImageTransferLayout(file.name, file.size, type)
-            } else {
-                view.hideImageTransferLayout()
-            }
-        }
-
-        connectionModel.getCurrentConversation().let { conversation ->
-
-            if (conversation == null) {
-                if (connectionModel.isPending()) {
-                    view.showStatusPending()
-                    view.showWainingForOpponent()
-                } else {
-                    view.showStatusNotConnected()
-                    view.showNotConnectedToAnyDevice()
+        getFileTransferStatusInteractor.execute(Unit,
+                onResult = { status ->
+                    when (status) {
+                        is FileTransferringStatus.NotTransferring ->
+                            view.hideImageTransferLayout()
+                        is FileTransferringStatus.Transferring -> {
+                            val type = if (status.transferType == TransferringFile.TransferType.RECEIVING)
+                                ChatView.FileTransferType.RECEIVING else ChatView.FileTransferType.SENDING
+                            view.showImageTransferLayout(status.fileName, status.fileSize, type)
+                        }
+                    }
                 }
-            } else if (conversation.deviceAddress != deviceAddress) {
-                view.showStatusNotConnected()
-                view.showNotConnectedToThisDevice("${conversation.displayName} (${conversation.deviceName})")
-            } else if (connectionModel.isPending() && conversation.deviceAddress == deviceAddress) {
-                view.hideDisconnected()
-                view.hideLostConnection()
-                view.showStatusPending()
-                view.showConnectionRequest(conversation.displayName, conversation.deviceName)
-            } else {
-                view.showStatusConnected()
-            }
-        }
+        )
+
+        getConversationStatusInteractor.execute(deviceAddress,
+                onResult = { status ->
+                    when (status) {
+                        is ConversationStatus.Connected ->
+                            view.showStatusConnected()
+                        is ConversationStatus.Pending -> {
+                            view.showStatusPending()
+                            view.showWainingForOpponent()
+                        }
+                        is ConversationStatus.NotConnected -> {
+                            view.showStatusNotConnected()
+                            view.showNotConnectedToAnyDevice()
+                        }
+                        is ConversationStatus.ConnectedToOther -> {
+                            view.showStatusNotConnected()
+                            view.showNotConnectedToThisDevice(status.displayName, status.deviceName)
+                        }
+                        is ConversationStatus.IncomingRequest -> {
+                            view.hideDisconnected()
+                            view.hideLostConnection()
+                            view.showStatusPending()
+                            view.showConnectionRequest(status.displayName, status.deviceName)
+                        }
+                    }
+                }
+        )
     }
 }

@@ -4,7 +4,7 @@ import androidx.annotation.ColorInt
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.OnLifecycleEvent
-import com.glodanif.bluetoothchat.domain.InvalidProfileNameException
+import com.glodanif.bluetoothchat.domain.exception.InvalidStringException
 import com.glodanif.bluetoothchat.data.entity.Profile
 import com.glodanif.bluetoothchat.domain.interactor.GetMyDeviceNameInteractor
 import com.glodanif.bluetoothchat.domain.interactor.GetProfileInteractor
@@ -61,7 +61,7 @@ class ProfilePresenter(private val setupMode: Boolean,
                     }
                 },
                 onError = { error ->
-                    if (error is InvalidProfileNameException) {
+                    if (error is InvalidStringException) {
                         view.showNotValidNameError(error.forbiddenSymbol)
                     }
                 }
