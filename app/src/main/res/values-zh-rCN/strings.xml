@@ -10,10 +10,10 @@
     <string name="general__yes">是</string>
     <string name="general__no">不是</string>
     <string name="general__service_lost">蓝牙聊天服务已经停止, 重新启动该服务来使用该应用</string>
-    <string name="general__disconnect">Disconnect</string>
-    <string name="general__storage_permission">Bluetooth Chat provides you with an ability to share images. This feature requires <b>"STORAGE"</b> permission to work correctly</string>
-    <string name="general__no_browser">Unable to find browser application</string>
-    <string name="general__time_format">MMM dd, yyyy</string>
+    <string name="general__disconnect">断开连接</string>
+    <string name="general__storage_permission">“蓝牙聊天”提供了分享图片的功能，该功能需要授予 <b>"存储空间"</b> 权限才能正常运行。</string>
+    <string name="general__no_browser">无法找到浏览器应用</string>
+    <string name="general__time_format">Yyyy\'年\'M\'月\'d\'日</string>
     <string name="general__time_unknown">unknown</string>
     <string name="general__time_just_now">just now</string>
     <string name="general__time_a_minute_ago">a minute ago</string>
