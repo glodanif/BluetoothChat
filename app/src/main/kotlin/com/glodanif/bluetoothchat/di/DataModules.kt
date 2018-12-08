@@ -39,9 +39,17 @@ val domainModule = module {
     factory { GetUserPreferencesInteractor(get()) }
     factory { SaveUserPreferencesInteractor(get()) }
     factory { RemoveConversationInteractor(get(), get()) }
-    factory { MarkMessagesAsSeenMessagesInteractor(get()) }
     factory { ExtractApkInteractor(get()) }
-    factory { SubscribeForConnectionEventsInteractor(get()) }
+    factory { MarkMessagesAsSeenInteractor(get()) }
+    factory { GetConversationByAddressInteractor(get()) }
+    factory { GetMessagesByAddressInteractor(get()) }
+    factory { PrepareBluetoothConnectionInteractor(get(), get()) }
+    factory { SendTextMessageInteractor(get()) }
+    factory { SendFileMessageInteractor(get()) }
+    factory { GetConversationStatusInteractor(get()) }
+    factory { GetFileTransferStatusInteractor(get()) }
+    factory { ManageConnectionInteractor(get(), get()) }
+    factory { CancelFileTransferInteractor(get()) }
 }
 
 const val localeScope = "locale_scope"

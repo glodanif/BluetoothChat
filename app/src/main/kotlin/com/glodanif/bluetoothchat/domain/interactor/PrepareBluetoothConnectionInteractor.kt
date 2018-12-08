@@ -16,6 +16,9 @@ class PrepareBluetoothConnectionInteractor(private val connection: BluetoothConn
     fun prepare(connectionListener: OnConnectionListener, messageListener: OnMessageListener, fileListener: OnFileListener,
                 onPrepared: (() -> Unit)? = null, onError: ((Throwable) -> Unit)? = null) {
 
+        this.connectionListener = connectionListener
+        this.messageListener = messageListener
+        this.fileListener = fileListener
         this.prepareListener = object : OnPrepareListener {
 
             override fun onPrepared() {
@@ -32,17 +35,9 @@ class PrepareBluetoothConnectionInteractor(private val connection: BluetoothConn
             }
         }
 
-        this.connectionListener = connectionListener
-        this.messageListener = messageListener
-        this.fileListener = fileListener
-
         if (!scanner.isBluetoothEnabled()) {
             onError?.invoke(BluetoothDisabledException())
             return
-        }
-
-        prepareListener?.let {
-            connection.addOnPrepareListener(it)
         }
 
         if (connection.isConnectionPrepared()) {
@@ -54,6 +49,9 @@ class PrepareBluetoothConnectionInteractor(private val connection: BluetoothConn
             onPrepared?.invoke()
 
         } else {
+            prepareListener?.let {
+                connection.addOnPrepareListener(it)
+            }
             connection.prepare()
         }
     }

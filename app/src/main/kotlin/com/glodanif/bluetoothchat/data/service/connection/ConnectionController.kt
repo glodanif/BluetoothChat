@@ -24,11 +24,11 @@ import com.glodanif.bluetoothchat.ui.view.NotificationView
 import com.glodanif.bluetoothchat.ui.widget.ShortcutManager
 import com.glodanif.bluetoothchat.utils.LimitedQueue
 import com.glodanif.bluetoothchat.utils.Size
-import kotlinx.coroutines.experimental.*
+import kotlinx.coroutines.*
 import java.io.File
 import java.io.IOException
 import java.util.*
-import kotlin.coroutines.experimental.CoroutineContext
+import kotlin.coroutines.CoroutineContext
 
 class ConnectionController(private val application: ChatApplication,
                            private val subject: ConnectionSubject,
@@ -324,7 +324,7 @@ class ConnectionController(private val application: ChatApplication,
                         //FIXME: Fixes not appearing notification
                         view.dismissMessageNotification()
                         view.showNewMessageNotification(imageText, currentConversation?.displayName,
-                                device.name, address, shallowHistory, preferences.isSoundEnabled())
+                                device.name, address, shallowHistory, preferences.getPreferences().sound)
                     } else {
                         message.seenHere = true
                     }
@@ -468,7 +468,7 @@ class ConnectionController(private val application: ChatApplication,
 
                 if ((!subject.isAnybodyListeningForMessages() || application.currentChat == null || !application.currentChat.equals(device.address)) && justRepliedFromNotification) {
                     view.showNewMessageNotification(message.body, currentConversation?.displayName,
-                            device.name, device.address, shallowHistory, preferences.isSoundEnabled())
+                            device.name, device.address, shallowHistory, preferences.getPreferences().sound)
                     justRepliedFromNotification = false
                 }
 
@@ -537,7 +537,7 @@ class ConnectionController(private val application: ChatApplication,
                 receivedMessage.text, receivedMessage.date.time, partner))
         if (!subject.isAnybodyListeningForMessages() || application.currentChat == null || !application.currentChat.equals(device.address)) {
             view.showNewMessageNotification(text, currentConversation?.displayName,
-                    device.name, device.address, shallowHistory, preferences.isSoundEnabled())
+                    device.name, device.address, shallowHistory, preferences.getPreferences().sound)
         } else {
             receivedMessage.seenHere = true
         }
@@ -568,7 +568,7 @@ class ConnectionController(private val application: ChatApplication,
 
         if (!application.isConversationsOpened && !(application.currentChat != null && application.currentChat.equals(device.address))) {
             view.showConnectionRequestNotification(
-                    "${conversation.displayName} (${conversation.deviceName})", conversation.deviceAddress, preferences.isSoundEnabled())
+                    "${conversation.displayName} (${conversation.deviceName})", conversation.deviceAddress, preferences.getPreferences().sound)
         }
     }
 

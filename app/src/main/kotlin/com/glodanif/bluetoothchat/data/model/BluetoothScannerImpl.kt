@@ -7,11 +7,13 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.os.Handler
-import com.glodanif.bluetoothchat.data.model.BluetoothScanner.ScanningListener
+import com.glodanif.bluetoothchat.data.model.BluetoothScanner.DiscoverableListener
+import com.glodanif.bluetoothchat.data.model.BluetoothScanner.DiscoveryListener
 
 class BluetoothScannerImpl(val context: Context) : BluetoothScanner {
 
-    private var listener: ScanningListener? = null
+    private var discoveryListener: DiscoveryListener? = null
+    private var discoverableListener: DiscoverableListener? = null
 
     private var isDiscovering: Boolean = false
 
@@ -32,7 +34,7 @@ class BluetoothScannerImpl(val context: Context) : BluetoothScanner {
                 val device = intent
                         .getParcelableExtra<BluetoothDevice>(BluetoothDevice.EXTRA_DEVICE)
                 foundDevices[device.address] = device
-                listener?.onDeviceFind(device)
+                discoveryListener?.onDeviceFind(device)
             }
         }
     }
@@ -45,9 +47,9 @@ class BluetoothScannerImpl(val context: Context) : BluetoothScanner {
             val scanMode = intent.getIntExtra(BluetoothAdapter.EXTRA_SCAN_MODE, BluetoothAdapter.SCAN_MODE_NONE)
 
             if (scanMode == BluetoothAdapter.SCAN_MODE_CONNECTABLE_DISCOVERABLE) {
-                listener?.onDiscoverableStart()
+                discoverableListener?.onDiscoverableStart()
             } else {
-                listener?.onDiscoverableFinish()
+                discoverableListener?.onDiscoverableFinish()
                 isListeningForDiscoverableStatus = false
                 context.unregisterReceiver(this)
             }
@@ -56,7 +58,7 @@ class BluetoothScannerImpl(val context: Context) : BluetoothScanner {
 
     private val scanningFinishedTask = Runnable {
 
-        listener?.onDiscoveryFinish()
+        discoveryListener?.onDiscoveryFinish()
         isDiscovering = false
 
         try {
@@ -74,7 +76,7 @@ class BluetoothScannerImpl(val context: Context) : BluetoothScanner {
     override fun scanForDevices(seconds: Int) {
 
         adapter?.startDiscovery()
-        listener?.onDiscoveryStart(seconds)
+        discoveryListener?.onDiscoveryStart(seconds)
         isDiscovering = true
 
         handler.postDelayed(scanningFinishedTask, seconds.toLong() * 1000)
@@ -118,7 +120,11 @@ class BluetoothScannerImpl(val context: Context) : BluetoothScanner {
         }
     }
 
-    override fun setScanningListener(listener: ScanningListener) {
-        this.listener = listener
+    override fun setDiscoveryListener(listener: DiscoveryListener) {
+        this.discoveryListener = listener
+    }
+
+    override fun setDiscoverableListener(listener: BluetoothScanner.DiscoverableListener) {
+        this.discoverableListener = listener
     }
 }

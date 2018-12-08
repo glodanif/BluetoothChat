@@ -3,24 +3,23 @@ package com.glodanif.bluetoothchat.domain.interactor
 import com.glodanif.bluetoothchat.data.model.BluetoothConnector
 import com.glodanif.bluetoothchat.domain.ConversationStatus
 
-class GetConversationStatusInteractor(private val connection: BluetoothConnector) : BaseInteractor<String, ConversationStatus>() {
+class GetConversationStatusInteractor(private val connection: BluetoothConnector) {
 
-    override suspend fun execute(input: String): ConversationStatus {
+    fun execute(input: String, onResult: ((ConversationStatus) -> Unit)? = null) {
 
         val conversation = connection.getCurrentConversation()
-
-        return if (conversation == null) {
+        if (conversation == null) {
             if (connection.isPending()) {
-                ConversationStatus.Pending
+                onResult?.invoke(ConversationStatus.Pending)
             } else {
-                ConversationStatus.NotConnected
+                onResult?.invoke(ConversationStatus.NotConnected)
             }
         } else if (conversation.deviceAddress != input) {
-            ConversationStatus.ConnectedToOther(conversation.displayName, conversation.deviceName)
-        } else if (connection.isPending() && conversation.deviceAddress == input) {
-            ConversationStatus.IncomingRequest(conversation.displayName, conversation.deviceName)
+            onResult?.invoke(ConversationStatus.ConnectedToOther(conversation.displayName, conversation.deviceName))
+        } else if (connection.isPending()) {
+            onResult?.invoke(ConversationStatus.IncomingRequest(conversation.displayName, conversation.deviceName))
         } else {
-            ConversationStatus.Connected
+            onResult?.invoke(ConversationStatus.Connected)
         }
     }
 }

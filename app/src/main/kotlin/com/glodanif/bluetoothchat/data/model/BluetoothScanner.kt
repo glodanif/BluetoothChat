@@ -4,7 +4,8 @@ import android.bluetooth.BluetoothDevice
 
 interface BluetoothScanner {
 
-    fun setScanningListener(listener: ScanningListener)
+    fun setDiscoveryListener(listener: DiscoveryListener)
+    fun setDiscoverableListener(listener: DiscoverableListener)
     fun scanForDevices(seconds: Int)
     fun stopScanning()
     fun getMyDeviceName(): String?
@@ -17,11 +18,14 @@ interface BluetoothScanner {
     fun listenDiscoverableStatus()
     fun stopListeningDiscoverableStatus()
 
-    interface ScanningListener {
+    interface DiscoveryListener {
         fun onDiscoveryStart(seconds: Int)
         fun onDiscoveryFinish()
+        fun onDeviceFind(device: BluetoothDevice)
+    }
+
+    interface DiscoverableListener {
         fun onDiscoverableStart()
         fun onDiscoverableFinish()
-        fun onDeviceFind(device: BluetoothDevice)
     }
 }

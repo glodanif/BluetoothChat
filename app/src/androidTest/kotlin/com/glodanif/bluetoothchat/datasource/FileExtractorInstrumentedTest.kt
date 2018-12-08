@@ -6,7 +6,7 @@ import androidx.test.runner.AndroidJUnit4
 import com.glodanif.bluetoothchat.R
 import com.glodanif.bluetoothchat.data.model.FileManager
 import com.glodanif.bluetoothchat.data.model.FileManagerImpl
-import kotlinx.coroutines.experimental.runBlocking
+import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue

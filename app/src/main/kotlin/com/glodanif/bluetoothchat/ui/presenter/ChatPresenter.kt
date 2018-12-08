@@ -1,22 +1,19 @@
 package com.glodanif.bluetoothchat.ui.presenter
 
 import android.bluetooth.BluetoothDevice
+import android.util.Log
 import android.widget.ImageView
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.OnLifecycleEvent
 import com.glodanif.bluetoothchat.data.entity.ChatMessage
 import com.glodanif.bluetoothchat.data.entity.Conversation
-import com.glodanif.bluetoothchat.data.model.*
-import com.glodanif.bluetoothchat.data.service.message.Contract
-import com.glodanif.bluetoothchat.data.service.message.PayloadType
-import com.glodanif.bluetoothchat.data.service.message.TransferringFile
+import com.glodanif.bluetoothchat.data.model.OnConnectionListener
+import com.glodanif.bluetoothchat.data.model.OnFileListener
+import com.glodanif.bluetoothchat.data.model.OnMessageListener
 import com.glodanif.bluetoothchat.domain.ConversationStatus
 import com.glodanif.bluetoothchat.domain.FileTransferringStatus
-import com.glodanif.bluetoothchat.domain.exception.BluetoothDisabledException
-import com.glodanif.bluetoothchat.domain.exception.ConnectionException
-import com.glodanif.bluetoothchat.domain.exception.InvalidStringException
-import com.glodanif.bluetoothchat.domain.exception.PreparationException
+import com.glodanif.bluetoothchat.domain.exception.*
 import com.glodanif.bluetoothchat.domain.interactor.*
 import com.glodanif.bluetoothchat.ui.router.ChatRouter
 import com.glodanif.bluetoothchat.ui.view.ChatView
@@ -27,18 +24,17 @@ import java.io.File
 class ChatPresenter(private val deviceAddress: String,
                     private val view: ChatView,
                     private val router: ChatRouter,
-                    private val connectionModel: BluetoothConnector,
                     private val getProfileInteractor: GetProfileInteractor,
-                    private val markMessagesAsSeenMessagesInteractor: MarkMessagesAsSeenMessagesInteractor,
+                    private val markMessagesAsSeenInteractor: MarkMessagesAsSeenInteractor,
                     private val getConversationByAddressInteractor: GetConversationByAddressInteractor,
                     private val getMessagesByAddressInteractor: GetMessagesByAddressInteractor,
                     private val prepareBluetoothConnectionInteractor: PrepareBluetoothConnectionInteractor,
-                    private val isConnectedToThisDeviceInteractor: IsConnectedToThisDeviceInteractor,
-                    private val getDeviceNameByAddressInteractor: GetDeviceNameByAddressInteractor,
                     private val sendTextMessageInteractor: SendTextMessageInteractor,
-                    private val disconnectInteractor: DisconnectInteractor,
+                    private val sendFileMessageInteractor: SendFileMessageInteractor,
                     private val getConversationStatusInteractor: GetConversationStatusInteractor,
                     private val getFileTransferStatusInteractor: GetFileTransferStatusInteractor,
+                    private val manageConnectionInteractor: ManageConnectionInteractor,
+                    private val cancelFileTransferInteractor: CancelFileTransferInteractor,
                     private val converter: ChatMessageConverter
 ) : LifecycleObserver {
 
@@ -69,17 +65,16 @@ class ChatPresenter(private val deviceAddress: String,
 
         override fun onConnectedIn(conversation: Conversation) {
 
-            isConnectedToThisDeviceInteractor.execute(deviceAddress,
-                    onResult = { isSameDevice ->
-                        if (isSameDevice) {
+            getConversationStatusInteractor.execute(deviceAddress,
+                    onResult = { status ->
+                        if (status is ConversationStatus.Connected) {
                             view.showStatusPending()
                             view.hideDisconnected()
                             view.hideLostConnection()
                             view.showConnectionRequest(conversation.displayName, conversation.deviceName)
                             view.showPartnerName(conversation.displayName, conversation.deviceName)
                         }
-                    }
-            )
+                    })
         }
 
         override fun onConnectedOut(conversation: Conversation) {
@@ -174,11 +169,13 @@ class ChatPresenter(private val deviceAddress: String,
 
     private fun dismissNotification() {
 
-        connectionModel.getCurrentConversation()?.let {
-            if (connectionModel.isConnectedOrPending() && it.deviceAddress == deviceAddress) {
-                view.dismissMessageNotification()
-            }
-        }
+        getConversationStatusInteractor.execute(deviceAddress,
+                onResult = { status ->
+                    if (status is ConversationStatus.Connected || status is ConversationStatus.IncomingRequest) {
+                        view.dismissMessageNotification()
+                    }
+                }
+        )
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
@@ -219,15 +216,13 @@ class ChatPresenter(private val deviceAddress: String,
     @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
     fun releaseConnection() {
         getProfileInteractor.cancel()
-        markMessagesAsSeenMessagesInteractor.cancel()
+        markMessagesAsSeenInteractor.cancel()
         getConversationByAddressInteractor.cancel()
         getMessagesByAddressInteractor.cancel()
-        isConnectedToThisDeviceInteractor.cancel()
-        getDeviceNameByAddressInteractor.cancel()
         sendTextMessageInteractor.cancel()
-        disconnectInteractor.cancel()
-        getConversationStatusInteractor.cancel()
-        getFileTransferStatusInteractor.cancel()
+        sendFileMessageInteractor.cancel()
+        manageConnectionInteractor.cancel()
+        cancelFileTransferInteractor.cancel()
     }
 
     fun onImageClick(view: ImageView, message: ChatMessageViewModel) {
@@ -247,39 +242,39 @@ class ChatPresenter(private val deviceAddress: String,
 
     private fun displayMessages(messages: List<ChatMessage>) {
 
-        markMessagesAsSeenMessagesInteractor.execute(messages,
+        markMessagesAsSeenInteractor.execute(messages,
                 onResult = { updatedMessages ->
                     view.showMessagesHistory(converter.transform(updatedMessages))
                 })
     }
 
     fun resetConnection() {
-
-        disconnectInteractor.execute(Unit,
-                onResult = {
-                    view.showStatusNotConnected()
-                    view.showNotConnectedToAnyDevice()
-                }
-        )
+        manageConnectionInteractor.disconnect()
+        view.showStatusNotConnected()
+        view.showNotConnectedToAnyDevice()
     }
 
     fun disconnect() {
-        connectionModel.sendDisconnectRequest()
+        manageConnectionInteractor.sendDisconnectionRequest()
         view.showStatusNotConnected()
         view.showNotConnectedToAnyDevice()
     }
 
     fun connectToDevice() {
 
-        getDeviceNameByAddressInteractor.execute(deviceAddress,
-                onResult = { device ->
+        manageConnectionInteractor.connect(deviceAddress,
+                onResult = {
                     view.showStatusPending()
                     view.showWainingForOpponent()
-                    connectionModel.connect(device)
                 },
-                onError = {
-                    view.showStatusNotConnected()
-                    view.showDeviceIsNotAvailable()
+                onError = { error ->
+                    when (error) {
+                        is BluetoothDisabledException -> view.showBluetoothDisabled()
+                        is DeviceNotFoundException -> {
+                            view.showStatusNotConnected()
+                            view.showDeviceIsNotAvailable()
+                        }
+                    }
                 }
         )
     }
@@ -301,51 +296,45 @@ class ChatPresenter(private val deviceAddress: String,
 
     fun performFilePicking() {
 
-        if (connectionModel.isFeatureAvailable(Contract.Feature.IMAGE_SHARING)) {
-            view.openImagePicker()
-        } else {
-            view.showReceiverUnableToReceiveImages()
-        }
+        sendFileMessageInteractor.prepareFilePicking(
+                onResult = {
+                    view.openImagePicker()
+                },
+                onError = {
+                    view.showReceiverUnableToReceiveImages()
+                }
+        )
     }
 
     fun sendFile(file: File) {
-
+        sendFileMessageInteractor.execute(file, onError = {
+            Log.e("TAG13", it.message)
+        })
     }
 
     fun cancelPresharing() {
-
+        sendFileMessageInteractor.cancelPresharing()
     }
 
     fun proceedPresharing() {
-
+        sendFileMessageInteractor.proceedPresharing()
     }
 
     fun cancelFileTransfer() {
-        connectionModel.cancelFileTransfer()
+        cancelFileTransferInteractor.execute(Unit)
         view.hideImageTransferLayout()
-    }
-
-    fun reconnect() {
-
-        if (scanModel.isBluetoothEnabled()) {
-            connectToDevice()
-            view.showStatusPending()
-            view.showWainingForOpponent()
-        } else {
-            view.showBluetoothDisabled()
-        }
     }
 
     fun acceptConnection() {
         view.hideActions()
         view.showStatusConnected()
-        connectionModel.acceptConnection()
+        manageConnectionInteractor.acceptConnection()
     }
 
     fun rejectConnection() {
         view.hideActions()
         view.showStatusNotConnected()
-        connectionModel.rejectConnection()
+        manageConnectionInteractor.rejectConnection()
         updateState()
     }
 
@@ -363,15 +352,16 @@ class ChatPresenter(private val deviceAddress: String,
 
     private fun updateState() {
 
-        getFileTransferStatusInteractor.execute(Unit,
+        getFileTransferStatusInteractor.execute(
                 onResult = { status ->
                     when (status) {
                         is FileTransferringStatus.NotTransferring ->
                             view.hideImageTransferLayout()
-                        is FileTransferringStatus.Transferring -> {
-                            val type = if (status.transferType == TransferringFile.TransferType.RECEIVING)
-                                ChatView.FileTransferType.RECEIVING else ChatView.FileTransferType.SENDING
-                            view.showImageTransferLayout(status.fileName, status.fileSize, type)
+                        is FileTransferringStatus.Sending -> {
+                            view.showImageTransferLayout(status.fileName, status.fileSize, ChatView.FileTransferType.SENDING)
+                        }
+                        is FileTransferringStatus.Receiving -> {
+                            view.showImageTransferLayout(status.fileName, status.fileSize, ChatView.FileTransferType.RECEIVING)
                         }
                     }
                 }
@@ -401,7 +391,6 @@ class ChatPresenter(private val deviceAddress: String,
                             view.showConnectionRequest(status.displayName, status.deviceName)
                         }
                     }
-                }
-        )
+                })
     }
 }

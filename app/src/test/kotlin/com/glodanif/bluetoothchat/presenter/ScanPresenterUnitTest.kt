@@ -8,7 +8,7 @@ import com.glodanif.bluetoothchat.ui.presenter.ScanPresenter
 import com.glodanif.bluetoothchat.ui.view.ScanView
 import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
-import kotlinx.coroutines.experimental.Dispatchers
+import kotlinx.coroutines.Dispatchers
 import org.junit.Before
 import org.junit.Test
 
@@ -138,34 +138,34 @@ class ScanPresenterUnitTest {
 
     @Test
     fun scanning_start() {
-        val slot = slot<BluetoothScanner.ScanningListener>()
+        val slot = slot<BluetoothScanner.DiscoveryListener>()
         presenter.scanForDevices()
-        verify { scanner.scanForDevices(ScanPresenter.SCAN_DURATION_SECONDS) }
-        verify { scanner.setScanningListener(capture(slot)) }
+        verify { scanner.scanForDevices(30) }
+        verify { scanner.setDiscoveryListener(capture(slot)) }
         slot.captured.onDiscoveryStart(0)
         verify { view.showScanningStarted(0) }
     }
 
     @Test
     fun scanning_finished() {
-        val slot = slot<BluetoothScanner.ScanningListener>()
-        verify { scanner.setScanningListener(capture(slot)) }
+        val slot = slot<BluetoothScanner.DiscoveryListener>()
+        verify { scanner.setDiscoveryListener(capture(slot)) }
         slot.captured.onDiscoveryFinish()
         verify { view.showScanningStopped() }
     }
 
     @Test
     fun scanning_discoverableStart() {
-        val slot = slot<BluetoothScanner.ScanningListener>()
-        verify { scanner.setScanningListener(capture(slot)) }
+        val slot = slot<BluetoothScanner.DiscoveryListener>()
+        verify { scanner.setDiscoveryListener(capture(slot)) }
         slot.captured.onDiscoverableStart()
         verify { view.showDiscoverableProcess() }
     }
 
     @Test
     fun scanning_discoverableFinishStart() {
-        val slot = slot<BluetoothScanner.ScanningListener>()
-        verify { scanner.setScanningListener(capture(slot)) }
+        val slot = slot<BluetoothScanner.DiscoveryListener>()
+        verify { scanner.setDiscoveryListener(capture(slot)) }
         slot.captured.onDiscoverableFinish()
         verify { view.showDiscoverableFinished() }
     }
@@ -175,12 +175,12 @@ class ScanPresenterUnitTest {
 
         every { preferences.isClassificationEnabled() } returns false
 
-        val slot = slot<BluetoothScanner.ScanningListener>()
+        val slot = slot<BluetoothScanner.DiscoveryListener>()
 
         val device = mockk<BluetoothDevice>()
         every {device.bluetoothClass.majorDeviceClass} returns BluetoothClass.Device.Major.WEARABLE
 
-        verify { scanner.setScanningListener(capture(slot)) }
+        verify { scanner.setDiscoveryListener(capture(slot)) }
         slot.captured.onDeviceFind(device)
         verify { view.addFoundDevice(device) }
     }
@@ -190,12 +190,12 @@ class ScanPresenterUnitTest {
 
         every { preferences.isClassificationEnabled() } returns true
 
-        val slot = slot<BluetoothScanner.ScanningListener>()
+        val slot = slot<BluetoothScanner.DiscoveryListener>()
 
         val device = mockk<BluetoothDevice>()
         every {device.bluetoothClass.majorDeviceClass} returns BluetoothClass.Device.Major.WEARABLE
 
-        verify { scanner.setScanningListener(capture(slot)) }
+        verify { scanner.setDiscoveryListener(capture(slot)) }
         slot.captured.onDeviceFind(device)
         verify(exactly = 0) { view.addFoundDevice(device) }
     }

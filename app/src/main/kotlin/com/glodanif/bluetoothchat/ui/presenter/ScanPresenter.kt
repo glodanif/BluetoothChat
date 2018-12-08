@@ -1,161 +1,83 @@
 package com.glodanif.bluetoothchat.ui.presenter
 
-import android.bluetooth.BluetoothDevice
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.OnLifecycleEvent
-import com.glodanif.bluetoothchat.data.model.*
-import com.glodanif.bluetoothchat.domain.interactor.ExtractApkInteractor
-import com.glodanif.bluetoothchat.domain.interactor.GetUserPreferencesInteractor
+import com.glodanif.bluetoothchat.domain.exception.ConnectionException
+import com.glodanif.bluetoothchat.domain.exception.DeviceNotFoundException
+import com.glodanif.bluetoothchat.domain.exception.PreparationException
+import com.glodanif.bluetoothchat.domain.interactor.*
 import com.glodanif.bluetoothchat.ui.view.ScanView
-import com.glodanif.bluetoothchat.utils.withPotentiallyInstalledApplication
-import kotlinx.coroutines.experimental.CoroutineDispatcher
-import kotlinx.coroutines.experimental.Dispatchers
-import kotlinx.coroutines.experimental.launch
-import kotlinx.coroutines.experimental.withContext
 
 class ScanPresenter(private val view: ScanView,
-                    private val scanner: BluetoothScanner,
-                    private val connection: BluetoothConnector,
-                    private val getUserPreferencesInteractor: GetUserPreferencesInteractor,
-                    private val extractApkInteractor: ExtractApkInteractor
+                    private val connectToDeviceInteractor: ConnectToDeviceInteractor,
+                    private val getPairedDevicesInteractor: GetPairedDevicesInteractor,
+                    private val extractApkInteractor: ExtractApkInteractor,
+                    private val discoveryInteractor: DiscoveryInteractor,
+                    private val discoverableInteractor: DiscoverableInteractor,
+                    private val checkBluetoothStatusInteractor: CheckBluetoothStatusInteractor
+
 ) : LifecycleObserver {
-
-    companion object {
-        const val SCAN_DURATION_SECONDS = 30
-    }
-
-    private var isClassificationEnabled = true
-
-    init {
-
-        scanner.setScanningListener(object : BluetoothScanner.ScanningListener {
-
-            override fun onDiscoverableFinish() {
-                view.showDiscoverableFinished()
-            }
-
-            override fun onDiscoverableStart() {
-                view.showDiscoverableProcess()
-            }
-
-            override fun onDiscoveryStart(seconds: Int) {
-                view.showScanningStarted(seconds)
-            }
-
-            override fun onDiscoveryFinish() {
-                view.showScanningStopped()
-            }
-
-            override fun onDeviceFind(device: BluetoothDevice) {
-                if (!isClassificationEnabled || device.bluetoothClass.withPotentiallyInstalledApplication()) {
-                    view.addFoundDevice(device)
-                }
-            }
-        })
-    }
-
-    @OnLifecycleEvent(Lifecycle.Event.ON_START)
-    fun start() {
-        getUserPreferencesInteractor.execute(Unit,
-                onResult = { profile ->
-                    isClassificationEnabled = profile.classification
-                })
-    }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
     fun stop() {
-        getUserPreferencesInteractor.cancel()
+        getPairedDevicesInteractor.cancel()
         extractApkInteractor.cancel()
     }
 
     fun onDevicePicked(address: String) {
 
-        val device = scanner.getDeviceByAddress(address)
-
-        if (connection.isConnectionPrepared()) {
-            connection.addOnConnectListener(connectionListener)
-            connectDevice(device)
-            return
-        }
-
-        connection.addOnPrepareListener(object : OnPrepareListener {
-
-            override fun onPrepared() {
-                connectDevice(device)
-                connection.removeOnPrepareListener(this)
-            }
-
-            override fun onError() {
-                view.showServiceUnavailable()
-                connection.removeOnPrepareListener(this)
-            }
-        })
-
-        connection.prepare()
-    }
-
-    private fun connectDevice(device: BluetoothDevice?) {
-        if (device != null) {
-            connection.connect(device)
-        } else {
-            view.showServiceUnavailable()
-        }
-    }
-
-    private val connectionListener = object : SimpleConnectionListener() {
-
-        override fun onConnected(device: BluetoothDevice) {
-            view.openChat(device)
-            connection.removeOnConnectListener(this)
-        }
-
-        override fun onConnectionLost() {
-            view.showUnableToConnect()
-            connection.removeOnConnectListener(this)
-        }
-
-        override fun onConnectionFailed() {
-            view.showUnableToConnect()
-            connection.removeOnConnectListener(this)
-        }
+        connectToDeviceInteractor.connect(address,
+                onResult = { device -> view.openChat(device) },
+                onError = { error ->
+                    when (error) {
+                        is ConnectionException -> {
+                            view.showUnableToConnect()
+                        }
+                        is DeviceNotFoundException -> {
+                            //FIXME
+                            view.showServiceUnavailable()
+                        }
+                        is PreparationException -> {
+                            view.showServiceUnavailable()
+                        }
+                    }
+                }
+        )
     }
 
     fun checkBluetoothAvailability() {
 
-        if (scanner.isBluetoothAvailable()) {
-            view.showBluetoothScanner()
-        } else {
-            view.showBluetoothIsNotAvailableMessage()
-        }
+        checkBluetoothStatusInteractor.checkIfAvailable(
+                onResult = { view.showBluetoothScanner() },
+                onError = { view.showBluetoothIsNotAvailableMessage() }
+        )
     }
 
     fun checkBluetoothEnabling() {
 
-        if (scanner.isBluetoothEnabled()) {
-            onPairedDevicesReady()
-            if (scanner.isDiscoverable()) {
-                scanner.listenDiscoverableStatus()
-                view.showDiscoverableProcess()
-            } else {
-                view.showDiscoverableFinished()
-            }
-        } else {
-            view.showBluetoothEnablingRequest()
-        }
+        checkBluetoothStatusInteractor.checkIfEnabled(
+                onResult = {
+                    onPairedDevicesReady()
+                    discoverableInteractor.listen(
+                            onResult = { view.showDiscoverableProcess() },
+                            onError = { view.showDiscoverableFinished() }
+                    )
+                },
+                onError = { view.showBluetoothEnablingRequest() }
+        )
     }
 
     fun turnOnBluetooth() {
-        if (!scanner.isBluetoothEnabled()) {
-            view.requestBluetoothEnabling()
-        }
+        checkBluetoothStatusInteractor.checkIfEnabled(
+                onError = { view.requestBluetoothEnabling() }
+        )
     }
 
     fun onPairedDevicesReady() {
-        val devices = scanner.getBondedDevices().filter {
-            !isClassificationEnabled || it.bluetoothClass.withPotentiallyInstalledApplication()
-        }
-        view.showPairedDevices(devices)
+        getPairedDevicesInteractor.execute(Unit,
+                onResult = { devices -> view.showPairedDevices(devices) }
+        )
     }
 
     fun onBluetoothEnablingFailed() {
@@ -163,52 +85,55 @@ class ScanPresenter(private val view: ScanView,
     }
 
     fun onMadeDiscoverable() {
-        scanner.listenDiscoverableStatus()
-        view.showDiscoverableProcess()
+        discoverableInteractor.listen(
+                onResult = { view.showDiscoverableProcess() }
+        )
     }
 
     fun makeDiscoverable() {
-        if (!scanner.isDiscoverable()) {
-            view.requestMakingDiscoverable()
-        }
+        discoverableInteractor.checkDiscoverability(
+                onError = { view.requestMakingDiscoverable() }
+        )
     }
 
     fun scanForDevices() {
-        if (!scanner.isDiscovering()) {
-            scanner.scanForDevices(SCAN_DURATION_SECONDS)
-        } else {
-            cancelScanning()
-        }
+
+        discoveryInteractor.execute(
+                onStart = { seconds -> view.showScanningStarted(seconds) },
+                onFinish = { view.showScanningStopped() },
+                onDeviceFound = { device -> view.addFoundDevice(device) },
+                onError = { cancelScanning() }
+        )
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_START)
     fun listenDiscoverableStatus() {
-        if (scanner.isDiscoverable()) {
-            scanner.listenDiscoverableStatus()
-        }
+
+        discoverableInteractor.setListeners(
+                onStart = { view.showDiscoverableProcess() },
+                onFinish = { view.showDiscoverableFinished() }
+        )
+
+        discoverableInteractor.listen()
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
     fun cancelScanning() {
         view.showScanningStopped()
-        scanner.stopScanning()
-        connection.removeOnConnectListener(connectionListener)
+        discoveryInteractor.release()
+        connectToDeviceInteractor.release()
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
     fun cancelDiscoveryStatusListening() {
-        scanner.stopListeningDiscoverableStatus()
+        discoverableInteractor.stopListening()
     }
 
     fun shareApk() {
 
         extractApkInteractor.execute(Unit,
-                onResult = { uri ->
-                    view.shareApk(uri)
-                },
-                onError = {
-                    view.showExtractionApkFailureMessage()
-                }
+                onResult = { uri -> view.shareApk(uri) },
+                onError = { view.showExtractionApkFailureMessage() }
         )
     }
 }

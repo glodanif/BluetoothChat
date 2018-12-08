@@ -1,7 +1,7 @@
 package com.glodanif.bluetoothchat.domain.interactor
 
-import kotlinx.coroutines.experimental.*
-import kotlin.coroutines.experimental.CoroutineContext
+import kotlinx.coroutines.*
+import kotlin.coroutines.CoroutineContext
 
 abstract class BaseInteractor<T, V>(
         private val executionContext: CoroutineDispatcher = Dispatchers.Default,

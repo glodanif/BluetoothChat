@@ -1,5 +1,6 @@
 package com.glodanif.bluetoothchat.data.model
 
+import android.annotation.SuppressLint
 import android.bluetooth.BluetoothDevice
 import android.content.ComponentName
 import android.content.Context

@@ -99,7 +99,7 @@ class ChatApplication : Application(), LifecycleObserver {
 
     @OnLifecycleEvent(Lifecycle.Event.ON_START)
     internal fun prepareConnection() {
-        if (get<ProfileRepository>().isInitialized()) {
+        if (get<ProfileRepository>().getProfile().name.isNotEmpty()) {
             connector.prepare()
         }
     }

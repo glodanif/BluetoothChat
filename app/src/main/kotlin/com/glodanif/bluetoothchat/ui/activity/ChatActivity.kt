@@ -315,7 +315,7 @@ class ChatActivity : SkeletonActivity(), ChatView, ChatRouter {
     override fun showLostConnection() = doIfStarted {
         lostConnectionDialog = AlertDialog.Builder(this)
                 .setMessage(getString(R.string.chat__connection_lost))
-                .setPositiveButton(getString(R.string.chat__reconnect)) { _, _ -> presenter.reconnect() }
+                .setPositiveButton(getString(R.string.chat__reconnect)) { _, _ -> presenter.connectToDevice() }
                 .setNegativeButton(getString(R.string.general__cancel), null)
                 .show()
     }
@@ -328,7 +328,7 @@ class ChatActivity : SkeletonActivity(), ChatView, ChatRouter {
     override fun showDisconnected() = doIfStarted {
         disconnectedDialog = AlertDialog.Builder(this)
                 .setMessage(getString(R.string.chat__partner_disconnected))
-                .setPositiveButton(getString(R.string.chat__reconnect)) { _, _ -> presenter.reconnect() }
+                .setPositiveButton(getString(R.string.chat__reconnect)) { _, _ -> presenter.connectToDevice() }
                 .setNegativeButton(getString(R.string.general__cancel), null)
                 .show()
     }
