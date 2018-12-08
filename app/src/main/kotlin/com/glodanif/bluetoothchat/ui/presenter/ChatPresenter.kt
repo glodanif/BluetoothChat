@@ -11,7 +11,7 @@ import com.glodanif.bluetoothchat.data.service.message.PayloadType
 import com.glodanif.bluetoothchat.data.service.message.TransferringFile
 import com.glodanif.bluetoothchat.ui.view.ChatView
 import com.glodanif.bluetoothchat.ui.viewmodel.converter.ChatMessageConverter
-import kotlinx.coroutines.experimental.*
+import kotlinx.coroutines.*
 import java.io.File
 
 class ChatPresenter(private val deviceAddress: String,

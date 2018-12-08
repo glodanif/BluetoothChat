@@ -7,6 +7,7 @@ import com.glodanif.bluetoothchat.utils.Size
 data class ChatMessageViewModel(
         val uid: Long,
         val dayOfYear: String,
+        val dayOfYearRaw: Long,
         val time: String,
         val text: String?,
         val own: Boolean,

@@ -1,5 +1,5 @@
-def final VERSION_CODE = 34
-def final VERSION_NAME = '1.3.0'
+def final VERSION_CODE = 35
+def final VERSION_NAME = '1.3.1'
 
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
@@ -27,12 +27,6 @@ android {
 
     sourceSets.each {
         it.java.srcDirs += "src/$it.name/kotlin"
-    }
-
-    kotlin {
-        experimental {
-            coroutines 'enable'
-        }
     }
 
     signingConfigs {
@@ -89,18 +83,17 @@ android {
 
 dependencies {
 
-    def final SUPPORT_VERSION = '1.0.0'
     def final ROOM_VERSION = '2.0.0'
     def final LIFECYCLE_VERSION = '2.0.0'
     def final LEAK_CANARY_VERSION = '1.6.2'
     def final ESPRESSO_VERSION = '3.1.0-alpha4'
-    def final COROUTINES_VERSION = '0.30.2'
+    def final COROUTINES_VERSION = '1.0.1'
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
-    implementation "androidx.appcompat:appcompat:$SUPPORT_VERSION"
-    implementation "androidx.recyclerview:recyclerview:$SUPPORT_VERSION"
-    implementation "androidx.cardview:cardview:$SUPPORT_VERSION"
+    implementation 'androidx.appcompat:appcompat:1.0.2'
+    implementation 'androidx.recyclerview:recyclerview:1.0.0'
+    implementation 'androidx.cardview:cardview:1.0.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.0-alpha2'
     implementation 'com.google.android.material:material:1.0.0'
 
@@ -136,10 +129,10 @@ dependencies {
 
     testImplementation "org.jetbrains.kotlin:kotlin-stdlib:$KOTLIN_VERSION"
     testImplementation "org.jetbrains.kotlin:kotlin-test-junit:$KOTLIN_VERSION"
-    testImplementation 'io.mockk:mockk:1.8.9'
+    testImplementation 'io.mockk:mockk:1.8.12'
     testImplementation 'junit:junit:4.12'
 
-    androidTestImplementation "androidx.annotation:annotation:$SUPPORT_VERSION"
+    androidTestImplementation "androidx.annotation:annotation:1.0.1"
     androidTestImplementation "androidx.test.espresso:espresso-core:$ESPRESSO_VERSION"
     androidTestImplementation "androidx.test.espresso:espresso-contrib:$ESPRESSO_VERSION"
 }

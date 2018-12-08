@@ -120,9 +120,7 @@ class ChatAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(), StickyRecyc
         }
     }
 
-    override fun getHeaderId(position: Int): Long {
-        return messages[position].dayOfYear.hashCode().toLong()
-    }
+    override fun getHeaderId(position: Int) = messages[position].dayOfYearRaw
 
     override fun onCreateHeaderViewHolder(parent: ViewGroup): RecyclerView.ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_date_divider, parent, false)

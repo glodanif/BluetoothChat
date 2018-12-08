@@ -24,11 +24,11 @@ import com.glodanif.bluetoothchat.ui.view.NotificationView
 import com.glodanif.bluetoothchat.ui.widget.ShortcutManager
 import com.glodanif.bluetoothchat.utils.LimitedQueue
 import com.glodanif.bluetoothchat.utils.Size
-import kotlinx.coroutines.experimental.*
+import kotlinx.coroutines.*
 import java.io.File
 import java.io.IOException
 import java.util.*
-import kotlin.coroutines.experimental.CoroutineContext
+import kotlin.coroutines.CoroutineContext
 
 class ConnectionController(private val application: ChatApplication,
                            private val subject: ConnectionSubject,

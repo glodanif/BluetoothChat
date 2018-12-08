@@ -3,7 +3,10 @@ package com.glodanif.bluetoothchat.ui.presenter
 import androidx.annotation.ColorInt
 import com.glodanif.bluetoothchat.data.model.UserPreferences
 import com.glodanif.bluetoothchat.ui.view.SettingsView
-import kotlinx.coroutines.experimental.*
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class SettingsPresenter(private val view: SettingsView,
                         private val preferences: UserPreferences,
