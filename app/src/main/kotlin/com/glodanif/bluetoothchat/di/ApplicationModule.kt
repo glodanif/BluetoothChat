@@ -35,7 +35,7 @@ val applicationModule = module {
     }
 
     factory { params ->
-        ScanPresenter(params[0], get(), get(), get(), get())
+        ScanPresenter(params[0], get(), get(), get(), get(), get(), get())
     }
 
     factory { params ->

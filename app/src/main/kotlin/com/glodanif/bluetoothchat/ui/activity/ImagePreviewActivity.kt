@@ -34,7 +34,7 @@ import java.lang.ref.WeakReference
 class ImagePreviewActivity : SkeletonActivity(), ImagePreviewView {
 
     private val messageId: Long by argument(EXTRA_MESSAGE_ID, -1L)
-    private val imagePath: String? by argument(EXTRA_IMAGE_PATH)
+    private val imagePath: String by argument(EXTRA_IMAGE_PATH)
     private val own: Boolean by argument(EXTRA_OWN, false)
 
     private val presenter: ImagePreviewPresenter by inject {

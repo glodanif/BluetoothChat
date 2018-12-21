@@ -16,12 +16,13 @@ import com.glodanif.bluetoothchat.ui.router.ReceivedImagesRouter
 import com.glodanif.bluetoothchat.ui.view.ReceivedImagesView
 import com.glodanif.bluetoothchat.utils.argument
 import com.glodanif.bluetoothchat.utils.bind
+import com.glodanif.bluetoothchat.utils.nullableArgument
 import org.koin.android.ext.android.inject
 import org.koin.core.parameter.parametersOf
 
 class ReceivedImagesActivity : SkeletonActivity(), ReceivedImagesView, ReceivedImagesRouter {
 
-    private val address: String? by argument(EXTRA_ADDRESS)
+    private val address: String? by nullableArgument(EXTRA_ADDRESS)
 
     private val presenter: ReceivedImagesPresenter by inject {
         parametersOf(address ?: "", this)

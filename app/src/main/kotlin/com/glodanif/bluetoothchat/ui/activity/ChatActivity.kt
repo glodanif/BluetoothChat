@@ -46,11 +46,9 @@ import java.util.*
 
 class ChatActivity : SkeletonActivity(), ChatView, ChatRouter {
 
-    private val deviceAddress: String? by argument(EXTRA_ADDRESS)
+    private val deviceAddress: String by argument(EXTRA_ADDRESS)
 
-    private val presenter: ChatPresenter by inject {
-        parametersOf(deviceAddress ?: "", this)
-    }
+    private val presenter: ChatPresenter by inject { parametersOf(deviceAddress, this) }
 
     private val chatContainer: ConstraintLayout by bind(R.id.cl_chat_container)
     private val actions: ActionView by bind(R.id.av_actions)

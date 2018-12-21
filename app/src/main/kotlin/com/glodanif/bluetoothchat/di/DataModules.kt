@@ -50,6 +50,11 @@ val domainModule = module {
     factory { GetFileTransferStatusInteractor(get()) }
     factory { ManageConnectionInteractor(get(), get()) }
     factory { CancelFileTransferInteractor(get()) }
+    factory { ConnectToDeviceInteractor(get(), get()) }
+    factory { GetPairedDevicesInteractor(get(), get()) }
+    factory { DiscoveryInteractor(get(), get()) }
+    factory { DiscoverableInteractor(get()) }
+    factory { CheckBluetoothStatusInteractor(get()) }
 }
 
 const val localeScope = "locale_scope"

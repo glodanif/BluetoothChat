@@ -225,11 +225,18 @@ inline fun <T : Any, V : Any> safeLet(p1: T?, p2: V?, block: (T, V) -> Unit) {
 fun <T : View> Activity.bind(@IdRes idRes: Int) =
         lazy(LazyThreadSafetyMode.NONE) { findViewById<T>(idRes) }
 
-inline fun <reified T : Any?> AppCompatActivity.argument(key: String) = lazy {
+inline fun <reified T : Any?> AppCompatActivity.nullableArgument(key: String) = lazy {
     intent.extras?.let {
         return@lazy it[key] as T
     }
     return@lazy null
+}
+
+inline fun <reified T : Any> AppCompatActivity.argument(key: String) = lazy {
+    intent.extras?.let {
+        return@lazy it[key] as T
+    }
+    throw IllegalArgumentException("Extras don't contain \"$key\" key")
 }
 
 inline fun <reified T : Any> AppCompatActivity.argument(key: String, defaultValue: T) = lazy {

@@ -42,6 +42,7 @@ import org.koin.core.parameter.parametersOf
 class ConversationsActivity : SkeletonActivity(), ConversationsView, ConversationsRouter {
 
     private val presenter: ConversationsPresenter by inject { parametersOf(this) }
+    //FIXME move to presenter
     private val shortcutsManager: ShortcutManager by inject()
 
     private val conversationsList: RecyclerView by bind(R.id.rv_conversations)
