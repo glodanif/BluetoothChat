@@ -14,27 +14,27 @@
     <string name="general__storage_permission">Voit myös jakaa kuvia Bluetooth chatissa. Tämä ominaisuus vaatii sijainnin <b>\'\'TALLENNUSTILA\'\'</b> käyttöoikeudet toimiakseen.</string>
     <string name="general__no_browser">Unable to find browser application</string>
     <string name="general__time_format">MMM dd, yyyy</string>
-    <string name="general__time_unknown">unknown</string>
-    <string name="general__time_just_now">just now</string>
-    <string name="general__time_a_minute_ago">a minute ago</string>
-    <string name="general__time_an_hour_ago">an hour ago</string>
-    <string name="general__time_yesterday">yesterday</string>
+    <string name="general__time_unknown">tuntematon</string>
+    <string name="general__time_just_now">juuri nyt</string>
+    <string name="general__time_a_minute_ago">minuutti sitten</string>
+    <string name="general__time_an_hour_ago">tunti sitten</string>
+    <string name="general__time_yesterday">eilen</string>
     <plurals name="general__time_minutes_ago">
-        <item quantity="one">%d minute ago</item>
-        <item quantity="other">%d minutes ago</item>
+        <item quantity="one">%d minuutti sitten</item>
+        <item quantity="other">%d minuuttia sitten</item>
     </plurals>
     <plurals name="general__time_hours_ago">
-        <item quantity="one">%d hour ago</item>
-        <item quantity="other">%d hours ago</item>
+        <item quantity="one">%d tunti sitten</item>
+        <item quantity="other">%d tuntia sitten</item>
     </plurals>
     <plurals name="general__time_days_ago">
-        <item quantity="one">%d day ago</item>
-        <item quantity="other">%d days ago</item>
+        <item quantity="one">%d päivä sitten</item>
+        <item quantity="other">%d päivää sitten</item>
     </plurals>
-    <string name="profile__profile">Profile</string>
-    <string name="profile__your_name">Your name</string>
-    <string name="profile__validation_error">Your name cannot be empty or longer than 25 characters, also, \'%s\' symbol is not allowed</string>
-    <string name="profile__edit">Edit</string>
+    <string name="profile__profile">Profiili</string>
+    <string name="profile__your_name">Nimi</string>
+    <string name="profile__validation_error">Nimesi ei voi olla pidempi kuin 25 kirjainta, \'%s\' merkki ei ole sallittu</string>
+    <string name="profile__edit">Muokkaa</string>
     <string name="profile__name">Name</string>
     <string name="profile__color">Color</string>
     <string name="profile__device">Device</string>
