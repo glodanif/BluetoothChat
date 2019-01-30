@@ -12,7 +12,7 @@
     <string name="general__service_lost">Bluetooth Chat on pysähtynyt, käynnistä laite uudelleen voidaksesi käyttää sovellusta</string>
     <string name="general__disconnect">Katkaise yhteys</string>
     <string name="general__storage_permission">Voit myös jakaa kuvia Bluetooth chatissa. Tämä ominaisuus vaatii sijainnin <b>\'\'TALLENNUSTILA\'\'</b> käyttöoikeudet toimiakseen.</string>
-    <string name="general__no_browser">Unable to find browser application</string>
+    <string name="general__no_browser">Selainsovelluksen löytö epäonnistui</string>
     <string name="general__time_format">MMM dd, yyyy</string>
     <string name="general__time_unknown">tuntematon</string>
     <string name="general__time_just_now">juuri nyt</string>
@@ -45,9 +45,9 @@
     <string name="chat__connected">Yhdistetty</string>
     <string name="chat__pending">Yhdistetään</string>
     <string name="chat__reconnect">Yhdistä uudelleen</string>
-    <string name="chat__disconnect">Disconnect</string>
-    <string name="chat__sending_failed">Unable to send this message, please try again</string>
-    <string name="chat__connection_rejected">Your connection request was rejected</string>
+    <string name="chat__disconnect">Katkaise yhteys</string>
+    <string name="chat__sending_failed">Viestin lähettäminen epäonnistui. Yritä uudelleen myöhemmin</string>
+    <string name="chat__connection_rejected">Yhetyspyytösi hylättiin</string>
     <string name="chat__waiting_for_device">You are waiting for this device to approve a connection</string>
     <string name="chat__connect">Connect</string>
     <string name="chat__not_connected_to_send">You are not connected to this device</string>
