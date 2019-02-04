@@ -1,16 +1,16 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical">
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
         android:text="@string/settings__appearance"
         android:textColor="@color/colorAccent"
         android:textSize="14sp"
@@ -23,8 +23,8 @@
         android:background="?android:attr/selectableItemBackground"
         android:clickable="true"
         android:focusable="true"
-        android:paddingEnd="16dp"
-        android:paddingStart="16dp">
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp">
 
         <TextView
             android:layout_width="match_parent"
@@ -39,21 +39,47 @@
         <View
             android:id="@+id/v_color"
             android:layout_width="36dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginBottom="16dp"
             android:layout_height="match_parent"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"
             tools:background="@android:color/holo_orange_dark" />
     </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_night_mode_button"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:background="?android:attr/selectableItemBackground"
+        android:clickable="true"
+        android:focusable="true"
+        android:gravity="center_vertical"
+        android:orientation="vertical"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/settings__night_mode"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/tv_night_mode"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="12sp"
+            tools:text="On" />
+    </LinearLayout>
 
     <TextView
         android:id="@+id/tv_notifications_header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
         android:text="@string/settings__notifications"
         android:textColor="@color/colorAccent"
         android:textSize="14sp"
@@ -68,9 +94,9 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
         android:text="@string/settings__discovery"
         android:textColor="@color/colorAccent"
         android:textSize="14sp"

@@ -2,19 +2,21 @@ package com.glodanif.bluetoothchat.data.model
 
 import android.content.Context
 import android.preference.PreferenceManager
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
 import com.glodanif.bluetoothchat.R
 
 class UserPreferencesImpl(private val context: Context) : UserPreferences {
 
-    private val version = 1
+    private val version = 2
 
     private val keyPreferencesName = "userPreferences"
 
     private val keyVersion = "storage_version"
     private val keyNotificationSound = "notifications_sound"
     private val keyAppearanceChatBgColor = "notifications_chat_bg_color"
-    private val keyDiscoveryClassification = "notifications_classification"
+    private val keyAppearanceNightMode = "appearance_night_mode"
+    private val keyDiscoveryClassification = "discovery_classification"
 
     private val defaultChatBackgroundColor =
             ContextCompat.getColor(context, R.color.background_chat_default)
@@ -35,6 +37,9 @@ class UserPreferencesImpl(private val context: Context) : UserPreferences {
     override fun getChatBackgroundColor() =
             preferences.getInt(keyAppearanceChatBgColor, defaultChatBackgroundColor)
 
+    override fun getNightMode() =
+            preferences.getInt(keyAppearanceNightMode, AppCompatDelegate.MODE_NIGHT_NO)
+
     override fun saveChatBgColor(color: Int) {
         preferences.edit()
                 .putInt(keyAppearanceChatBgColor, color)
@@ -53,6 +58,12 @@ class UserPreferencesImpl(private val context: Context) : UserPreferences {
                 .apply()
     }
 
+    override fun saveNightMode(mode: Int) {
+        preferences.edit()
+                .putInt(keyAppearanceNightMode, mode)
+                .apply()
+    }
+
     private fun migrate() {
 
         val lastVersion = preferences.getInt(keyVersion, 0)
@@ -64,7 +75,6 @@ class UserPreferencesImpl(private val context: Context) : UserPreferences {
         if (lastVersion < 1) {
 
             val oldPreferences = PreferenceManager.getDefaultSharedPreferences(context)
-
             preferences.edit()
                     .putBoolean(keyNotificationSound, oldPreferences.getBoolean("notifications_sound", false))
                     .apply()
@@ -72,6 +82,15 @@ class UserPreferencesImpl(private val context: Context) : UserPreferences {
             oldPreferences.edit()
                     .remove("notifications_sound")
                     .remove("notifications_vibration")
+                    .apply()
+        }
+
+        if (lastVersion < 2) {
+
+            val oldValue = preferences.getBoolean("notifications_classification", true)
+            preferences.edit()
+                    .putBoolean(keyDiscoveryClassification, oldValue)
+                    .remove("notifications_classification")
                     .apply()
         }
 

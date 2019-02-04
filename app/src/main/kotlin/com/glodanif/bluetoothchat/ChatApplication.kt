@@ -4,6 +4,8 @@ import android.app.Activity
 import android.app.Application
 import android.content.res.Configuration
 import android.os.StrictMode
+import androidx.appcompat.app.AppCompatDelegate
+import androidx.appcompat.app.AppCompatDelegate.NightMode
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.OnLifecycleEvent
@@ -11,6 +13,7 @@ import androidx.lifecycle.ProcessLifecycleOwner
 import com.crashlytics.android.Crashlytics
 import com.glodanif.bluetoothchat.data.model.BluetoothConnector
 import com.glodanif.bluetoothchat.data.model.ProfileManager
+import com.glodanif.bluetoothchat.data.model.UserPreferences
 import com.glodanif.bluetoothchat.di.*
 import com.glodanif.bluetoothchat.ui.activity.ChatActivity
 import com.glodanif.bluetoothchat.ui.activity.ConversationsActivity
@@ -18,7 +21,6 @@ import com.glodanif.bluetoothchat.ui.util.StartStopActivityLifecycleCallbacks
 import com.kobakei.ratethisapp.RateThisApp
 import com.squareup.leakcanary.LeakCanary
 import io.fabric.sdk.android.Fabric
-import org.koin.android.ext.android.get
 import org.koin.android.ext.android.getKoin
 import org.koin.android.ext.android.inject
 import org.koin.android.ext.android.startKoin
@@ -28,8 +30,12 @@ class ChatApplication : Application(), LifecycleObserver {
 
     var isConversationsOpened = false
     var currentChat: String? = null
+    @NightMode
+    var nightMode: Int = AppCompatDelegate.MODE_NIGHT_NO
 
     private val connector: BluetoothConnector by inject()
+    private val profileManager: ProfileManager by inject()
+    private val preferences: UserPreferences by inject()
 
     private lateinit var localeSession: Scope
 
@@ -48,6 +54,8 @@ class ChatApplication : Application(), LifecycleObserver {
         startKoin(this, listOf(applicationModule,
                 bluetoothConnectionModule, databaseModule, localStorageModule, viewModule))
         localeSession = getKoin().createScope(localeScope)
+
+        nightMode = preferences.getNightMode()
 
         ProcessLifecycleOwner.get().lifecycle.addObserver(this)
 
@@ -99,7 +107,7 @@ class ChatApplication : Application(), LifecycleObserver {
 
     @OnLifecycleEvent(Lifecycle.Event.ON_START)
     internal fun prepareConnection() {
-        if (!get<ProfileManager>().getUserName().isEmpty()) {
+        if (!profileManager.getUserName().isEmpty()) {
             connector.prepare()
         }
     }

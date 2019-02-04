@@ -1,5 +1,6 @@
 package com.glodanif.bluetoothchat.ui.activity
 
+import android.annotation.SuppressLint
 import androidx.lifecycle.Lifecycle
 import android.content.ActivityNotFoundException
 import android.content.Intent
@@ -13,8 +14,10 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
+import com.glodanif.bluetoothchat.ChatApplication
 import com.glodanif.bluetoothchat.R
 
+@SuppressLint("Registered")
 open class SkeletonActivity : AppCompatActivity() {
 
     protected enum class ActivityType { CHILD_ACTIVITY, CUSTOM_TOOLBAR_ACTIVITY }
@@ -22,8 +25,10 @@ open class SkeletonActivity : AppCompatActivity() {
     protected var toolbar: Toolbar? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+        val nightMode = (application as ChatApplication).nightMode
+        AppCompatDelegate.setDefaultNightMode(nightMode)
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true)
+        super.onCreate(savedInstanceState)
     }
 
     protected fun setContentView(@LayoutRes layoutId: Int, type: ActivityType) {

@@ -1,6 +1,7 @@
 package com.glodanif.bluetoothchat.ui.presenter
 
 import androidx.annotation.ColorInt
+import androidx.appcompat.app.AppCompatDelegate.NightMode
 import com.glodanif.bluetoothchat.data.model.UserPreferences
 import com.glodanif.bluetoothchat.ui.view.SettingsView
 import kotlinx.coroutines.CoroutineDispatcher
@@ -16,10 +17,12 @@ class SettingsPresenter(private val view: SettingsView,
     fun loadPreferences() = launch {
 
         val color = withContext(bgContext) { preferences.getChatBackgroundColor() }
+        val nightMode = withContext(bgContext) { preferences.getNightMode() }
         val sound = withContext(bgContext) { preferences.isSoundEnabled() }
         val classification = withContext(bgContext) { preferences.isClassificationEnabled() }
 
-        view.displayAppearanceSettings(color)
+        view.displayBgColorSettings(color)
+        view.displayNightModeSettings(nightMode)
         view.displayNotificationSetting(sound)
         view.displayDiscoverySetting(classification)
     }
@@ -28,10 +31,21 @@ class SettingsPresenter(private val view: SettingsView,
         view.displayColorPicker(preferences.getChatBackgroundColor())
     }
 
+    fun prepareNightModePicker() {
+        view.displayNightModePicker(preferences.getNightMode())
+    }
+
     fun onNewColorPicked(@ColorInt color: Int) = launch(bgContext) {
         preferences.saveChatBgColor(color)
         launch(uiContext) {
-            view.displayAppearanceSettings(color)
+            view.displayColorPicker(color)
+        }
+    }
+
+    fun onNewNightModePreference(@NightMode nightMode: Int) = launch(bgContext) {
+        preferences.saveNightMode(nightMode)
+        launch(uiContext) {
+            view.displayNightModeSettings(nightMode)
         }
     }
 
