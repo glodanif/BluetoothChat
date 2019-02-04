@@ -145,6 +145,11 @@
     <string name="settings__discovery">Виявлення</string>
     <string name="settings__appearance">Зовнішній вигляд</string>
     <string name="settings__chat_background_color">Фоновий колір чату</string>
+    <string name="settings__night_mode">Night mode</string>
+    <string name="settings__night_mode_on">On</string>
+    <string name="settings__night_mode_off">Off</string>
+    <string name="settings__night_mode_auto">Auto</string>
+    <string name="settings__night_mode_system">System</string>
     <string name="settings__sound">Звук</string>
     <string name="settings__classification">Показувати лиш телефони або комп\'ютери</string>
     <string name="images__image">Зображення</string>
