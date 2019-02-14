@@ -139,11 +139,11 @@
     <string name="settings__discovery">Descubrir</string>
     <string name="settings__appearance">Apariencia</string>
     <string name="settings__chat_background_color">Color de fondo del Chat</string>
-    <string name="settings__night_mode">Night mode</string>
-    <string name="settings__night_mode_on">On</string>
+    <string name="settings__night_mode">Modo nocturno</string>
+    <string name="settings__night_mode_on">En</string>
     <string name="settings__night_mode_off">Off</string>
-    <string name="settings__night_mode_auto">Auto</string>
-    <string name="settings__night_mode_system">System</string>
+    <string name="settings__night_mode_auto">Automático</string>
+    <string name="settings__night_mode_system">Sistema de</string>
     <string name="settings__sound">Sonido</string>
     <string name="settings__classification">Mostrar sólo teléfonos o computadores</string>
     <string name="images__image">Imágen</string>
