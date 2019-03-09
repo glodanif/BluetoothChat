@@ -133,7 +133,7 @@
     <string name="notification__reply">Responder</string>
     <string name="notification__sent">Enviado</string>
     <string name="contact_chooser__title">Selecionar Chat</string>
-    <string name="contact_chooser__no_contacts">A sua lista de contactos está vazia</string>
+    <string name="contact_chooser__no_contacts">A sua lista de contatos está vazia</string>
     <string name="settings__title">Configurações</string>
     <string name="settings__notifications">Notificações</string>
     <string name="settings__discovery">Descoberta</string>
