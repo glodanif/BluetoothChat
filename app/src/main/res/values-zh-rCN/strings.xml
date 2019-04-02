@@ -136,7 +136,7 @@
     <string name="settings__discovery">发现</string>
     <string name="settings__appearance">外观</string>
     <string name="settings__chat_background_color">聊天背景颜色</string>
-    <string name="settings__night_mode">Night mode</string>
+    <string name="settings__night_mode">夜间模式</string>
     <string name="settings__night_mode_on">On</string>
     <string name="settings__night_mode_off">Off</string>
     <string name="settings__night_mode_auto">Auto</string>
