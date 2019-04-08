@@ -140,7 +140,7 @@
     <string name="settings__appearance">Apariencia</string>
     <string name="settings__chat_background_color">Color de fondo del Chat</string>
     <string name="settings__night_mode">Modo nocturno</string>
-    <string name="settings__night_mode_on">En</string>
+    <string name="settings__night_mode_on">Encendido</string>
     <string name="settings__night_mode_off">Off</string>
     <string name="settings__night_mode_auto">Automático</string>
     <string name="settings__night_mode_system">Sistema de</string>
