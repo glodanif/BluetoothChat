@@ -35,7 +35,7 @@ val applicationModule = module {
     }
 
     factory { params ->
-        SettingsPresenter(params[0], get())
+        SettingsPresenter(params[0], get(), params[1])
     }
 
     factory { params ->

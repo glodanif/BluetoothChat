@@ -16,6 +16,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import com.glodanif.bluetoothchat.ChatApplication
 import com.glodanif.bluetoothchat.R
+import com.glodanif.bluetoothchat.ui.util.ThemeHolder
 
 @SuppressLint("Registered")
 open class SkeletonActivity : AppCompatActivity() {
@@ -25,7 +26,7 @@ open class SkeletonActivity : AppCompatActivity() {
     protected var toolbar: Toolbar? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        val nightMode = (application as ChatApplication).nightMode
+        val nightMode = (application as ThemeHolder).getNightMode()
         AppCompatDelegate.setDefaultNightMode(nightMode)
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true)
         super.onCreate(savedInstanceState)

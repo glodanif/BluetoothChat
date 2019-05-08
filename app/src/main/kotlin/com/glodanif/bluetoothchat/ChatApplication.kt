@@ -18,20 +18,21 @@ import com.glodanif.bluetoothchat.di.*
 import com.glodanif.bluetoothchat.ui.activity.ChatActivity
 import com.glodanif.bluetoothchat.ui.activity.ConversationsActivity
 import com.glodanif.bluetoothchat.ui.util.StartStopActivityLifecycleCallbacks
+import com.glodanif.bluetoothchat.ui.util.ThemeHolder
 import com.kobakei.ratethisapp.RateThisApp
-import com.squareup.leakcanary.LeakCanary
 import io.fabric.sdk.android.Fabric
 import org.koin.android.ext.android.getKoin
 import org.koin.android.ext.android.inject
 import org.koin.android.ext.android.startKoin
 import org.koin.core.scope.Scope
 
-class ChatApplication : Application(), LifecycleObserver {
+class ChatApplication : Application(), LifecycleObserver, ThemeHolder {
 
     var isConversationsOpened = false
     var currentChat: String? = null
+
     @NightMode
-    var nightMode: Int = AppCompatDelegate.MODE_NIGHT_NO
+    private var nightMode: Int = AppCompatDelegate.MODE_NIGHT_NO
 
     private val connector: BluetoothConnector by inject()
     private val profileManager: ProfileManager by inject()
@@ -41,11 +42,6 @@ class ChatApplication : Application(), LifecycleObserver {
 
     override fun onCreate() {
         super.onCreate()
-
-        if (LeakCanary.isInAnalyzerProcess(this)) {
-            return
-        }
-        LeakCanary.install(this)
 
         if (!BuildConfig.DEBUG) {
             Fabric.with(this, Crashlytics())
@@ -116,4 +112,10 @@ class ChatApplication : Application(), LifecycleObserver {
     internal fun releaseConnection() {
         connector.release()
     }
+
+    override fun setNightMode(@NightMode nightMode: Int) {
+        this.nightMode = nightMode
+    }
+
+    override fun getNightMode() = nightMode
 }

@@ -299,7 +299,19 @@ class ConversationsActivity : SkeletonActivity(), ConversationsView {
         private const val REQUEST_STORAGE_PERMISSION = 101
         private const val REQUEST_SCAN = 102
 
-        fun start(context: Context) =
-                context.startActivity(Intent(context, ConversationsActivity::class.java))
+        fun start(context: Context) {
+            start(context, false)
+        }
+
+        fun start(context: Context, clearTop: Boolean) {
+
+            val intent = Intent(context, ConversationsActivity::class.java).apply {
+                if (clearTop) {
+                    flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                }
+            }
+
+            context.startActivity(intent)
+        }
     }
 }

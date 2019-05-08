@@ -50,7 +50,7 @@
                 android:layout_weight="1"
                 android:ellipsize="end"
                 android:maxLines="1"
-                android:textColor="#333333"
+                android:textColor="@color/text_text_message"
                 tools:text="@tools:sample/full_names" />
 
             <TextView

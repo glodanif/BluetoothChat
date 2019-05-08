@@ -18,6 +18,7 @@
         android:layout_marginEnd="12dp"
         android:contentDescription="@null"
         android:tint="#444444"
+        app:tint="?android:textColorSecondary"
         app:srcCompat="@drawable/ic_bluetooth_black_24dp" />
 
     <LinearLayout

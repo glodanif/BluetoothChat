@@ -1,5 +1,5 @@
-def final VERSION_CODE = 35
-def final VERSION_NAME = '1.3.1'
+def final VERSION_CODE = 36
+def final VERSION_NAME = '1.4'
 
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
@@ -79,22 +79,25 @@ android {
             buildConfigField 'boolean', 'AUTORESPONDER', 'false'
         }
     }
+
+    packagingOptions {
+       exclude 'META-INF/atomicfu.kotlin_module'
+    }
 }
 
 dependencies {
 
     def final ROOM_VERSION = '2.0.0'
     def final LIFECYCLE_VERSION = '2.0.0'
-    def final LEAK_CANARY_VERSION = '1.6.3'
     def final ESPRESSO_VERSION = '3.1.0-alpha4'
-    def final COROUTINES_VERSION = '1.1.1'
+    def final COROUTINES_VERSION = '1.2.1'
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
     implementation 'androidx.appcompat:appcompat:1.0.2'
     implementation 'androidx.recyclerview:recyclerview:1.0.0'
     implementation 'androidx.cardview:cardview:1.0.0'
-    implementation 'androidx.constraintlayout:constraintlayout:2.0.0-alpha3'
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.0-alpha5'
     implementation 'com.google.android.material:material:1.0.0'
 
     implementation "androidx.room:room-runtime:$ROOM_VERSION"
@@ -114,7 +117,7 @@ dependencies {
 
     implementation 'org.koin:koin-android:1.0.2'
 
-    implementation('com.crashlytics.sdk.android:crashlytics:2.9.8@aar') {
+    implementation('com.crashlytics.sdk.android:crashlytics:2.10.0@aar') {
         transitive = true
     }
 
@@ -122,17 +125,14 @@ dependencies {
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$COROUTINES_VERSION"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$COROUTINES_VERSION"
 
-    debugImplementation "com.squareup.leakcanary:leakcanary-android:$LEAK_CANARY_VERSION"
-    autoresponderImplementation "com.squareup.leakcanary:leakcanary-android-no-op:$LEAK_CANARY_VERSION"
-    releaseImplementation "com.squareup.leakcanary:leakcanary-android-no-op:$LEAK_CANARY_VERSION"
-    testImplementation "com.squareup.leakcanary:leakcanary-android-no-op:$LEAK_CANARY_VERSION"
+    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.0-alpha-1'
 
     testImplementation "org.jetbrains.kotlin:kotlin-stdlib:$KOTLIN_VERSION"
     testImplementation "org.jetbrains.kotlin:kotlin-test-junit:$KOTLIN_VERSION"
-    testImplementation 'io.mockk:mockk:1.9'
+    testImplementation 'io.mockk:mockk:1.9.3.kotlin12'
     testImplementation 'junit:junit:4.12'
 
-    androidTestImplementation "androidx.annotation:annotation:1.0.1"
+    androidTestImplementation 'androidx.annotation:annotation:1.0.2'
     androidTestImplementation "androidx.test.espresso:espresso-core:$ESPRESSO_VERSION"
     androidTestImplementation "androidx.test.espresso:espresso-contrib:$ESPRESSO_VERSION"
 }

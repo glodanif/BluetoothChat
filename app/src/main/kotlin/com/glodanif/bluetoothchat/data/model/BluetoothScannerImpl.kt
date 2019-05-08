@@ -8,6 +8,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.os.Handler
 import com.glodanif.bluetoothchat.data.model.BluetoothScanner.ScanningListener
+import java.lang.Exception
 
 class BluetoothScannerImpl(val context: Context) : BluetoothScanner {
 
@@ -69,7 +70,12 @@ class BluetoothScannerImpl(val context: Context) : BluetoothScanner {
         }
     }
 
-    override fun getMyDeviceName() = adapter?.name ?: "?"
+    override fun getMyDeviceName() =
+            try {
+                adapter?.name ?: "?"
+            } catch (e: Exception) {
+                "?"
+            }
 
     override fun scanForDevices(seconds: Int) {
 
