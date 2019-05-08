@@ -145,10 +145,10 @@
     <string name="settings__discovery">Обнаружение</string>
     <string name="settings__appearance">Внешний вид</string>
     <string name="settings__chat_background_color">Фоновый цвет чата</string>
-    <string name="settings__night_mode">Night mode</string>
-    <string name="settings__night_mode_on">Вкл</string>
-    <string name="settings__night_mode_off">Off</string>
-    <string name="settings__night_mode_system">System</string>
+    <string name="settings__night_mode">Ночной режим</string>
+    <string name="settings__night_mode_on">Вкл.</string>
+    <string name="settings__night_mode_off">Выкл.</string>
+    <string name="settings__night_mode_system">Системный</string>
     <string name="settings__sound">Звук</string>
     <string name="settings__classification">Отображать только телефоны или компьютеры</string>
     <string name="images__image">Изображение</string>
