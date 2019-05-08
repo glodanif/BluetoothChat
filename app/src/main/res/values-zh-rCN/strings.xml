@@ -139,7 +139,6 @@
     <string name="settings__night_mode">夜间模式</string>
     <string name="settings__night_mode_on">On</string>
     <string name="settings__night_mode_off">Off</string>
-    <string name="settings__night_mode_auto">Auto</string>
     <string name="settings__night_mode_system">System</string>
     <string name="settings__sound">声音</string>
     <string name="settings__classification">只显示电脑和手机</string>
