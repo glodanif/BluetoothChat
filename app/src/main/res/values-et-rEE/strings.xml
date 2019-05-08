@@ -143,7 +143,6 @@ Dhewya</string>
     <string name="settings__night_mode">Night mode</string>
     <string name="settings__night_mode_on">On</string>
     <string name="settings__night_mode_off">Off</string>
-    <string name="settings__night_mode_auto">Auto</string>
     <string name="settings__night_mode_system">System</string>
     <string name="settings__sound">Sound</string>
     <string name="settings__classification">Show only phones or computers</string>
