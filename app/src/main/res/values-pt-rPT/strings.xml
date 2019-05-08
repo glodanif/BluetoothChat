@@ -142,7 +142,6 @@
     <string name="settings__night_mode">Modo noturno</string>
     <string name="settings__night_mode_on">Ligado</string>
     <string name="settings__night_mode_off">Desligado</string>
-    <string name="settings__night_mode_auto">Automático</string>
     <string name="settings__night_mode_system">Sistema</string>
     <string name="settings__sound">Sons</string>
     <string name="settings__classification">Mostrar apenas telefones ou computadores</string>
