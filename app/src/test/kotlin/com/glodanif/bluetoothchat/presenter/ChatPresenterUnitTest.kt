@@ -7,7 +7,7 @@ import com.glodanif.bluetoothchat.ui.viewmodel.converter.ChatMessageConverter
 import io.mockk.MockKAnnotations
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.verify
-import kotlinx.coroutines.experimental.Dispatchers
+import kotlinx.coroutines.Dispatchers
 import org.junit.Before
 import org.junit.Test
 

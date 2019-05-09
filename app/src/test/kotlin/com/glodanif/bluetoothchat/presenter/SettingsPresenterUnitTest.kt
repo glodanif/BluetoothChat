@@ -3,12 +3,13 @@ package com.glodanif.bluetoothchat.presenter
 import android.graphics.Color
 import com.glodanif.bluetoothchat.data.model.UserPreferences
 import com.glodanif.bluetoothchat.ui.presenter.SettingsPresenter
+import com.glodanif.bluetoothchat.ui.util.ThemeHolder
 import com.glodanif.bluetoothchat.ui.view.SettingsView
 import io.mockk.MockKAnnotations
 import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.verify
-import kotlinx.coroutines.experimental.Dispatchers
+import kotlinx.coroutines.Dispatchers
 import org.junit.Before
 import org.junit.Test
 
@@ -18,13 +19,16 @@ class SettingsPresenterUnitTest {
     private lateinit var view: SettingsView
     @RelaxedMockK
     private lateinit var preferences: UserPreferences
+    @RelaxedMockK
+    private lateinit var themeHolder: ThemeHolder
 
     private lateinit var presenter: SettingsPresenter
 
     @Before
     fun setup() {
         MockKAnnotations.init(this)
-        presenter = SettingsPresenter(view, preferences, Dispatchers.Unconfined, Dispatchers.Unconfined)
+        presenter = SettingsPresenter(view, preferences, themeHolder,
+                Dispatchers.Unconfined, Dispatchers.Unconfined)
     }
 
     @Test
@@ -35,7 +39,7 @@ class SettingsPresenterUnitTest {
         presenter.loadPreferences()
         verify { view.displayNotificationSetting(true) }
         verify { view.displayDiscoverySetting(true) }
-        verify { view.displayAppearanceSettings(Color.GREEN) }
+        verify { view.displayBgColorSettings(Color.GREEN) }
     }
 
     @Test
@@ -48,6 +52,6 @@ class SettingsPresenterUnitTest {
     @Test
     fun newColor() {
         presenter.onNewColorPicked(Color.GREEN)
-        verify { view.displayAppearanceSettings(Color.GREEN) }
+        verify { view.displayColorPicker(Color.GREEN) }
     }
 }

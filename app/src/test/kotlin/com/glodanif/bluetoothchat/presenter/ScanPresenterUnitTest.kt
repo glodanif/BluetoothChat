@@ -8,7 +8,7 @@ import com.glodanif.bluetoothchat.ui.presenter.ScanPresenter
 import com.glodanif.bluetoothchat.ui.view.ScanView
 import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
-import kotlinx.coroutines.experimental.Dispatchers
+import kotlinx.coroutines.Dispatchers
 import org.junit.Before
 import org.junit.Test
 
