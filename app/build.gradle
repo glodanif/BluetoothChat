@@ -1,4 +1,4 @@
-def final VERSION_CODE = 36
+def final VERSION_CODE = 37
 def final VERSION_NAME = '1.3.2'
 
 apply plugin: 'com.android.application'
