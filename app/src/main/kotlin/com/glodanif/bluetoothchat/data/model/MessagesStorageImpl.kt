@@ -28,9 +28,9 @@ class MessagesStorageImpl(db: ChatDatabase) : MessagesStorage {
     }
 
     override suspend fun getFileMessagesByDevice(address: String): List<MessageFile> {
-        return (if (address.isNotEmpty())
-            dao.getFileMessagesByDevice(address) else dao.getAllFilesMessages())
-                .filter { File(it.filePath).exists() }
+        val fileMessages = if (address.isNotEmpty())
+            dao.getFileMessagesByDevice(address) else dao.getAllFilesMessages()
+        return fileMessages.filter { File(it.filePath).exists() }
     }
 
     override suspend fun updateMessage(message: ChatMessage) {

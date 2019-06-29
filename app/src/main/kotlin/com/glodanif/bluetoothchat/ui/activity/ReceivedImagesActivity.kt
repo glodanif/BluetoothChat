@@ -64,7 +64,7 @@ class ReceivedImagesActivity : SkeletonActivity(), ReceivedImagesView {
 
         private const val EXTRA_ADDRESS = "extra.address"
 
-        fun start(context: Context, address: String?) {
+        fun start(context: Context, address: String? = null) {
             val intent = Intent(context, ReceivedImagesActivity::class.java)
                     .putExtra(EXTRA_ADDRESS, address ?: "")
             context.startActivity(intent)

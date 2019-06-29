@@ -122,9 +122,7 @@
                 android:layout_height="wrap_content"
                 app:barrierDirection="end"
                 app:constraint_referenced_ids="textView4,textView5,textView8"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent" />
+                app:layout_constraintBottom_toBottomOf="parent" />
 
             <TextView
                 android:id="@+id/tv_device_name"

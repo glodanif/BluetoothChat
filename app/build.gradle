@@ -1,5 +1,5 @@
-def final VERSION_CODE = 37
-def final VERSION_NAME = '1.3.2'
+def final VERSION_CODE = 38
+def final VERSION_NAME = '1.3.3'
 
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
@@ -87,17 +87,17 @@ android {
 
 dependencies {
 
-    def final ROOM_VERSION = '2.0.0'
-    def final LIFECYCLE_VERSION = '2.0.0'
-    def final ESPRESSO_VERSION = '3.2.0-beta01'
+    def final ROOM_VERSION = '2.1.0'
+    def final LIFECYCLE_VERSION = '2.2.0-alpha01'
+    def final ESPRESSO_VERSION = '3.3.0-alpha01'
     def final COROUTINES_VERSION = '1.2.1'
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
-    implementation 'androidx.appcompat:appcompat:1.0.2'
-    implementation 'androidx.recyclerview:recyclerview:1.0.0'
+    implementation 'androidx.appcompat:appcompat:1.1.0-beta01'
+    implementation 'androidx.recyclerview:recyclerview:1.1.0-alpha06'
     implementation 'androidx.cardview:cardview:1.0.0'
-    implementation 'androidx.constraintlayout:constraintlayout:2.0.0-beta1'
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.0-beta2'
     implementation 'com.google.android.material:material:1.0.0'
 
     implementation "androidx.room:room-runtime:$ROOM_VERSION"
@@ -117,7 +117,7 @@ dependencies {
 
     implementation 'org.koin:koin-android:1.0.2'
 
-    implementation('com.crashlytics.sdk.android:crashlytics:2.10.0@aar') {
+    implementation('com.crashlytics.sdk.android:crashlytics:2.10.1@aar') {
         transitive = true
     }
 
@@ -132,7 +132,7 @@ dependencies {
     testImplementation 'io.mockk:mockk:1.9.3'
     testImplementation 'junit:junit:4.12'
 
-    androidTestImplementation 'androidx.annotation:annotation:1.0.2'
+    androidTestImplementation 'androidx.annotation:annotation:1.1.0'
     androidTestImplementation "androidx.test.espresso:espresso-core:$ESPRESSO_VERSION"
     androidTestImplementation "androidx.test.espresso:espresso-contrib:$ESPRESSO_VERSION"
 }

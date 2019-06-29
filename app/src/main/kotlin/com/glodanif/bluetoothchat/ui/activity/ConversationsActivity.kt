@@ -10,16 +10,15 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
-import com.google.android.material.floatingactionbutton.FloatingActionButton
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
-import androidx.appcompat.app.AlertDialog
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import android.text.Html
 import android.view.View
 import android.widget.Button
 import android.widget.ImageView
+import androidx.appcompat.app.AlertDialog
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.amulyakhare.textdrawable.TextDrawable
 import com.glodanif.bluetoothchat.R
 import com.glodanif.bluetoothchat.ui.adapter.ConversationsAdapter
@@ -34,6 +33,7 @@ import com.glodanif.bluetoothchat.utils.bind
 import com.glodanif.bluetoothchat.utils.getFilePath
 import com.glodanif.bluetoothchat.utils.getFirstLetter
 import com.glodanif.bluetoothchat.utils.getNotificationManager
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.kobakei.ratethisapp.RateThisApp
 import org.koin.android.ext.android.inject
 import org.koin.core.parameter.parametersOf
@@ -70,7 +70,7 @@ class ConversationsActivity : SkeletonActivity(), ConversationsView {
                     SettingsPopup.Option.PROFILE ->
                         ProfileActivity.start(this@ConversationsActivity, editMode = true)
                     SettingsPopup.Option.IMAGES ->
-                        ReceivedImagesActivity.start(this@ConversationsActivity, address = null)
+                        ReceivedImagesActivity.start(this@ConversationsActivity)
                     SettingsPopup.Option.SETTINGS ->
                         SettingsActivity.start(this@ConversationsActivity)
                     SettingsPopup.Option.ABOUT ->
@@ -96,14 +96,15 @@ class ConversationsActivity : SkeletonActivity(), ConversationsView {
             settingsPopup.show(it)
         }
 
-        if (intent.action == Intent.ACTION_SEND && intent.type != null) {
+        val type = intent.type
+        if (intent.action == Intent.ACTION_SEND && type != null) {
 
             var textToShare: String? = null
             var fileToShare: String? = null
 
-            if (intent.type == "text/plain") {
+            if (type == "text/plain") {
                 textToShare = intent.getStringExtra(Intent.EXTRA_TEXT).trim()
-            } else if (intent.type.startsWith("image/")) {
+            } else if (type.startsWith("image/")) {
                 val imageUri = intent.getParcelableExtra(Intent.EXTRA_STREAM) as Uri?
                 fileToShare = imageUri?.getFilePath(this)
             }
