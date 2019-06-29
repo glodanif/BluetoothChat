@@ -136,10 +136,10 @@
     <string name="settings__discovery">发现</string>
     <string name="settings__appearance">外观</string>
     <string name="settings__chat_background_color">聊天背景颜色</string>
-    <string name="settings__night_mode">Night mode</string>
-    <string name="settings__night_mode_on">On</string>
-    <string name="settings__night_mode_off">Off</string>
-    <string name="settings__night_mode_system">System</string>
+    <string name="settings__night_mode">夜间模式</string>
+    <string name="settings__night_mode_on">启用</string>
+    <string name="settings__night_mode_off">禁用</string>
+    <string name="settings__night_mode_system">遵循操作系统设置</string>
     <string name="settings__sound">声音</string>
     <string name="settings__classification">只显示电脑和手机</string>
     <string name="images__image">图片</string>
